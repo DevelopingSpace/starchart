@@ -37,3 +37,6 @@ There are a number of components of the system:
 3. A node.js back-end server, with the ability to connect to the DNS server's API and to authorize users via SSO
 4. A web front-end that allows authorized users to manage their own subdomains and certificates
 
+## Development
+
+Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki)
