@@ -63,7 +63,7 @@ docker-compose up
 ```
 
 #### Webserver
-Once the containers are up and running, you can access the primary DNS's webserver at `http://localhost:8081/` (port 8081 maps to the internal port 80 in the docker-compose file).
+Once the containers are up and running, due to the `webserver=yes` line in the `/config/pdns-private.conf` file, primary DNS service will start a webserver at `http://localhost:8081/` (port 8081 is exposed through the docker-compose file).
 
 ##### API
 The API for the DNS server is available at the `/api` [endpoint](http://127.0.0.1:8081/api), and the `X-API-Key` header must be set to the key defined in the `/config/pdns-private.conf` file.
