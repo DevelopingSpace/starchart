@@ -1,6 +1,22 @@
+
+
 # Starchart
 
 Starchart makes it easy for the Seneca developer community to create and manager their own custom subdomains and SSL certificates, without cost or having to provide personal information. 
+
+## Table of Contents
+<!-- TOC -->
+* [Starchart](#starchart)
+  * [Table of Contents](#table-of-contents)
+  * [Introduction](#introduction)
+  * [1.0 Features](#10-features)
+  * [Technologies](#technologies)
+  * [Development](#development)
+    * [How to run](#how-to-run)
+      * [Webserver](#webserver)
+        * [API](#api)
+        * [Metrics](#metrics)
+<!-- TOC -->
 
 ## Introduction
 
@@ -38,5 +54,26 @@ There are a number of components of the system:
 4. A web front-end that allows authorized users to manage their own subdomains and certificates
 
 ## Development
+
+### How to run
+To run the project locally, you need to have docker and docker-compose installed. Then, run the following command(s) in the root directory of the project:
+
+```bash
+docker-compose up
+```
+
+#### Webserver
+Once the containers are up and running, you can access the primary DNS's webserver at `http://localhost:8081/` (port 8081 maps to the internal port 80 in the docker-compose file).
+
+##### API
+The API for the DNS server is available at the `/api` [endpoint](http://127.0.0.1:8081/api), and the `X-API-Key` header must be set to the key defined in the `/config/pdns-private.conf` file.
+```bash
+curl -v -H 'X-API-Key: secret-api-key' http://127.0.0.1:8081/api/v1/servers/localhost
+```
+
+##### Metrics
+A `/metrics` [endpoint](http://127.0.0.1:8081/metrics) is also exposed by the webserver which can be used to monitor the health of the DNS server.
+
+<hr>
 
 Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki)
