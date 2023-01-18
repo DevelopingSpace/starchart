@@ -1,11 +1,45 @@
 # DEVELOPMENT DOCKER COMPOSE
 services:
-  web:
-    container_name: web-app
-    build:
-        context: ./web
-        dockerfile: Dockerfile
-    ports:
-        - "3000:3000"
-    volumes:
-        - ./web:/usr/src/app
+    web:
+        hostname: web-app
+        container_name: web-app
+        build:
+            context: ./web
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./web:/usr/src/app
+        depends_on:
+            - mysql
+        networks:
+            - backend-net
+
+    mysql:
+        hostname: mysql
+        container_name: mysql
+        image: mysql
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: db
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+        volumes:
+            - ./mysql:/var/lib/mysql
+        networks:
+            - backend-net
+
+    adminer:
+        hostname: adminer
+        container_name: adminer
+        image: adminer
+        ports:
+            - "8080:8080"
+        networks:
+            - backend-net
+
+networks:
+    backend-net:
+        driver: bridge

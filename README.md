@@ -59,8 +59,14 @@ To run the project locally, you need to have docker and docker-compose installed
 docker-compose up
 ```
 
-This will start the services defined in the `docker-compose.yml` file. The services are:
-- `web-app`: The Remix web app, accessible at http://localhost:3000
+This will create a network called `backend-net`, which connects all the services together. 
+
+After, it will start the services defined in the `docker-compose.yml` file. The services are:
+- `web-app`: The Remix web app, accessible at http://localhost:3000 (From the `backend-net`, it is accessible at http://web-app:3000)
+- `mysql`: The MySQL database, accessible at http://localhost:3306 (From the `backend-net`, it is accessible at http://mysql:3306)
+- `adminer`: The Adminer database management tool, accessible at http://localhost:8080 (From the `backend-net`, it is accessible at http://adminer:8080)
+  The default credentials for the database are defined in the `docker-compose.yml` file. When using adminer, make sure to set the Server field to the hostname of the mysql service, `mysql`, then use the username `root` and password `root` to login.
+  ![](https://i.imgur.com/98RMUAs.png)
 <hr>
 
 Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki)
