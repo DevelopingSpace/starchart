@@ -4,7 +4,7 @@
 
 ## Development
 
-Start the Remix development asset server and the Express server by running:
+Start the Remix development asset server and the Satellite server by running:
 
 ```sh
 npm run dev

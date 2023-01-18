@@ -13,9 +13,6 @@ Starchart makes it easy for the Seneca developer community to create and manager
   * [Technologies](#technologies)
   * [Development](#development)
     * [How to run](#how-to-run)
-      * [Webserver](#webserver)
-        * [API](#api)
-        * [Metrics](#metrics)
 <!-- TOC -->
 
 ## Introduction
@@ -62,18 +59,8 @@ To run the project locally, you need to have docker and docker-compose installed
 docker-compose up
 ```
 
-#### Webserver
-Once the containers are up and running, due to the `webserver=yes` line in the `/config/pdns-private.conf` file, primary DNS service will start a webserver at `http://localhost:8081/` (port 8081 is exposed through the docker-compose file).
-
-##### API
-The API for the DNS server is available at the `/api` [endpoint](http://127.0.0.1:8081/api), and the `X-API-Key` header must be set to the key defined in the `/config/pdns-private.conf` file.
-```bash
-curl -v -H 'X-API-Key: secret-api-key' http://127.0.0.1:8081/api/v1/servers/localhost
-```
-
-##### Metrics
-A `/metrics` [endpoint](http://127.0.0.1:8081/metrics) is also exposed by the webserver which can be used to monitor the health of the DNS server.
-
+This will start the services defined in the `docker-compose.yml` file. The services are:
+- `web-app`: The Remix web app, accessible at http://localhost:3000
 <hr>
 
 Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki)
