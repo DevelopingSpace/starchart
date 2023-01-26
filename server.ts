@@ -3,17 +3,8 @@ import express from "express";
 import compression from "compression";
 import morgan from "morgan";
 import { createRequestHandler } from "@remix-run/express";
-import prom from "express-prometheus-middleware";
 
 const app = express();
-const metricsApp = express();
-app.use(
-  prom({
-    metricsPath: "/metrics",
-    collectDefaultMetrics: true,
-    metricsApp,
-  })
-);
 
 app.use((req, res, next) => {
   // helpful headers:
@@ -97,12 +88,6 @@ app.listen(port, () => {
   // require the built app so we're ready when the first request comes in
   require(BUILD_DIR);
   console.log(`✅ app ready: http://localhost:${port}`);
-});
-
-const metricsPort = process.env.METRICS_PORT || 3001;
-
-metricsApp.listen(metricsPort, () => {
-  console.log(`✅ metrics ready: http://localhost:${metricsPort}/metrics`);
 });
 
 function purgeRequireCache() {
