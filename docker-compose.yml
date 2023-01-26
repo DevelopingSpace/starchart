@@ -1,5 +1,5 @@
+version: "3.7"
 services:
-
   # Internal Authoritative Server (primary)
   pdns-private:
     hostname: primary
@@ -41,3 +41,4 @@ networks:
       config:
         - subnet: 10.5.0.0/16
           gateway: 10.5.0.1
+
