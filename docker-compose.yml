@@ -1,44 +1,19 @@
 version: "3.7"
+
 services:
-  # Internal Authoritative Server (primary)
-  pdns-private:
-    hostname: primary
-    container_name: primary
-    image: powerdns/pdns-auth-47
-    volumes:
-      - ./config/pdns-private.conf:/etc/powerdns/pdns.conf
-    networks:
-      private_net:
-        ipv4_address: 10.5.0.20
 
-  # Public Facing Server (secondary)
-  pdns-public:
-    hostname: secondary
-    container_name: secondary
-    image: powerdns/pdns-auth-47
-    volumes:
-      - ./config/pdns-public.conf:/etc/powerdns/pdns.conf
-    networks:
-      private_net:
-        ipv4_address: 10.5.0.80
-    # Expose this one to the host
+  # Only for development
+  database:
+    image: mysql:8
+    container_name: database
     ports:
-      - "1053:53"
-      - "1053:53/udp"
-      - "8081:8081"
-
-  # Simple nginx web server
-  web-server:
-    container_name: web
-    image: nginx:stable-alpine
-    networks:
-      private_net:
-        ipv4_address: 10.5.0.100
-
-networks:
-  private_net:
-    ipam:
-      config:
-        - subnet: 10.5.0.0/16
-          gateway: 10.5.0.1
-
+      # Only for dev
+      - 3306:3306
+    volumes:
+      # Persist data do ./mysql-data. Remove if you want to clear the db.
+      - ./mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: starchart
+      MYSQL_USER: starchart
+      MYSQL_PASSWORD: starchart_password 
+      MYSQL_ROOT_PASSWORD: root_password
