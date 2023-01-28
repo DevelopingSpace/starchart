@@ -1,3 +1,6 @@
+app/routes/entry.server.tsx
+app/routes/root.tsx
+
 node_modules
 
 /build
@@ -9,3 +12,6 @@ node_modules
 /postgres-data
 
 /app/styles/tailwind.css
+
+
+
