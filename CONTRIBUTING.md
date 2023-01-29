@@ -28,3 +28,5 @@ $ npm run dev
 # Visually see the database in a GUI:
 $ npm run db:studio
 ```
+
+Note `npm run setup` creates a local `mysql-data/` directory, and is a once time setup. That directory can be safely deleted if the database needs to be reset, or if errors occur when starting the database.
