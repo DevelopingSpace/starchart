@@ -32,9 +32,8 @@ $ npm run db:studio
 ```
 
 > **Note**
-> `npm run setup` creates a local `mysql-data/` directory, and is a one time setup. That directory can be safely deleted if the database needs to be reset, or if errors occur when starting the database.
 
-<!-- Note `npm run setup` creates a local `mysql-data/` directory, and is a one time setup. That directory can be safely deleted if the database needs to be reset, or if errors occur when starting the database. -->
+> `npm run setup` creates a local `mysql-data/` directory, and is a one time setup. That directory can be safely deleted if the database needs to be reset, or if errors occur when starting the database.
 
 ## Pull requests
 
