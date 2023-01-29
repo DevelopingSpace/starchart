@@ -16,3 +16,15 @@ services:
       MYSQL_USER: starchart
       MYSQL_PASSWORD: starchart_password
       MYSQL_ROOT_PASSWORD: root_password
+
+  # Mock Route53 server for testing, see:
+  # http://docs.getmoto.org/en/latest/docs/server_mode.html
+  #
+  # AWS Endpoint URL: http://localhost:5053
+  # Dashboard URL: http://localhost:5053/moto-api
+  # Reset URL: POST to http://localhost:5053/moto-api/reset
+  dns:
+    container_name: route53_mock
+    image: motoserver/moto:4.1.1
+    ports:
+      - '5053:5000'

@@ -92,6 +92,9 @@ jobs:
         if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: Start Docker Services
+        run: docker-compose up -d
+
       - name: Run tests
         run: npm test
 
