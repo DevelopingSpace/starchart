@@ -37,7 +37,7 @@ Note `npm run setup` creates a local `mysql-data/` directory, and is a one time 
 
 - To avoid duplicate work, create a draft pull request.
 - Avoid cosmetic changes to unrelated files in the same commit.
-- Use a feature branch instead of the master branch.
+- Use a [feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows) instead of the master branch.
 
 ### Stages: Draft and Ready for review
 
