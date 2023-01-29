@@ -5,6 +5,7 @@
 - [Development](#development)
   - [Dev environment set up](#dev-environment-set-up)
 - [Pull requests](#pull-requests)
+- [Merging to master](#merging-to-master)
   - [Stages: Draft and Ready for review](#stages-draft-and-ready-for-review)
 
 <!-- vim-markdown-toc -->
@@ -40,6 +41,13 @@ $ npm run db:studio
 - To avoid duplicate work, create a draft pull request.
 - Avoid cosmetic changes to unrelated files in the same commit.
 - Use a [feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows) instead of the master branch.
+
+## Merging to master
+
+For maintainers: when a PR is ready to merge to master,
+
+- prefer Squash Merge for "single-commit PRs" (when the PR has only one meaningful commit).
+- prefer Merge for "multi-commit PRs" (when the PR has multiple meaningful commits).
 
 ### Stages: Draft and Ready for review
 
