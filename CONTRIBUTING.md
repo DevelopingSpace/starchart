@@ -22,6 +22,9 @@ $ cp .env.example .env
 $ docker compose up -d
 # Wait for the db to finish starting, it takes a few seconds before it's ready...
 
+# Install all dependencies
+$ npm install
+
 # Setup the database
 $ npm run setup
 
