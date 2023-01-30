@@ -27,4 +27,6 @@ jobs:
         uses: creyD/prettier_action@v4.2
         with:
           prettier_options: --check **/*.{ts,md}
-      - run: npm run lint
+      - run: |
+          npm -g i eslint-cli
+          npm run lint
