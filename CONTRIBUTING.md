@@ -25,6 +25,9 @@ $ docker compose up -d
 # Setup the database
 $ npm run setup
 
+# Generate a build folder the first time running the app
+$ npm run build
+
 # Start the app, which will be running on localhost:3000
 $ npm run dev
 
@@ -33,6 +36,8 @@ $ npm run db:studio
 ```
 
 > **Note** `npm run setup` creates a local `mysql-data/` directory, and is a one time setup. That directory can be safely deleted if the database needs to be reset, or if errors occur when starting the database.
+
+> **Note** `npm run build` needs to be executed the first time running the project. As it generates a `build/server.js` script that `npm run dev` depends on. Subsequent times, only `npm run dev` is needed to run the app in development mode.
 
 ## Pull requests
 
