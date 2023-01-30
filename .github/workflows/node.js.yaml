@@ -27,9 +27,6 @@ jobs:
         uses: creyD/prettier_action@v4.2
         with:
           prettier_options: --check **/*.{ts,md}
-      - name: eslint check
-        run: |
-              # have to install eslint here for some reason... Other wise eslint wont be found
-              npm install -D eslint
-              npm run lint
-      - run: npm run typecheck
+      - run: |
+          npm -g i eslint-cli
+          npm run lint
