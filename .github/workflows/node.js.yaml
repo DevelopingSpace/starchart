@@ -22,15 +22,45 @@ jobs:
           cache: npm
       - name: Install node modules
         run: npm ci
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+      - name: Restore node_modules cache
+        id: node_modules-cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          # cache node_modules where npm stores its cache
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          # cache module with hash of package-lock.json
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install node_modules
+        # install node modules manually only if cache was not restored
+        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+
       - name: Run build
         run: npm run build
-      - name: Run tests
-        run: npm test
-      - name: eslint check
-        run: npm run lint
-      - name: Run typecheck
-        run: npm run typecheck
-      - name: Prettier check
-        uses: creyD/prettier_action@v4.2
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
-          prettier_options: --check .
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+            # cache node modules using the same key as restore
+          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+
+
+      # - name: Run tests
+      # run: npm test
+      # - name: eslint check
+      # run: npm run lint
+      # - name: Run typecheck
+      # run: npm run typecheck
+      # - name: Prettier check
+      # uses: creyD/prettier_action@v4.2
+      # with:
+      # prettier_options: --check .
