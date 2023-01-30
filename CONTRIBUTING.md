@@ -1,8 +1,9 @@
-# Developer guidelines
+# Contributing guidelines
 
 <!-- vim-markdown-toc GFM -->
 
 - [Development](#development)
+  - [System prerequisites](#system-prerequisites)
   - [Dev environment set up](#dev-environment-set-up)
 - [Pull requests](#pull-requests)
 - [Merging to main](#merging-to-main)
@@ -11,6 +12,18 @@
 <!-- vim-markdown-toc -->
 
 ## Development
+
+### System prerequisites
+
+This project requires:
+
+- [docker](https://docs.docker.com/get-docker/)
+- [nodejs LTS (18)](https://nodejs.org/en/download/)
+- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+
+Optional:
+
+- [Use a node version manager](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-version-manager-to-install-nodejs-and-npm)
 
 ### Dev environment set up
 
