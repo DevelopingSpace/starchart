@@ -20,6 +20,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
+      - name: Install node modules
+        run: npm ci
 
       - name: Get npm cache directory
         id: npm-cache-dir
@@ -30,8 +32,8 @@ jobs:
         id: node_modules-cache-restore
         uses: actions/cache/restore@v3
         with:
-          # cache node_modules where npm stores its cache
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          # path to node_modules to cache
+          path: ./node_modules
           # cache module with hash of package-lock.json
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
@@ -47,8 +49,8 @@ jobs:
         uses: actions/cache@v3
         id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-            # cache node modules using the same key as restore
+          path: ./node_modules
+            # cache node modules using the same key as restore.
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
 
