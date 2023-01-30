@@ -29,6 +29,7 @@ jobs:
           prettier_options: --check **/*.{ts,md}
       - name: eslint check
         run: |
-              # npm -g i eslint-cli
+              # have to install eslint here for some reason... Other wise eslint wont be found
               npm install -D eslint
               npm run lint
+      - run: npm run typecheck
