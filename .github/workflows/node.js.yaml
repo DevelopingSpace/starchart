@@ -20,8 +20,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
-      - name: Install node modules
-        run: npm ci
 
       - name: Get npm cache directory
         id: npm-cache-dir
