@@ -29,6 +29,6 @@ jobs:
           prettier_options: --check **/*.{ts,md}
       - name: eslint check
         run: |
-              npm -g i eslint-cli
+              # npm -g i eslint-cli
               npm install -D eslint
               npm run lint
