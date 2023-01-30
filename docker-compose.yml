@@ -15,5 +15,23 @@ services:
     environment:
       MYSQL_DATABASE: starchart
       MYSQL_USER: starchart
-      MYSQL_PASSWORD: starchart_password 
+      MYSQL_PASSWORD: starchart_password
       MYSQL_ROOT_PASSWORD: root_password
+
+  webhook:
+    # a docker in docker container that installs go, installs webhook, and runs it
+    image: docker:dind
+    container_name: webhook
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts/hooks:/hooks  # the /hooks directory inside the container is where the hook.yml and scripts will be mounted
+    command: ["sh",
+              "-c",
+              "apk add --no-cache go && 
+              go install github.com/adnanh/webhook@latest && 
+              cd /hooks && 
+              ~/go/bin/webhook -hooks /hooks/hooks.yml -verbose"]
+    ports:
+      - "8000:9000" # the webhook container runs on port 9000, but we expose it on port 8000
+    environment:
+      - DEFAULT_AUTH_TOKEN=IAmASecretToken
