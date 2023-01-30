@@ -49,8 +49,7 @@ $ npm run db:studio
 
 For maintainers: when a PR is ready to merge to master,
 
-- prefer Squash Merge for "single-commit PRs" (when the PR has only one meaningful commit).
-- prefer Merge for "multi-commit PRs" (when the PR has multiple meaningful commits).
+- always Squash and Merge all PRs. This is so we do not loose the commit history in the PR it self, so if we ever need to debug a feature PR, we have a commit history to reference. This also servers to keep history on main clean.
 
 ### Stages: Draft and Ready for review
 
