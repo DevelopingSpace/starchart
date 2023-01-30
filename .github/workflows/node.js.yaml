@@ -23,10 +23,10 @@ jobs:
       # - name: Install node modules
         # run: npm ci
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+      # - name: Get npm cache directory
+        # id: npm-cache-dir
+        # shell: bash
+        # run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
       - name: Restore node_modules cache
         id: node_modules-cache-restore
