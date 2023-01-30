@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
       - uses: actions/checkout@v3
@@ -19,17 +19,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
+          cache: npm
+      - name: Install node modules
+        run: npm ci
+      - name: npm build
+        run: npm run build
+      - name: npm test
+        run: npm test
       - name: Prettier check
         uses: creyD/prettier_action@v4.2
         with:
-          prettier_options: --check **/*.{ts,md}
+          prettier_options: --check .
       - name: eslint check
         run: |
-              # have to install eslint here for some reason... Other wise eslint wont be found
-              npm install -D eslint
-              npm run lint
+          # have to install eslint here for some reason... Other wise eslint wont be found
+          npm install -D eslint
+          npm run lint
       - run: npm run typecheck
