@@ -29,13 +29,6 @@
     "typecheck": "tsc && tsc -p cypress",
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
   },
-  "prettier": {},
-  "eslintIgnore": [
-    "/node_modules",
-    "/build",
-    "/public/build",
-    "/mysql-data"
-  ],
   "dependencies": {
     "@prisma/client": "^4.9.0",
     "@remix-run/express": "^1.11.1",
