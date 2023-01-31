@@ -1,5 +1,5 @@
 #!/bin/sh
-pwd
+
 main() {
     echo "Deploying..."
 
