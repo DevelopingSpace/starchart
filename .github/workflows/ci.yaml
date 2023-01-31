@@ -92,7 +92,7 @@ jobs:
             # cache node modules using the same key as restore.
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
-  Eslint:
+  ESlint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
