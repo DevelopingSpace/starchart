@@ -77,7 +77,7 @@
     "cypress": "^10.11.0",
     "dotenv": "^16.0.3",
     "esbuild": "^0.17.4",
-    "eslint": "^8.32.0",
+    "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-cypress": "^2.12.1",
     "happy-dom": "^8.1.5",

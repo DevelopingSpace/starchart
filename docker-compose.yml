@@ -1,7 +1,6 @@
 version: "3.7"
 
 services:
-
   # Only for development
   database:
     image: mysql:8
@@ -15,5 +14,5 @@ services:
     environment:
       MYSQL_DATABASE: starchart
       MYSQL_USER: starchart
-      MYSQL_PASSWORD: starchart_password 
+      MYSQL_PASSWORD: starchart_password
       MYSQL_ROOT_PASSWORD: root_password
