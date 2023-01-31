@@ -1,34 +1,38 @@
 #!/bin/sh
-# This script checks if the $HOOK_token environment variable is equal to the $DEFAULT_AUTH_TOKEN environment variable.
+# This script is used to authenticate the webhook requests.
+# - The provided token is received as the first parameter. Otherwise, the envVar $HOOK_TOKEN is used.
+# - The expected token is received as the second parameter. Otherwise, the envVar $DEFAULT_AUTH_TOKEN is used.
+#   If the $DEFAULT_AUTH_TOKEN envVar is not set, the docker secret /run/secrets/DEFAULT_AUTH_TOKEN is used.
 
-# The 2 tokens being compared can be overridden by passing in the provided key and expected key as arguments.
-# Example: ./.authenticate.sh <provided_key> <expected_key>
-# If no arguments are passed in, the script will use the $HOOK_token and $DEFAULT_AUTH_TOKEN environment variables.
-
-providedKey=$1
-if [ -z "${providedKey}" ]; then
-  providedKey=$HOOK_token
+provided_token=$1
+if [ -z "${provided_token}" ]; then # If no override is provided
+  provided_token=$HOOK_TOKEN  # Use the $HOOK_TOKEN envVar as the provided_token
 fi
 
-expectedKey=$2
-if [ -z "${expectedKey}" ]; then
-  expectedKey=$DEFAULT_AUTH_TOKEN
+expected_token=$2
+if [ -z "${expected_token}" ]; then # If no override is provided
+  expected_token=$DEFAULT_AUTH_TOKEN  # Use the $DEFAULT_AUTH_TOKEN envVar as the expected_token
+
+  if [ -z "${expected_token}" ]; then
+    expected_token=$(cat /run/secrets/DEFAULT_AUTH_TOKEN) # If the envVar is not set, use the docker secret as the expected_token
+  fi
 fi
 
 
 main() {
-    if [ -z "${providedKey}" ]; then
-      echo "AUTHENTICATION FAILED: The webhook token is not set. Provide the webhook token as the key parameter in the webhook URL."
+    if [ -z "${provided_token}" ]; then
+      echo "Authentication Error ⚠: This webhook expects a token for authentication."
       exit 1
     fi
 
-    if [ "$providedKey" = "$expectedKey" ]; then
-      echo "Authentication successful."
+    if [ "$provided_token" = "$expected_token" ]; then
+      echo "Authentication Successful ✅"
       exit 0
     fi
 
-    echo "AUTHENTICATION FAILED: The webhook token is invalid. Provide the correct webhook token as the key parameter in the webhook URL."
+    echo "Authentication Failed ❌"
     exit 1
 }
 
 main
+
