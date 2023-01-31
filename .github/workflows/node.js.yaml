@@ -38,7 +38,6 @@ jobs:
 
       - name: Cache node_modules
         uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
           path:
             ./node_modules
@@ -87,7 +86,6 @@ jobs:
 
       - name: Cache node_modules
         uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
           path:
             ./node_modules
@@ -125,7 +123,6 @@ jobs:
 
       - name: Cache node_modules
         uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
           path:
             ./node_modules
@@ -163,7 +160,6 @@ jobs:
 
       - name: Cache node_modules
         uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
           path:
             ./node_modules
