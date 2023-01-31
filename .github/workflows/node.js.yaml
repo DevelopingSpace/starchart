@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
+          cache: "npm"
 
       - name: Restore node_modules cache
         id: node_modules-cache-restore
@@ -40,7 +40,8 @@ jobs:
         uses: actions/cache@v3
         id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
-          path: ./node_modules
+          path:
+            ./node_modules
             # cache node modules using the same key as restore.
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
@@ -54,7 +55,6 @@ jobs:
         uses: creyD/prettier_action@v4.2
         with:
           prettier_options: --check .
-
 
       # - name: Run tests
       # run: npm test
