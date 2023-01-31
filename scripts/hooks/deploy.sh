@@ -18,12 +18,17 @@ main() {
       exit 1
     fi
 
-    echo "Updating service ${HOOK_service}..."
+    echo "Updating service ${HOOK_service} to image ${HOOK_image}:${HOOK_tag}..."
 
     cmd="docker service update --image ${HOOK_image}:${HOOK_tag} ${HOOK_service}"
     echo "Running command: ${cmd}"
 
-    eval $cmd
+    if $cmd; then # If the command is successful
+      echo "Service updated."
+    else  # If the command fails
+      echo "Service update failed."
+      exit 1
+    fi
 
     echo "Deployment successful."
 }
