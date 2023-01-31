@@ -26,16 +26,16 @@ Starchart is not meant to be, or replace commercial registrars; nor is it meant 
 - Each authorized user can create subdomains of the form: `{project|host}.{username}.example.com`. For example, the Seneca user `klee` could create: `project123.klee.example.com` or `laptop.klee.example.com`. The `*.klee.example.com` portion of the subdomain is fixed for each user (i.e., the user `klee` can't create subdoimains other than `*.klee.example.com`).
 - An SSL certificate is also generated for `*.{username}.example.com` using a [DNS Challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge), allowing any subdomains created for this username to be accessed securely.
 - Each domain is made available for a time-limited period (for example: "1 term" or "1 year").
-- An administration layer to handle abuse or limit users when necessary (for example, being able to remove or blacklist an entire user or subdomain)
+- An administration layer to handle abuse or limit users when necessary (for example, being able to remove or blacklist an entire user or subdomain).
 
 ## Technologies and components
 
-Here is the planned architecture and [[technologies used](https://github.com/Seneca-CDOT/starchart/wiki/Tech-Stack)]
+Here is the planned architecture and [[technologies used](https://github.com/Seneca-CDOT/starchart/wiki/Tech-Stack)]:
 ![components](img/Starchart%20architecture.drawio.png)
 
 ## Development
 
-Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki)
+Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
 
 If you would like to contribute, please see [how to here](CONTRIBUTING.md).
 
