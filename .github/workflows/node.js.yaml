@@ -94,8 +94,43 @@ jobs:
             # cache node modules using the same key as restore.
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
-      # - name: eslint check
-      # run: npm run lint
+  Eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - name: Restore node_modules cache
+        id: node_modules-cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          # path to node_modules to cache
+          path: ./node_modules
+          # cache module with hash of package-lock.json
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install node_modules
+        # install node modules manually only if cache was not restored
+        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: eslint check
+        run: npm run lint
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path:
+            ./node_modules
+            # cache node modules using the same key as restore.
+          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+
       # - name: Run typecheck
       # run: npm run typecheck
-      # - name: Prettier check
