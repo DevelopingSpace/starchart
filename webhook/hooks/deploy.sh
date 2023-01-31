@@ -20,8 +20,7 @@ main() {
 
     echo "Updating service ${HOOK_service} to image ${HOOK_image}:${HOOK_tag}..."
 
-    # The printf '%q' escapes special characters like spaces, quotes, slashes, etc. Example: "my 'image' name" -> "my\ \'image\'\ name"
-    cmd="docker service update --image $(printf '%q' "${HOOK_image}:${HOOK_tag}") $(printf '%q' "${HOOK_service}")"
+    cmd="docker service update --image ${HOOK_image}:${HOOK_tag} ${HOOK_service}"
 
     echo "Running command: ${cmd}"
 
