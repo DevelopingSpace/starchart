@@ -22,7 +22,7 @@ services:
     build: ./webhook  # the directory with Dockerfile
     container_name: webhook
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # mount the docker socket so we can control docker from inside the container
+      - /var/run/docker.sock:/var/run/docker.sock:ro # mount the docker socket so we can control docker from inside the container
       - ./webhook/hooks:/hooks       # the .sh scripts used by the hooks.yaml file are stored here
     ports:
       - "8000:8000" # redirect host port 8000 to container port 8000
