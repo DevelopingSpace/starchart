@@ -9,10 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # strategy:
-      # matrix:
-        # node-version: [18.x]
-        # # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,11 +18,6 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-
-      # - name: Get npm cache directory
-        # id: npm-cache-dir
-        # shell: bash
-        # run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
       - name: Restore node_modules cache
         id: node_modules-cache-restore
@@ -53,6 +44,17 @@ jobs:
             # cache node modules using the same key as restore.
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check prettier
+        uses: creyD/prettier_action@v4.2
+        with:
+          prettier_options: --check .
+
 
       # - name: Run tests
       # run: npm test
@@ -61,6 +63,3 @@ jobs:
       # - name: Run typecheck
       # run: npm run typecheck
       # - name: Prettier check
-      # uses: creyD/prettier_action@v4.2
-      # with:
-      # prettier_options: --check .
