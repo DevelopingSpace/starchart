@@ -1,6 +1,7 @@
 - id: deploy
   execute-command: ./deploy.sh
   include-command-output-in-response: true
+  include-command-output-in-response-on-error: true
   pass-environment-to-command:
       - source: payload
         name: tag
@@ -15,6 +16,7 @@
 - id: heartbeat
   execute-command: ./heartbeat.sh
   include-command-output-in-response: true
+  include-command-output-in-response-on-error: true
   pass-environment-to-command:
       - source: payload
         name: token
