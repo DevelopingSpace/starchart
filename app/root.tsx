@@ -24,11 +24,7 @@ export async function loader({ request }: LoaderArgs) {
   });
 }
 
-function Document({
-  children
-}: {
-  children: React.ReactNode;
-}) {
+function Document({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>

@@ -8,20 +8,20 @@ import createEmotionCache, { defaultCache } from "./createEmotionCache";
 
 interface ClientCacheProviderProps {
   children: React.ReactNode;
-} 
+}
 
-function ClientCacheProvider({children} : ClientCacheProviderProps) {
+function ClientCacheProvider({ children }: ClientCacheProviderProps) {
   const [cache, setCache] = useState(defaultCache);
 
   function reset() {
-    setCache(createEmotionCache())
+    setCache(createEmotionCache());
   }
 
   return (
     <ClientStyleContext.Provider value={{ reset }}>
       <CacheProvider value={cache}>{children}</CacheProvider>
     </ClientStyleContext.Provider>
-  )
+  );
 }
 
 const hydrate = () => {
