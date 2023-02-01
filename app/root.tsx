@@ -6,40 +6,40 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@re
 import { getUser } from './session.server';
 
 export const meta: MetaFunction = () => ({
-   charset: 'utf-8',
-   title: 'Starchart',
-   viewport: 'width=device-width,initial-scale=1',
+  charset: 'utf-8',
+  title: 'Starchart',
+  viewport: 'width=device-width,initial-scale=1',
 });
 
 export async function loader({ request }: LoaderArgs) {
-   return json({
-      user: await getUser(request),
-   });
+  return json({
+    user: await getUser(request),
+  });
 }
 
 function Document({ children }: { children: React.ReactNode }) {
-   return (
-      <html lang="en">
-         <head>
-            <Meta />
-            <Links />
-         </head>
-         <body>
-            {children}
-            <ScrollRestoration />
-            <Scripts />
-            <LiveReload />
-         </body>
-      </html>
-   );
+  return (
+    <html lang="en">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
 }
 
 export default function App() {
-   return (
-      <Document>
-         <ChakraProvider>
-            <Outlet />
-         </ChakraProvider>
-      </Document>
-   );
+  return (
+    <Document>
+      <ChakraProvider>
+        <Outlet />
+      </ChakraProvider>
+    </Document>
+  );
 }

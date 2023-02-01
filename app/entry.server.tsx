@@ -11,51 +11,51 @@ import createEmotionCache from './createEmotionCache';
 const ABORT_DELAY = 5000;
 
 export default function handleRequest(
-   request: Request,
-   responseStatusCode: number,
-   responseHeaders: Headers,
-   remixContext: EntryContext
+  request: Request,
+  responseStatusCode: number,
+  responseHeaders: Headers,
+  remixContext: EntryContext
 ) {
-   const callbackName = isbot(request.headers.get('user-agent')) ? 'onAllReady' : 'onShellReady';
+  const callbackName = isbot(request.headers.get('user-agent')) ? 'onAllReady' : 'onShellReady';
 
-   return new Promise((resolve, reject) => {
-      let didError = false;
-      const emotionCache = createEmotionCache();
+  return new Promise((resolve, reject) => {
+    let didError = false;
+    const emotionCache = createEmotionCache();
 
-      const { pipe, abort } = renderToPipeableStream(
-         <CacheProvider value={emotionCache}>
-            <RemixServer context={remixContext} url={request.url} />
-         </CacheProvider>,
-         {
-            [callbackName]: () => {
-               const body = new PassThrough();
-               const emotionServer = createEmotionServer(emotionCache);
+    const { pipe, abort } = renderToPipeableStream(
+      <CacheProvider value={emotionCache}>
+        <RemixServer context={remixContext} url={request.url} />
+      </CacheProvider>,
+      {
+        [callbackName]: () => {
+          const body = new PassThrough();
+          const emotionServer = createEmotionServer(emotionCache);
 
-               const bodyWithStyles = emotionServer.renderStylesToNodeStream();
-               body.pipe(bodyWithStyles);
+          const bodyWithStyles = emotionServer.renderStylesToNodeStream();
+          body.pipe(bodyWithStyles);
 
-               responseHeaders.set('Content-Type', 'text/html');
+          responseHeaders.set('Content-Type', 'text/html');
 
-               resolve(
-                  new Response(body, {
-                     headers: responseHeaders,
-                     status: didError ? 500 : responseStatusCode,
-                  })
-               );
+          resolve(
+            new Response(body, {
+              headers: responseHeaders,
+              status: didError ? 500 : responseStatusCode,
+            })
+          );
 
-               pipe(body);
-            },
-            onShellError: (err: unknown) => {
-               reject(err);
-            },
-            onError: (error: unknown) => {
-               didError = true;
+          pipe(body);
+        },
+        onShellError: (err: unknown) => {
+          reject(err);
+        },
+        onError: (error: unknown) => {
+          didError = true;
 
-               console.error(error);
-            },
-         }
-      );
+          console.error(error);
+        },
+      }
+    );
 
-      setTimeout(abort, ABORT_DELAY);
-   });
+    setTimeout(abort, ABORT_DELAY);
+  });
 }
