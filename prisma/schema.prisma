@@ -8,10 +8,63 @@ generator client {
 }
 
 model User {
-  username String @id
-  name     String
-  email    String @unique
+  username  String @id
+  firstName String
+  lastName  String
+  email     String @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  subdomians   Record[]
+  certificates Certificate?
+}
+
+model Record {
+  id          Int          @id @default(autoincrement())
+  username    String
+  name        String
+  type        RecordType
+  value       String
+  description String?
+  course      String?
+  ports       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  expiresAt   DateTime
+  status      RecordStatus
+  user        User         @relation(fields: [username], references: [username])
+}
+
+model Certificate {
+  id          Int         @id @default(autoincrement())
+  username    String      @unique
+  subject     String
+  certificate String
+  orderUrl    String      @unique @db.VarChar(255)
+  privkey     String
+  validFrom   DateTime    @default(now())
+  validTo     DateTime
+  user        User        @relation(fields: [username], references: [username])
+  challange   Challenge[]
+}
+
+model Challenge {
+  id            Int         @id @default(autoincrement())
+  domain        String      @db.VarChar(255)
+  challengeKey  String      @db.VarChar(255)
+  certificateId Int
+  certificate   Certificate @relation(fields: [certificateId], references: [id])
+}
+
+enum RecordType {
+  A
+  AAAA
+  CNAME
+  TXT
+}
+
+enum RecordStatus {
+  active
+  error
+  pending
 }
