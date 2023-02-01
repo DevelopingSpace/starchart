@@ -32,7 +32,7 @@ Optional:
 $ cp .env.example .env
 
 # Start MySQL in docker
-$ docker compose up -d
+$ docker-compose up -d
 # Wait for the db to finish starting, it takes a few seconds before it's ready...
 
 # Install all dependencies
