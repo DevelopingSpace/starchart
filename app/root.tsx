@@ -1,21 +1,14 @@
-import { ChakraProvider } from "@chakra-ui/react";
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
+import { ChakraProvider } from '@chakra-ui/react';
+import type { LoaderArgs, MetaFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 
-import { getUser } from "./session.server";
+import { getUser } from './session.server';
 
 export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "Starchart",
-  viewport: "width=device-width,initial-scale=1",
+  charset: 'utf-8',
+  title: 'Starchart',
+  viewport: 'width=device-width,initial-scale=1',
 });
 
 export async function loader({ request }: LoaderArgs) {
