@@ -1,8 +1,14 @@
+import { Heading, Text } from "@chakra-ui/react";
+
 export default function Index() {
   return (
     <main>
-      <h1>Starchart</h1>
-      <p>Start making your own custom domains and certificates today!</p>
+      <Heading as="h1" size="3xl" noOfLines={1}>
+        Starchart
+      </Heading>
+      <Text fontSize="xl">
+        Start making your own custom domains and certificates today!
+      </Text>
     </main>
   );
 }
