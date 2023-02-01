@@ -4,7 +4,7 @@ import invariant from "tiny-invariant";
 let prisma: PrismaClient;
 
 declare global {
-  var __db__: PrismaClient;
+   var __db__: PrismaClient;
 }
 
 // this is needed because in development we don't want to restart
@@ -12,36 +12,36 @@ declare global {
 // create a new connection to the DB with every change either.
 // in production we'll have a single connection to the DB.
 if (process.env.NODE_ENV === "production") {
-  prisma = getClient();
+   prisma = getClient();
 } else {
-  if (!global.__db__) {
-    global.__db__ = getClient();
-  }
-  prisma = global.__db__;
+   if (!global.__db__) {
+      global.__db__ = getClient();
+   }
+   prisma = global.__db__;
 }
 
 function getClient() {
-  const { DATABASE_URL } = process.env;
-  invariant(typeof DATABASE_URL === "string", "DATABASE_URL env var not set");
+   const { DATABASE_URL } = process.env;
+   invariant(typeof DATABASE_URL === "string", "DATABASE_URL env var not set");
 
-  const databaseUrl = new URL(DATABASE_URL);
+   const databaseUrl = new URL(DATABASE_URL);
 
-  console.log(`🔌 setting up prisma client to ${databaseUrl.host}`);
-  // NOTE: during development if you change anything in this function, remember
-  // that this only runs once per server restart and won't automatically be
-  // re-run per request like everything else is. So if you need to change
-  // something in this file, you'll need to manually restart the server.
-  const client = new PrismaClient({
-    datasources: {
-      db: {
-        url: databaseUrl.toString(),
+   console.log(`🔌 setting up prisma client to ${databaseUrl.host}`);
+   // NOTE: during development if you change anything in this function, remember
+   // that this only runs once per server restart and won't automatically be
+   // re-run per request like everything else is. So if you need to change
+   // something in this file, you'll need to manually restart the server.
+   const client = new PrismaClient({
+      datasources: {
+         db: {
+            url: databaseUrl.toString(),
+         },
       },
-    },
-  });
-  // connect eagerly
-  client.$connect();
+   });
+   // connect eagerly
+   client.$connect();
 
-  return client;
+   return client;
 }
 
 export { prisma };

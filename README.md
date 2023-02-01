@@ -20,13 +20,13 @@ Starchart is not meant to be, or replace commercial registrars; nor is it meant 
 
 ## 1.0 Features
 
-- An authoritative DNS server manages a single domain (e.g., `example.com`)
-- A Web app and API server allow users to create subdomains for their own use. This includes being able to specify one or more [A Record](https://www.cloudflare.com/learning/dns/dns-records/dns-a-record/) (e.g., provide a domain name for an IP address) and/or [CNAME](https://www.cloudflare.com/learning/dns/dns-records/dns-cname-record/) (e.g., to provide an alias for an existing domain).
-- Seneca faculty and students can use their existing Seneca SSO accounts to authorize and then self-manage unique subdomains, based on their SSO username
-- Each authorized user can create subdomains of the form: `{project|host}.{username}.example.com`. For example, the Seneca user `klee` could create: `project123.klee.example.com` or `laptop.klee.example.com`. The `*.klee.example.com` portion of the subdomain is fixed for each user (i.e., the user `klee` can't create subdoimains other than `*.klee.example.com`).
-- An SSL certificate is also generated for `*.{username}.example.com` using a [DNS Challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge), allowing any subdomains created for this username to be accessed securely.
-- Each domain is made available for a time-limited period (for example: "1 term" or "1 year").
-- An administration layer to handle abuse or limit users when necessary (for example, being able to remove or blacklist an entire user or subdomain)
+-  An authoritative DNS server manages a single domain (e.g., `example.com`)
+-  A Web app and API server allow users to create subdomains for their own use. This includes being able to specify one or more [A Record](https://www.cloudflare.com/learning/dns/dns-records/dns-a-record/) (e.g., provide a domain name for an IP address) and/or [CNAME](https://www.cloudflare.com/learning/dns/dns-records/dns-cname-record/) (e.g., to provide an alias for an existing domain).
+-  Seneca faculty and students can use their existing Seneca SSO accounts to authorize and then self-manage unique subdomains, based on their SSO username
+-  Each authorized user can create subdomains of the form: `{project|host}.{username}.example.com`. For example, the Seneca user `klee` could create: `project123.klee.example.com` or `laptop.klee.example.com`. The `*.klee.example.com` portion of the subdomain is fixed for each user (i.e., the user `klee` can't create subdoimains other than `*.klee.example.com`).
+-  An SSL certificate is also generated for `*.{username}.example.com` using a [DNS Challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge), allowing any subdomains created for this username to be accessed securely.
+-  Each domain is made available for a time-limited period (for example: "1 term" or "1 year").
+-  An administration layer to handle abuse or limit users when necessary (for example, being able to remove or blacklist an entire user or subdomain)
 
 ## Technologies
 
