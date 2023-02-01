@@ -4,6 +4,9 @@ import { Response } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import isbot from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
+import createEmotionServer from "@emotion/server/create-instance";
+import { CacheProvider } from "@emotion/react";
+import createEmotionCache from "./createEmotionCache";
 
 const ABORT_DELAY = 5000;
 
@@ -19,12 +22,19 @@ export default function handleRequest(
 
   return new Promise((resolve, reject) => {
     let didError = false;
+    const emotionCache = createEmotionCache();
 
     const { pipe, abort } = renderToPipeableStream(
-      <RemixServer context={remixContext} url={request.url} />,
+      <CacheProvider value={emotionCache}>
+        <RemixServer context={remixContext} url={request.url} />
+      </CacheProvider>,
       {
         [callbackName]: () => {
           const body = new PassThrough();
+          const emotionServer = createEmotionServer(emotionCache);
+
+          const bodyWithStyles = emotionServer.renderStylesToNodeStream();
+          body.pipe(bodyWithStyles);
 
           responseHeaders.set("Content-Type", "text/html");
 
