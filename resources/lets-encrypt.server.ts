@@ -1,16 +1,17 @@
 import acme from "acme-client";
+import type { Client as AcmeClient } from "acme-client";
 import { secrets } from "docker-secret";
 
 const { LETSENCRYPT_ACCOUNT_PRIVATE_KEY_PEM } = secrets ?? {};
 
 class LetsEncrypt {
-  #client;
+  #client?: AcmeClient;
 
-  #directoryUrl;
+  #directoryUrl?: string;
 
-  #accountKey;
+  #accountKey?: string;
 
-  constructor() {
+  initialize = async () => {
     if (process.env.NODE_ENV === "production") {
       if (!LETSENCRYPT_ACCOUNT_PRIVATE_KEY_PEM)
         throw new Error(
@@ -22,7 +23,7 @@ class LetsEncrypt {
     } else {
       // For testing and local development, let's use an ad-hoc generated key
 
-      this.#accountKey = acme.crypto.createPrivateKey();
+      this.#accountKey = (await acme.crypto.createPrivateKey()).toString();
       this.#directoryUrl = acme.directory.letsencrypt.production;
     }
 
@@ -30,7 +31,7 @@ class LetsEncrypt {
       directoryUrl: this.#directoryUrl,
       accountKey: this.#accountKey,
     });
-  }
+  };
 
   // TODO add features, to be implemented in later tickets
 }
