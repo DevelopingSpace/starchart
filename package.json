@@ -30,6 +30,10 @@
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.4.9",
+    "@emotion/react": "^11.10.5",
+    "@emotion/server": "^11.10.0",
+    "@emotion/styled": "^11.10.5",
     "@prisma/client": "^4.9.0",
     "@remix-run/express": "^1.11.1",
     "@remix-run/node": "^1.11.1",
@@ -39,6 +43,7 @@
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "express": "^4.18.2",
+    "framer-motion": "^6.5.1",
     "isbot": "^3.6.5",
     "morgan": "^1.10.0",
     "react": "^18.2.0",
@@ -70,7 +75,7 @@
     "cypress": "^10.11.0",
     "dotenv": "^16.0.3",
     "esbuild": "^0.17.4",
-    "eslint": "^8.32.0",
+    "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-cypress": "^2.12.1",
     "happy-dom": "^8.1.5",

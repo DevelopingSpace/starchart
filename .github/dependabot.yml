@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      timezone: "America/Toronto"
+
+    labels:
+      - "dependencies"
+
+    reviewers:
+      - "Seneca-CDOT/osd700-dps911-winter-2023"
+
+    open-pull-requests-limit: 5
+    # disable auto rebasing
+    rebase-strategy: "disabled"
