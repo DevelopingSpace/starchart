@@ -2,12 +2,12 @@
 
 <!-- vim-markdown-toc GFM -->
 
--  [Development](#development)
-   -  [System prerequisites](#system-prerequisites)
-   -  [Dev environment set up](#dev-environment-set-up)
--  [Pull requests](#pull-requests)
--  [Merging to main](#merging-to-main)
-   -  [Stages: Draft and Ready for review](#stages-draft-and-ready-for-review)
+- [Development](#development)
+  - [System prerequisites](#system-prerequisites)
+  - [Dev environment set up](#dev-environment-set-up)
+- [Pull requests](#pull-requests)
+- [Merging to main](#merging-to-main)
+  - [Stages: Draft and Ready for review](#stages-draft-and-ready-for-review)
 
 <!-- vim-markdown-toc -->
 
@@ -17,13 +17,13 @@
 
 This project requires:
 
--  [docker](https://docs.docker.com/get-docker/)
--  [nodejs LTS (18)](https://nodejs.org/en/download/)
--  [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [docker](https://docs.docker.com/get-docker/)
+- [nodejs LTS (18)](https://nodejs.org/en/download/)
+- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 Optional:
 
--  [Use a node version manager](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-version-manager-to-install-nodejs-and-npm)
+- [Use a node version manager](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-version-manager-to-install-nodejs-and-npm)
 
 ### Dev environment set up
 
@@ -57,15 +57,15 @@ $ npm run db:studio
 
 ## Pull requests
 
--  To avoid duplicate work, create a draft pull request.
--  Avoid cosmetic changes to unrelated files in the same commit.
--  Use a [feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows) instead of the main branch.
+- To avoid duplicate work, create a draft pull request.
+- Avoid cosmetic changes to unrelated files in the same commit.
+- Use a [feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows) instead of the main branch.
 
 ## Merging to main
 
 For maintainers: when a PR is ready to merge to main,
 
--  always Squash and Merge all PRs. This is so we do not loose the commit history in the PR it self. So if we ever need to debug a feature PR, we have a commit history to reference. This also servers to keep history on main clean.
+- always Squash and Merge all PRs. This is so we do not loose the commit history in the PR it self. So if we ever need to debug a feature PR, we have a commit history to reference. This also servers to keep history on main clean.
 
 ![squash_and_merge](img/squash_and_merge.png)
 
@@ -74,6 +74,6 @@ For maintainers: when a PR is ready to merge to main,
 Pull requests have two stages: Draft and Ready for review.
 
 1. Create a Draft PR while you are not requesting feedback as you are still working on the PR.
-   -  You can skip this if your PR is ready for review.
+   - You can skip this if your PR is ready for review.
 2. Change your PR to ready when the PR is ready for review.
-   -  You can convert back to Draft at any time.
+   - You can convert back to Draft at any time.

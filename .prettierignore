@@ -3,4 +3,10 @@ node_modules
 /build
 /public/build
 .env
-/mysql-data/
+
+/cypress/screenshots
+/cypress/videos
+/postgres-data
+
+/app/styles/tailwind.css
+./mysql-data/

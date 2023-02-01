@@ -1,18 +1,18 @@
 version: "3.7"
 
 services:
-   # Only for development
-   database:
-      image: mysql:8
-      container_name: database
-      ports:
-         # Only for dev
-         - 3306:3306
-      volumes:
-         # Persist data do ./mysql-data. Remove if you want to clear the db.
-         - ./mysql-data:/var/lib/mysql
-      environment:
-         MYSQL_DATABASE: starchart
-         MYSQL_USER: starchart
-         MYSQL_PASSWORD: starchart_password
-         MYSQL_ROOT_PASSWORD: root_password
+  # Only for development
+  database:
+    image: mysql:8
+    container_name: database
+    ports:
+      # Only for dev
+      - 3306:3306
+    volumes:
+      # Persist data do ./mysql-data. Remove if you want to clear the db.
+      - ./mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: starchart
+      MYSQL_USER: starchart
+      MYSQL_PASSWORD: starchart_password
+      MYSQL_ROOT_PASSWORD: root_password

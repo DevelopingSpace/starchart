@@ -1,16 +1,15 @@
 /** @type {import('@types/eslint').Linter.BaseConfig} */
 module.exports = {
   extends: [
-    'eslint:recommended',
-    '@remix-run/eslint-config',
-    '@remix-run/eslint-config/node',
-    '@remix-run/eslint-config/jest-testing-library',
-    'prettier',
+    "@remix-run/eslint-config",
+    "@remix-run/eslint-config/node",
+    "@remix-run/eslint-config/jest-testing-library",
+    "prettier",
   ],
   env: {
-    'cypress/globals': true,
+    "cypress/globals": true,
   },
-  plugins: ['cypress'],
+  plugins: ["cypress"],
   // We're using vitest which has a very similar API to jest
   // (so the linting plugins work nicely), but we have to
   // set the jest version explicitly.
