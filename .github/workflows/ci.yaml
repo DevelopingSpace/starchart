@@ -52,6 +52,7 @@ jobs:
 
          - name: Check prettier
            uses: creyD/prettier_action@v4.2
+           run: cat .prettierrc
            with:
               prettier_options: --check .
 
