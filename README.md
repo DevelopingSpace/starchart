@@ -30,13 +30,13 @@ Starchart is not meant to be, or replace commercial registrars; nor is it meant 
 
 ## Technologies and components
 
-Here is the planned architecture and [[technologies used](https://github.com/Seneca-CDOT/starchart/wiki/Tech-Stack)]:
+Here is the planned architecture and [[technologies] used(https://github.com/Seneca-CDOT/starchart/wiki/Tech-Stack)]:
 ![components](img/Starchart%20architecture.drawio.png)
 
 ## Development
 
 Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
 
-If you would like to contribute, please see [how to here](CONTRIBUTING.md).
+If you would like to contribute, please see how to [here](CONTRIBUTING.md).
 
-You can find out license [here](LICENSE).
+You can find the license [here](LICENSE).
