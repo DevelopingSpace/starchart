@@ -11,7 +11,7 @@ updates:
       - "dependencies"
 
     # reviewers:
-      # - "Seneca-CDOT/osd700-dps911-winter-2023"
+    # - "Seneca-CDOT/osd700-dps911-winter-2023"
 
     open-pull-requests-limit: 5
     # disable auto rebasing
