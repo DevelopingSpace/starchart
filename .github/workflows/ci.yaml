@@ -19,30 +19,33 @@ jobs:
           node-version: 18
           cache: npm
 
-      - name: Restore node_modules cache
-        id: node_modules-cache-restore
-        uses: actions/cache/restore@v3
-        with:
-          # path to node_modules to cache
-          path: ./node_modules
-          # cache module with hash of package-lock.json
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - uses: bahmutov/npm-install@v1
+      - run: npm run build
 
-      - name: Install node_modules
-        # install node modules manually only if cache was not restored
-        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
-        run: npm ci
+      # - name: Restore node_modules cache
+        # id: node_modules-cache-restore
+        # uses: actions/cache/restore@v3
+        # with:
+          # # path to node_modules to cache
+          # path: ./node_modules
+          # # cache module with hash of package-lock.json
+          # key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Run build
-        run: npm run build
+      # - name: Install node_modules
+        # # install node modules manually only if cache was not restored
+        # if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        # run: npm ci
 
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path:
-            ./node_modules
-            # cache node modules using the same key as restore.
-          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+      # - name: Run build
+        # run: npm run build
+
+      # - name: Cache node_modules
+        # uses: actions/cache@v3
+        # with:
+          # path:
+            # ./node_modules
+            # # cache node modules using the same key as restore.
+          # key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
   Prettier:
     runs-on: ubuntu-latest
