@@ -1,6 +1,6 @@
-import acme from "acme-client";
-import type { Client as AcmeClient } from "acme-client";
-import { secrets } from "docker-secret";
+import acme from 'acme-client';
+import type { Client as AcmeClient } from 'acme-client';
+import { secrets } from 'docker-secret';
 
 const { LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM } = secrets ?? {};
 
@@ -12,11 +12,9 @@ class LetsEncrypt {
   #accountKey?: string;
 
   initialize = async () => {
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === 'production') {
       if (!LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM)
-        throw new Error(
-          "The docker secret LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM is missing"
-        );
+        throw new Error('The docker secret LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM is missing');
 
       this.#accountKey = LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM;
       this.#directoryUrl = acme.directory.letsencrypt.production;
