@@ -107,6 +107,71 @@ jobs:
             # cache node modules using the same key as restore.
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
+  E2E-Test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: starchart
+          MYSQL_USER: starchart
+          MYSQL_PASSWORD: starchart_password
+          MYSQL_ROOT_PASSWORD: root_password
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Restore node_modules cache
+        id: node_modules-cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          # path to node_modules to cache
+          path: ./node_modules
+          # cache module with hash of package-lock.json
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install node_modules
+        # install node modules manually only if cache was not restored
+        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Seed database
+        run: |
+          cp .env.example .env
+          npm run setup
+
+      - name: Run Playwright tests
+        run: npm run test:e2e:run
+
+      - name: Create HTML Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path:
+            ./node_modules
+            # cache node modules using the same key as restore.
+          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+
   ESlint:
     permissions: write-all
     runs-on: ubuntu-latest
