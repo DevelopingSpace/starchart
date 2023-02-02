@@ -1,15 +1,21 @@
 import path from "path";
 import express from "express";
 import compression from "compression";
-import morgan from "morgan";
+//import morgan from "morgan";
 import { createRequestHandler } from "@remix-run/express";
+import helmet from "helmet";
+import cors from "cors";
 
 const app = express();
 
+app.use(helmet);
+
+app.use(cors());
+
 app.use((req, res, next) => {
   // helpful headers:
-  res.set("x-fly-region", process.env.FLY_REGION ?? "unknown");
-  res.set("Strict-Transport-Security", `max-age=${60 * 60 * 24 * 365 * 100}`);
+  // res.set("x-fly-region", process.env.FLY_REGION ?? "unknown");
+  // res.set("Strict-Transport-Security", `max-age=${60 * 60 * 24 * 365 * 100}`);
 
   // /clean-urls/ -> /clean-urls
   if (req.path.endsWith("/") && req.path.length > 1) {
@@ -63,7 +69,7 @@ app.use(
 // more aggressive with this caching.
 app.use(express.static("public", { maxAge: "1h" }));
 
-app.use(morgan("tiny"));
+//app.use(morgan("tiny"));
 
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "build");
