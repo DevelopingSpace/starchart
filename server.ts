@@ -8,7 +8,7 @@ import cors from "cors";
 
 const app = express();
 
-app.use(helmet);
+app.use(helmet());
 
 app.use(cors());
 
@@ -79,13 +79,13 @@ app.all(
   MODE === "production"
     ? createRequestHandler({ build: require(BUILD_DIR) })
     : (...args) => {
-        purgeRequireCache();
-        const requestHandler = createRequestHandler({
-          build: require(BUILD_DIR),
-          mode: MODE,
-        });
-        return requestHandler(...args);
-      }
+      purgeRequireCache();
+      const requestHandler = createRequestHandler({
+        build: require(BUILD_DIR),
+        mode: MODE,
+      });
+      return requestHandler(...args);
+    }
 );
 
 const port = process.env.PORT || 3000;
