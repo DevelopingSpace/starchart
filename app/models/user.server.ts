@@ -1,17 +1,17 @@
-import type { User } from "@prisma/client";
+import type { User } from '@prisma/client';
 
-import { prisma } from "~/db.server";
+import { prisma } from '~/db.server';
 
-export type { User } from "@prisma/client";
+export type { User } from '@prisma/client';
 
-export async function getUserByUsername(username: User["username"]) {
+export async function getUserByUsername(username: User['username']) {
   return prisma.user.findUnique({ where: { username } });
 }
 
 export async function createUser(
-  username: User["username"],
-  name: User["name"],
-  email: User["email"]
+  username: User['username'],
+  name: User['name'],
+  email: User['email']
 ) {
   return prisma.user.create({
     data: {
@@ -22,6 +22,6 @@ export async function createUser(
   });
 }
 
-export async function deleteUserByEmail(email: User["email"]) {
+export async function deleteUserByEmail(email: User['email']) {
   return prisma.user.delete({ where: { email } });
 }

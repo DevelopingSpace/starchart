@@ -1,19 +1,20 @@
-import path from "path";
-import express from "express";
-import compression from "compression";
-import morgan from "morgan";
-import { createRequestHandler } from "@remix-run/express";
+import path from 'path';
+import express from 'express';
+import compression from 'compression';
+import morgan from 'morgan';
+import { createRequestHandler } from '@remix-run/express';
 
 const app = express();
 
 app.use((req, res, next) => {
   // helpful headers:
-  res.set("Strict-Transport-Security", `max-age=${60 * 60 * 24 * 365 * 100}`);
+
+  res.set('Strict-Transport-Security', `max-age=${60 * 60 * 24 * 365 * 100}`);
 
   // /clean-urls/ -> /clean-urls
-  if (req.path.endsWith("/") && req.path.length > 1) {
+  if (req.path.endsWith('/') && req.path.length > 1) {
     const query = req.url.slice(req.path.length);
-    const safepath = req.path.slice(0, -1).replace(/\/+/g, "/");
+    const safepath = req.path.slice(0, -1).replace(/\/+/g, '/');
     res.redirect(301, safepath + query);
     return;
   }
@@ -23,26 +24,23 @@ app.use((req, res, next) => {
 app.use(compression());
 
 // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
-app.disable("x-powered-by");
+app.disable('x-powered-by');
 
 // Remix fingerprints its assets so we can cache forever.
-app.use(
-  "/build",
-  express.static("public/build", { immutable: true, maxAge: "1y" })
-);
+app.use('/build', express.static('public/build', { immutable: true, maxAge: '1y' }));
 
 // Everything else (like favicon.ico) is cached for an hour. You may want to be
 // more aggressive with this caching.
-app.use(express.static("public", { maxAge: "1h" }));
+app.use(express.static('public', { maxAge: '1h' }));
 
-app.use(morgan("tiny"));
+app.use(morgan('tiny'));
 
 const MODE = process.env.NODE_ENV;
-const BUILD_DIR = path.join(process.cwd(), "build");
+const BUILD_DIR = path.join(process.cwd(), 'build');
 
 app.all(
-  "*",
-  MODE === "production"
+  '*',
+  MODE === 'production'
     ? createRequestHandler({ build: require(BUILD_DIR) })
     : (...args) => {
         purgeRequireCache();
