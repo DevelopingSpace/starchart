@@ -11,8 +11,7 @@
     "dev:remix": "cross-env NODE_ENV=development remix watch",
     "dev:server": "cross-env NODE_ENV=development node --inspect --require ./node_modules/dotenv/config --require ./mocks ./build/server.js",
     "docker": "docker-compose up -d",
-    "format": "prettier --write .",
-    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint": "eslint \"**/*.{js,ts,jsx,tsx}\" --cache --cache-location ./node_modules/.cache/eslint .",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
@@ -27,15 +26,9 @@
     "pretest:e2e:run": "npm run build",
     "test:e2e:run": "cross-env PORT=8811 start-server-and-test start:mocks http://localhost:8811 \"npx cypress run\"",
     "typecheck": "tsc && tsc -p cypress",
-    "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
+    "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
+    "prepare": "husky install"
   },
-  "prettier": {},
-  "eslintIgnore": [
-    "/node_modules",
-    "/build",
-    "/public/build",
-    "/mysql-data"
-  ],
   "dependencies": {
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.10.5",
@@ -83,11 +76,13 @@
     "cookie": "^0.5.0",
     "cypress": "^10.11.0",
     "dotenv": "^16.0.3",
-    "esbuild": "^0.17.5",
+    "esbuild": "^0.17.4",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-cypress": "^2.12.1",
     "happy-dom": "^8.1.5",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.0",
     "msw": "^0.49.2",
     "npm-run-all": "^4.1.5",
     "prettier": "2.8.3",
@@ -105,5 +100,8 @@
   },
   "prisma": {
     "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
+  },
+  "lint-staged": {
+    "*.{md,json,html,css,js,yaml,yml,ts,tsx}": "prettier --write"
   }
 }

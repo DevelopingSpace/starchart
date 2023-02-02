@@ -1,7 +1,5 @@
-node_modules
-
+/node_modules
 /build
 /public/build
-.env
 /mysql-data
 /img
