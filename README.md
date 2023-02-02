@@ -35,8 +35,8 @@ Here is the planned architecture and [technologies used](https://github.com/Sene
 
 ## Development
 
-Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
+- Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
 
-If you would like to contribute, please see how to [here](CONTRIBUTING.md).
+- If you would like to contribute, please see how to [here](CONTRIBUTING.md).
 
-You can find the license [here](LICENSE).
+- You can find the license [here](LICENSE).
