@@ -37,8 +37,8 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: cancel build
-        # if: failure()
+      - name: cancel build if failure
+        if: failure()
         uses: andymckay/cancel-action@0.2
 
 
@@ -51,6 +51,7 @@ jobs:
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
   Prettier:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -62,6 +63,7 @@ jobs:
           prettier_options: --check .
 
   Test:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -90,6 +92,10 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: cancel build if failure
+        if: failure()
+        uses: andymckay/cancel-action@0.2
+
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
@@ -99,6 +105,7 @@ jobs:
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
   ESlint:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -127,6 +134,10 @@ jobs:
       - name: eslint check
         run: npm run lint
 
+      - name: cancel build if failure
+        if: failure()
+        uses: andymckay/cancel-action@0.2
+
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
@@ -136,6 +147,7 @@ jobs:
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
   Typecheck:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -163,6 +175,10 @@ jobs:
 
       - name: Run typecheck
         run: npm run typecheck
+
+      - name: cancel build if failure
+        if: failure()
+        uses: andymckay/cancel-action@0.2
 
       - name: Cache node_modules
         uses: actions/cache@v3
