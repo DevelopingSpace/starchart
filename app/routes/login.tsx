@@ -1,15 +1,15 @@
-import { Heading, Text, Button } from "@chakra-ui/react";
-import { Form } from "@remix-run/react";
-import { createUserSession } from "~/session.server";
+import { Heading, Text, Button } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
+import { createUserSession } from '~/session.server';
 
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionArgs } from '@remix-run/node';
 
 export const action = async ({ request }: ActionArgs) => {
   return createUserSession({
     request: request,
-    username: "starchartdev",
+    username: 'starchartdev',
     remember: false,
-    redirectTo: "/",
+    redirectTo: '/',
   });
 };
 
