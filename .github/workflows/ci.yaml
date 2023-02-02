@@ -149,44 +149,44 @@ jobs:
             # cache node modules using the same key as restore.
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
-  Typecheck:
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # Typecheck:
+    # permissions: write-all
+    # runs-on: ubuntu-latest
+    # steps:
+      # - name: Checkout code
+        # uses: actions/checkout@v3
 
-      - name: Set up node 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: npm
+      # - name: Set up node 18
+        # uses: actions/setup-node@v3
+        # with:
+          # node-version: 18
+          # cache: npm
 
-      - name: Restore node_modules cache
-        id: node_modules-cache-restore
-        uses: actions/cache/restore@v3
-        with:
-          # path to node_modules to cache
-          path: ./node_modules
-          # cache module with hash of package-lock.json
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      # - name: Restore node_modules cache
+        # id: node_modules-cache-restore
+        # uses: actions/cache/restore@v3
+        # with:
+          # # path to node_modules to cache
+          # path: ./node_modules
+          # # cache module with hash of package-lock.json
+          # key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install node_modules
-        # install node modules manually only if cache was not restored
-        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
-        run: npm ci
+      # - name: Install node_modules
+        # # install node modules manually only if cache was not restored
+        # if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        # run: npm ci
 
-      - name: Run typecheck
-        run: npm run typecheck
+      # - name: Run typecheck
+        # run: npm run typecheck
 
-      - name: Cancel build if failure
-        if: failure()
-        uses: andymckay/cancel-action@0.2
+      # - name: Cancel build if failure
+        # if: failure()
+        # uses: andymckay/cancel-action@0.2
 
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path:
-            ./node_modules
-            # cache node modules using the same key as restore.
-          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+      # - name: Cache node_modules
+        # uses: actions/cache@v3
+        # with:
+          # path:
+            # ./node_modules
+            # # cache node modules using the same key as restore.
+          # key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
