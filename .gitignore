@@ -4,8 +4,7 @@ node_modules
 /public/build
 .env
 
-/cypress/screenshots
-/cypress/videos
-
 /mysql-data
-
+/test-results/
+/playwright-report/
+/playwright/.cache/
