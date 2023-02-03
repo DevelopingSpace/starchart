@@ -1,12 +1,12 @@
-import { PassThrough } from "stream";
-import type { EntryContext } from "@remix-run/node";
-import { Response } from "@remix-run/node";
-import { RemixServer } from "@remix-run/react";
-import isbot from "isbot";
-import { renderToPipeableStream } from "react-dom/server";
-import createEmotionServer from "@emotion/server/create-instance";
-import { CacheProvider } from "@emotion/react";
-import createEmotionCache from "./createEmotionCache";
+import { PassThrough } from 'stream';
+import type { EntryContext } from '@remix-run/node';
+import { Response } from '@remix-run/node';
+import { RemixServer } from '@remix-run/react';
+import isbot from 'isbot';
+import { renderToPipeableStream } from 'react-dom/server';
+import createEmotionServer from '@emotion/server/create-instance';
+import { CacheProvider } from '@emotion/react';
+import createEmotionCache from './createEmotionCache';
 
 const ABORT_DELAY = 5000;
 
@@ -16,9 +16,7 @@ export default function handleRequest(
   responseHeaders: Headers,
   remixContext: EntryContext
 ) {
-  const callbackName = isbot(request.headers.get("user-agent"))
-    ? "onAllReady"
-    : "onShellReady";
+  const callbackName = isbot(request.headers.get('user-agent')) ? 'onAllReady' : 'onShellReady';
 
   return new Promise((resolve, reject) => {
     let didError = false;
@@ -36,7 +34,7 @@ export default function handleRequest(
           const bodyWithStyles = emotionServer.renderStylesToNodeStream();
           body.pipe(bodyWithStyles);
 
-          responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set('Content-Type', 'text/html');
 
           resolve(
             new Response(body, {
