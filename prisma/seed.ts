@@ -1,3 +1,4 @@
+import logger from '~/lib/logger.server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -20,12 +21,12 @@ async function seed() {
     },
   });
 
-  console.log(`Database has been seeded. 🌱`);
+  logger.info(`Database has been seeded. 🌱`);
 }
 
 seed()
   .catch((e) => {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
   })
   .finally(async () => {

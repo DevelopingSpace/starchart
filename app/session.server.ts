@@ -32,10 +32,14 @@ export async function getUsername(request: Request): Promise<User['username'] | 
 
 export async function getUser(request: Request) {
   const username = await getUsername(request);
-  if (username === undefined) return null;
+  if (username === undefined) {
+    return null;
+  }
 
   const user = await getUserByUsername(username);
-  if (user) return user;
+  if (user) {
+    return user;
+  }
 
   throw await logout(request);
 }
@@ -56,7 +60,9 @@ export async function requireUser(request: Request) {
   const username = await requireUsername(request);
 
   const user = await getUserByUsername(username);
-  if (user) return user;
+  if (user) {
+    return user;
+  }
 
   throw await logout(request);
 }
