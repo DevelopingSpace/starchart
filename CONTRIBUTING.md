@@ -2,12 +2,13 @@
 
 <!-- vim-markdown-toc GFM -->
 
-- [Development](#development)
-  - [System prerequisites](#system-prerequisites)
-  - [Dev environment set up](#dev-environment-set-up)
-- [Pull requests](#pull-requests)
-- [Merging to main](#merging-to-main)
-  - [Stages: Draft and Ready for review](#stages-draft-and-ready-for-review)
+- [Contributing guidelines](#contributing-guidelines)
+  - [Development](#development)
+    - [System prerequisites](#system-prerequisites)
+    - [Dev environment set up](#dev-environment-set-up)
+  - [Pull requests](#pull-requests)
+  - [Merging to main](#merging-to-main)
+    - [Stages: Draft and Ready for review](#stages-draft-and-ready-for-review)
 
 <!-- vim-markdown-toc -->
 
@@ -44,7 +45,7 @@ $ npm run setup
 # Generate a build folder the first time running the app
 $ npm run build
 
-# Start the app, which will be running on localhost:3000
+# Start the app, which will be running on localhost:8080
 $ npm run dev
 
 # Visually see the database in a GUI:
