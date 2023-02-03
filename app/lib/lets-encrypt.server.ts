@@ -23,12 +23,12 @@ const { LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM } = secrets ?? {};
  * new LetsEncrypt()
  *  .initialize()
  *  .then((le) => le.createOrder("xyz.com"))
- *  .then((le) => console.log(le.challengeBundles));
+ *  .then((le) => logger.info(le.challengeBundles));
  *
  * new LetsEncrypt()
  *  .initialize()
  *  .then((le) => le.recallOrder(orderUrl))
- *  .then((le) => console.log(le.challengeBundles));
+ *  .then((le) => logger.info(le.challengeBundles));
  */
 
 class LetsEncrypt {
