@@ -71,9 +71,6 @@ class LetsEncrypt {
       if (!process.env.LETS_ENCRYPT_ACCOUNT_EMAIL)
         throw new Error('The env LETS_ENCRYPT_ACCOUNT_EMAIL is missing');
 
-      if (!process.env.LETS_ENCRYPT_ACCOUNT_EMAIL)
-        throw new Error('The env LETS_ENCRYPT_ACCOUNT_EMAIL is missing');
-
       this.#accountKey = LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM;
       this.#directoryUrl = acme.directory.letsencrypt.production;
     } else {
@@ -113,8 +110,13 @@ class LetsEncrypt {
         ({ type }) => type === 'dns-01'
       ) as AcmeDnsChallenge;
 
+      if (!selectedChallenge)
+        throw new Error(
+          'The authorization object does not contain dns-01 type challenge. This should never happen.'
+        );
+
       // Get key for challenge
-      const keyAuthorization = await this.#client!.getChallengeKeyAuthorization(selectedChallenge!);
+      const keyAuthorization = await this.#client!.getChallengeKeyAuthorization(selectedChallenge);
 
       const challengeBundle: ChallengeBundle = {
         domain: `_acme-challenge.${authorization.identifier.value}`,
@@ -125,10 +127,17 @@ class LetsEncrypt {
     });
 
     this.#challengeBundles = await Promise.all(promises);
-
-    console.log(JSON.stringify(this.#challengeBundles));
   };
 
+  /**
+   * Create an order with let's encrypt using the account that was
+   * loaded in the initialize step
+   *
+   * @param {string} rootDomain The domain the certificate will be
+   * issued to (cert covers this root domain and one level of subdomains
+   * AKA. wildcard)
+   * @returns {Promise<this>} Promise of current object. Useful for chaining
+   */
   createOrder = async (rootDomain: string) => {
     if (!this.#client || !this.#account)
       throw new Error('You need to initialize the instance first');
@@ -146,6 +155,13 @@ class LetsEncrypt {
     return this;
   };
 
+  /**
+   * When we create an order, we get back a resource URL. We use that URL
+   * to recall the order from let's encrypt
+   *
+   * @param {string} url resource url of the order
+   * @returns {Promise<this>} Promise of current object. Useful for chaining
+   */
   recallOrder = async (url: string) => {
     if (!this.#client || !this.#account)
       throw new Error('You need to initialize the instance first');
