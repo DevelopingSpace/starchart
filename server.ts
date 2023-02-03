@@ -4,7 +4,7 @@ import compression from 'compression';
 import { createRequestHandler } from '@remix-run/express';
 import helmet from 'helmet';
 import cors from 'cors';
-import PinoHttp from 'pino-http';
+
 import logger from '~/lib/logger.server';
 
 const app = express();
@@ -12,8 +12,6 @@ const app = express();
 app.use(helmet());
 
 app.use(cors());
-
-app.use(PinoHttp({ logger }));
 
 app.use((req, res, next) => {
   // /clean-urls/ -> /clean-urls

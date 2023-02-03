@@ -18,9 +18,8 @@ export async function loader({ request }: LoaderArgs) {
         }
       }),
     ]);
-    return new Response('OK');
   } catch (error: unknown) {
-    logger.info('healthcheck ❌', { error });
+    logger.warn('healthcheck ❌', error);
     return new Response('ERROR', { status: 500 });
   }
 }
