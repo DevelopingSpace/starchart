@@ -28,3 +28,21 @@ services:
     image: motoserver/moto:4.1.1
     ports:
       - '5053:5000'
+
+  # Let's Encrypt test server - https://github.com/letsencrypt/pebble
+  # Extra SSL Cert for testing available at: `test/resources/ca.cert.pem`
+  # To use in code/tests, add to node's certificate chain via env var:
+  # `cross-env NODE_EXTRA_CA_CERTS=./test/resources/ca.cert.pem node ...`
+  lets_encrypt:
+    image: letsencrypt/pebble:latest
+    container_name: lets_encrypt
+    # Use the challenge test server for our DNS challenges (we'll mock the TXT records)
+    command: pebble -config /test/config/pebble-config.json -strict
+    ports:
+      - '14000:14000' # HTTPS ACME API
+      - '15000:15000' # HTTPS Management API
+    environment:
+      # Skip challenge validation, see https://github.com/letsencrypt/pebble#skipping-validation
+      # If we decide to implement challenges in testing:
+      # https://github.com/letsencrypt/pebble/blob/main/cmd/pebble-challtestsrv/README.md
+      PEBBLE_VA_ALWAYS_VALID: 1
