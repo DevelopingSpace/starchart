@@ -57,6 +57,7 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => {
   // require the built app so we're ready when the first request comes in
   require(BUILD_DIR);
+  // eslint-disable-next-line no-console
   console.log(`✅ app ready: http://localhost:${port}`);
 });
 

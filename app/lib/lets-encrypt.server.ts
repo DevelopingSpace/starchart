@@ -58,18 +58,22 @@ class LetsEncrypt {
       contact: [`mailto:${process.env.LETS_ENCRYPT_ACCOUNT_EMAIL}`],
     });
 
-    if (account.status !== 'valid') throw new Error(`Acme account is "${account.status}"`);
+    if (account.status !== 'valid') {
+      throw new Error(`Acme account is "${account.status}"`);
+    }
 
     this.#account = account;
   };
 
   initialize = async () => {
     if (process.env.NODE_ENV === 'production') {
-      if (!LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM)
+      if (!LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM) {
         throw new Error('The docker secret LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM is missing');
+      }
 
-      if (!process.env.LETS_ENCRYPT_ACCOUNT_EMAIL)
+      if (!process.env.LETS_ENCRYPT_ACCOUNT_EMAIL) {
         throw new Error('The env LETS_ENCRYPT_ACCOUNT_EMAIL is missing');
+      }
 
       this.#accountKey = LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM;
       this.#directoryUrl = acme.directory.letsencrypt.production;
@@ -110,10 +114,11 @@ class LetsEncrypt {
         ({ type }) => type === 'dns-01'
       ) as AcmeDnsChallenge;
 
-      if (!selectedChallenge)
+      if (!selectedChallenge) {
         throw new Error(
           'The authorization object does not contain dns-01 type challenge. This should never happen.'
         );
+      }
 
       // Get key for challenge
       const keyAuthorization = await this.#client!.getChallengeKeyAuthorization(selectedChallenge);
@@ -139,8 +144,9 @@ class LetsEncrypt {
    * @returns {Promise<this>} Promise of current object. Useful for chaining
    */
   createOrder = async (rootDomain: string) => {
-    if (!this.#client || !this.#account)
+    if (!this.#client || !this.#account) {
       throw new Error('You need to initialize the instance first');
+    }
 
     /* Place new order */
     this.#order = await this.#client.createOrder({
@@ -163,8 +169,9 @@ class LetsEncrypt {
    * @returns {Promise<this>} Promise of current object. Useful for chaining
    */
   recallOrder = async (url: string) => {
-    if (!this.#client || !this.#account)
+    if (!this.#client || !this.#account) {
       throw new Error('You need to initialize the instance first');
+    }
 
     /**
      * The lib's interface is a bit unfortunate here, but what it actually

@@ -26,6 +26,7 @@ function getClient() {
 
   const databaseUrl = new URL(DATABASE_URL);
 
+  // eslint-disable-next-line no-console
   console.log(`🔌 setting up prisma client to ${databaseUrl.host}`);
   // NOTE: during development if you change anything in this function, remember
   // that this only runs once per server restart and won't automatically be
