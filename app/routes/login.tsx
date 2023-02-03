@@ -18,7 +18,7 @@ export default function Login() {
     <Form method="post">
       <Heading>Login</Heading>
       <Text>You will be logged in (a session will be created for you)</Text>
-      <Button type="submit" colorScheme="red">
+      <Button type="submit" colorScheme="brand">
         Login
       </Button>
     </Form>
