@@ -5,3 +5,5 @@ node_modules
 .env
 /mysql-data
 /img
+/playwright-report/
+
