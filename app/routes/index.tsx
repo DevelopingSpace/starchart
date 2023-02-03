@@ -1,4 +1,4 @@
-import { Heading, Text } from '@chakra-ui/react';
+import { Button, Heading, Text } from '@chakra-ui/react';
 
 export default function Index() {
   return (
@@ -7,6 +7,7 @@ export default function Index() {
         Starchart
       </Heading>
       <Text fontSize="xl">Start making your own custom domains and certificates today!</Text>
+      <Button colorScheme="brand">Seneca button</Button>
     </main>
   );
 }
