@@ -22,9 +22,7 @@ export default function Index() {
       <Text fontSize="xl">Start making your own custom domains and certificates today!</Text>
       <Text>Welcome {data.username}</Text>
       <Form action="/logout" method="post">
-        <Button type="submit" colorScheme="brand">
-          Logout
-        </Button>
+        <Button type="submit">Logout</Button>
       </Form>
     </main>
   );
