@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 
 async function seed() {
   const username = 'starchartdev';
-  const name = 'Starchart Developer';
+  const firstName = 'Starchart';
+  const lastName = 'Developer';
   const email = 'dev@starchart.invalid';
 
   // cleanup the existing database
@@ -16,7 +17,8 @@ async function seed() {
   await prisma.user.create({
     data: {
       username,
-      name,
+      firstName,
+      lastName,
       email,
     },
   });
