@@ -37,10 +37,6 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Cancel build if failure
-        if: failure()
-        uses: andymckay/cancel-action@0.2
-
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
@@ -60,10 +56,6 @@ jobs:
         uses: creyD/prettier_action@v4.2
         with:
           prettier_options: --check .
-
-      - name: Cancel build if failure
-        if: failure()
-        uses: andymckay/cancel-action@0.2
 
   Unit-Tests:
     permissions: write-all
@@ -97,10 +89,6 @@ jobs:
 
       - name: Run tests
         run: npm test
-
-      - name: Cancel build if failure
-        if: failure()
-        uses: andymckay/cancel-action@0.2
 
       - name: Cache node_modules
         uses: actions/cache@v3
@@ -205,10 +193,6 @@ jobs:
       - name: eslint check
         run: npm run lint
 
-      - name: Cancel build if failure
-        if: failure()
-        uses: andymckay/cancel-action@0.2
-
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
@@ -246,10 +230,6 @@ jobs:
 
       - name: Run typecheck
         run: npm run typecheck
-
-      - name: Cancel build if failure
-        if: failure()
-        uses: andymckay/cancel-action@0.2
 
       - name: Cache node_modules
         uses: actions/cache@v3
