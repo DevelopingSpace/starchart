@@ -10,13 +10,15 @@ export async function getUserByUsername(username: User['username']) {
 
 export async function createUser(
   username: User['username'],
-  name: User['name'],
+  firstName: User['firstName'],
+  lastName: User['lastName'],
   email: User['email']
 ) {
   return prisma.user.create({
     data: {
       username,
-      name,
+      firstName,
+      lastName,
       email,
     },
   });
