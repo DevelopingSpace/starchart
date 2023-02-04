@@ -4,6 +4,7 @@ import { json } from '@remix-run/node';
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 
 import { getUser } from './session.server';
+import theme from './theme';
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
@@ -37,7 +38,7 @@ function Document({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Document>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <Outlet />
       </ChakraProvider>
     </Document>
