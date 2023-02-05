@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: ['main']
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   Build:
     permissions: write-all
@@ -140,12 +144,13 @@ jobs:
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
 
-      - name: Cache playwright binaries
-        uses: actions/cache@v3
-        id: playwright-cache
+      - name: Restore Playwright browser cache
+        id: playwright-cache-restore
+        uses: actions/cache/restore@v3
         with:
-          path: |
-            ~/.cache/ms-playwright
+          # path to playwright browser
+          path: ~/.cache/ms-playwright
+          # cache browser with playwright version
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
 
       - name: Install Playwright's dependencies only
@@ -157,6 +162,13 @@ jobs:
         run: npx playwright install --with-deps
         # only do this if browser was not found in cache
         if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
       - name: Seed database
         run: |
