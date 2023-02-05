@@ -148,36 +148,15 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
 
-      - name: Install Playwright's dependencies
+      - name: Install Playwright's dependencies only
+        # only do this if browser is restored from cache
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps
 
       - name: Install Playwright Browsers and dependencies
         run: npx playwright install --with-deps
+        # only do this if browser was not found in cache
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-
-      - name: Intall playwright dependencies
-        run: |
-          sudo apt-get install libvpx7\
-             libevent-2.1-7\
-             libopus0\
-             libwoff1\
-             libharfbuzz-icu0\
-             libgstreamer-plugins-base1.0-0\
-             libgstreamer-gl1.0-0\
-             libhyphen0\
-             libmanette-0.2-0\
-             libgles2\
-             gstreamer1.0-libav
-
-      # - name: Restore node_modules cache
-      # id: node_modules-cache-restore
-      # uses: actions/cache/restore@v3
-      # with:
-      # # path to node_modules to cache
-      # path: ./node_modules
-      # # cache module with hash of package-lock.json
-      # key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Seed database
         run: |
