@@ -16,3 +16,7 @@ updates:
     open-pull-requests-limit: 5
     # disable auto rebasing
     rebase-strategy: 'disabled'
+
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
