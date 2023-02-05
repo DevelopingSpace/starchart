@@ -155,13 +155,13 @@ jobs:
 
       - name: Install Playwright's dependencies only
         # only do this if browser is restored from cache
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        if: steps.playwright-cache-restore.outputs.cache-hit == 'true'
         run: npx playwright install-deps
 
       - name: Install Playwright Browsers and dependencies
-        run: npx playwright install --with-deps
         # only do this if browser was not found in cache
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        if: steps.playwright-cache-restore.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
 
       - name: Cache playwright binaries
         uses: actions/cache@v3
