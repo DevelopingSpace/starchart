@@ -46,3 +46,10 @@ services:
       # If we decide to implement challenges in testing:
       # https://github.com/letsencrypt/pebble/blob/main/cmd/pebble-challtestsrv/README.md
       PEBBLE_VA_ALWAYS_VALID: 1
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - 8025:8025 # MailHog interface
+      - 1025:1025 # SMTP server
