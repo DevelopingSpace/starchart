@@ -167,7 +167,7 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+          key: ${{ steps.playwright-cache-restore.outputs.cache-primary-key }}
 
       - name: Seed database
         run: |
