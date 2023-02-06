@@ -162,13 +162,6 @@ jobs:
         if: steps.playwright-cache-restore.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      - name: Cache playwright binaries
-        uses: actions/cache@v3
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ steps.playwright-cache-restore.outputs.cache-primary-key }}
-
       - name: Seed database
         run: |
           cp .env.example .env
@@ -192,6 +185,13 @@ jobs:
             ./node_modules
             # cache node modules using the same key as restore.
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ steps.playwright-cache-restore.outputs.cache-primary-key }}
 
   ESlint:
     runs-on: ubuntu-latest
