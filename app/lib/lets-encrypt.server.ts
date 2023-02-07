@@ -34,7 +34,9 @@ const getHostedZoneForDomain = async (incomingDomain: string): Promise<string> =
 
   if (!found) {
     // We have reached the TLD, resolution failed
-    throw new Error(`No authoritive DNS server found for ${incomingDomain} or any of it's parents`);
+    throw new Error(
+      `No authoritative DNS server found for ${incomingDomain} or any of it's parents`
+    );
   }
 
   // At this point we have the hosted zone in domainName
@@ -42,11 +44,11 @@ const getHostedZoneForDomain = async (incomingDomain: string): Promise<string> =
 };
 
 /**
- * Get an authoritive DNS resolver for the given domain
+ * Get an authoritative DNS resolver for the given domain
  * @param {string} domain
  * @returns {Promise<Resolver>} domain
  */
-const getAuthoritiveResolverForDomain = async (domain: string): Promise<PromisesResolver> => {
+const getAuthoritativeResolverForDomain = async (domain: string): Promise<PromisesResolver> => {
   const hostedZone = await getHostedZoneForDomain(domain);
 
   const nsRecords = await dnsPromises.resolveNs(hostedZone);
@@ -57,7 +59,7 @@ const getAuthoritiveResolverForDomain = async (domain: string): Promise<Promises
 
   if (!nsAddrIpv4Arr.length) {
     throw new Error(
-      `Could not retreive any valid ipv4 addresses when looking up NS records for: ${hostedZone}`
+      `Could not retrieve any valid ipv4 addresses when looking up NS records for: ${hostedZone}`
     );
   }
 
@@ -114,7 +116,7 @@ class LetsEncrypt {
     domain: string;
     key: string;
   }): Promise<boolean> => {
-    const resolver = await getAuthoritiveResolverForDomain(domain);
+    const resolver = await getAuthoritativeResolverForDomain(domain);
 
     const txtRecords = (await resolver.resolveTxt(domain))
       // Flatten array of arrays
