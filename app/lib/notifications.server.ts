@@ -5,26 +5,26 @@ import logger from './logger.server';
 import type { SendMailOptions } from 'nodemailer';
 
 const { NOTIFICATIONS_EMAIL_USER, NODE_ENV, MAILHOG_SMTP_PORT } = process.env;
-const { NODEMAILER_CLIENT_ID, NODEMAILER_ACCESS_TOKEN } = secrets ?? {};
+const { NOTIFICATIONS_USERNAME, NOTIFICATIONS_PASSWORD } = secrets ?? {};
 
 const initializeTransport = () => {
   if (!NOTIFICATIONS_EMAIL_USER) {
     throw new Error('Missing Nodemailer user. Skipping nodemailer configuration');
   }
   if (NODE_ENV === 'production') {
-    if (!NODEMAILER_CLIENT_ID || !NODEMAILER_ACCESS_TOKEN) {
+    if (!NOTIFICATIONS_USERNAME || !NOTIFICATIONS_PASSWORD) {
       throw new Error(
-        'Missing Nodemailer environment variables or docker secrets. Skipping nodemailer configuration'
+        'Missing NOTIFICATIONS_USERNAME and/or NOTIFICATIONS_PASSWORD env variables. Skipping nodemailer configuration'
       );
     }
     return createTransport({
-      service: 'Outlook365',
+      host: 'smtp.office365.com',
+      port: 587,
       auth: {
-        type: 'OAuth2',
-        user: NOTIFICATIONS_EMAIL_USER, // email address for notifications
-        clientId: NODEMAILER_CLIENT_ID,
-        accessToken: NODEMAILER_ACCESS_TOKEN,
+        user: NOTIFICATIONS_USERNAME,
+        pass: NOTIFICATIONS_PASSWORD,
       },
+      requireTLS: true,
     });
   }
   return createTransport({
@@ -32,7 +32,7 @@ const initializeTransport = () => {
   });
 };
 
-const send = async (data: SendMailOptions) => {
+const sendNotification = async (data: SendMailOptions) => {
   try {
     const transport = initializeTransport();
     logger.debug('Sending notification', data);
@@ -42,4 +42,4 @@ const send = async (data: SendMailOptions) => {
   }
 };
 
-export default send;
+export default sendNotification;
