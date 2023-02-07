@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script is used to authenticate the webhook requests.
-# - The provided token is received as the first parameter. Otherwise, the envVar $HOOK_TOKEN is used.
-# - The expected token is received as the second parameter. Otherwise, the envVar $DEFAULT_AUTH_TOKEN is used.
+# - The provided token is received as the first parameter. Otherwise, the envVar $HOOK_TOKEN is used by default.
+# - The expected token is received as the second parameter. Otherwise, the envVar $DEFAULT_AUTH_TOKEN is used by default.
 #   If the $DEFAULT_AUTH_TOKEN envVar is not set, the docker secret /run/secrets/DEFAULT_AUTH_TOKEN is used.
 
 provided_token=$1

@@ -13,4 +13,4 @@ RUN apk add --no-cache \
     webhook=${WEBKOOK_VERSION}
 EXPOSE 8000
 ENTRYPOINT ["/usr/bin/webhook"]
-CMD ["-hooks", "hooks.yaml", "-verbose", "-hotreload", "-port", "8000"]
+CMD ["-hooks", "hooks.yaml", "-port", "8000"]

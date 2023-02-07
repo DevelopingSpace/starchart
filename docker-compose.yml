@@ -27,4 +27,4 @@ services:
     ports:
       - "8000:8000" # redirect host port 8000 to container port 8000
     environment:
-      - DEFAULT_AUTH_TOKEN=IAmASecretToken  # Used by the authentication script
+      - DEFAULT_AUTH_TOKEN=IAmASecretToken  # Default token for the auth script

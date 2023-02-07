@@ -5,19 +5,7 @@
   pass-environment-to-command:
       - source: payload
         name: tag
-      - source: payload
-        name: image
-      - source: payload
-        name: service
+        envName: HOOK_TAG
       - source: payload
         name: token
-        envName: HOOK_TOKEN # this indicates this webhook will require authentication (handled in the script for this hook)
-
-- id: heartbeat
-  execute-command: ./heartbeat.sh
-  include-command-output-in-response: true
-  include-command-output-in-response-on-error: true
-  pass-environment-to-command:
-      - source: payload
-        name: token
-        envName: HOOK_TOKEN # this indicates this webhook will require authentication (handled in the script for this hook)
+        envName: HOOK_TOKEN
