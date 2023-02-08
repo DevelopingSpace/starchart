@@ -61,6 +61,20 @@ jobs:
 
   Unit-Tests:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: starchart
+          MYSQL_USER: starchart
+          MYSQL_PASSWORD: starchart_password
+          MYSQL_ROOT_PASSWORD: root_password
+      dns:
+        image: motoserver/moto:4.1.1
+        ports:
+          - '5053:5000'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -85,8 +99,10 @@ jobs:
         if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Start Docker Services
-        run: docker-compose up -d
+      - name: Seed database
+        run: |
+          cp .env.example .env
+          npm run setup
 
       - name: Run tests
         run: npm test
