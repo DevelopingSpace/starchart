@@ -1,52 +1,65 @@
-# base node image
-FROM node:16-bullseye-slim as base
+FROM node:18-bullseye-slim@sha256:e2fbe082615911b184e192b05c55e7e38460a2c24c88d92e8c122ea0175fbe56 as base
 
-# set for base and all layer that inherit from it
-ENV NODE_ENV production
+ARG CURL_VERSION=7.74.* \
+  OPENSSL_VERSION=1.1.* \
+  TINI_VERSION=0.19.*
+  
+# hadolint ignore=SC2086
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends \
+  curl=${CURL_VERSION} \
+  openssl=${OPENSSL_VERSION} \
+  tini=${TINI_VERSION} \
+  && rm -rf /var/lib/apt/lists/*
 
-# Install openssl for Prisma
-RUN apt-get update && apt-get install -y openssl
+###############################################################################
 
 # Install all node_modules, including dev dependencies
 FROM base as deps
 
-WORKDIR /myapp
+WORKDIR /app
+COPY package*.json .npmrc ./
+RUN npm ci --include=dev --ignore-scripts
 
-ADD package.json package-lock.json package-lock.json package-lock.json package-lock.json package-lock.json .npmrc ./
-RUN npm install --production=false
+###############################################################################
 
-# Setup production node_modules
+# Remove any non-production dependencies
 FROM base as production-deps
 
-WORKDIR /myapp
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY package*.json .npmrc ./
+RUN npm prune --omit=dev
 
-COPY --from=deps /myapp/node_modules /myapp/node_modules
-ADD package.json package-lock.json package-lock.json package-lock.json package-lock.json package-lock.json .npmrc ./
-RUN npm prune --production
+###############################################################################
 
-# Build the app
+# Build the app and generate the prisma client
 FROM base as build
 
-WORKDIR /myapp
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npx prisma generate \
+  && npm run build
 
-COPY --from=deps /myapp/node_modules /myapp/node_modules
+###############################################################################
 
-ADD prisma .
-RUN npx prisma generate
+# Deploy the built app on top of the production deps, run as non-root
+FROM base as deploy
 
-ADD . .
-RUN npm run build
+WORKDIR /app
+ENV NODE_ENV=production \
+    PORT=8080 \
+    LOG_LEVEL=info
 
-# Finally, build the production image with minimal footprint
-FROM base
+USER node
+COPY --chown=node:node --from=production-deps /app/node_modules ./node_modules
+COPY --chown=node:node --from=build /app/node_modules/.prisma ./node_modules/.prisma
+COPY --chown=node:node --from=build /app/build ./build
+COPY --chown=node:node --from=build /app/public ./public
 
-WORKDIR /myapp
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["node", "./build/server.js"]
 
-COPY --from=production-deps /myapp/node_modules /myapp/node_modules
-COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma
-
-COPY --from=build /myapp/build /myapp/build
-COPY --from=build /myapp/public /myapp/public
-ADD . .
-
-CMD ["npm", "start"]
+HEALTHCHECK CMD curl --fail http://localhost:${PORT}/healthcheck || exit 1
+EXPOSE ${PORT}

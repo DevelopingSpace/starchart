@@ -192,6 +192,16 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ steps.playwright-cache-restore.outputs.cache-primary-key }}
 
+  Dockerfile-Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Run Hadolint on Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
   ESlint:
     runs-on: ubuntu-latest
     steps:
