@@ -48,7 +48,7 @@ services:
       PEBBLE_VA_ALWAYS_VALID: 1
 
   mailhog:
-    image: mailhog/mailhog
+    image: jcalonso/mailhog:latest
     container_name: mailhog
     ports:
       - 8025:8025 # MailHog interface
