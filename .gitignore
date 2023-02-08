@@ -4,6 +4,7 @@ node_modules
 /public/build
 .env
 
+/redis-data
 /mysql-data
 /test-results/
 /playwright-report/

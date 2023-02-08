@@ -2,14 +2,30 @@ import path from 'path';
 import express from 'express';
 import compression from 'compression';
 import { createRequestHandler } from '@remix-run/express';
+import gracefulShutdown from 'http-graceful-shutdown';
 import helmet from 'helmet';
 import cors from 'cors';
 
 import logger from '~/lib/logger.server';
+import { notificationsWorker } from '~/queues/notifications.server';
 
 const app = express();
 
-app.use(helmet());
+app.use(
+  helmet({
+    // Disable CSP in development so that hot-reloads (e.g., inline scripts)
+    // work, but use the default CSP config in production
+    contentSecurityPolicy:
+      process.env.NODE_ENV === 'production'
+        ? { directives: helmet.contentSecurityPolicy.getDefaultDirectives() }
+        : {
+            directives: {
+              scriptSrc: ["'self'", "'unsafe-inline'"],
+              connectSrc: ["'self'", 'ws:'],
+            },
+          },
+  })
+);
 
 app.use(cors());
 
@@ -52,10 +68,26 @@ app.all(
 
 const port = process.env.PORT || 8080;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   // require the built app so we're ready when the first request comes in
   require(BUILD_DIR);
   logger.info(`✅ app ready: http://localhost:${port}`);
+});
+
+gracefulShutdown(server, {
+  forceExit: true,
+  development: process.env.NODE_ENV !== 'production',
+  onShutdown: async function (signal) {
+    logger.info(`Received ${signal}, starting shutdown...`);
+    try {
+      await notificationsWorker.close();
+    } catch (err) {
+      logger.warn('Error closing database connections', err);
+    }
+  },
+  finally: function () {
+    logger.info('Graceful shutdown complete');
+  },
 });
 
 function purgeRequireCache() {

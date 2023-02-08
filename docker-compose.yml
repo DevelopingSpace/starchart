@@ -9,13 +9,24 @@ services:
       # Only for dev
       - 3306:3306
     volumes:
-      # Persist data do ./mysql-data. Remove if you want to clear the db.
+      # Persist data to ./mysql-data. Remove if you want to clear the db.
       - ./mysql-data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: starchart
       MYSQL_USER: starchart
       MYSQL_PASSWORD: starchart_password
       MYSQL_ROOT_PASSWORD: root_password
+
+  redis:
+    image: redis:7.0.8-alpine3.17
+    container_name: redis
+    command: ['redis-server']
+    ports:
+      # Only for dev
+      - 6379:6379
+    volumes:
+      # Persist data to ./redis-data. Remove if you want to clear the db.
+      - ./redis-data:/data
 
   # Mock Route53 server for testing, see:
   # http://docs.getmoto.org/en/latest/docs/server_mode.html
