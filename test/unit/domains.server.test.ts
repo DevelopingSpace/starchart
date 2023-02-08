@@ -1,17 +1,17 @@
 import { createHostedZone } from '~/lib/dns.server';
 import {
-  createUserDomain,
-  setMonthsFromNow,
-  deleteUserDomain,
+  createUserRecord,
+  deleteUserRecord,
+  updateUserRecord,
   willExpireIn,
   isExpired,
   removeIfExpired,
-  updateUserDomain,
+  setMonthsFromNow,
 } from '~/lib/domains.server';
 import { prisma } from '~/db.server';
 import { RecordType } from '@prisma/client';
 
-import type { Domain } from '~/lib/domains.server';
+import type { DomainRecord } from '~/lib/domains.server';
 
 const resetHostedZone = () => {
   try {
@@ -36,22 +36,23 @@ describe('Domains module function test', () => {
 
   beforeAll(async () => {
     process.env.AWS_ROUTE53_HOSTED_ZONE_ID = await createHostedZone(rootDomain);
+    process.env.ROOT_DOMAIN = rootDomain;
   });
 
   afterAll(() => resetHostedZone());
 
-  test('createUserDomain() creates a record in Route 53 and DB', async () => {
+  test('createUserRecord() creates a record in Route 53 and DB', async () => {
     const subDomain = randomWord();
-    const domain = `${subDomain}.${rootDomain}`;
+    const domain = `${subDomain}.${username}.${rootDomain}`;
     const value = '192.168.0.1';
-    const data: Domain = {
+    const data: DomainRecord = {
       type: RecordType.A,
       name: domain,
       value,
       username,
     };
 
-    const result = await createUserDomain(data);
+    const result = await createUserRecord(data);
 
     expect(result.name).toEqual(domain);
     expect(result.type).toEqual('A');
@@ -62,48 +63,48 @@ describe('Domains module function test', () => {
     expect(result.status).toEqual('pending');
   });
 
-  test('createUserDomain() throws when record with name, type, value already exists', async () => {
+  test('createUserRecord() throws when record with name, type, value already exists', async () => {
     const subDomain = randomWord();
-    const domain = `${subDomain}.${rootDomain}`;
+    const domain = `${subDomain}.${username}.${rootDomain}`;
     const value = '192.168.0.2';
-    const data: Domain = {
+    const data: DomainRecord = {
       type: RecordType.A,
       name: domain,
       value,
       username,
     };
 
-    await createUserDomain(data);
+    await createUserRecord(data);
 
-    await expect(createUserDomain(data)).rejects.toThrow();
+    await expect(createUserRecord(data)).rejects.toThrow();
   });
 
-  test('createUserDomain() throws when non existing username is provided', async () => {
+  test('createUserRecord() throws when non existing username is provided', async () => {
     const subDomain = randomWord();
-    const domain = `${subDomain}.${rootDomain}`;
+    const domain = `${subDomain}.${username}.${rootDomain}`;
     const value = '192.168.0.1';
-    const data: Domain = {
+    const data: DomainRecord = {
       type: RecordType.A,
       name: domain,
       value,
       username: 'NOT EXIST',
     };
 
-    await expect(createUserDomain(data)).rejects.toThrow();
+    await expect(createUserRecord(data)).rejects.toThrow();
   });
 
-  test('updateUserDomain() updates a record in Route 53 and DB', async () => {
+  test('updateUserRecord() updates a record in Route 53 and DB', async () => {
     const subDomain = randomWord();
-    const domain = `${subDomain}.${rootDomain}`;
+    const domain = `${subDomain}.${username}.${rootDomain}`;
     const value = '192.168.0.1';
-    let data: Domain = {
+    let data: DomainRecord = {
       type: RecordType.A,
       name: domain,
       value,
       username,
     };
 
-    const result = await createUserDomain(data);
+    const result = await createUserRecord(data);
 
     const updatedValue = '2001:db8:3333:4444:5555:6666:7777:8888';
     data.type = RecordType.AAAA;
@@ -113,7 +114,7 @@ describe('Domains module function test', () => {
     data.course = course;
     data.ports = ports;
 
-    const updatedResult = await updateUserDomain(data);
+    const updatedResult = await updateUserRecord(data);
 
     expect(updatedResult.type).toEqual('AAAA');
     expect(updatedResult.value).toEqual(updatedValue);
@@ -125,10 +126,10 @@ describe('Domains module function test', () => {
     expect(result.status).toEqual('pending');
   });
 
-  test('updateUserDomain() throws when attempting to update non existing ID in DB', async () => {
-    let data: Domain = {
+  test('updateUserRecord() throws when attempting to update non existing ID in DB', async () => {
+    let data: DomainRecord = {
       type: RecordType.A,
-      name: `update.${rootDomain}`,
+      name: `update.${username}.${rootDomain}`,
       value: '192.168.0.2',
       id: 0,
       username,
@@ -137,24 +138,24 @@ describe('Domains module function test', () => {
       ports,
     };
 
-    await expect(updateUserDomain(data)).rejects.toThrow();
+    await expect(updateUserRecord(data)).rejects.toThrow();
   });
 
-  test('deleteUserDomain() deletes a record in Route 53 and DB', async () => {
+  test('deleteUserRecord() deletes a record in Route 53 and DB', async () => {
     const subDomain = randomWord();
-    const domain = `${subDomain}.${rootDomain}`;
+    const domain = `${subDomain}.${username}.${rootDomain}`;
     const value = '192.168.0.1';
-    let data: Domain = {
+    let data: DomainRecord = {
       type: RecordType.A,
       name: domain,
       value,
       username,
     };
 
-    const result = await createUserDomain(data);
+    const result = await createUserRecord(data);
     data.id = result.id;
 
-    const deleteResult = await deleteUserDomain(data);
+    const deleteResult = await deleteUserRecord(data);
     expect(deleteResult.id).toEqual(result.id);
     expect(deleteResult.name).toEqual(result.name);
     expect(deleteResult.type).toEqual(result.type);
@@ -162,29 +163,30 @@ describe('Domains module function test', () => {
     expect(deleteResult.status.length).toBeGreaterThan(0);
   });
 
-  test('deleteUserDomain() throws when attempting to delete non existing ID in DB', async () => {
-    let data: Domain = {
+  test('deleteUserRecord() throws when attempting to delete non existing ID in DB', async () => {
+    let data: DomainRecord = {
       type: RecordType.A,
-      name: `delete.${rootDomain}`,
+      name: `delete.${username}.${rootDomain}`,
       value: '192.168.0.3',
       id: 0,
+      username,
     };
 
-    await expect(deleteUserDomain(data)).rejects.toThrow();
+    await expect(deleteUserRecord(data)).rejects.toThrow();
   });
 
   test('removeIfExpired() deletes an expired record in Route 53 and DB ', async () => {
     const subDomain = randomWord();
-    const domain = `${subDomain}.${rootDomain}`;
+    const domain = `${subDomain}.${username}.${rootDomain}`;
     const value = 'cname.test.com';
-    let data: Domain = {
+    let data: DomainRecord = {
       type: RecordType.CNAME,
       name: domain,
       value,
       username,
     };
 
-    const result = await createUserDomain(data);
+    const result = await createUserRecord(data);
     const id = result.id;
 
     await prisma.record.update({

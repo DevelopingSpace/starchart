@@ -10,17 +10,17 @@ interface DnsRecord {
   value: string;
 }
 
-interface DomainRecord {
+interface DBRecord {
   id?: Record['id'];
-  username?: Record['username'];
+  username: Record['username'];
   description?: Record['description'];
   course?: Record['course'];
   ports?: Record['ports'];
 }
 
-type Domain = DnsRecord & DomainRecord;
+export type DomainRecord = DnsRecord & DBRecord;
 
-export const createUserDomain = async (data: Domain) => {
+export const createUserRecord = async (data: DomainRecord) => {
   if (!data.username) {
     throw new Error('Username is not provided');
   }
@@ -38,7 +38,7 @@ export const createUserDomain = async (data: Domain) => {
   }
 
   const [, result] = await Promise.all([
-    dns.createRecord(data.type, data.name, data.value),
+    dns.createRecord(data.username, data.type, data.name.toLowerCase(), data.value),
     prisma.record.create({
       data: {
         username: data.username,
@@ -57,9 +57,9 @@ export const createUserDomain = async (data: Domain) => {
   return result;
 };
 
-export const updateUserDomain = async (data: Domain) => {
+export const updateUserRecord = async (data: DomainRecord) => {
   const [, result] = await Promise.all([
-    dns.upsertRecord(data.type, data.name, data.value),
+    dns.upsertRecord(data.username, data.type, data.name.toLowerCase(), data.value),
     prisma.record.update({
       where: {
         id: data.id,
@@ -83,9 +83,9 @@ export const updateUserDomain = async (data: Domain) => {
   return result;
 };
 
-export const deleteUserDomain = async (data: Domain) => {
+export const deleteUserRecord = async (data: DomainRecord) => {
   const [, result] = await Promise.all([
-    dns.deleteRecord(data.type, data.name, data.value),
+    dns.deleteRecord(data.username, data.type, data.name.toLowerCase(), data.value),
     prisma.record.delete({
       where: {
         id: data.id,
@@ -99,7 +99,7 @@ export const deleteUserDomain = async (data: Domain) => {
   return result;
 };
 
-export const removeIfExpired = async (data: Domain) => {
+export const removeIfExpired = async (data: DomainRecord) => {
   const recordFromId = await prisma.record.findUnique({
     where: {
       id: data.id,
@@ -112,7 +112,7 @@ export const removeIfExpired = async (data: Domain) => {
 
   if (isExpired(recordFromId.expiresAt)) {
     const [, result] = await Promise.all([
-      dns.deleteRecord(data.type, data.name, data.value),
+      dns.deleteRecord(data.username, data.type, data.name.toLowerCase(), data.value),
       prisma.record.delete({
         where: {
           id: data.id,
@@ -134,5 +134,3 @@ export const willExpireIn = (expiresAt: Date, months: number = 1) =>
 
 export const setMonthsFromNow = (months: number) =>
   new Date(new Date().setMonth(new Date().getMonth() + months));
-
-export type { Domain };
