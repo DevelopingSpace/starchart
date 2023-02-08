@@ -100,7 +100,7 @@ jobs:
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
   E2E-Tests:
-    timeout-minutes: 15
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -140,8 +140,7 @@ jobs:
       - name: Get installed Playwright version
         id: playwright-version
         run: |
-          echo "PLAYWRIGHT_VERSION=$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')"
-          echo $PLAYWRIGHT_VERSION >> $GITHUB_ENV
+          echo "PLAYWRIGHT_VERSION=$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')" >> $GITHUB_ENV
 
       - name: Restore Playwright browser cache
         id: playwright-cache-restore
