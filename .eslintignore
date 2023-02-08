@@ -2,4 +2,5 @@
 /build
 /public/build
 /mysql-data
+/redis-data
 /img
