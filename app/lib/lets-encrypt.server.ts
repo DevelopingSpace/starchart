@@ -35,7 +35,7 @@ const getHostedZoneForDomain = async (incomingDomain: string): Promise<string> =
   if (!found) {
     // We have reached the TLD, resolution failed
     throw new Error(
-      `No authoritative DNS server found for ${incomingDomain} or any of it's parents`
+      `No authoritative DNS server found for ${incomingDomain} or any of its parents`
     );
   }
 
