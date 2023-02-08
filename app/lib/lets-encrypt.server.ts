@@ -1,3 +1,5 @@
+import dnsPromises from 'dns/promises';
+import type { Resolver as PromisesResolver } from 'dns/promises';
 import acme from 'acme-client';
 import type {
   Client as AcmeClient,
@@ -10,6 +12,62 @@ import type {
 } from 'acme-client/types/rfc8555';
 import { secrets } from 'docker-secret';
 
+/**
+ * Get the zone domain (i.e., drop subdomains that are not in the root level of the zone)
+ * @param {string} domain
+ * @returns {Promise<string>} domain
+ */
+const getHostedZoneForDomain = async (incomingDomain: string): Promise<string> => {
+  let domainName = incomingDomain;
+  let found = false;
+
+  // loop until we find a soa, each time drop a subdomain from `domainName`
+  while (domainName.includes('.') && !found) {
+    try {
+      await dnsPromises.resolveSoa(domainName);
+      found = true;
+    } catch (e) {
+      // remove one level, i.e., c.b.a.com => b.a.com
+      domainName = domainName.replace(/^.*?\./, '');
+    }
+  }
+
+  if (!found) {
+    // We have reached the TLD, resolution failed
+    throw new Error(
+      `No authoritative DNS server found for ${incomingDomain} or any of its parents`
+    );
+  }
+
+  // At this point we have the hosted zone in domainName
+  return domainName;
+};
+
+/**
+ * Get an authoritative DNS resolver for the given domain
+ * @param {string} domain
+ * @returns {Promise<Resolver>} domain
+ */
+const getAuthoritativeResolverForDomain = async (domain: string): Promise<PromisesResolver> => {
+  const hostedZone = await getHostedZoneForDomain(domain);
+
+  const nsRecords = await dnsPromises.resolveNs(hostedZone);
+  // Get all ipv4 addresses for all ns records (there may be multiple ipv4 for each NS)
+  const nsAddrIpv4Arr = (await Promise.all(nsRecords.map((nsName) => dnsPromises.resolve4(nsName))))
+    // Flatten array of arrays
+    .flat();
+
+  if (!nsAddrIpv4Arr.length) {
+    throw new Error(
+      `Could not retrieve any valid ipv4 addresses when looking up NS records for: ${hostedZone}`
+    );
+  }
+
+  const resolver = new dnsPromises.Resolver();
+  resolver.setServers(nsAddrIpv4Arr);
+
+  return resolver;
+};
 interface ChallengeBundle {
   domain: string;
   value: String;
@@ -45,6 +103,27 @@ class LetsEncrypt {
   #authorizations?: AcmeAuthorization[];
 
   #challengeBundles?: ChallengeBundle[];
+
+  /**
+   * Verify if key authorization is found on a domain
+   * @param {string} domain to check the txt record on
+   * @param {string} key to check if found
+   */
+  static verifyChallenge = async ({
+    domain,
+    key,
+  }: {
+    domain: string;
+    key: string;
+  }): Promise<boolean> => {
+    const resolver = await getAuthoritativeResolverForDomain(domain);
+
+    const txtRecords = (await resolver.resolveTxt(domain))
+      // Flatten array of arrays
+      .flat();
+
+    return txtRecords.includes(key);
+  };
 
   /**
    * This will reload the account based on the `accountKey`. If the key has no
