@@ -55,7 +55,7 @@ const getAuthoritativeResolverForDomain = async (domain: string): Promise<Promis
   // Get all ipv4 addresses for all ns records (there may be multiple ipv4 for each NS)
   const nsAddrIpv4Arr = (await Promise.all(nsRecords.map((nsName) => dnsPromises.resolve4(nsName))))
     // Flatten array of arrays
-    .reduce((acc, ipv4Arr) => [...acc, ...ipv4Arr], []);
+    .flat();
 
   if (!nsAddrIpv4Arr.length) {
     throw new Error(
@@ -120,7 +120,7 @@ class LetsEncrypt {
 
     const txtRecords = (await resolver.resolveTxt(domain))
       // Flatten array of arrays
-      .reduce((acc, txtArr) => [...acc, ...txtArr], []);
+      .flat();
 
     return txtRecords.includes(key);
   };
