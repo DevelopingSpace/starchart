@@ -1,4 +1,11 @@
+/.github
+/.vscode
+/img
+/e2e/
+/mysql-data
 /node_modules
+/playwright-report
+/test
 *.log
 .DS_Store
 .env

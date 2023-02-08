@@ -1,7 +1,7 @@
 // learn more: https://fly.io/docs/reference/configuration/#services-http_checks
 import type { LoaderArgs } from '@remix-run/server-runtime';
+import { json } from '@remix-run/server-runtime';
 import { prisma } from '~/db.server';
-import logger from '~/lib/logger.server';
 
 export async function loader({ request }: LoaderArgs) {
   const host = request.headers.get('X-Forwarded-Host') ?? request.headers.get('host');
@@ -18,8 +18,8 @@ export async function loader({ request }: LoaderArgs) {
         }
       }),
     ]);
+    return json({ status: 'ok ' });
   } catch (error: unknown) {
-    logger.warn('healthcheck ❌', error);
-    return new Response('ERROR', { status: 500 });
+    return json({ status: 'error' }, { status: 500 });
   }
 }
