@@ -1,10 +1,10 @@
 import { Heading } from '@chakra-ui/react';
 
-export default function NewCertificateRoute() {
+export default function CertificateIndexRoute() {
   return (
     <div>
       <Heading as="h1" size="3xl">
-        New Certificate Form
+        Certificate Info or option to request a certificate
       </Heading>
     </div>
   );

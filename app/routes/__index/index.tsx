@@ -11,11 +11,11 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({ username });
 };
 
-export default function Index() {
+export default function IndexRoute() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <main>
+    <div>
       <Heading as="h1" size="3xl" noOfLines={1}>
         Starchart
       </Heading>
@@ -24,6 +24,6 @@ export default function Index() {
       <Form action="/logout" method="post">
         <Button type="submit">Logout</Button>
       </Form>
-    </main>
+    </div>
   );
 }

@@ -1,8 +1,7 @@
 import { Outlet } from '@remix-run/react';
-
 import Header from '~/components/header';
 
-export default function CertificatesRoute() {
+export default function Index() {
   return (
     <div>
       <Header />
