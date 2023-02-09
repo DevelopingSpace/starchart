@@ -1,3 +1,4 @@
+import https from 'https';
 import dnsPromises from 'dns/promises';
 import type { Resolver as PromisesResolver } from 'dns/promises';
 import acme from 'acme-client';
@@ -187,7 +188,16 @@ class LetsEncrypt {
       // For testing and local development, let's use an ad-hoc generated key
 
       this.#accountKey = (await acme.crypto.createPrivateKey()).toString();
-      this.#directoryUrl = acme.directory.letsencrypt.production;
+      this.#directoryUrl = 'https://127.0.0.1:14000/dir';
+
+      /**
+       * This is an officially supported method of altering axios configuration
+       * Has to be run before acme.Client is instantiated
+       * https://github.com/publishlab/node-acme-client/pull/13
+       */
+      acme.axios.defaults.httpsAgent = new https.Agent({
+        rejectUnauthorized: false,
+      });
     }
 
     this.#client = new acme.Client({
@@ -301,12 +311,12 @@ class LetsEncrypt {
       throw new Error('You need to use recallOrder first before you can verify the challenges');
     }
 
-    if (this.#order.status === 'valid') {
-      // All challenges have already passed
+    if (this.#order.status === 'ready') {
+      // All challenges have already passed, the order is ready to be finalized
       return true;
     }
 
-    if (['expired', 'revoked', 'deactivated'].includes(this.#order.status)) {
+    if (['expired', 'revoked', 'deactivated', 'valid'].includes(this.#order.status)) {
       // Do not try if the order already reached a final status
       // https://www.rfc-editor.org/rfc/rfc8555.html#section-7.1.6
       throw new Error(`Order found to be in the following final state: ${this.#order.status}`);
@@ -328,7 +338,7 @@ class LetsEncrypt {
     /**
      * We just (probably) started some additional async verification processes
      * with the ACME provider. Challenges first go into the `processing` state.
-     * We don't return true until all challenges have passed and the order became `valid`
+     * We don't return true until all challenges have passed and the order became `ready`
      */
     return false;
   };
@@ -338,7 +348,8 @@ class LetsEncrypt {
       throw new Error('You need to use recallOrder first before you can complete it');
     }
 
-    if (this.#order.status !== 'valid') {
+    if (this.#order.status !== 'ready') {
+      // Only orders in 'ready' state can be completed
       throw new Error(`Order state is ${this.#order.status}`);
     }
 
@@ -370,13 +381,11 @@ class LetsEncrypt {
     });
 
     const finalizedOrder = await this.#client.finalizeOrder(this.#order, csr);
-    const cert = await this.#client.getCertificate(finalizedOrder);
+    const certificate = await this.#client.getCertificate(finalizedOrder);
 
     return {
-      csr,
-      key,
-      finalizedOrder,
-      cert,
+      privateKey: key.toString(),
+      certificate,
     };
   };
 
