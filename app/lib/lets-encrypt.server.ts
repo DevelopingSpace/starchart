@@ -324,7 +324,7 @@ class LetsEncrypt {
 
     /**
      * Validate challenges that are in the `pending` or `invalid` state
-     * It is possible to retry failed challenges 
+     * It is possible to retry failed challenges
      * https://www.rfc-editor.org/rfc/rfc8555.html#section-8.2
      */
     await Promise.all(
