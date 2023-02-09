@@ -68,7 +68,7 @@ const getAuthoritativeResolverForDomain = async (domain: string): Promise<Promis
 
   return resolver;
 };
-interface ChallengeBundle {
+interface ChallengeBundle extends AcmeDnsChallenge {
   domain: string;
   value: String;
 }
@@ -76,6 +76,9 @@ interface ChallengeBundle {
 const { LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM } = secrets ?? {};
 
 /**
+ * This code is based on the official example
+ * https://github.com/publishlab/node-acme-client/blob/master/examples/api.js
+ *
  * Usage examples
  *
  * new LetsEncrypt()
@@ -87,6 +90,30 @@ const { LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM } = secrets ?? {};
  *  .initialize()
  *  .then((le) => le.recallOrder(orderUrl))
  *  .then((le) => logger.info(le.challengeBundles));
+ *
+ * const isChallengeSucceeded = await LetsEncrypt
+ *   .verifyChallenge({
+ *     domain: '_acme-challenge.foo.com',
+ *     key: '12345'
+ *   })
+ */
+
+/**
+ * Order
+ * {
+ *   "status":"pending",
+ *   "expires":"2023-02-16T03:16:59Z",
+ *   "identifiers":[
+ *     {"type":"dns","value":"*.xyz.com"},
+ *     {"type":"dns","value":"xyz.com"}
+ *   ],
+ *   "authorizations":[
+ *     "https://acme-v02.api.letsencrypt.org/acme/authz-v3/201997658246",
+ *     "https://acme-v02.api.letsencrypt.org/acme/authz-v3/201997658256"
+ *   ],
+ *   "finalize":"https://acme-v02.api.letsencrypt.org/acme/finalize/956191086/163728358736",
+ *   "url":"https://acme-v02.api.letsencrypt.org/acme/order/956191086/163728358736"
+ * }
  */
 
 class LetsEncrypt {
@@ -203,6 +230,7 @@ class LetsEncrypt {
       const keyAuthorization = await this.#client!.getChallengeKeyAuthorization(selectedChallenge);
 
       const challengeBundle: ChallengeBundle = {
+        ...selectedChallenge,
         domain: `_acme-challenge.${authorization.identifier.value}`,
         value: keyAuthorization,
       };
@@ -262,6 +290,94 @@ class LetsEncrypt {
     await this.#extractChallenges();
 
     return this;
+  };
+
+  /**
+   * This function is to be run after DNS propagation of the challenge TXT records are done
+   * @returns {Promise<boolean>} signifies if we reached a state when all challenges are completed
+   */
+  verifyChallenges = async (): Promise<boolean> => {
+    if (!this.#client || !this.#order || !this.#challengeBundles) {
+      throw new Error('You need to use recallOrder first before you can verify the challenges');
+    }
+
+    if (this.#order.status === 'valid') {
+      // All challenges have already passed
+      return true;
+    }
+
+    if (['expired', 'revoked', 'deactivated'].includes(this.#order.status)) {
+      // Do not try if the order already reached a final status
+      // https://www.rfc-editor.org/rfc/rfc8555.html#section-7.1.6
+      throw new Error(`Order found to be in the following final state: ${this.#order.status}`);
+    }
+
+    /**
+     * Validate challenges that are in the `pending` or `invalid` state
+     * It is possible retry failed challenges
+     * https://www.rfc-editor.org/rfc/rfc8555.html#section-8.2
+     */
+    await Promise.all(
+      this.#challengeBundles
+        // Only do pending and invalid
+        .filter(({ status }) => ['pending', 'invalid'].includes(status))
+        // return the network promise, to be awaited with Promise.all
+        .map((challengeBundle) => this.#client!.completeChallenge(challengeBundle))
+    );
+
+    /**
+     * We just (probably) started some additional async verification processes
+     * with the ACME provider. Challenges first go into the `processing` state.
+     * We don't return true until all challenges have passed and the order became `valid`
+     */
+    return false;
+  };
+
+  completeOrder = async () => {
+    if (!this.#client || !this.#order) {
+      throw new Error('You need to use recallOrder first before you can complete it');
+    }
+
+    if (this.#order.status !== 'valid') {
+      throw new Error(`Order state is ${this.#order.status}`);
+    }
+
+    const { identifiers } = this.#order;
+
+    if (!identifiers.length) {
+      throw new Error('The order does not contain any identifiers. This should not be possible');
+    }
+
+    /**
+     * The common name should be the wildcard domain
+     * If no wildcard domain is found, use the first one in the identifiers list
+     */
+    const commonName = (identifiers.find(({ value }) => value.startsWith('*.')) ?? identifiers[0])
+      .value;
+
+    // All identifiers that are not the commonName are altNames
+    const altNames = identifiers
+      // Only keep the value (domain)
+      .map(({ value }) => value)
+      // Filter out the commonName
+      .filter((value) => value !== commonName);
+
+    /* Finalize order */
+    const [key, csr] = await acme.crypto.createCsr({
+      commonName,
+      // Only send the altNames if the array is not empty (spreading 0 into an object does nothing)
+      ...(altNames.length && { altNames }),
+    });
+
+    const finalizedOrder = await this.#client.finalizeOrder(this.#order, csr);
+    const cert = await this.#client.getCertificate(finalizedOrder);
+
+    return {
+      csr,
+      key,
+      finalizedOrder,
+      cert,
+    };
   };
 
   get order() {
