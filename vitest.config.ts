@@ -10,10 +10,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
-    setupFiles: ['./test/setup-test-env.ts'],
+    setupFiles: ['./test/unit/setup-test-env.ts'],
     include: [
-      './app/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      './test/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+      './app/**/unit/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+      './test/unit/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
     watchExclude: ['.*\\/node_modules\\/.*', '.*\\/build\\/.*', '.*\\/postgres-data\\/.*'],
   },

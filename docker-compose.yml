@@ -41,9 +41,6 @@ services:
       - '5053:5000'
 
   # Let's Encrypt test server - https://github.com/letsencrypt/pebble
-  # Extra SSL Cert for testing available at: `test/resources/ca.cert.pem`
-  # To use in code/tests, add to node's certificate chain via env var:
-  # `cross-env NODE_EXTRA_CA_CERTS=./test/resources/ca.cert.pem node ...`
   lets_encrypt:
     image: letsencrypt/pebble:latest
     container_name: lets_encrypt
