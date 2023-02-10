@@ -5,7 +5,7 @@ import {
   deleteRecord,
   getChangeStatus,
   RecordType,
-} from '../app/lib/dns.server';
+} from '../../app/lib/dns.server';
 
 describe('DNS server lib function test', () => {
   let hostedZoneId: string;
