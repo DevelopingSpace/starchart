@@ -20,7 +20,7 @@ $config = array(
               and need to simulate here.
             */
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => 'user1@myseneca.ca',
-            'email' => 'user1@example.ca',
+            'email' => 'user1@myseneca.ca',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => 'Johannes',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'Kepler',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'=> 'user1@myseneca.ca',
@@ -31,7 +31,7 @@ $config = array(
             'uid' => array('2'),
             'eduPersonAffiliation' => array('group2'),
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => 'user2@myseneca.ca',
-            'email' => 'user2@example.ca',
+            'email' => 'user2@myseneca.ca',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => 'Galileo',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'Galilei',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'=> 'user2@myseneca.ca',
