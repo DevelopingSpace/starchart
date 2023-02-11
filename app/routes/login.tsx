@@ -1,8 +1,9 @@
-import { Heading, Text, Button } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
-import { createUserSession } from '~/session.server';
-
+import { Heading, Text, Button, Center, Grid, GridItem, VStack, Flex } from '@chakra-ui/react';
+import { LockIcon } from '@chakra-ui/icons';
 import type { ActionArgs } from '@remix-run/node';
+import { Form } from '@remix-run/react';
+
+import { createUserSession } from '~/session.server';
 
 export const action = async ({ request }: ActionArgs) => {
   return createUserSession({
@@ -15,10 +16,31 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function Login() {
   return (
-    <Form method="post">
-      <Heading>Login</Heading>
-      <Text>You will be logged in (a session will be created for you)</Text>
-      <Button type="submit">Login</Button>
-    </Form>
+    <Center height="container.md" marginTop="16">
+      <Grid gap="12">
+        <GridItem width="lg">
+          <VStack marginTop="20" spacing="10">
+            <Heading size="2xl" color="brand.500">
+              My.Custom.Domain
+            </Heading>
+            <Text fontSize="3xl">Simple, Secure, DNS for Seneca</Text>
+          </VStack>
+        </GridItem>
+        <GridItem border="solid" borderRadius="2xl" borderColor="brand.500">
+          <VStack height="2xs">
+            <Flex width="100px" height="100px" marginTop="10">
+              <LockIcon color="grey" boxSize="100%" />
+            </Flex>
+            <Flex flex={1} alignItems="center" justifyContent="center">
+              <Form method="post">
+                <Button type="submit" width="xs">
+                  Sign In
+                </Button>
+              </Form>
+            </Flex>
+          </VStack>
+        </GridItem>
+      </Grid>
+    </Center>
   );
 }
