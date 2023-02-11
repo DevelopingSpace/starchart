@@ -35,7 +35,7 @@ $config = array(
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => 'Galileo',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'Galilei',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'=> 'GaleCaller@myseneca.ca',
-            'sAMAccountName"=> "GaleCaller',
+            'sAMAccountName'=> 'GaleCaller',
             'http://schemas.microsoft.com/identity/claims/displayname' => 'Galileo Galilei',
         ),
         'lippersheyh:telescope' => array(
