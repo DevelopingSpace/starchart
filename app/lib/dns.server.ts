@@ -158,7 +158,7 @@ export const getChangeStatus = async (changeId: string) => {
 };
 
 const isNameValid = (name: string) => {
-  return /^[a-z0-9-]+.[a-z]+.[a-z]+\.?$/.test(name);
+  return /^[a-z0-9-]+.[a-z0-9-]+.[a-z]+.[a-z]+\.?$/.test(name);
 };
 
 const isValueValid = (type: RecordType, value: string) => {

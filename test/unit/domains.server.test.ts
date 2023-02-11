@@ -11,9 +11,19 @@ import {
 import { prisma } from '~/db.server';
 import { RecordType } from '@prisma/client';
 
-import type { Domain } from '../../app/lib/domains.server';
+import type { Domain } from '~/lib/domains.server';
 
-describe('Client module function test', () => {
+const resetHostedZone = () => {
+  try {
+    fetch('http://localhost:5053/moto-api/reset', {
+      method: 'POST',
+    });
+  } catch (error) {
+    throw new Error(`Error occurred while deleting records in hosted zone: ${error}`);
+  }
+};
+
+describe('Domains module function test', () => {
   const rootDomain = 'starchart.com';
   const username = 'starchartdev';
   const description = 'This is to test';
@@ -49,13 +59,13 @@ describe('Client module function test', () => {
     expect(result.createdAt).not.toBeNaN();
     expect(result.updatedAt.getTime()).toEqual(result.createdAt.getTime());
     expect(result.expiresAt.getTime()).toBeGreaterThan(result.createdAt.getTime());
-    expect(result.status.length).toBeGreaterThan(0);
+    expect(result.status).toEqual('pending');
   });
 
   test('createUserDomain() throws when record with name, type, value already exists', async () => {
     const subDomain = randomWord();
     const domain = `${subDomain}.${rootDomain}`;
-    const value = '192.168.0.1';
+    const value = '192.168.0.2';
     const data: Domain = {
       type: RecordType.A,
       name: domain,
@@ -112,7 +122,7 @@ describe('Client module function test', () => {
     expect(updatedResult.ports).toEqual(ports);
     expect(updatedResult.updatedAt.getTime()).toBeGreaterThan(result.createdAt.getTime());
     expect(updatedResult.expiresAt.getTime()).toBeGreaterThan(result.updatedAt.getTime());
-    expect(result.status.length).toBeGreaterThan(0);
+    expect(result.status).toEqual('pending');
   });
 
   test('updateUserDomain() throws when attempting to update non existing ID in DB', async () => {
@@ -163,7 +173,7 @@ describe('Client module function test', () => {
     await expect(deleteUserDomain(data)).rejects.toThrow();
   });
 
-  test('isDomainExpired() deletes an expired record in Route 53 and DB ', async () => {
+  test('removeIfExpired() deletes an expired record in Route 53 and DB ', async () => {
     const subDomain = randomWord();
     const domain = `${subDomain}.${rootDomain}`;
     const value = 'cname.test.com';
@@ -201,7 +211,7 @@ describe('Client module function test', () => {
     expect(isExpired(setMonthsFromNow(1))).toBeFalsy();
   });
 
-  test('isDomainBeingExpired() returns true when expiresAt is less than a month from now', () => {
+  test('willExpireIn() returns true when expiresAt is less than a month from now', () => {
     const todayPlusHalfMonth = setMonthsFromNow(0.5);
     const todayPlusTwoMonth = setMonthsFromNow(2);
 
@@ -209,13 +219,3 @@ describe('Client module function test', () => {
     expect(willExpireIn(todayPlusTwoMonth)).toBeFalsy();
   });
 });
-
-const resetHostedZone = () => {
-  try {
-    fetch('http://localhost:5053/moto-api/reset', {
-      method: 'POST',
-    });
-  } catch (error) {
-    throw new Error(`Error occurred while deleting records in hosted zone: ${error}`);
-  }
-};
