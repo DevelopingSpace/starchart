@@ -23,7 +23,9 @@ $config = array(
             'email' => 'user1@example.com',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => 'Johannes',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'Kepler',
-            'http://schemas.microsoft.com/identity/claims/displayname' => 'Johannes Kepler'
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'=> 'HeresJohnny@myseneca.ca',
+            'sAMAccountName'=> 'HeresJohnny', 
+            'http://schemas.microsoft.com/identity/claims/displayname' => 'Johannes Kepler',  
         ),
         'user2:user2pass' => array(
             'uid' => array('2'),
@@ -32,6 +34,8 @@ $config = array(
             'email' => 'user2@example.com',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => 'Galileo',
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'Galilei',
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'=> 'GaleCaller@myseneca.ca',
+            'sAMAccountName"=> "GaleCaller',
             'http://schemas.microsoft.com/identity/claims/displayname' => 'Galileo Galilei',
         ),
         'lippersheyh:telescope' => array(
@@ -41,7 +45,10 @@ $config = array(
           'email' => 'hans-lippershey@example.com',
           'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => 'Hans',
           'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'Lippershey',
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'=> 'Hansolo@myseneca.ca',
+          'sAMAccountName'=> 'Hansolo',
           'http://schemas.microsoft.com/identity/claims/displayname' => 'Hans Lippershey',
+          
       ),
     ),
 
