@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, chakra } from '@chakra-ui/react';
 import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
@@ -20,18 +20,18 @@ export async function loader({ request }: LoaderArgs) {
 
 function Document({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <chakra.html lang="en" minHeight="full">
       <head>
         <Meta />
         <Links />
       </head>
-      <body>
+      <chakra.body minHeight="full">
         {children}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-      </body>
-    </html>
+      </chakra.body>
+    </chakra.html>
   );
 }
 
