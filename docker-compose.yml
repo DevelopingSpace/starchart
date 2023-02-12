@@ -16,8 +16,6 @@ services:
       MYSQL_USER: starchart
       MYSQL_PASSWORD: starchart_password
       MYSQL_ROOT_PASSWORD: root_password
-      NOTIFICATIONS_EMAIL_USER: no-reply@senecacollege.ca
-      MAILHOG_SMTP_PORT: 1025
 
   redis:
     image: redis:7.0.8-alpine3.17
