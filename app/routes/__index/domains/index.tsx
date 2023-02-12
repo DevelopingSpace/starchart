@@ -1,4 +1,4 @@
-import { Container, Heading } from '@chakra-ui/react';
+import { Container, Heading, Text } from '@chakra-ui/react';
 import { useNavigate } from '@remix-run/react';
 import type { DomainsTableAction } from '~/components/domains-table';
 import DomainsTable from '~/components/domains-table';
@@ -23,9 +23,14 @@ export default function DomainsIndexRoute() {
 
   return (
     <Container maxW="contianer.xl">
-      <Heading as="h1" size="2xl" mt="8">
+      <Heading as="h1" size="xl" mt="8">
         Domains List
       </Heading>
+      <Text maxW="container.sm" mb="4" mt="2">
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+        been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+        galley of type and scrambled it to make a type specimen book.
+      </Text>
       <DomainsTable domains={DOMAINS_MOCK} onAction={onDomainAction} />
     </Container>
   );
