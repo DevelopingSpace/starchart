@@ -24,7 +24,7 @@ export default function DomainsIndexRoute() {
   return (
     <Container maxW="contianer.xl">
       <Heading as="h1" size="xl" mt="8">
-        Domains List
+        Domains
       </Heading>
       <Text maxW="container.sm" mb="4" mt="2">
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
