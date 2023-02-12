@@ -45,34 +45,35 @@ export default function DomainsTable(props: DomainsTableProps) {
   }
 
   function renderDomainStatus(action: RecordStatus) {
-    switch (action) {
-      case 'active':
-        return (
-          <Tooltip label="Domain is live">
-            <CheckCircleIcon color="green.500" boxSize="6" />
-          </Tooltip>
-        );
-      case 'error':
-        return (
-          <Tooltip label="Domain error">
-            <WarningIcon color="brand.500" boxSize="6" />
-          </Tooltip>
-        );
-      case 'pending':
-        return (
-          <Tooltip label="Domain is pending">
-            <Flex
-              width="6"
-              height="6"
-              borderRadius="20"
-              alignItems="center"
-              justifyContent="center"
-              background="yellow.500"
-            >
-              <TimeIcon color="white" boxSize="3" />
-            </Flex>
-          </Tooltip>
-        );
+    if (action === 'active') {
+      return (
+        <Tooltip label="Domain is live">
+          <CheckCircleIcon color="green.500" boxSize="6" />
+        </Tooltip>
+      );
+    }
+    if (action === 'error') {
+      return (
+        <Tooltip label="Domain error">
+          <WarningIcon color="brand.500" boxSize="6" />
+        </Tooltip>
+      );
+    }
+    if (action === 'pending') {
+      return (
+        <Tooltip label="Domain is pending">
+          <Flex
+            width="6"
+            height="6"
+            borderRadius="20"
+            alignItems="center"
+            justifyContent="center"
+            background="yellow.500"
+          >
+            <TimeIcon color="white" boxSize="3" />
+          </Flex>
+        </Tooltip>
+      );
     }
   }
 
@@ -91,54 +92,52 @@ export default function DomainsTable(props: DomainsTableProps) {
             </Tr>
           </Thead>
           <Tbody>
-            {domains.map((domain) => {
-              return (
-                <Tr key={domain.id}>
-                  <Td>{renderDomainStatus(domain.status)}</Td>
-                  <Td>
-                    <Flex justifyContent="space-between" alignItems="center">
-                      {domain.name}
-                      <Tooltip label="Copy name to clipboard">
-                        <IconButton
-                          icon={<CopyIcon color="black" boxSize="5" />}
-                          aria-label="Refresh domain"
-                          variant="ghost"
-                          ml="2"
-                          onClick={() => onCopyNameToClipboard(domain.name)}
-                        />
-                      </Tooltip>
-                    </Flex>
-                  </Td>
-                  <Td>{domain.type}</Td>
-                  <Td>{domain.value}</Td>
-                  <Td>
-                    <Flex justifyContent="space-between" alignItems="center">
-                      {domain.expiresAt.toLocaleDateString('en-US')}
+            {domains.map((domain) => (
+              <Tr key={domain.id}>
+                <Td>{renderDomainStatus(domain.status)}</Td>
+                <Td>
+                  <Flex justifyContent="space-between" alignItems="center">
+                    {domain.name}
+                    <Tooltip label="Copy name to clipboard">
                       <IconButton
-                        icon={<RepeatIcon color="black" boxSize="5" />}
+                        icon={<CopyIcon color="black" boxSize="5" />}
                         aria-label="Refresh domain"
                         variant="ghost"
+                        ml="2"
+                        onClick={() => onCopyNameToClipboard(domain.name)}
                       />
-                    </Flex>
-                  </Td>
-                  <Td>
+                    </Tooltip>
+                  </Flex>
+                </Td>
+                <Td>{domain.type}</Td>
+                <Td>{domain.value}</Td>
+                <Td>
+                  <Flex justifyContent="space-between" alignItems="center">
+                    {domain.expiresAt.toLocaleDateString('en-US')}
                     <IconButton
-                      onClick={() => onAction(domain.id, 'EDIT')}
-                      icon={<EditIcon color="black" boxSize={5} />}
-                      aria-label="Edit domain"
-                      variant="ghost"
-                      mr="1"
-                    />
-                    <IconButton
-                      onClick={() => onAction(domain.id, 'DELETE')}
-                      icon={<DeleteIcon color="black" boxSize={5} />}
-                      aria-label="Delete domain"
+                      icon={<RepeatIcon color="black" boxSize="5" />}
+                      aria-label="Refresh domain"
                       variant="ghost"
                     />
-                  </Td>
-                </Tr>
-              );
-            })}
+                  </Flex>
+                </Td>
+                <Td>
+                  <IconButton
+                    onClick={() => onAction(domain.id, 'EDIT')}
+                    icon={<EditIcon color="black" boxSize={5} />}
+                    aria-label="Edit domain"
+                    variant="ghost"
+                    mr="1"
+                  />
+                  <IconButton
+                    onClick={() => onAction(domain.id, 'DELETE')}
+                    icon={<DeleteIcon color="black" boxSize={5} />}
+                    aria-label="Delete domain"
+                    variant="ghost"
+                  />
+                </Td>
+              </Tr>
+            ))}
           </Tbody>
         </Table>
       </TableContainer>

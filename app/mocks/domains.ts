@@ -43,6 +43,20 @@ const DOMAINS_MOCK: Record[] = [
     course: null,
     ports: null,
   },
+  {
+    id: 2342343,
+    username: 'some-username',
+    name: 'some record name',
+    type: 'TXT',
+    value: 'This is an awesome domain! Definitely not spammy.',
+    description: 'lorem ipsum',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    expiresAt: new Date(),
+    status: 'active',
+    course: null,
+    ports: null,
+  },
 ];
 
 export default DOMAINS_MOCK;
