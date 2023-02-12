@@ -1,15 +1,24 @@
+import logger from './logger.server';
 import {
   Route53Client,
   CreateHostedZoneCommand,
   ChangeResourceRecordSetsCommand,
   GetChangeCommand,
 } from '@aws-sdk/client-route-53';
+import { isIPv4, isIPv6 } from 'is-ip';
+
 import type {
   CreateHostedZoneResponse,
   ChangeResourceRecordSetsResponse,
   GetChangeResponse,
 } from '@aws-sdk/client-route-53';
-import { isIPv4, isIPv6 } from 'is-ip';
+import type { RecordType } from '@prisma/client';
+
+if (process.env.NODE_ENV === 'production') {
+  if (!process.env.AWS_ROUTE53_HOSTED_ZONE_ID) {
+    throw new Error('AWS_ROUTE53_HOSTED_ZONE_ID is missing');
+  }
+}
 
 export const route53Client = new Route53Client({
   endpoint: process.env.AWS_ENDPOINT_URL || 'http://localhost:5053',
@@ -20,13 +29,6 @@ export const route53Client = new Route53Client({
     sessionToken: process.env.AWS_SESSION_TOKEN,
   },
 });
-
-export enum RecordType {
-  A = 'A',
-  AAAA = 'AAAA',
-  CNAME = 'CNAME',
-  TXT = 'TXT',
-}
 
 export const createHostedZone = async (domain: string) => {
   try {
@@ -41,33 +43,21 @@ export const createHostedZone = async (domain: string) => {
     }
     return response.HostedZone.Id.replace('/hostedzone/', '');
   } catch (error) {
-    // TODO: fix with better logging...
-    console.warn(error);
+    logger.warn(error);
     throw new Error(`Error while creating hosted zone`);
   }
 };
 
-export const createRecord = (
-  hostedZoneId: string,
-  type: RecordType,
-  name: string,
-  value: string
-) => {
+export const createRecord = (type: RecordType, name: string, value: string) => {
   try {
-    return upsertRecord(hostedZoneId, type, name, value);
+    return upsertRecord(type, name, value);
   } catch (error) {
-    // TODO: fix with better logging...
-    console.warn(error);
+    logger.warn(error);
     throw new Error(`Error occurred while creating resource record`);
   }
 };
 
-export const upsertRecord = async (
-  hostedZoneId: string,
-  type: RecordType,
-  name: string,
-  value: string
-) => {
+export const upsertRecord = async (type: RecordType, name: string, value: string) => {
   try {
     if (!isNameValid(name)) {
       throw new Error('Invalid name provided');
@@ -94,7 +84,7 @@ export const upsertRecord = async (
           },
         ],
       },
-      HostedZoneId: hostedZoneId,
+      HostedZoneId: process.env.AWS_ROUTE53_HOSTED_ZONE_ID,
     });
     const response: ChangeResourceRecordSetsResponse = await route53Client.send(command);
 
@@ -103,18 +93,12 @@ export const upsertRecord = async (
     }
     return response.ChangeInfo.Id;
   } catch (error) {
-    // TODO: fix with better logging...
-    console.warn(error);
+    logger.warn(error);
     throw new Error(`Error occurred while updating resource record: ${error}`);
   }
 };
 
-export const deleteRecord = async (
-  hostedZoneId: string,
-  type: RecordType,
-  name: string,
-  value: string
-) => {
+export const deleteRecord = async (type: RecordType, name: string, value: string) => {
   try {
     if (!isNameValid(name)) {
       throw new Error('Invalid name provided');
@@ -141,7 +125,7 @@ export const deleteRecord = async (
           },
         ],
       },
-      HostedZoneId: hostedZoneId,
+      HostedZoneId: process.env.AWS_ROUTE53_HOSTED_ZONE_ID,
     });
 
     const response: ChangeResourceRecordSetsResponse = await route53Client.send(command);
@@ -151,8 +135,7 @@ export const deleteRecord = async (
     }
     return response.ChangeInfo.Id;
   } catch (error) {
-    // TODO: fix with better logging...
-    console.warn(error);
+    logger.warn(error);
     throw new Error(`Error occurred while deleting resource record`);
   }
 };
@@ -169,14 +152,13 @@ export const getChangeStatus = async (changeId: string) => {
     }
     return response.ChangeInfo.Status;
   } catch (error) {
-    // TODO: fix with better logging...
-    console.warn(error);
+    logger.warn(error);
     throw new Error(`Error occurred while getting change status`);
   }
 };
 
 const isNameValid = (name: string) => {
-  return /^[a-z0-9-]+.[a-z]+.[a-z]+\.?$/.test(name);
+  return /^[a-z0-9-]+.[a-z0-9-]+.[a-z]+.[a-z]+\.?$/.test(name);
 };
 
 const isValueValid = (type: RecordType, value: string) => {
