@@ -1,7 +1,6 @@
 import { createTransport } from 'nodemailer';
 import { secrets } from 'docker-secret';
 import logger from './logger.server';
-require('dotenv').config();
 
 const { NOTIFICATIONS_EMAIL_USER, NODE_ENV, MAILHOG_SMTP_PORT } = process.env;
 const { NOTIFICATIONS_USERNAME, NOTIFICATIONS_PASSWORD } = secrets ?? {};
@@ -35,7 +34,7 @@ const sendNotification = async (emailAddress: string, subject: string, text: str
   try {
     const transport = initializeTransport();
     logger.debug(`Sending notification to ${emailAddress}`);
-    await transport.sendMail({
+    return await transport.sendMail({
       from: NOTIFICATIONS_EMAIL_USER,
       to: emailAddress,
       subject,
@@ -43,9 +42,7 @@ const sendNotification = async (emailAddress: string, subject: string, text: str
     });
   } catch (error) {
     logger.warn('Unable to send notification', error);
-    return false;
   }
-  return true;
 };
 
 export default sendNotification;
