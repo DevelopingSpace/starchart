@@ -110,7 +110,7 @@ async function seed() {
       certificate:
         '-----BEGIN CERTIFICATE-----ApfFCv0O65TYkp5jEWSlU8PhKYD43nXA=-----END CERTIFICATE-----',
       orderUrl: `orderUrl.example.com`,
-      privkey:
+      privateKey:
         '-----BEGIN CERTIFICATE-----ApfFCv0O65TYkp5jEWSlU8PhKYD43nXA=-----END CERTIFICATE-----',
       validTo: certExpDate,
     },
