@@ -20,7 +20,7 @@ export async function loader({ request }: LoaderArgs) {
 
 function Document({ children }: { children: React.ReactNode }) {
   return (
-    <chakra.html lang="en" minHeight="full">
+    <chakra.html lang="en-CA" minHeight="full">
       <head>
         <Meta />
         <Links />
