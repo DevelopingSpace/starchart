@@ -4,14 +4,28 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-      day: 'saturday'
+      day: 'tuesday'
       timezone: 'America/Toronto'
-
     labels:
-      - 'dependencies'
+      - 'npm dependencies'
 
-    reviewers:
-      - 'Seneca-CDOT/osd700-dps911-winter-2023'
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'tuesday'
+      timezone: 'America/Toronto'
+    labels:
+      - 'docker dependencies'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'tuesday'
+      timezone: 'America/Toronto'
+    labels:
+      - 'github-actions dependencies'
 
     open-pull-requests-limit: 5
     # disable auto rebasing
