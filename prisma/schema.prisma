@@ -13,10 +13,10 @@ model User {
   lastName  String
   email     String @unique
 
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  subdomians   Record[]
-  certificates Certificate?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  record      Record[]
+  certificate Certificate?
 }
 
 model Record {
@@ -41,11 +41,11 @@ model Certificate {
   subject     String
   certificate String
   orderUrl    String      @unique @db.VarChar(255)
-  privkey     String
+  privateKey  String
   validFrom   DateTime    @default(now())
   validTo     DateTime
   user        User        @relation(fields: [username], references: [username])
-  challange   Challenge[]
+  challenge   Challenge[]
 }
 
 model Challenge {
