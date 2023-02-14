@@ -71,6 +71,10 @@ jobs:
           MYSQL_USER: starchart
           MYSQL_PASSWORD: starchart_password
           MYSQL_ROOT_PASSWORD: root_password
+      redis:
+        image: redis:7.0.8-alpine3.17
+        ports:
+          - 6379:6379
       dns:
         image: motoserver/moto:4.1.1
         ports:
@@ -128,6 +132,10 @@ jobs:
           MYSQL_USER: starchart
           MYSQL_PASSWORD: starchart_password
           MYSQL_ROOT_PASSWORD: root_password
+      redis:
+        image: redis:7.0.8-alpine3.17
+        ports:
+          - 6379:6379
 
     steps:
       - name: Checkout code
