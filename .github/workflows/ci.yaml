@@ -281,6 +281,9 @@ jobs:
         if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: Seed database
+        run: npm run db:generate
+
       - name: Run typecheck
         run: npm run typecheck
 
