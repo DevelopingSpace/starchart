@@ -73,7 +73,6 @@ jobs:
           MYSQL_ROOT_PASSWORD: root_password
       redis:
         image: redis:7.0.8-alpine3.17
-        command: ['redis-server']
         ports:
           - 6379:6379
       dns:
@@ -135,7 +134,6 @@ jobs:
           MYSQL_ROOT_PASSWORD: root_password
       redis:
         image: redis:7.0.8-alpine3.17
-        command: ['redis-server']
         ports:
           - 6379:6379
 
