@@ -1,18 +1,19 @@
 import { FlowProducer } from 'bullmq';
-import type { FlowJob } from 'bullmq';
-import { orderCreatorQueueName, orderCreatorWorker } from './orderCreatorWorker.server';
-import type { OrderCreatorData } from './orderCreatorWorker.server';
-import { dnsWaiterQueueName, dnsWaiterWorker } from './dnsWaiterWorker.server';
-import type { DnsWaiterData } from './dnsWaiterWorker.server';
+import { orderCreatorQueueName, orderCreatorWorker } from './order-creator-worker.server';
+import { dnsWaiterQueueName, dnsWaiterWorker } from './dns-waiter-worker.server';
 import {
   challengeCompleterQueueName,
   challengeCompleterWorker,
-} from './challengeCompleterWorker.server';
-import type { ChallengeCompleterData } from './challengeCompleterWorker.server';
-import { orderCompleterQueueName, orderCompleterWorker } from './orderCompleterWorker.server copy';
-import type { OrderCompleterData } from './orderCompleterWorker.server copy';
-import { dnsCleanerQueueName, dnsCleanerWorker } from './dnsCleanerWorker.server';
-import type { DnsCleanerData } from './dnsCleanerWorker.server';
+} from './challenge-completer-worker.server';
+import { orderCompleterQueueName, orderCompleterWorker } from './order-completer-worker.server';
+import { dnsCleanerQueueName, dnsCleanerWorker } from './dns-cleaner-worker.server';
+
+import type { FlowJob } from 'bullmq';
+import type { OrderCreatorData } from './order-creator-worker.server';
+import type { DnsWaiterData } from './dns-waiter-worker.server';
+import type { ChallengeCompleterData } from './challenge-completer-worker.server';
+import type { OrderCompleterData } from './order-completer-worker.server';
+import type { DnsCleanerData } from './dns-cleaner-worker.server';
 
 // Exporting these to allow for graceful shutdown
 export {
@@ -90,7 +91,7 @@ export const addCertRequest = async (rootDomain: string) => {
     data: { rootDomain } as OrderCompleterData,
     children: [challengeCompleter],
     opts: {
-      failParentOnFailure: false, // Important, don't wail the cleanup step
+      failParentOnFailure: false, // Important, don't wait the cleanup step
       attempts: 3,
       backoff: {
         type: 'exponential',

@@ -14,7 +14,7 @@ import {
   challengeCompleterWorker,
   orderCompleterWorker,
   dnsCleanerWorker,
-} from '~/queues/certificate/certificateFlow.server';
+} from '~/queues/certificate/certificate-flow.server';
 
 const app = express();
 
