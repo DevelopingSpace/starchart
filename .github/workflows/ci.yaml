@@ -281,7 +281,7 @@ jobs:
         if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Seed database
+      - name: Generate prisma client types
         run: npm run db:generate
 
       - name: Run typecheck
