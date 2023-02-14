@@ -4,8 +4,6 @@ import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 import sendNotification from '~/lib/notifications.server';
 
-import type { Job } from 'bullmq';
-
 export type NotificationData = {
   emailAddress: string;
   subject: string;
@@ -44,7 +42,7 @@ notificationsQueue.on('error', (err) => {
  */
 export const notificationsWorker = new Worker<NotificationData>(
   'notifications',
-  async (job: Job) => {
+  async (job) => {
     const { emailAddress, subject, message } = job.data;
     try {
       await sendNotification(emailAddress, subject, message);
