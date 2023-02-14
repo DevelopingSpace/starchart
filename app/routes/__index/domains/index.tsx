@@ -1,5 +1,6 @@
-import { Container, Heading, Text } from '@chakra-ui/react';
-import { useNavigate } from '@remix-run/react';
+import { AddIcon } from '@chakra-ui/icons';
+import { Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
+import { Link, useNavigate } from '@remix-run/react';
 import type { DomainsTableAction } from '~/components/domains-table';
 import DomainsTable from '~/components/domains-table';
 import DOMAINS_MOCK from '~/mocks/domains';
@@ -31,6 +32,11 @@ export default function DomainsIndexRoute() {
         been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
         galley of type and scrambled it to make a type specimen book.
       </Text>
+      <Flex justifyContent="flex-end">
+        <Link to="/domains/new">
+          <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
+        </Link>
+      </Flex>
       <DomainsTable domains={DOMAINS_MOCK} onAction={onDomainAction} />
     </Container>
   );
