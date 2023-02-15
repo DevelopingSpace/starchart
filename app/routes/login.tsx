@@ -10,18 +10,24 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { LockIcon } from '@chakra-ui/icons';
-import type { ActionArgs } from '@remix-run/node';
+import { ActionArgs, redirect } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 
-import { createUserSession } from '~/session.server';
+import { getUsername } from '~/session.server';
+import { getIdp, sp } from '~/saml.server';
 
 export const action = async ({ request }: ActionArgs) => {
-  return createUserSession({
-    request: request,
-    username: 'starchartdev',
-    remember: false,
-    redirectTo: '/',
-  });
+  //Check if a session with a username exists
+  const user = await getUsername(request);
+
+  //If not then create a login request to the IDP's redirect binding
+  if (!user) {
+    const idp = await getIdp();
+    const { context } = sp.createLoginRequest(idp, 'redirect');
+    return redirect(context);
+  }
+  // fallback if someone accidentally landed here and was already logged in.
+  if (user) return redirect('/');
 };
 
 export default function Login() {

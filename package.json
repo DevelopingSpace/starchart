@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-route-53": "^3.276.0",
+    "@authenio/samlify-node-xmllint": "^2.0.0",
     "@chakra-ui/icons": "^2.0.17",
     "@chakra-ui/react": "^2.5.0",
     "@emotion/react": "^11.10.5",

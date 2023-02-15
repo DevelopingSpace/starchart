@@ -70,9 +70,9 @@ services:
     ports:
       - '8081:8080'
     environment:
-      - SIMPLESAMLPHP_SP_ENTITY_ID=${SAML_ENTITY_ID}
-      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=${SSO_LOGIN_CALLBACK_URL}
-      - SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE=${SLO_LOGOUT_CALLBACK_URL}
+      - SIMPLESAMLPHP_SP_ENTITY_ID=http://host.docker.internal:8080/sp
+      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://localhost:8080/login/callback
+      - SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE=http://localhost:8080/logout/callback
     volumes:
       - ./config/simplesamlphp-users.php:/var/www/simplesamlphp/config/authsources.php
       - ./config/saml20-idp-hosted.php:/var/www/simplesamlphp/metadata/saml20-idp-hosted.php
