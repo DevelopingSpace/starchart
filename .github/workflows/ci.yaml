@@ -331,7 +331,7 @@ jobs:
           images: ghcr.io/DevelopingSpace/starchart
           flavor: latest=true
           tags: |
-            type=ref,event=push
+            type=ref,event=branch
             type=sha
 
       - name: Log in to the GitHub Container Registry
