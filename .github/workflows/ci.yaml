@@ -79,6 +79,11 @@ jobs:
         image: motoserver/moto:4.1.1
         ports:
           - '5053:5000'
+      mailhog:
+        image: jcalonso/mailhog:latest
+        ports:
+          - 8025:8025
+          - 1025:1025
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
