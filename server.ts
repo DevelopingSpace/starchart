@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import path from 'path';
 import express from 'express';
 import compression from 'compression';
@@ -16,21 +17,26 @@ import {
   dnsCleanerWorker,
 } from '~/queues/certificate/certificate-flow.server';
 
+import type { Request, Response } from 'express';
+
 const app = express();
+
+app.use((_req, res, next) => {
+  res.locals.nonce = crypto.randomBytes(16).toString('hex');
+  next();
+});
 
 app.use(
   helmet({
-    // Disable CSP in development so that hot-reloads (e.g., inline scripts)
-    // work, but use the default CSP config in production
-    contentSecurityPolicy:
-      process.env.NODE_ENV === 'production'
-        ? { directives: helmet.contentSecurityPolicy.getDefaultDirectives() }
-        : {
-            directives: {
-              scriptSrc: ["'self'", "'unsafe-inline'"],
-              connectSrc: ["'self'", 'ws:'],
-            },
-          },
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        // Expect a nonce on scripts
+        scriptSrc: ["'self'", (_req, res) => `'nonce-${(res as Response).locals.nonce}'`],
+        // Allow live reload to work over a web socket in development
+        connectSrc: process.env.NODE_ENV === 'production' ? ["'self'"] : ["'self'", 'ws:'],
+      },
+    },
   })
 );
 
@@ -58,15 +64,18 @@ app.use(express.static('public', { maxAge: '1h' }));
 
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), 'build');
+// Pass the nonce we're setting in the CSP headers down to the Remix Loader/Action functions
+const getLoadContext = (_req: Request, res: Response) => ({ nonce: res.locals.nonce });
 
 app.all(
   '*',
   MODE === 'production'
-    ? createRequestHandler({ build: require(BUILD_DIR) })
+    ? createRequestHandler({ build: require(BUILD_DIR), getLoadContext })
     : (...args) => {
         purgeRequireCache();
         const requestHandler = createRequestHandler({
           build: require(BUILD_DIR),
+          getLoadContext,
           mode: MODE,
         });
         return requestHandler(...args);
