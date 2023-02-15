@@ -24,6 +24,23 @@ export async function createUser(
   });
 }
 
-export async function deleteUserByEmail(email: User['email']) {
-  return prisma.user.delete({ where: { email } });
+export async function updateUserByUsername(
+  username: User['username'],
+  firstName?: User['firstName'],
+  lastName?: User['lastName'],
+  email?: User['email']
+) {
+  return prisma.user.update({
+    where: { username },
+    data: {
+      username,
+      firstName,
+      lastName,
+      email,
+    },
+  });
+}
+
+export async function deleteUserByUsername(username: User['username']) {
+  return prisma.user.delete({ where: { username } });
 }
