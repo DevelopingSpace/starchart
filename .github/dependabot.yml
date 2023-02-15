@@ -7,7 +7,11 @@ updates:
       day: 'tuesday'
       timezone: 'America/Toronto'
     labels:
-      - 'npm dependencies'
+      - 'dependency: npm'
+
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: 'docker'
     directory: '/'
@@ -16,7 +20,12 @@ updates:
       day: 'tuesday'
       timezone: 'America/Toronto'
     labels:
-      - 'docker dependencies'
+      - 'dependency: docker'
+
+    ignore:
+      - dependency-name: 'node'
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: 'github-actions'
     directory: '/'
@@ -25,7 +34,7 @@ updates:
       day: 'tuesday'
       timezone: 'America/Toronto'
     labels:
-      - 'github-actions dependencies'
+      - 'dependency: github-actions'
 
     open-pull-requests-limit: 5
     # disable auto rebasing
