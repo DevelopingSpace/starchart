@@ -11,6 +11,7 @@ import { useUser } from '~/utils';
 import logger from '~/lib/logger.server';
 import { requireUser, requireUsername } from '~/session.server';
 import { addNotification } from '~/queues/notifications.server';
+import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
@@ -23,6 +24,12 @@ export const action = async ({ request }: ActionArgs) => {
   // If you want do do another action, set a different `intent`
   // in another form below and post.
   switch (intent) {
+    case 'certificate-request':
+      await addCertRequest('testing.starchart.com');
+      return json({
+        result: 'ok',
+        message: 'Certificate requested',
+      });
     case 'send-notification':
       await addNotification({
         emailAddress: user.email,
@@ -58,6 +65,11 @@ export default function Index() {
         <Form method="post">
           <input type="hidden" name="intent" value="send-notification" />
           <Button type="submit">Send Notification</Button>
+        </Form>
+
+        <Form method="post">
+          <input type="hidden" name="intent" value="certificate-request" />
+          <Button type="submit">Request Certificate</Button>
         </Form>
 
         {data && (

@@ -8,6 +8,13 @@ import cors from 'cors';
 
 import logger from '~/lib/logger.server';
 import { notificationsWorker } from '~/queues/notifications.server';
+import {
+  orderCreatorWorker,
+  dnsWaiterWorker,
+  challengeCompleterWorker,
+  orderCompleterWorker,
+  dnsCleanerWorker,
+} from '~/queues/certificate/certificate-flow.server';
 
 const app = express();
 
@@ -80,7 +87,14 @@ gracefulShutdown(server, {
   onShutdown: async function (signal) {
     logger.info(`Received ${signal}, starting shutdown...`);
     try {
-      await notificationsWorker.close();
+      await Promise.all([
+        notificationsWorker.close(),
+        orderCreatorWorker.close(),
+        dnsWaiterWorker.close(),
+        challengeCompleterWorker.close(),
+        orderCompleterWorker.close(),
+        dnsCleanerWorker.close(),
+      ]);
     } catch (err) {
       logger.warn('Error closing database connections', err);
     }
