@@ -8,6 +8,8 @@ import {
 import { orderCompleterQueueName, orderCompleterWorker } from './order-completer-worker.server';
 import { dnsCleanerQueueName, dnsCleanerWorker } from './dns-cleaner-worker.server';
 
+import { redis } from '~/lib/redis.server';
+
 import type { FlowJob } from 'bullmq';
 import type { OrderCreatorData } from './order-creator-worker.server';
 import type { DnsWaiterData } from './dns-waiter-worker.server';
@@ -24,7 +26,7 @@ export {
   dnsCleanerWorker,
 };
 
-const flowProducer = new FlowProducer();
+const flowProducer = new FlowProducer({ connection: redis });
 
 export const addCertRequest = async (rootDomain: string) => {
   /**
