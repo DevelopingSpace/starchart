@@ -26,9 +26,7 @@ export const action = async ({ request }: ActionArgs) => {
     const idp = await getIdp();
     const { context } = sp.createLoginRequest(idp, 'redirect');
     return redirect(context);
-  }
-  // fallback if someone accidentally landed here and was already logged in.
-  if (user) {
+  } else {
     return redirect('/');
   }
 };
