@@ -57,13 +57,14 @@ export const action = async ({ request }: ActionArgs) => {
       let user = await getUserByUsername(username);
 
       //If not create one
-      if (!user)
+      if (!user) {
         user = await createUser(
           username,
           extract.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
           extract.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
           extract.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']
         );
+      }
 
       //Either way create a session
       return createUserSession({

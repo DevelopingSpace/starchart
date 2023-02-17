@@ -10,7 +10,8 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { LockIcon } from '@chakra-ui/icons';
-import { ActionArgs, redirect } from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 
 import { getUsername } from '~/session.server';
@@ -27,7 +28,9 @@ export const action = async ({ request }: ActionArgs) => {
     return redirect(context);
   }
   // fallback if someone accidentally landed here and was already logged in.
-  if (user) return redirect('/');
+  if (user) {
+    return redirect('/');
+  }
 };
 
 export default function Login() {
