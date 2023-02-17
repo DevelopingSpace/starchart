@@ -25,7 +25,7 @@ In every job, it will attempt to fetch `node_modules` from a cache, instead of i
     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 ```
 
-The hash key is the os name followed by the package-lock hash(`Linux-node-63fe6c0ea79bc1812337982f05a442b9a9ee4df56c872a7f4dad8df440079be5`). This is so when app dependencies are updated, and package-lock is regenerated. It will download and cache the newer `node_modules` instead of restoring the older version from cache.
+The hash key is the os name followed by the package-lock hash(`Linux-node-63fe6c0ea79bc1812337982f05a442b9a9ee4df56c872a7f4dad8df440079be5`). This is so when app dependencies are updated and package-lock is regenerated, it will download and cache the newer `node_modules` instead of restoring the older version from cache.
 
 The `cache/restore` action exposes a `cache-hit` output, which is set to true when the cache is restored. In the event the cache is not found, `node_modules` must be installed manually in the job:
 
