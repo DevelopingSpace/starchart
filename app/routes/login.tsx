@@ -15,7 +15,7 @@ import { redirect } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 
 import { getUsername } from '~/session.server';
-import { getIdp, sp } from '~/saml.server';
+import { createLoginRequest } from '~/saml.server';
 
 export const action = async ({ request }: ActionArgs) => {
   //Check if a session with a username exists
@@ -23,10 +23,10 @@ export const action = async ({ request }: ActionArgs) => {
 
   //If not then create a login request to the IDP's redirect binding
   if (!user) {
-    const idp = await getIdp();
-    const { context } = sp.createLoginRequest(idp, 'redirect');
+    const context = await createLoginRequest();
     return redirect(context);
-  } else {
+  }
+  if (user) {
     return redirect('/');
   }
 };

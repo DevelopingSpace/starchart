@@ -6,7 +6,8 @@ import * as validator from '@authenio/samlify-node-xmllint';
 samlify.setSchemaValidator(validator);
 
 //Here we configure the service provider: https://samlify.js.org/#/sp-configuration
-const spData = {
+
+export const sp = samlify.ServiceProvider({
   entityID: process.env.SAML_ENTITY_ID,
   nameIDFormat: ['urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'],
   wantAssertionsSigned: true,
@@ -22,12 +23,10 @@ const spData = {
       Location: process.env.HOSTNAME + '/logout/callback',
     },
   ],
-};
-
-export const sp = samlify.ServiceProvider(spData);
+});
 
 //Take the metadata stood up by the IDP and use it as the metadata for our IDP object
-export async function getIdp() {
+async function getIdp() {
   // get IDP metadata XML
   const IpdXmlFetch = await fetch(`${process.env.SAML_IDP_METADATA}`);
   const Idpxml = await IpdXmlFetch.text();
@@ -41,4 +40,24 @@ export async function getIdp() {
 
 export function metadata() {
   return sp.getMetadata();
+}
+
+export async function createLoginRequest() {
+  const idp = await getIdp();
+  const { context } = sp.createLoginRequest(idp, 'redirect');
+  return context;
+}
+
+export async function createLogoutRequest(user: string) {
+  const idp = await getIdp();
+  const { context } = sp.createLogoutRequest(idp, 'redirect', { nameID: user });
+  return context;
+}
+
+export async function parseLoginResponse(body: { [k: string]: FormDataEntryValue }) {
+  const idp = await getIdp();
+  const { extract } = await sp.parseLoginResponse(idp, 'post', {
+    body,
+  });
+  return extract;
 }
