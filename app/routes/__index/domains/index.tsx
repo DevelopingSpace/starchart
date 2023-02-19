@@ -1,22 +1,18 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
 import type { LoaderArgs } from '@remix-run/node';
-import { Response } from '@remix-run/node';
 import { Link, useNavigate } from '@remix-run/react';
+import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import type { DomainsTableAction } from '~/components/domains-table';
 import DomainsTable from '~/components/domains-table';
 import { getRecordsByUsername } from '~/models/record.server';
-import { getUser } from '~/session.server';
+import { requireUsername } from '~/session.server';
 import type { Record } from '@prisma/client';
-import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUser(request);
-  if (!user) {
-    throw new Response('No user', { status: 500 });
-  }
+  const username = await requireUsername(request);
 
-  return typedjson(await getRecordsByUsername(user.username));
+  return typedjson(await getRecordsByUsername(username));
 };
 
 export default function DomainsIndexRoute() {

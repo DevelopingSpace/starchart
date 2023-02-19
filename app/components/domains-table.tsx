@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Table,
   Tr,
@@ -24,7 +25,6 @@ import {
   WarningIcon,
 } from '@chakra-ui/icons';
 import DomainsDeleteAlertDialog from './domains-delete-alert-dialog';
-import { useState } from 'react';
 
 interface DomainsTableProps {
   domains: Record[];
