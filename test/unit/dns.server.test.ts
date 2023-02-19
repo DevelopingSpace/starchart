@@ -5,6 +5,7 @@ import {
   deleteRecord,
   getChangeStatus,
   isNameValid,
+  isValueValid,
 } from '~/lib/dns.server';
 import { RecordType } from '@prisma/client';
 
@@ -140,5 +141,22 @@ describe('DNS server lib function test', () => {
     expect(isNameValid(`osd@700.${username}.${rootDomain}`, username)).toBeFalsy();
     expect(isNameValid(`osd-700.localhost`, username)).toBeFalsy();
     expect(isNameValid(`localhost`, username)).toBeFalsy();
+  });
+
+  test('isValueValud() return true when valid IP address is passed, otherwise returns false', () => {
+    expect(isValueValid(RecordType.A, '192.168.0.1')).toBe(true);
+    expect(isValueValid(RecordType.A, '0.0.0.0')).toBe(true);
+    expect(isValueValid(RecordType.AAAA, '2001:db8:3333:4444:5555:6666:7777:8888')).toBe(true);
+    expect(isValueValid(RecordType.AAAA, 'a:b:c:d:e:f:0:1')).toBe(true);
+    expect(isValueValid(RecordType.CNAME, 'test-domain')).toBe(true);
+
+    expect(isValueValid(RecordType.A, '192.168.0')).toBe(false);
+    expect(isValueValid(RecordType.A, '192.168.0.')).toBe(false);
+    expect(isValueValid(RecordType.A, '192.168.0.')).toBe(false);
+    expect(isValueValid(RecordType.A, 'a.b.c.d')).toBe(false);
+    expect(isValueValid(RecordType.AAAA, 'a:b:c:d:e:f:0:1:')).toBe(false);
+    expect(isValueValid(RecordType.AAAA, 'a:b:c:d:e:f:0:')).toBe(false);
+    expect(isValueValid(RecordType.AAAA, 'g:g:g:g:g:g:g:g')).toBe(false);
+    expect(isValueValid(RecordType.CNAME, '')).toBe(false);
   });
 });

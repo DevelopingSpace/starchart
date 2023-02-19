@@ -5,8 +5,8 @@ import {
   ChangeResourceRecordSetsCommand,
   GetChangeCommand,
 } from '@aws-sdk/client-route-53';
-import { isIPv4, isIPv6 } from 'is-ip';
 import isFQDN from 'validator/lib/isFQDN';
+import isIP from 'validator/lib/isIP';
 
 import type {
   CreateHostedZoneResponse,
@@ -195,13 +195,13 @@ export const isNameValid = (name: string, username: string) => {
   );
 };
 
-const isValueValid = (type: RecordType, value: string) => {
+export const isValueValid = (type: RecordType, value: string) => {
   if (type === 'A') {
-    return isIPv4(value);
+    return isIP(value, 4);
   }
 
   if (type === 'AAAA') {
-    return isIPv6(value);
+    return isIP(value, 6);
   }
 
   // CNAME can be any non-empty string. Let AWS validate it.
