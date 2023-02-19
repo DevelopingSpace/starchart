@@ -1,24 +1,49 @@
-import { AddIcon } from '@chakra-ui/icons';
-import { Button, Input, Select, Textarea, VStack } from '@chakra-ui/react';
+import { AddIcon, InfoIcon } from '@chakra-ui/icons';
+import { Button, HStack, Input, Select, Textarea, Tooltip, VStack } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 
 export default function DomainForm() {
   return (
-    <Form method="post">
-      <VStack maxW="lg" spacing="5">
-        <Input placeholder="Domain Name" name="name" />
-        <Select placeholder="Type" name="type">
-          <option value="A">A</option>
-          <option value="AAAA">AAAA</option>
-          <option value="CNAME">CNAME</option>
-          <option value="TXT">TXT</option>
-        </Select>
-        <Input placeholder="Value" name="value" />
-        <Input placeholder="Ports" name="ports" />
-        <Input placeholder="Course" name="course" />
+    <Form className="domain-form" method="post">
+      <VStack maxW="xl" spacing="5">
+        <HStack w="100%">
+          <Input placeholder="Domain Name" name="name" />
+          <Tooltip>
+            <InfoIcon></InfoIcon>
+          </Tooltip>
+        </HStack>
+        <HStack w="100%">
+          <Select placeholder="Type" name="type">
+            <option value="A">A</option>
+            <option value="AAAA">AAAA</option>
+            <option value="CNAME">CNAME</option>
+            <option value="TXT">TXT</option>
+          </Select>
+          <Tooltip>
+            <InfoIcon></InfoIcon>
+          </Tooltip>
+        </HStack>
+        <HStack w="100%">
+          <Input placeholder="Value" name="value" />
+          <Tooltip>
+            <InfoIcon></InfoIcon>
+          </Tooltip>
+        </HStack>
+        <HStack w="100%">
+          <Input placeholder="Ports" name="ports" />
+          <Tooltip>
+            <InfoIcon></InfoIcon>
+          </Tooltip>
+        </HStack>
+        <HStack w="100%">
+          <Input placeholder="Course" name="course" />
+          <Tooltip>
+            <InfoIcon></InfoIcon>
+          </Tooltip>
+        </HStack>
         <Textarea placeholder="Description" rows={10} name="description" />
       </VStack>
-      <Button type="submit" mt="6" rightIcon={<AddIcon boxSize={3} />}>
+      <Button type="submit" mt="6" rightIcon={<AddIcon boxSize={3.5} mt="0.15rem" />}>
         Create
       </Button>
     </Form>
