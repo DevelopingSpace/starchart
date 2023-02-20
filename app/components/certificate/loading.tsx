@@ -1,6 +1,6 @@
 import { Center, Flex, Box, Image, Heading } from '@chakra-ui/react';
 
-import undrawSvg from 'img/undraw_processing_re_tbdu.svg';
+import undrawSvg from '~/assets/undraw_processing_re_tbdu.svg';
 
 export default function LoadingView() {
   return (
