@@ -9,7 +9,7 @@ export default function DomainForm() {
         <HStack w="100%">
           <Input placeholder="Domain Name" name="name" />
           <Tooltip>
-            <InfoIcon></InfoIcon>
+            <InfoIcon color="#d9d9d9" fontSize="xl" />
           </Tooltip>
         </HStack>
         <HStack w="100%">
@@ -20,25 +20,25 @@ export default function DomainForm() {
             <option value="TXT">TXT</option>
           </Select>
           <Tooltip>
-            <InfoIcon></InfoIcon>
+            <InfoIcon />
           </Tooltip>
         </HStack>
         <HStack w="100%">
           <Input placeholder="Value" name="value" />
           <Tooltip>
-            <InfoIcon></InfoIcon>
+            <InfoIcon />
           </Tooltip>
         </HStack>
         <HStack w="100%">
           <Input placeholder="Ports" name="ports" />
           <Tooltip>
-            <InfoIcon></InfoIcon>
+            <InfoIcon />
           </Tooltip>
         </HStack>
         <HStack w="100%">
           <Input placeholder="Course" name="course" />
           <Tooltip>
-            <InfoIcon></InfoIcon>
+            <InfoIcon />
           </Tooltip>
         </HStack>
         <Textarea placeholder="Description" rows={10} name="description" />
