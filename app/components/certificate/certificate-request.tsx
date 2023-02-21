@@ -3,14 +3,14 @@ import { Flex, Heading, Text, HStack, Button } from '@chakra-ui/react';
 import Description from './description';
 
 interface CertificateRequestViewProps {
-  subject: string;
+  domain: string;
   validFrom: Date;
   validTo: Date;
   onRequest: () => void;
 }
 
 export default function CertificateRequestView({
-  subject,
+  domain,
   validFrom,
   validTo,
   onRequest,
@@ -30,7 +30,7 @@ export default function CertificateRequestView({
         <Text>Lorem Ipsum is simply dummy text of the printing and typesetting industry</Text>
 
         <HStack>
-          <Text fontWeight="bold">Domain Name:</Text> <Text>{subject}</Text>
+          <Text fontWeight="bold">Domain Name:</Text> <Text>{domain}</Text>
         </HStack>
       </Flex>
       <Button width="3xs" shadow="xl" onClick={onRequest}>
