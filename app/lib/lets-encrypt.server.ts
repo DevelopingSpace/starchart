@@ -1,7 +1,10 @@
 import https from 'https';
 import dnsPromises from 'dns/promises';
-import type { Resolver as PromisesResolver } from 'dns/promises';
 import acme from 'acme-client';
+
+import secrets from '~/lib/secrets.server';
+
+import type { Resolver as PromisesResolver } from 'dns/promises';
 import type {
   Client as AcmeClient,
   Order as AcmeOrder,
@@ -11,7 +14,8 @@ import type {
   Account as AcmeAccount,
   DnsChallenge as AcmeDnsChallenge,
 } from 'acme-client/types/rfc8555';
-import { secrets } from 'docker-secret';
+
+const { LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM } = secrets;
 
 /**
  * Get the zone domain (i.e., drop subdomains that are not in the root level of the zone)
@@ -73,8 +77,6 @@ interface ChallengeBundle extends AcmeDnsChallenge {
   domain: string;
   value: String;
 }
-
-const { LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM } = secrets ?? {};
 
 /**
  * This code is based on the official example
@@ -173,21 +175,19 @@ class LetsEncrypt {
   };
 
   initialize = async () => {
-    if (process.env.NODE_ENV === 'production') {
-      if (!LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM) {
-        throw new Error('The docker secret LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM is missing');
-      }
+    if (!LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM) {
+      throw new Error('The docker secret LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM is missing');
+    }
 
+    this.#accountKey = LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM;
+
+    if (process.env.NODE_ENV === 'production') {
       if (!process.env.LETS_ENCRYPT_ACCOUNT_EMAIL) {
         throw new Error('The env LETS_ENCRYPT_ACCOUNT_EMAIL is missing');
       }
 
-      this.#accountKey = LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM;
       this.#directoryUrl = acme.directory.letsencrypt.production;
     } else {
-      // For testing and local development, let's use an ad-hoc generated key
-
-      this.#accountKey = (await acme.crypto.createPrivateKey()).toString();
       this.#directoryUrl = 'https://127.0.0.1:14000/dir';
 
       /**

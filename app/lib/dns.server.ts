@@ -1,4 +1,3 @@
-import logger from './logger.server';
 import {
   Route53Client,
   CreateHostedZoneCommand,
@@ -7,6 +6,9 @@ import {
 } from '@aws-sdk/client-route-53';
 import isFQDN from 'validator/lib/isFQDN';
 import isIP from 'validator/lib/isIP';
+
+import logger from '~/lib/logger.server';
+import secrets from '~/lib/secrets.server';
 
 import type {
   CreateHostedZoneResponse,
@@ -21,14 +23,34 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
+const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
+
+const credentials = () => {
+  if (process.env.NODE_ENV === 'production') {
+    if (!AWS_ACCESS_KEY_ID) {
+      throw new Error('Missing AWS_ACCESS_KEY_ID secret');
+    }
+    if (!AWS_SECRET_ACCESS_KEY) {
+      throw new Error('Missing AWS_SECRET_ACCESS_KEY secret');
+    }
+
+    return {
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    };
+  }
+
+  return {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || AWS_SECRET_ACCESS_KEY,
+    sessionToken: process.env.AWS_SESSION_TOKEN,
+  };
+};
+
 export const route53Client = new Route53Client({
   endpoint: process.env.AWS_ENDPOINT_URL || 'http://localhost:5053',
   region: process.env.AWS_REGION || 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-    sessionToken: process.env.AWS_SESSION_TOKEN,
-  },
+  credentials: credentials(),
 });
 
 export const createHostedZone = async (domain: string) => {
