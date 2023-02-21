@@ -4,24 +4,15 @@ import Description from './description';
 
 interface CertificateRequestViewProps {
   domain: string;
-  validFrom: Date;
-  validTo: Date;
   onRequest: () => void;
 }
 
-export default function CertificateRequestView({
-  domain,
-  validFrom,
-  validTo,
-  onRequest,
-}: CertificateRequestViewProps) {
+export default function CertificateRequestView({ domain, onRequest }: CertificateRequestViewProps) {
   return (
     <Flex flexDirection="column" gap="5" width="4xl">
       <Description
         description="Initial: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
         certRequested={false}
-        validFrom={validFrom}
-        validTo={validTo}
       />
       <Flex flexDirection="column" gap="1">
         <Heading as="h3" size="md" marginBottom="3">

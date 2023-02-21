@@ -4,8 +4,15 @@ import { prisma } from '~/db.server';
 
 export type { Certificate } from '@prisma/client';
 
-export function getCertificateByUsername(username: Certificate['username']) {
-  return prisma.certificate.findUnique({ where: { username } });
+export function getIssuedCertificateByUsername(username: Certificate['username']) {
+  // Get the most recently created one
+  return prisma.certificate
+    .findMany({
+      where: { username, status: 'issued' },
+      orderBy: { validFrom: 'desc' },
+      take: 1,
+    })
+    .then(([certificate]) => certificate);
 }
 
 export function getCertificateById(id: Certificate['id']) {
@@ -15,7 +22,7 @@ export function getCertificateById(id: Certificate['id']) {
 export async function createCertificate(
   data: Pick<Certificate, 'username' | 'domain' | 'orderUrl'>
 ) {
-  return prisma.certificate.create({ data });
+  return prisma.certificate.create({ data: { ...data } });
 }
 
 export function updateCertificateById(
