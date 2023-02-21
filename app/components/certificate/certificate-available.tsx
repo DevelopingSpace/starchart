@@ -4,15 +4,15 @@ import Description from './description';
 import CertificateDisplay from './certificate-display';
 
 interface CertificateAvailableProps {
-  validFrom: Date;
-  validTo: Date;
+  validFromFormatted: string;
+  validToFormatted: string;
   publicKey: string;
   privateKey: string;
 }
 
 export default function CertificateAvailable({
-  validFrom,
-  validTo,
+  validFromFormatted,
+  validToFormatted,
   publicKey,
   privateKey,
 }: CertificateAvailableProps) {
@@ -21,8 +21,8 @@ export default function CertificateAvailable({
       <Description
         description="Certificate: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
         certRequested={true}
-        validFrom={validFrom}
-        validTo={validTo}
+        validFromFormatted={validFromFormatted}
+        validToFormatted={validToFormatted}
       />
       <Divider />
       <CertificateDisplay

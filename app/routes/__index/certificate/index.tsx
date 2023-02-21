@@ -35,19 +35,29 @@ export default function CertificateIndexRoute() {
     }, 5000);
   }
 
+  function formatDate(val: Date): string {
+    let date = val.toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    });
+
+    return date;
+  }
+
   if (loading) {
     return <Loading />;
   }
 
   return (
     <Center>
-      <Flex flexDirection="column" gap="5" width="4xl">
+      <Flex flexDirection="column" gap="5" width={{ base: 'md', sm: 'lg', md: '2xl', lg: '4xl' }}>
         {certificateRequested ? (
           <CertificateAvailable
             publicKey={certificate.certificate!}
             privateKey={certificate.privateKey!}
-            validFrom={certificate.validFrom!}
-            validTo={certificate.validTo!}
+            validFromFormatted={formatDate(certificate.validFrom!)}
+            validToFormatted={formatDate(certificate.validTo!)}
           />
         ) : (
           <CertificateRequestView domain={certificate.domain} onRequest={onRequest} />

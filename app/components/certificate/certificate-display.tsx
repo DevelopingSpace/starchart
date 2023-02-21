@@ -34,66 +34,71 @@ export default function CertificateDisplay({ title, description, value }: Certif
   }
 
   return (
-    <Flex flexDirection="column" gap="5">
-      <Flex flexDirection="column" gap="4">
-        <HStack gap="4">
-          <Heading as="h4" size="sm">
-            {title}
-          </Heading>
-          <Tooltip label={`Copy ${title}`}>
-            <IconButton
-              backgroundColor="transparent"
-              color="black"
-              size="xs"
-              _hover={{
-                background: 'whitesmoke',
-                color: 'teal.500',
-              }}
-              aria-label="Copy to Clipboard"
-              icon={<CopyIcon fontSize="md" />}
-              onClick={() => onCopy()}
-            />
-          </Tooltip>
-          <Tooltip label={`Download ${title}`}>
-            <IconButton
-              backgroundColor="transparent"
-              color="black"
-              size="xs"
-              _hover={{
-                background: 'brand.500',
-                color: 'white',
-              }}
-              aria-label="Download"
-              icon={
-                <DownloadIcon
-                  fontSize="md"
-                  onClick={() =>
-                    toast({
-                      title: `Downloading ${title}`,
-                      position: 'bottom-right',
-                      status: 'success',
-                    })
-                  }
-                />
-              }
-            />
-          </Tooltip>
-        </HStack>
-        <Text>{description}</Text>
-        <Accordion allowMultiple>
-          <AccordionItem>
-            <AccordionButton>
-              <Box as="span" flex="1" textAlign="left">
-                Show/Hide
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel>
-              <Text>{value}</Text>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
-      </Flex>
+    <Flex
+      flexDirection="column"
+      gap="4"
+      textAlign={{ base: 'center', md: 'left' }}
+      fontSize={{ base: 'sm', md: 'md' }}
+    >
+      <HStack gap="4" alignSelf={{ base: 'center', md: 'flex-start' }}>
+        <Heading as="h4" size="sm">
+          {title}
+        </Heading>
+        <Tooltip label={`Copy ${title}`}>
+          <IconButton
+            backgroundColor="transparent"
+            color="black"
+            size="xs"
+            _hover={{
+              background: 'whitesmoke',
+              color: 'teal.500',
+            }}
+            aria-label="Copy to Clipboard"
+            icon={<CopyIcon fontSize="md" />}
+            onClick={() => onCopy()}
+          />
+        </Tooltip>
+        <Tooltip label={`${title} is Downloaded`}>
+          <IconButton
+            backgroundColor="transparent"
+            color="black"
+            size="xs"
+            _hover={{
+              background: 'brand.500',
+              color: 'white',
+            }}
+            aria-label="Download"
+            icon={
+              <DownloadIcon
+                fontSize="md"
+                onClick={() =>
+                  toast({
+                    title: `${title} is Downloaded`,
+                    position: 'bottom-right',
+                    status: 'success',
+                  })
+                }
+              />
+            }
+          />
+        </Tooltip>
+      </HStack>
+      <Text>{description}</Text>
+      <Accordion allowMultiple>
+        <AccordionItem>
+          <AccordionButton>
+            <Box as="span" flex="1">
+              Show/Hide
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel>
+            <Flex justifyContent="center">
+              <Text maxWidth={{ base: '3xs', xs: 'xs', sm: 'md', md: 'full' }}>{value}</Text>
+            </Flex>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
     </Flex>
   );
 }
