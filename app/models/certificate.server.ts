@@ -5,7 +5,10 @@ import { prisma } from '~/db.server';
 export type { Certificate } from '@prisma/client';
 
 export function getIssuedCertificateByUsername(username: Certificate['username']) {
-  // Get the most recently created one
+  /**
+   * There might be multiple certificates in the db for the same user, let's get
+   * the most recent one that has been successfully issued
+   */
   return prisma.certificate
     .findMany({
       where: { username, status: 'issued' },
@@ -19,9 +22,7 @@ export function getCertificateById(id: Certificate['id']) {
   return prisma.certificate.findUnique({ where: { id } });
 }
 
-export async function createCertificate(
-  data: Pick<Certificate, 'username' | 'domain' | 'orderUrl'>
-) {
+export function createCertificate(data: Pick<Certificate, 'username' | 'domain' | 'orderUrl'>) {
   return prisma.certificate.create({ data: { ...data } });
 }
 
