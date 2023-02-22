@@ -9,13 +9,13 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-interface DomainsDeleteAlertDialogProps {
+interface RecordDeleteAlertDialogProps {
   isOpen: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 }
 
-export default function DomainsDeleteAlertDialog(props: DomainsDeleteAlertDialogProps) {
+export default function RecordDeleteAlertDialog(props: RecordDeleteAlertDialogProps) {
   const { isOpen, onCancel, onConfirm } = props;
   const cancelRef = React.useRef(null);
 

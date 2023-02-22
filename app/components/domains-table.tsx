@@ -24,7 +24,7 @@ import {
   TimeIcon,
   WarningIcon,
 } from '@chakra-ui/icons';
-import DomainsDeleteAlertDialog from './domains-delete-alert-dialog';
+import RecordDeleteAlertDialog from './record-delete-alert-dialog';
 
 interface DomainsTableProps {
   domains: Record[];
@@ -170,7 +170,7 @@ export default function DomainsTable(props: DomainsTableProps) {
           </Table>
         </TableContainer>
       </Card>
-      <DomainsDeleteAlertDialog
+      <RecordDeleteAlertDialog
         isOpen={isDeleteAlertDialogOpen}
         onCancel={onDomainDeleteCancel}
         onConfirm={onDomainDeleteConfirm}
