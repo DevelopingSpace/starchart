@@ -1,5 +1,4 @@
 import { FormControl, FormLabel, HStack } from '@chakra-ui/react';
-import type { FunctionComponent } from 'react';
 
 interface FormFieldProps {
   label: string;
