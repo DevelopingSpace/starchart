@@ -2,13 +2,13 @@
 
 <!-- vim-markdown-toc GFM -->
 
-- [Contributing guidelines](#contributing-guidelines)
-  - [Development](#development)
-    - [System prerequisites](#system-prerequisites)
-    - [Dev environment set up](#dev-environment-set-up)
-  - [Pull requests](#pull-requests)
-  - [Merging to main](#merging-to-main)
-    - [Stages: Draft and Ready for review](#stages-draft-and-ready-for-review)
+- [Development](#development)
+  - [System prerequisites](#system-prerequisites)
+  - [Dev environment set up](#dev-environment-set-up)
+- [Pull requests](#pull-requests)
+- [Merging to main](#merging-to-main)
+  - [Stages: Draft and Ready for review](#stages-draft-and-ready-for-review)
+- [Code style](#code-style)
 
 <!-- vim-markdown-toc -->
 
@@ -78,3 +78,22 @@ Pull requests have two stages: Draft and Ready for review.
    - You can skip this if your PR is ready for review.
 2. Change your PR to ready when the PR is ready for review.
    - You can convert back to Draft at any time.
+
+## Code style
+
+- All code styles should adhere to prettier code style. There are pre commit hooks that runs prettier on the entire code base.
+- It is strongly encouraged to write documentation in the [tsdoc](https://tsdoc.org/) where it makes sense.
+
+```ts
+/**
+ * Returns the average of two numbers.
+ *
+ * @param x - The first input number
+ * @param y - The second input number
+ * @returns The arithmetic mean of `x` and `y`
+ *
+ */
+function getAverage(x: number, y: number): number {
+  return (x + y) / 2.0;
+}
+```
