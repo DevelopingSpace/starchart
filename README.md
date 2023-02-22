@@ -1,6 +1,8 @@
-# Starchart
+# Starchart [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Starchart makes it easy for the Seneca developer community to create and manager their own custom subdomains and SSL certificates, without cost or having to provide personal information.
+
+For information about running Starchart, see our [deployment guide](DEPLOY.md). For development information, see our [contributing guide](CONTRIBUTING.md). For further technical background, planning, and initial designs, please see the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
 
 ## Introduction
 
@@ -34,9 +36,3 @@ Here is the planned architecture and [technologies used](https://github.com/Sene
 ![components](img/Starchart%20architecture.drawio.png)
 
 ## Development
-
-- Further technical background, planning, and initial designs are available in the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
-
-- If you would like to contribute, please see how to [here](CONTRIBUTING.md).
-
-- You can find the license [here](LICENSE).
