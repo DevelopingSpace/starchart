@@ -19,6 +19,7 @@ import {
 
 import type { Request, Response } from 'express';
 
+const MODE = process.env.NODE_ENV;
 const app = express();
 
 app.use((_req, res, next) => {
@@ -34,7 +35,9 @@ app.use(
         // Expect a nonce on scripts
         scriptSrc: ["'self'", (_req, res) => `'nonce-${(res as Response).locals.nonce}'`],
         // Allow live reload to work over a web socket in development
-        connectSrc: process.env.NODE_ENV === 'production' ? ["'self'"] : ["'self'", 'ws:'],
+        connectSrc: MODE === 'production' ? ["'self'"] : ["'self'", 'ws:'],
+        // Don't force https unless in production
+        upgradeInsecureRequests: MODE === 'production' ? [] : null,
       },
     },
   })
@@ -62,7 +65,6 @@ app.use('/build', express.static('public/build', { immutable: true, maxAge: '1y'
 // more aggressive with this caching.
 app.use(express.static('public', { maxAge: '1h' }));
 
-const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), 'build');
 // Pass the nonce we're setting in the CSP headers down to the Remix Loader/Action functions
 const getLoadContext = (_req: Request, res: Response) => ({ nonce: res.locals.nonce });
