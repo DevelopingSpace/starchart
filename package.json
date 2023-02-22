@@ -35,7 +35,7 @@
     "@chakra-ui/react": "^2.5.0",
     "@emotion/react": "^11.10.5",
     "@emotion/server": "^11.10.0",
-    "@emotion/styled": "^11.10.5",
+    "@emotion/styled": "^11.10.6",
     "@prisma/client": "^4.10.1",
     "@remix-run/express": "^1.13.0",
     "@remix-run/node": "^1.13.0",
