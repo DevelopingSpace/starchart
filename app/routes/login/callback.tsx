@@ -49,7 +49,6 @@ export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
   const body = Object.fromEntries(formData);
   const samlResponse = await parseLoginResponse(body);
-  console.log(samlResponse);
 
   // Try and extract the username and see if there is an existing user by that name
   if (!samlResponse.attributes.sAMAccountName) {
