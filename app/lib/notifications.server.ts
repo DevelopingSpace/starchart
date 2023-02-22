@@ -3,7 +3,7 @@ import { createTransport } from 'nodemailer';
 import secrets from '~/lib/secrets.server';
 import logger from './logger.server';
 
-const { NOTIFICATIONS_EMAIL_USER, NODE_ENV, MAILHOG_SMTP_PORT } = process.env;
+const { NOTIFICATIONS_EMAIL_USER, NODE_ENV, SMTP_PORT } = process.env;
 const { NOTIFICATIONS_USERNAME, NOTIFICATIONS_PASSWORD } = secrets;
 
 const initializeTransport = () => {
@@ -27,7 +27,7 @@ const initializeTransport = () => {
     });
   }
   return createTransport({
-    port: Number(MAILHOG_SMTP_PORT || '1025'),
+    port: Number(SMTP_PORT || '1025'),
   });
 };
 
