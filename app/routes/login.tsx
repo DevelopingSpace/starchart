@@ -18,10 +18,10 @@ import { getUsername } from '~/session.server';
 import { createLoginRequest } from '~/saml.server';
 
 export const action = async ({ request }: ActionArgs) => {
-  //Check if a session with a username exists
+  // Check if a session with a username exists
   const user = await getUsername(request);
 
-  //If not then create a login request to the IDP's redirect binding
+  // If not then create a login request to the IDP's redirect binding
   if (!user) {
     const context = await createLoginRequest();
     return redirect(context);

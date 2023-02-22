@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 
 samlify.setSchemaValidator(validator);
 
-//Here we configure the service provider: https://samlify.js.org/#/sp-configuration
+// Here we configure the service provider: https://samlify.js.org/#/sp-configuration
 
 const sp = samlify.ServiceProvider({
   entityID: process.env.SAML_ENTITY_ID,
@@ -26,9 +26,9 @@ const sp = samlify.ServiceProvider({
   ],
 });
 
-//Take the metadata stood up by the IDP and use it as the metadata for our IDP object
+// Take the metadata stood up by the IDP and use it as the metadata for our IDP object
 const idp = samlify.IdentityProvider({
-  metadata: readFileSync(`${process.env.SAML_IDP_METADATA}`),
+  metadata: readFileSync(`${process.env.SAML_IDP_METADATA_FILE}`),
 });
 
 export function metadata() {

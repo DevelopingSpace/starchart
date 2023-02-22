@@ -7,7 +7,7 @@ import { createLogoutRequest } from '~/saml.server';
 export const action = async ({ request }: ActionArgs) => {
   const user = await getUsername(request);
 
-  //Do the opposite of login
+  // Do the opposite of login
   if (user) {
     const context = await createLogoutRequest(user);
     return redirect(context);

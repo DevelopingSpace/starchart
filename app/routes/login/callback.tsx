@@ -4,7 +4,7 @@ import { parseLoginResponse } from '~/saml.server';
 import { redirect } from '@remix-run/node';
 import { createUser, getUserByUsername } from '~/models/user.server';
 
-/*This is the post route that the SAML response is bound to. It comes back as formData.
+/* This is the post route that the SAML response is bound to. It comes back as formData.
   We attempt to extract the SAML response into a json format that we can then use:
 
 The response from SimpleSAMLPhp
@@ -41,41 +41,40 @@ The response from SimpleSAMLPhp
 }
 */
 export const action = async ({ request }: ActionArgs) => {
-  const formData = await request.formData();
-
-  if (request.method != 'POST') {
-    //Request method is not post, why are you here?
+  if (request.method !== 'POST') {
+    // Request method is not post, why are you here?
     return redirect('/');
   }
 
+  const formData = await request.formData();
   const body = Object.fromEntries(formData);
-  const extract = await parseLoginResponse(body);
+  const samlResponse = await parseLoginResponse(body);
+  console.log(samlResponse);
 
-  //Try and extract the username and see if there is an existing user by that name
-  if (extract.attributes.sAMAccountName) {
-    const username = extract.attributes.sAMAccountName;
-    // get or create user
-    let user = await getUserByUsername(username);
+  // Try and extract the username and see if there is an existing user by that name
+  if (!samlResponse.attributes.sAMAccountName) {
+    // TODO: Make this redirect to access denied page
+    return redirect('/');
+  }
+  const username = samlResponse.attributes.sAMAccountName;
+  // get or create user
+  let user = await getUserByUsername(username);
 
-    //If not create one
-    if (!user) {
-      user = await createUser(
-        username,
-        extract.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
-        extract.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
-        extract.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']
-      );
-    }
-
-    //Either way create a session
-    return createUserSession({
-      request: request,
-      username: username,
-      remember: false,
-      redirectTo: '/',
-    });
+  // If not create one
+  if (!user) {
+    user = await createUser(
+      username,
+      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
+      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
+      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']
+    );
   }
 
-  // TODO: Create some form of access denied notification to redirect to here
-  return redirect('/access_denied');
+  // Either way create a session
+  return createUserSession({
+    request: request,
+    username: username,
+    remember: false,
+    redirectTo: '/',
+  });
 };

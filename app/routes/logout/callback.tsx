@@ -2,7 +2,7 @@ import type { LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { logout } from '~/session.server';
 
-//Logout, destroying the session with Starchart
+// Logout, destroying the session with Starchart
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
@@ -10,7 +10,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   if (SAMLResponse) {
     return await logout(request);
-  } else {
-    return redirect('/');
   }
+  return redirect('/');
 };
