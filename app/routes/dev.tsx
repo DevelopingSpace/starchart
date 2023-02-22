@@ -10,7 +10,7 @@ import invariant from 'tiny-invariant';
 import { useUser } from '~/utils';
 import logger from '~/lib/logger.server';
 import { requireUser, requireUsername } from '~/session.server';
-import { addNotification } from '~/queues/notifications.server';
+import { addNotification } from '~/queues/notifications/notifications.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
 import { addDnsRequest, updateDnsRequest, deleteDnsRequest } from '~/queues/dns/dns-flow.server';

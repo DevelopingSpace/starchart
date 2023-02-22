@@ -12,6 +12,8 @@ async function seed() {
   recordExpDate.setMonth(recordExpDate.getMonth() + 6); // a record expires after 6 months
   let certExpDate = new Date();
   certExpDate.setDate(certExpDate.getDate() + 90); // certificate expires after 90 days
+  let temporaryExpDate = new Date();
+  temporaryExpDate.setDate(temporaryExpDate.getDate() + 7); // expiration for notifications
 
   // cleanup the existing database; no worries if it doesn't exist yet
   await prisma.record.deleteMany().catch(() => {});
@@ -60,7 +62,7 @@ async function seed() {
         description: 'For final project.',
         course: 'OSD700',
         ports: '8080, 1234',
-        expiresAt: recordExpDate,
+        expiresAt: temporaryExpDate,
         status: `active`,
       },
       // AAAA record
@@ -133,7 +135,7 @@ async function seed() {
       privateKey:
         '-----BEGIN CERTIFICATE-----ApfFCv0O65TYkp5jEWSlU8PhKYD43nXA=-----END CERTIFICATE-----',
       validFrom: new Date(),
-      validTo: certExpDate,
+      validTo: temporaryExpDate,
       status: 'pending',
     },
   });
