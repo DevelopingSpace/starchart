@@ -40,9 +40,9 @@ export function metadata() {
   return sp.getMetadata();
 }
 
-export async function createLoginRequest(url: URL) {
+export async function createLoginRequest(url?: URL) {
   const { context } = sp.createLoginRequest(idp, 'redirect');
-  const returnTo = url.searchParams.get('redirectTo') || '/';
+  const returnTo = url ? url.searchParams.get('redirectTo') : '/';
   return context + '&RelayState=' + returnTo;
 }
 
