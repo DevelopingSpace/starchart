@@ -25,8 +25,8 @@ jobs:
       - name: Generate release
         uses: 'marvinpinto/action-automatic-releases@v1.2.1'
         with:
-          # NOTE: this requires read and write permissions, needs to be changed in settings
-          # https://github.com/marvinpinto/actions/issues/61
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          repo_token:
+            '${{ secrets.GITHUB_TOKEN }}'
+            # generate release name with the tag name that was just pushed
           automatic_release_tag: ${{ steps.vars.outputs.tag }}
           prerelease: false
