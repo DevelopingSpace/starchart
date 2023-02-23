@@ -2,10 +2,14 @@
 // https://github.com/remix-run/examples/pull/130/files/ec66b3060fac83eec2389eb0c96aad6d8ea4aed1#diff-02d2b71e481b2495b8a72af14f09fc28238298c7f1d19a540e37c9228985b0da
 import * as samlify from 'samlify';
 import * as validator from '@authenio/samlify-node-xmllint';
-import { readFileSync } from 'fs';
 import secrets from './lib/secrets.server';
 
 samlify.setSchemaValidator(validator);
+
+const { SAML_IDP_METADATA } = secrets;
+if (!SAML_IDP_METADATA) {
+  throw new Error('Missing SAML_IDP_METADATA secret');
+}
 
 // Here we configure the service provider: https://samlify.js.org/#/sp-configuration
 
@@ -29,16 +33,17 @@ const sp = samlify.ServiceProvider({
 
 // Take the metadata stood up by the IDP and use it as the metadata for our IDP object
 const idp = samlify.IdentityProvider({
-  metadata: readFileSync(secrets.SAML_IDP_METADATA_FILE),
+  metadata: SAML_IDP_METADATA,
 });
 
 export function metadata() {
   return sp.getMetadata();
 }
 
-export async function createLoginRequest() {
+export async function createLoginRequest(url: URL) {
   const { context } = sp.createLoginRequest(idp, 'redirect');
-  return context;
+  const returnTo = url.searchParams.get('redirectTo') || '/';
+  return context + '&RelayState=' + returnTo;
 }
 
 export async function createLogoutRequest(user: string) {

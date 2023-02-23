@@ -75,7 +75,6 @@ export const action = async ({ request }: ActionArgs) => {
     request: request,
     username: username,
     remember: false,
-    // redirectTo: '/',
     redirectTo: returnTo,
   });
 };
