@@ -6,7 +6,10 @@ on:
       - 'v*'
 
 permissions:
+  actions: write
   contents: write
+  pull-requests: write
+  statuses: write
 
 jobs:
   Release:
