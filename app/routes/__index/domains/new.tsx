@@ -1,7 +1,7 @@
 import { Container, Heading, Text } from '@chakra-ui/react';
 import { json, redirect } from '@remix-run/node';
 
-import DomainForm from '~/components/domain-form';
+import DnsRecordForm from '~/components/dns-record/form';
 import { createRecord } from '~/models/record.server';
 import { getUsername } from '~/session.server';
 
@@ -46,7 +46,7 @@ export default function NewDomainRoute() {
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
         been the industry's standard dummy text ever since the 1500s
       </Text>
-      <DomainForm />
+      <DnsRecordForm />
     </Container>
   );
 }

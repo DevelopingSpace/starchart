@@ -1,7 +1,7 @@
 import { AddIcon, InfoIcon } from '@chakra-ui/icons';
 import { Button, Input, Select, Textarea, Tooltip, VStack } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
-import FormField from './dns-record/form-field';
+import FormField from './form-field';
 
 export default function DomainForm() {
   return (
