@@ -56,5 +56,5 @@ export async function parseLoginResponse(body: { [k: string]: FormDataEntryValue
     body,
   });
   const relayState = body.RelayState as string;
-  return { attributes: extract, relayState: relayState };
+  return { samlResponse: extract, relayState: relayState };
 }
