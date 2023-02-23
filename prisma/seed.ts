@@ -106,13 +106,15 @@ async function seed() {
     data: {
       id: 1,
       username,
-      subject: `CN=*.${username}.example.com`,
+      domain: `*.${username}.example.com`,
       certificate:
         '-----BEGIN CERTIFICATE-----ApfFCv0O65TYkp5jEWSlU8PhKYD43nXA=-----END CERTIFICATE-----',
       orderUrl: `orderUrl.example.com`,
       privateKey:
         '-----BEGIN CERTIFICATE-----ApfFCv0O65TYkp5jEWSlU8PhKYD43nXA=-----END CERTIFICATE-----',
+      validFrom: new Date(),
       validTo: certExpDate,
+      status: 'pending',
     },
   });
 

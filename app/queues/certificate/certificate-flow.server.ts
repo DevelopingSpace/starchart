@@ -26,9 +26,14 @@ export {
   dnsCleanerWorker,
 };
 
+interface AddCertRequest {
+  rootDomain: string;
+  username: string;
+}
+
 const flowProducer = new FlowProducer({ connection: redis });
 
-export const addCertRequest = async (rootDomain: string) => {
+export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) => {
   /**
    * We are adding 5 jobs, to separate queues, each
    * parent depending on the child to complete
@@ -43,7 +48,7 @@ export const addCertRequest = async (rootDomain: string) => {
   const orderCreator: FlowJob = {
     name: `createOrder:${rootDomain}`,
     queueName: orderCreatorQueueName,
-    data: { rootDomain } as OrderCreatorData,
+    data: { rootDomain, username } as OrderCreatorData,
     opts: {
       failParentOnFailure: true,
       attempts: 5,
@@ -58,7 +63,7 @@ export const addCertRequest = async (rootDomain: string) => {
   const dnsVerifier: FlowJob = {
     name: `waitDns:${rootDomain}`,
     queueName: dnsWaiterQueueName,
-    data: { rootDomain } as DnsWaiterData,
+    data: { rootDomain, username } as DnsWaiterData,
     children: [orderCreator],
     opts: {
       failParentOnFailure: true,
@@ -74,7 +79,7 @@ export const addCertRequest = async (rootDomain: string) => {
   const challengeCompleter: FlowJob = {
     name: `completeChallenges:${rootDomain}`,
     queueName: challengeCompleterQueueName,
-    data: { rootDomain } as ChallengeCompleterData,
+    data: { rootDomain, username } as ChallengeCompleterData,
     children: [dnsVerifier],
     opts: {
       failParentOnFailure: true,
@@ -90,7 +95,7 @@ export const addCertRequest = async (rootDomain: string) => {
   const orderCompleter: FlowJob = {
     name: `completeOrder:${rootDomain}`,
     queueName: orderCompleterQueueName,
-    data: { rootDomain } as OrderCompleterData,
+    data: { rootDomain, username } as OrderCompleterData,
     children: [challengeCompleter],
     opts: {
       failParentOnFailure: false, // Important, don't wait the cleanup step
@@ -107,7 +112,7 @@ export const addCertRequest = async (rootDomain: string) => {
   const dnsCleaner: FlowJob = {
     name: `cleanDns:${rootDomain}`,
     queueName: dnsCleanerQueueName,
-    data: { rootDomain } as DnsCleanerData,
+    data: { rootDomain, username } as DnsCleanerData,
     children: [orderCompleter],
     opts: {
       attempts: 3,

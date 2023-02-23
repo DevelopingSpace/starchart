@@ -73,9 +73,9 @@ const getAuthoritativeResolverForDomain = async (domain: string): Promise<Promis
 
   return resolver;
 };
-interface ChallengeBundle extends AcmeDnsChallenge {
+export interface ChallengeBundle extends AcmeDnsChallenge {
   domain: string;
-  value: String;
+  value: string;
 }
 
 /**
@@ -121,10 +121,6 @@ interface ChallengeBundle extends AcmeDnsChallenge {
 
 class LetsEncrypt {
   #client?: AcmeClient;
-
-  #directoryUrl?: string;
-
-  #accountKey?: string;
 
   #account?: AcmeAccount;
 
@@ -175,22 +171,25 @@ class LetsEncrypt {
   };
 
   initialize = async () => {
+    if (!process.env.LETS_ENCRYPT_ACCOUNT_EMAIL) {
+      throw new Error('The env LETS_ENCRYPT_ACCOUNT_EMAIL is missing');
+    }
+
+    if (!process.env.LETS_ENCRYPT_DIRECTORY_URL) {
+      throw new Error('The env LETS_ENCRYPT_DIRECTORY_URL is missing');
+    }
+
     if (!LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM) {
       throw new Error('The docker secret LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM is missing');
     }
 
-    this.#accountKey = LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM;
-
-    if (process.env.NODE_ENV === 'production') {
-      if (!process.env.LETS_ENCRYPT_ACCOUNT_EMAIL) {
-        throw new Error('The env LETS_ENCRYPT_ACCOUNT_EMAIL is missing');
-      }
-
-      this.#directoryUrl = acme.directory.letsencrypt.production;
-    } else {
-      this.#directoryUrl = 'https://127.0.0.1:14000/dir';
-
+    if (process.env.NODE_ENV !== 'production') {
       /**
+       * !! Disable SSL certificate validation when we are communicating with
+       * the ACME server. This is needed because the dockerized acme server
+       * we run for development (pebble) will have a self-signed cert for
+       * client-server communication
+       *
        * This is an officially supported method of altering axios configuration
        * Has to be run before acme.Client is instantiated
        * https://github.com/publishlab/node-acme-client/pull/13
@@ -201,8 +200,10 @@ class LetsEncrypt {
     }
 
     this.#client = new acme.Client({
-      directoryUrl: this.#directoryUrl,
-      accountKey: this.#accountKey,
+      // Set the ACME server we are going to communicate with
+      directoryUrl: process.env.LETS_ENCRYPT_DIRECTORY_URL,
+      // Set the PEM, this authenticates us as an account towards the ACME server
+      accountKey: LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM,
     });
 
     await this.#registerReloadAccount();
@@ -211,12 +212,17 @@ class LetsEncrypt {
   };
 
   /**
+   * Expand authorizations based on the order object
+   */
+  #loadAuthorizations = async () => {
+    this.#authorizations = await this.#client!.getAuthorizations(this.#order!);
+  };
+
+  /**
    * This fn extracts and requests challenge information from / based on
    * the authorizations array that we got in the order.
    */
   #extractChallenges = async () => {
-    this.#authorizations = await this.#client!.getAuthorizations(this.#order!);
-
     /**
      * Each authorization (a soon to be common name or alt name
      * we requested in createOrder => identifiers) contains one or
@@ -225,7 +231,7 @@ class LetsEncrypt {
      *
      * Later, we can use the granted authorizations in our certificate
      */
-    const promises = this.#authorizations.map(async (authorization) => {
+    const promises = this.#authorizations!.map(async (authorization) => {
       const selectedChallenge = authorization.challenges.find(
         ({ type }) => type === 'dns-01'
       ) as AcmeDnsChallenge;
@@ -273,6 +279,10 @@ class LetsEncrypt {
       ],
     });
 
+    // Expand authorizations based on the order
+    await this.#loadAuthorizations();
+
+    // Expand and extract challenges based on the authorizations
     await this.#extractChallenges();
 
     return this;
@@ -297,7 +307,12 @@ class LetsEncrypt {
     const dummyOrder = { url } as AcmeOrder;
     this.#order = await this.#client.getOrder(dummyOrder);
 
-    await this.#extractChallenges();
+    /**
+     * Expand authorizations based on the order.
+     * Note, we only needed the challenges when we created the order, so we
+     * could inject them into the DNS
+     */
+    await this.#loadAuthorizations();
 
     return this;
   };
@@ -400,8 +415,6 @@ class LetsEncrypt {
   get challengeBundles() {
     return this.#challengeBundles;
   }
-
-  // TODO add features, to be implemented in later tickets
 }
 
 export default LetsEncrypt;

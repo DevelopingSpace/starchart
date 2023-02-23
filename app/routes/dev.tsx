@@ -25,7 +25,11 @@ export const action = async ({ request }: ActionArgs) => {
   // in another form below and post.
   switch (intent) {
     case 'certificate-request':
-      await addCertRequest('testing.starchart.com');
+      // Because of the foreign key constraint, it needs to be an existing user
+      await addCertRequest({
+        username: 'starchartdev',
+        rootDomain: 'testing.starchartdev.starchart.com',
+      });
       return json({
         result: 'ok',
         message: 'Certificate requested',

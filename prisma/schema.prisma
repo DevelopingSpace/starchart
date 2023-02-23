@@ -16,7 +16,7 @@ model User {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   record      Record[]
-  certificate Certificate?
+  certificate Certificate[]
 }
 
 model Record {
@@ -36,15 +36,16 @@ model Record {
 }
 
 model Certificate {
-  id          Int         @id @default(autoincrement())
-  username    String      @unique
-  subject     String
-  certificate String
-  orderUrl    String      @unique @db.VarChar(255)
-  privateKey  String
-  validFrom   DateTime    @default(now())
-  validTo     DateTime
-  user        User        @relation(fields: [username], references: [username])
+  id          Int               @id @default(autoincrement())
+  username    String
+  domain      String
+  orderUrl    String            @unique @db.VarChar(255)
+  privateKey  String?
+  certificate String?
+  validFrom   DateTime?
+  validTo     DateTime?
+  status      CertificateStatus @default(pending)
+  user        User              @relation(fields: [username], references: [username])
   challenge   Challenge[]
 }
 
@@ -66,5 +67,11 @@ enum RecordType {
 enum RecordStatus {
   active
   error
+  pending
+}
+
+enum CertificateStatus {
+  failed
+  issued
   pending
 }
