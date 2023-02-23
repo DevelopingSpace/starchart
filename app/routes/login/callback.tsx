@@ -49,10 +49,13 @@ export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
   const body = Object.fromEntries(formData);
   const { attributes, relayState } = await parseLoginResponse(body);
-
+  console.log(typeof attributes);
+  console.log(attributes);
+  console.log(attributes.attributes.sAMAccountName);
   // Try and extract the username and see if there is an existing user by that name
   if (!attributes.sAMAccountName) {
     // TODO: Make this redirect to access denied page
+    console.log('GOT TO BAD PLACE');
     return redirect('/');
   }
   const returnTo = relayState ? relayState : '/';

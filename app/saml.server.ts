@@ -55,7 +55,6 @@ export async function parseLoginResponse(body: { [k: string]: FormDataEntryValue
   const { extract } = await sp.parseLoginResponse(idp, 'post', {
     body,
   });
-  const relayState = body.RelayState;
-  console.log(relayState);
+  const relayState = body.RelayState as string;
   return { attributes: extract, relayState: relayState };
 }
