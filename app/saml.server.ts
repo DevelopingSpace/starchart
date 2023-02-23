@@ -40,9 +40,9 @@ export function metadata() {
   return sp.getMetadata();
 }
 
-export async function createLoginRequest(url?: URL) {
+export async function createLoginRequest(redirectUrl?: string | null) {
   const { context } = sp.createLoginRequest(idp, 'redirect');
-  const returnTo = url ? url.searchParams.get('redirectTo') : '/';
+  const returnTo = redirectUrl ? redirectUrl : '/';
   return context + '&RelayState=' + returnTo;
 }
 
@@ -55,5 +55,7 @@ export async function parseLoginResponse(body: { [k: string]: FormDataEntryValue
   const { extract } = await sp.parseLoginResponse(idp, 'post', {
     body,
   });
-  return extract;
+  const relayState = body.RelayState;
+  console.log(relayState);
+  return { attributes: extract, relayState: relayState };
 }

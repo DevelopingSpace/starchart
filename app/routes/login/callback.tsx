@@ -48,14 +48,14 @@ export const action = async ({ request }: ActionArgs) => {
 
   const formData = await request.formData();
   const body = Object.fromEntries(formData);
-  const { attributes } = await parseLoginResponse(body);
+  const { attributes, relayState } = await parseLoginResponse(body);
 
   // Try and extract the username and see if there is an existing user by that name
   if (!attributes.sAMAccountName) {
     // TODO: Make this redirect to access denied page
     return redirect('/');
   }
-  const returnTo: string = body.RelayState ? body.RelayState.toString() : '/';
+  const returnTo = relayState ? relayState : '/';
   const username = attributes.sAMAccountName;
   // get or create user
   let user = await getUserByUsername(username);
