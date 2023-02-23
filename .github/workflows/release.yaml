@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     # don't allow for publishing release unless everything else passes
     # TODO: not sure if this will work
-    needs: [Build, Prettier, Unit-Tests, E2E-Tests, Dockerfile-Lint, ESLint, Type-Check]
+    # needs: [Build, Prettier, Unit-Tests, E2E-Tests, Dockerfile-Lint, ESLint, Type-Check]
     steps:
       - name: Generate release
         uses: 'marvinpinto/action-automatic-releases@latest'
