@@ -48,14 +48,15 @@ export const action = async ({ request }: ActionArgs) => {
 
   const formData = await request.formData();
   const body = Object.fromEntries(formData);
-  const samlResponse = await parseLoginResponse(body);
+  const { attributes } = await parseLoginResponse(body);
 
   // Try and extract the username and see if there is an existing user by that name
-  if (!samlResponse.attributes.sAMAccountName) {
+  if (!attributes.sAMAccountName) {
     // TODO: Make this redirect to access denied page
     return redirect('/');
   }
-  const username = samlResponse.attributes.sAMAccountName;
+  const returnTo: string = body.RelayState ? body.RelayState.toString() : '/';
+  const username = attributes.sAMAccountName;
   // get or create user
   let user = await getUserByUsername(username);
 
@@ -63,9 +64,9 @@ export const action = async ({ request }: ActionArgs) => {
   if (!user) {
     user = await createUser(
       username,
-      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
-      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
-      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']
+      attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
+      attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
+      attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']
     );
   }
 
@@ -74,6 +75,7 @@ export const action = async ({ request }: ActionArgs) => {
     request: request,
     username: username,
     remember: false,
-    redirectTo: '/',
+    // redirectTo: '/',
+    redirectTo: returnTo,
   });
 };

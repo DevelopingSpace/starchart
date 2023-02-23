@@ -24,11 +24,12 @@ export const action = async ({ request }: ActionArgs) => {
   // If not then create a login request to the IDP's redirect binding
   if (!user) {
     const context = await createLoginRequest();
-    return redirect(context);
+    const url = new URL(request.url);
+    const returnTo = url.searchParams.get('redirectTo') || '/';
+    return redirect(context + '&RelayState=' + returnTo);
   }
-  if (user) {
-    return redirect('/');
-  }
+
+  return redirect('/');
 };
 
 export default function Login() {

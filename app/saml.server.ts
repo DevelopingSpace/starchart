@@ -3,6 +3,7 @@
 import * as samlify from 'samlify';
 import * as validator from '@authenio/samlify-node-xmllint';
 import { readFileSync } from 'fs';
+import secrets from './lib/secrets.server';
 
 samlify.setSchemaValidator(validator);
 
@@ -28,7 +29,7 @@ const sp = samlify.ServiceProvider({
 
 // Take the metadata stood up by the IDP and use it as the metadata for our IDP object
 const idp = samlify.IdentityProvider({
-  metadata: readFileSync(`${process.env.SAML_IDP_METADATA_FILE}`),
+  metadata: readFileSync(secrets.SAML_IDP_METADATA_FILE),
 });
 
 export function metadata() {
