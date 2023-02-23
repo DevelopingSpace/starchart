@@ -40,10 +40,11 @@ export function metadata() {
   return sp.getMetadata();
 }
 
-export async function createLoginRequest(redirectUrl?: string | null) {
+export async function createLoginRequest(redirectUrl: string = '/') {
   const { context } = sp.createLoginRequest(idp, 'redirect');
-  const returnTo = redirectUrl ? redirectUrl : '/';
-  return context + '&RelayState=' + returnTo;
+  const url = new URL(context);
+  url.searchParams.append('RelayState', redirectUrl);
+  return url.href;
 }
 
 export async function createLogoutRequest(user: string) {
@@ -56,5 +57,5 @@ export async function parseLoginResponse(body: { [k: string]: FormDataEntryValue
     body,
   });
   const relayState = body.RelayState as string;
-  return { samlResponse: extract, relayState: relayState };
+  return { samlResponse: extract, relayState };
 }

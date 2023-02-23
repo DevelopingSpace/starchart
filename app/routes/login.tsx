@@ -24,7 +24,7 @@ export const action = async ({ request }: ActionArgs) => {
   // If not then create a login request to the IDP's redirect binding
   if (!user) {
     const url = new URL(request.url);
-    const redirectTo = url.searchParams.get('redirectTo');
+    const redirectTo = url.searchParams.get('redirectTo') ?? undefined;
     const samlRedirectURL = await createLoginRequest(redirectTo);
     return redirect(samlRedirectURL);
   }
