@@ -1,3 +1,4 @@
+import React, { useRef } from 'react';
 import {
   AlertDialog,
   Button,
@@ -7,7 +8,6 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
 } from '@chakra-ui/react';
-import React from 'react';
 
 interface RecordDeleteAlertDialogProps {
   isOpen: boolean;
@@ -17,7 +17,7 @@ interface RecordDeleteAlertDialogProps {
 
 export default function RecordDeleteAlertDialog(props: RecordDeleteAlertDialogProps) {
   const { isOpen, onCancel, onConfirm } = props;
-  const cancelRef = React.useRef(null);
+  const cancelRef = useRef(null);
 
   return (
     <AlertDialog isCentered isOpen={isOpen} onClose={onCancel} leastDestructiveRef={cancelRef}>

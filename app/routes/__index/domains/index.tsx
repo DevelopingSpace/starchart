@@ -25,10 +25,9 @@ export default function DomainsIndexRoute() {
         navigate(domain.id.toString());
         break;
       case 'DELETE':
-        console.log('Delete: ', domain);
+        // TODO: implement delete functionaty
         break;
       case 'RENEW':
-        console.log('Renew: ', domain);
         // TODO: implement renew functionaty
         break;
     }
