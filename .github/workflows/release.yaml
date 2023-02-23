@@ -12,10 +12,18 @@ jobs:
     # TODO: not sure if this will work
     # needs: [Build, Prettier, Unit-Tests, E2E-Tests, Dockerfile-Lint, ESLint, Type-Check]
     steps:
+      - name: Set output
+        id: vars
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: Check output
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ steps.vars.outputs.tag }}
       - name: Generate release
         uses: 'marvinpinto/action-automatic-releases@v1.2.1'
         with:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
           automatic_release_tag: 'latest'
           prerelease: false
-          # title: "Development Build"
