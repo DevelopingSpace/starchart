@@ -3,7 +3,10 @@ name: release
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
+
+permissions:
+  actions: write
 
 jobs:
   Release:
@@ -12,12 +15,15 @@ jobs:
     # TODO: not sure if this will work
     # needs: [Build, Prettier, Unit-Tests, E2E-Tests, Dockerfile-Lint, ESLint, Type-Check]
     steps:
+      # get the version of the current git tag
       - name: Get tag version
         id: vars
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
       - name: Generate release
         uses: 'marvinpinto/action-automatic-releases@v1.2.1'
         with:
+          # NOTE: this requires read and write permissions, needs to be changed in settings
+          # https://github.com/marvinpinto/actions/issues/61
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
           automatic_release_tag: ${{ steps.vars.outputs.tag }}
           prerelease: false
