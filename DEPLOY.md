@@ -27,6 +27,7 @@ The following configuration values must be set via environment variables.
 | `SMTP_PORT`                  | The port to use for the SMTP server. Defaults to `587` in production (using `smtp.office365.com`) and `1025` in development (using ([MailHog](https://github.com/mailhog/MailHog)) |
 | `LETS_ENCRYPT_ACCOUNT_EMAIL` | The email address to use for the app's [single Let's Encrypt account](https://letsencrypt.org/docs/integration-guide/#one-account-or-many)                                         |
 | `REDIS_URL`                  | The Redis server to use for the worker queues. Defaults to `redis://redis:6379` in production and `localhost:6379` in development.                                                 |
+| `SAML_IDP_METADATA_URL`      | The URL of the SAML Identify Provider (IdP)'s metadata XML, which is downloaded at startup in order to configure authentication.                                                   |
 | `SECRETS_OVERRIDE`           | In development, to override the Docker secrets                                                                                                                                     |
 
 ### Secrets
