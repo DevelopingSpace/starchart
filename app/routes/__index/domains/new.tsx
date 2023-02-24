@@ -17,6 +17,8 @@ function errorForField(error: ZodError, field: string) {
 }
 
 export const action = async ({ request }: ActionArgs) => {
+  const username = await requireUsername(request);
+
   // Create a Zod schema for validation
   // Optional is not needed as we get '' if nothing is entered
   const DnsRecord = z.object({
@@ -29,7 +31,6 @@ export const action = async ({ request }: ActionArgs) => {
   });
 
   const newDnsRecordParams = await parseFormSafe(request, DnsRecord);
-  const username = await requireUsername(request);
 
   // If validations failed, we return the errors to show on the form
   // Currently only returns 'type' field errors as no other validations exist
