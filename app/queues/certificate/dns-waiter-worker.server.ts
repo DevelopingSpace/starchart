@@ -4,6 +4,7 @@ import logger from '~/lib/logger.server';
 
 export interface DnsWaiterData {
   rootDomain: string;
+  username: string;
 }
 
 export const dnsWaiterQueueName = 'certificate-waitDns';

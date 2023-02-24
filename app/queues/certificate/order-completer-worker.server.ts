@@ -4,6 +4,7 @@ import logger from '~/lib/logger.server';
 
 export interface OrderCompleterData {
   rootDomain: string;
+  username: string;
 }
 
 export const orderCompleterQueueName = 'certificate-completeOrder';

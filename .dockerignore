@@ -12,3 +12,4 @@
 /.cache
 /public/build
 /build
+/dev-secrets

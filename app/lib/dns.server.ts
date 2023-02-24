@@ -1,11 +1,14 @@
-import logger from './logger.server';
 import {
   Route53Client,
   CreateHostedZoneCommand,
   ChangeResourceRecordSetsCommand,
   GetChangeCommand,
 } from '@aws-sdk/client-route-53';
-import { isIPv4, isIPv6 } from 'is-ip';
+import isFQDN from 'validator/lib/isFQDN';
+import isIP from 'validator/lib/isIP';
+
+import logger from '~/lib/logger.server';
+import secrets from '~/lib/secrets.server';
 
 import type {
   CreateHostedZoneResponse,
@@ -20,14 +23,34 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
+const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
+
+const credentials = () => {
+  if (process.env.NODE_ENV === 'production') {
+    if (!AWS_ACCESS_KEY_ID) {
+      throw new Error('Missing AWS_ACCESS_KEY_ID secret');
+    }
+    if (!AWS_SECRET_ACCESS_KEY) {
+      throw new Error('Missing AWS_SECRET_ACCESS_KEY secret');
+    }
+
+    return {
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    };
+  }
+
+  return {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || AWS_SECRET_ACCESS_KEY,
+    sessionToken: process.env.AWS_SESSION_TOKEN,
+  };
+};
+
 export const route53Client = new Route53Client({
   endpoint: process.env.AWS_ENDPOINT_URL || 'http://localhost:5053',
   region: process.env.AWS_REGION || 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-    sessionToken: process.env.AWS_SESSION_TOKEN,
-  },
+  credentials: credentials(),
 });
 
 export const createHostedZone = async (domain: string) => {
@@ -48,18 +71,23 @@ export const createHostedZone = async (domain: string) => {
   }
 };
 
-export const createRecord = (type: RecordType, name: string, value: string) => {
+export const createRecord = (username: string, type: RecordType, name: string, value: string) => {
   try {
-    return upsertRecord(type, name, value);
+    return upsertRecord(username, type, name, value);
   } catch (error) {
     logger.warn(error);
     throw new Error(`Error occurred while creating resource record`);
   }
 };
 
-export const upsertRecord = async (type: RecordType, name: string, value: string) => {
+export const upsertRecord = async (
+  username: string,
+  type: RecordType,
+  name: string,
+  value: string
+) => {
   try {
-    if (!isNameValid(name)) {
+    if (!isNameValid(name, username)) {
       throw new Error('Invalid name provided');
     }
 
@@ -98,9 +126,14 @@ export const upsertRecord = async (type: RecordType, name: string, value: string
   }
 };
 
-export const deleteRecord = async (type: RecordType, name: string, value: string) => {
+export const deleteRecord = async (
+  username: string,
+  type: RecordType,
+  name: string,
+  value: string
+) => {
   try {
-    if (!isNameValid(name)) {
+    if (!isNameValid(name, username)) {
       throw new Error('Invalid name provided');
     }
 
@@ -157,17 +190,40 @@ export const getChangeStatus = async (changeId: string) => {
   }
 };
 
-const isNameValid = (name: string) => {
-  return /^[a-z0-9-]+.[a-z0-9-]+.[a-z]+.[a-z]+\.?$/.test(name);
+/* Domain name rules
+1. Domain name pattern should be [name].[username].rootDomain.com
+2. Domain name can contain only alphanumerical characters, '-', and '_'
+3. Domain name should not start or end with -
+4. Domain name cannot contain multiple consecutive '-' or '_'
+5. Domain name can contain uppercase in UI but it is converted to lowercase before validation */
+export const isNameValid = (name: string, username: string) => {
+  const rootDomain = process.env.ROOT_DOMAIN!;
+
+  /* Domain name must end with username and root domain. 
+  Here it removes username and root domain, 
+  to validate only subdomain that user has input */
+  const toRemove = `.${username}.${rootDomain}`;
+  if (!name.endsWith(toRemove)) {
+    return false;
+  }
+  const subdomain = name.substring(0, name.length - toRemove.length);
+
+  //It only validates subdomain name, not username and root domain
+  return (
+    /^(?!.*[-_]{2,})(?!^[-])[a-z0-9_-]+[a-z0-9]$/.test(subdomain) &&
+    isFQDN(name, {
+      allow_underscores: true,
+    })
+  );
 };
 
-const isValueValid = (type: RecordType, value: string) => {
+export const isValueValid = (type: RecordType, value: string) => {
   if (type === 'A') {
-    return isIPv4(value);
+    return isIP(value, 4);
   }
 
   if (type === 'AAAA') {
-    return isIPv6(value);
+    return isIP(value, 6);
   }
 
   // CNAME can be any non-empty string. Let AWS validate it.
