@@ -1,17 +1,28 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
+import type { LoaderArgs } from '@remix-run/node';
 import { Link, useNavigate } from '@remix-run/react';
+import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import type { DomainsTableAction } from '~/components/domains-table';
 import DomainsTable from '~/components/domains-table';
-import DOMAINS_MOCK from '~/mocks/domains';
+import { getRecordsByUsername } from '~/models/record.server';
+import { requireUsername } from '~/session.server';
+import type { Record } from '@prisma/client';
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const username = await requireUsername(request);
+
+  return typedjson(await getRecordsByUsername(username));
+};
 
 export default function DomainsIndexRoute() {
+  const domains = useTypedLoaderData<typeof loader>();
   const navigate = useNavigate();
 
-  function onDomainAction(domainID: number, action: DomainsTableAction) {
+  function onDomainAction(domain: Record, action: DomainsTableAction) {
     switch (action) {
       case 'EDIT':
-        navigate(domainID.toString());
+        navigate(domain.id.toString());
         break;
       case 'DELETE':
         // TODO: implement delete functionaty
@@ -37,7 +48,7 @@ export default function DomainsIndexRoute() {
           <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
         </Link>
       </Flex>
-      <DomainsTable domains={DOMAINS_MOCK} onAction={onDomainAction} />
+      <DomainsTable domains={domains} onAction={onDomainAction} />
     </Container>
   );
 }
