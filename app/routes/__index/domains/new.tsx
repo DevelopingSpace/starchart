@@ -54,7 +54,7 @@ export default function NewDomainRoute() {
   return (
     <Container maxW="container.xl" ml={[null, null, '10vw']}>
       <Heading as="h1" size="xl" mt="8">
-        Create new Dns Record
+        Create new DNS Record
       </Heading>
       <Text maxW="lg" mb="3" mt="2">
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
