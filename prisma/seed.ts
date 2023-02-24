@@ -19,13 +19,17 @@ async function seed() {
   await prisma.certificate.deleteMany().catch(() => {});
   await prisma.user.deleteMany().catch(() => {});
 
-  await prisma.user.create({
-    data: {
-      username,
-      firstName,
-      lastName,
-      email,
-    },
+  await prisma.user.createMany({
+    data: [
+      {
+        username,
+        firstName,
+        lastName,
+        email,
+      },
+      { username: 'user1', firstName: 'Johannes', lastName: 'Kepler', email: 'user1@myseneca.ca' },
+      { username: 'user2', firstName: 'Galileo', lastName: 'Galilei', email: 'user2@myseneca.ca' },
+    ],
   });
 
   await prisma.record.createMany({
