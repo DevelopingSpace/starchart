@@ -3,11 +3,11 @@ import { Button, Input, Select, Textarea, Tooltip, VStack } from '@chakra-ui/rea
 import { Form } from '@remix-run/react';
 import FormField from './form-field';
 
-interface FormParams {
+interface DnsRecordFormProps {
   typeError?: string; // Error for 'Type' field
 }
 
-export default function DomainForm({ typeError }: FormParams) {
+export default function DnsRecordForm({ typeError }: DnsRecordFormProps) {
   return (
     <Form className="domain-form" method="post">
       <VStack maxW="xl" spacing="2">
