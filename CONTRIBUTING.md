@@ -58,6 +58,18 @@ $ npm run db:studio
 
 > **Note** `npm run build` needs to be executed the first time running the project. As it generates a `build/server.js` script that `npm run dev` depends on. Subsequent times, only `npm run dev` is needed to run the app in development mode.
 
+## SAML Accounts to use in Dev
+
+Our IDP is configured with a few accounts that exist for testing, the usernames and passwords to use are as follows:
+
+| user        | pass      |
+| ----------- | --------- |
+| user1       | user1pass |
+| user2       | user2pass |
+| lippersheyh | telescope |
+
+They can be configured in `./config/simplesamlphp-users`
+
 ## `.env` and `./dev-secrets/*`
 
 Some application configuration is managed via environment variables, others as secrets (i.e., files).
