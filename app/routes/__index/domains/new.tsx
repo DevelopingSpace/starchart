@@ -1,9 +1,8 @@
 import { Container, Heading, Text } from '@chakra-ui/react';
-import { json, redirect } from '@remix-run/node';
 import { RecordType } from '@prisma/client';
-import { useActionData } from '@remix-run/react';
 import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
+import { redirect, typedjson, useTypedActionData } from 'remix-typedjson';
 
 import DnsRecordForm from '~/components/dns-record/form';
 import { createRecord } from '~/models/record.server';
@@ -36,10 +35,8 @@ export const action = async ({ request }: ActionArgs) => {
   // Currently only returns 'type' field errors as no other validations exist
   // Also, form cannot be submitted without required values
   if (newDnsRecordParams.success === false) {
-    return json({
-      errors: {
-        typeError: errorForField(newDnsRecordParams.error, 'type'),
-      },
+    return typedjson({
+      typeError: errorForField(newDnsRecordParams.error, 'type'),
     });
   }
 
@@ -50,7 +47,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export default function NewDomainRoute() {
-  const error = useActionData<typeof action>();
+  const errors = useTypedActionData<typeof action>();
 
   return (
     <Container maxW="container.xl" ml={[null, null, '10vw']}>
@@ -61,7 +58,7 @@ export default function NewDomainRoute() {
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
         been the industry's standard dummy text ever since the 1500s
       </Text>
-      <DnsRecordForm {...error?.errors} />
+      <DnsRecordForm {...errors} />
     </Container>
   );
 }
