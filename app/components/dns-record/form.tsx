@@ -3,7 +3,11 @@ import { Button, Input, Select, Textarea, Tooltip, VStack } from '@chakra-ui/rea
 import { Form } from '@remix-run/react';
 import FormField from './form-field';
 
-export default function DomainForm() {
+interface FormParams {
+  typeError?: string; // Error for 'Type' field
+}
+
+export default function DomainForm({ typeError }: FormParams) {
   return (
     <Form className="domain-form" method="post">
       <VStack maxW="xl" spacing="2">
@@ -14,7 +18,7 @@ export default function DomainForm() {
           </Tooltip>
         </FormField>
 
-        <FormField label="Type" isRequired={true}>
+        <FormField label="Type" isRequired={true} error={typeError}>
           <Select placeholder="Select a type" name="type">
             <option value="A">A</option>
             <option value="AAAA">AAAA</option>

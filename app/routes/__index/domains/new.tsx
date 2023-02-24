@@ -1,42 +1,56 @@
 import { Container, Heading, Text } from '@chakra-ui/react';
 import { json, redirect } from '@remix-run/node';
+import { RecordType } from '@prisma/client';
+import { useActionData } from '@remix-run/react';
+import { z } from 'zod';
+import { parseFormSafe } from 'zodix';
 
 import DnsRecordForm from '~/components/dns-record/form';
 import { createRecord } from '~/models/record.server';
-import { getUsername } from '~/session.server';
+import { requireUsername } from '~/session.server';
 
 import type { ActionArgs } from '@remix-run/node';
-import { RecordType } from '@prisma/client';
+import type { ZodError } from 'zod';
+
+function errorForField(error: ZodError, field: string) {
+  return error.issues.find((issue) => issue.path[0] === field)?.message;
+}
 
 export const action = async ({ request }: ActionArgs) => {
-  const form = await request.formData();
-  const name = form.get('name')?.toString();
-  const type = form.get('type')?.toString();
-  const value = form.get('value')?.toString();
-  const ports = form.get('ports')?.toString();
-  const course = form.get('course')?.toString();
-  const description = form.get('description')?.toString();
-  const username = await getUsername(request);
+  // Create a Zod schema for validation
+  // Optional is not needed as we get '' if nothing is entered
+  const DnsRecord = z.object({
+    name: z.string().min(1), // We do not want to consider '' a valid string
+    type: z.nativeEnum(RecordType),
+    value: z.string().min(1),
+    ports: z.string(),
+    course: z.string(),
+    description: z.string(),
+  });
 
-  if (!username || !name || !value || !type || !(type in RecordType)) {
-    return json({ status: 'error' }, { status: 400 });
+  const newDnsRecordParams = await parseFormSafe(request, DnsRecord);
+  const username = await requireUsername(request);
+
+  // If validations failed, we return the errors to show on the form
+  // Currently only returns 'type' field errors as no other validations exist
+  // Also, form cannot be submitted without required values
+  if (newDnsRecordParams.success === false) {
+    return json({
+      errors: {
+        typeError: errorForField(newDnsRecordParams.error, 'type'),
+      },
+    });
   }
 
-  const record = await createRecord(
-    username,
-    name,
-    RecordType[type as keyof typeof RecordType],
-    value,
-    'pending',
-    description,
-    course,
-    ports
-  );
-
+  // Create a pending record... for now
+  // This will most likely be replaced by some other logic
+  const record = await createRecord({ username, ...newDnsRecordParams.data, status: 'pending' });
   return redirect(`/domains/${record.id}`);
 };
 
 export default function NewDomainRoute() {
+  const error = useActionData<typeof action>();
+
   return (
     <Container maxW="container.xl" ml={[null, null, '10vw']}>
       <Heading as="h1" size="xl" mt="8">
@@ -46,7 +60,7 @@ export default function NewDomainRoute() {
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
         been the industry's standard dummy text ever since the 1500s
       </Text>
-      <DnsRecordForm />
+      <DnsRecordForm {...error?.errors} />
     </Container>
   );
 }
