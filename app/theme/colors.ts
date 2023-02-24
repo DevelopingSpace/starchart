@@ -11,7 +11,7 @@ const colors = {
     800: '#4a0203',
     900: '#200000',
   },
-  gray: {
+  brand_gray: {
     50: '#f9f9f9',
     100: '#ededed',
     200: '#e1e1e1',

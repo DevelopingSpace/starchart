@@ -9,7 +9,7 @@ const theme = extendTheme(
         '.domain-form': {
           // InfoIcon
           '.chakra-icon': {
-            color: colors.gray[300],
+            color: colors.brand_gray[300],
             fontSize: 'xl',
           },
         },
