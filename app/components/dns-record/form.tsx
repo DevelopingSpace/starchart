@@ -13,7 +13,7 @@ export default function DomainForm({ typeError }: FormParams) {
       <VStack maxW="xl" spacing="2">
         <FormField label="Domain Name" isRequired={true}>
           <Input name="name" />
-          <Tooltip>
+          <Tooltip label="Enter domain name for the DNS Record">
             <InfoIcon color="#d9d9d9" fontSize="xl" />
           </Tooltip>
         </FormField>
@@ -25,28 +25,28 @@ export default function DomainForm({ typeError }: FormParams) {
             <option value="CNAME">CNAME</option>
             <option value="TXT">TXT</option>
           </Select>
-          <Tooltip>
+          <Tooltip label="Select the DNS Record type">
             <InfoIcon />
           </Tooltip>
         </FormField>
 
         <FormField label="Value" isRequired={true}>
           <Input name="value" />
-          <Tooltip>
+          <Tooltip label="Enter DNS Record value">
             <InfoIcon />
           </Tooltip>
         </FormField>
 
         <FormField label="Ports">
           <Input name="ports" />
-          <Tooltip>
+          <Tooltip label="Enter port(s) separated by commas (E.g. 8080, 1234)">
             <InfoIcon />
           </Tooltip>
         </FormField>
 
         <FormField label="Course">
           <Input name="course" />
-          <Tooltip>
+          <Tooltip label="Enter course name (E.g. OSD700)">
             <InfoIcon />
           </Tooltip>
         </FormField>
