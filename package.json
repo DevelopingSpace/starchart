@@ -30,8 +30,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@aws-sdk/client-route-53": "^3.276.0",
     "@authenio/samlify-node-xmllint": "^2.0.0",
+    "@aws-sdk/client-route-53": "^3.276.0",
     "@chakra-ui/icons": "^2.0.17",
     "@chakra-ui/react": "^2.5.0",
     "@emotion/react": "^11.10.5",
@@ -61,7 +61,9 @@
     "samlify": "^2.8.8",
     "tiny-invariant": "^1.3.1",
     "validator": "^13.9.0",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "zod": "^3.20.6",
+    "zodix": "^0.4.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.31.0",
