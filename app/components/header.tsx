@@ -35,7 +35,7 @@ export default function Header() {
       paddingX={{ base: '1', md: '10' }}
       justifyContent="space-between"
     >
-      <Hide below="md">
+      <Hide below="lg">
         <HStack color="white" justifyContent="flex-start">
           <Link to={{ pathname: '/domains' }}>
             <Flex alignItems="center">
@@ -52,7 +52,7 @@ export default function Header() {
           </Link>
         </HStack>
       </Hide>
-      <Show below="md">
+      <Show below="lg">
         <Menu>
           <MenuButton
             as={Button}
@@ -81,11 +81,11 @@ export default function Header() {
         </Menu>
       </Show>
 
-      <Heading as="h1" size={{ base: 'md', sm: 'xl' }} color="white">
+      <Heading as="h1" size={{ base: 'md', xs: 'lg', sm: 'xl' }} color="white">
         My.Custom.Domain
       </Heading>
       <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5">
-        <Hide below="md">
+        <Hide below="lg">
           <Text>{user.username}</Text>
         </Hide>
 
