@@ -5,12 +5,7 @@ import { Link, useNavigate, useSubmit, useTransition } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import type { DomainsTableAction } from '~/components/domains-table';
 import DomainsTable from '~/components/domains-table';
-import {
-  deleteRecordById,
-  getRecordById,
-  getRecordsByUsername,
-  updateRecordById,
-} from '~/models/record.server';
+import { getRecordsByUsername } from '~/models/record.server';
 import { requireUsername } from '~/session.server';
 import type { Record } from '@prisma/client';
 
@@ -21,29 +16,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const { id } = Object.fromEntries(await request.formData());
-  const formalizedID = Number(id);
-
   if (request.method === 'PUT') {
-    const record = await getRecordById(formalizedID);
-    if (record) {
-      const newExpiresAt = new Date(record.expiresAt);
-      newExpiresAt.setMonth(newExpiresAt.getMonth() + 6);
-
-      await updateRecordById(
-        Number(id),
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        newExpiresAt
-      );
-    }
+    // TODO: Call the appropriate code to prolong record
   } else if (request.method === 'DELETE') {
-    await deleteRecordById(formalizedID);
+    // TODO: Call the appropriate code to delete record
   }
 
   return null;
