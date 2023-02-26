@@ -13,32 +13,13 @@ export async function getRecordById(id: Record['id']) {
 }
 
 export async function createRecord(
-  username: Record['username'],
-  name: Record['name'],
-  type: Record['type'],
-  value: Record['value'],
-  status: Record['status'],
-  description?: Record['description'],
-  course?: Record['course'],
-  ports?: Record['ports']
+  data: Pick<Record, 'username' | 'name' | 'type' | 'value' | 'status'>
 ) {
   // Set expiration date 6 months from now
   const expiresAt = new Date();
   expiresAt.setMonth(expiresAt.getMonth() + 6);
 
-  return prisma.record.create({
-    data: {
-      username,
-      name,
-      type,
-      value,
-      description,
-      course,
-      ports,
-      expiresAt,
-      status,
-    },
-  });
+  return prisma.record.create({ data: { ...data, expiresAt } });
 }
 
 export async function updateRecordById(
