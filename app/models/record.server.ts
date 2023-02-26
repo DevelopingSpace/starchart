@@ -8,6 +8,10 @@ export async function getRecordsByUsername(username: Record['username']) {
   return prisma.record.findMany({ where: { username } });
 }
 
+export async function getRecordById(id: Record['id']) {
+  return prisma.record.findUnique({ where: { id } });
+}
+
 export async function createRecord(
   data: Pick<Record, 'username' | 'name' | 'type' | 'value' | 'status'>
 ) {

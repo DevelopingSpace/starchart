@@ -13,6 +13,7 @@ import {
   Card,
   useToast,
   useDisclosure,
+  Spinner,
 } from '@chakra-ui/react';
 import type { Record, RecordStatus } from '@prisma/client';
 import {
@@ -25,16 +26,18 @@ import {
   WarningIcon,
 } from '@chakra-ui/icons';
 import RecordDeleteAlertDialog from './record-delete-alert-dialog';
+import type { Transition } from '@remix-run/react/dist/transition';
 
 interface DomainsTableProps {
   domains: Record[];
   onAction: (domain: Record, action: DomainsTableAction) => void;
+  transition: Transition;
 }
 
 export type DomainsTableAction = 'EDIT' | 'DELETE' | 'RENEW';
 
 export default function DomainsTable(props: DomainsTableProps) {
-  const { domains, onAction } = props;
+  const { domains, onAction, transition } = props;
 
   const toast = useToast();
   const {
@@ -120,52 +123,75 @@ export default function DomainsTable(props: DomainsTableProps) {
               </Tr>
             </Thead>
             <Tbody>
-              {domains.map((domain) => (
-                <Tr key={domain.id}>
-                  <Td>{renderDomainStatus(domain.status)}</Td>
-                  <Td>
-                    <Flex justifyContent="space-between" alignItems="center">
-                      {domain.name}
-                      <Tooltip label="Copy name to clipboard">
-                        <IconButton
-                          icon={<CopyIcon color="black" boxSize="5" />}
-                          aria-label="Refresh domain"
-                          variant="ghost"
-                          ml="2"
-                          onClick={() => onCopyNameToClipboard(domain.name)}
-                        />
-                      </Tooltip>
-                    </Flex>
-                  </Td>
-                  <Td>{domain.type}</Td>
-                  <Td>{domain.value}</Td>
-                  <Td>
-                    <Flex justifyContent="space-between" alignItems="center">
-                      {domain.expiresAt.toLocaleDateString('en-US')}
-                      <IconButton
-                        icon={<RepeatIcon color="black" boxSize="5" />}
-                        aria-label="Refresh domain"
-                        variant="ghost"
-                      />
-                    </Flex>
-                  </Td>
-                  <Td>
-                    <IconButton
-                      onClick={() => onAction(domain, 'EDIT')}
-                      icon={<EditIcon color="black" boxSize={5} />}
-                      aria-label="Edit domain"
-                      variant="ghost"
-                      mr="1"
-                    />
-                    <IconButton
-                      onClick={() => onDeleteDomainOpen(domain)}
-                      icon={<DeleteIcon color="black" boxSize={5} />}
-                      aria-label="Delete domain"
-                      variant="ghost"
-                    />
-                  </Td>
-                </Tr>
-              ))}
+              {domains.map((domain) => {
+                const isLoading =
+                  transition.state === 'submitting' &&
+                  Number(transition.submission.formData.get('id')) === domain.id;
+
+                return (
+                  <Tr key={domain.id}>
+                    {isLoading ? (
+                      <Td py="8" colSpan={7}>
+                        <Flex justifyContent="center">
+                          <Spinner />
+                        </Flex>
+                      </Td>
+                    ) : (
+                      <>
+                        <Td>{renderDomainStatus(domain.status)}</Td>
+                        <Td>
+                          <Flex justifyContent="space-between" alignItems="center">
+                            {domain.name}
+                            <Tooltip label="Copy name to clipboard">
+                              <IconButton
+                                icon={<CopyIcon color="black" boxSize="5" />}
+                                aria-label="Refresh domain"
+                                variant="ghost"
+                                ml="2"
+                                onClick={() => onCopyNameToClipboard(domain.name)}
+                              />
+                            </Tooltip>
+                          </Flex>
+                        </Td>
+                        <Td>{domain.type}</Td>
+                        <Td>{domain.value}</Td>
+                        <Td>
+                          <Flex justifyContent="space-between" alignItems="center">
+                            {domain.expiresAt.toLocaleDateString('en-US')}
+                            <Tooltip label="Renew domain">
+                              <IconButton
+                                onClick={() => onAction(domain, 'RENEW')}
+                                icon={<RepeatIcon color="black" boxSize="5" />}
+                                aria-label="Refresh domain"
+                                variant="ghost"
+                              />
+                            </Tooltip>
+                          </Flex>
+                        </Td>
+                        <Td>
+                          <Tooltip label="Edit domain">
+                            <IconButton
+                              onClick={() => onAction(domain, 'EDIT')}
+                              icon={<EditIcon color="black" boxSize={5} />}
+                              aria-label="Edit domain"
+                              variant="ghost"
+                              mr="1"
+                            />
+                          </Tooltip>
+                          <Tooltip label="Delete domain">
+                            <IconButton
+                              onClick={() => onDeleteDomainOpen(domain)}
+                              icon={<DeleteIcon color="black" boxSize={5} />}
+                              aria-label="Delete domain"
+                              variant="ghost"
+                            />
+                          </Tooltip>
+                        </Td>
+                      </>
+                    )}
+                  </Tr>
+                );
+              })}
             </Tbody>
           </Table>
         </TableContainer>

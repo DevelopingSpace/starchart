@@ -1,7 +1,7 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
-import type { LoaderArgs } from '@remix-run/node';
-import { Link, useNavigate } from '@remix-run/react';
+import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+import { Link, useNavigate, useSubmit, useTransition } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import type { DomainsTableAction } from '~/components/domains-table';
 import DomainsTable from '~/components/domains-table';
@@ -15,9 +15,21 @@ export const loader = async ({ request }: LoaderArgs) => {
   return typedjson(await getRecordsByUsername(username));
 };
 
+export const action = async ({ request }: ActionArgs) => {
+  if (request.method === 'PUT') {
+    // TODO: Call the appropriate code to prolong record
+  } else if (request.method === 'DELETE') {
+    // TODO: Call the appropriate code to delete record
+  }
+
+  return null;
+};
+
 export default function DomainsIndexRoute() {
   const domains = useTypedLoaderData<typeof loader>();
   const navigate = useNavigate();
+  const submit = useSubmit();
+  const transition = useTransition();
 
   function onDomainAction(domain: Record, action: DomainsTableAction) {
     switch (action) {
@@ -25,10 +37,10 @@ export default function DomainsIndexRoute() {
         navigate(domain.id.toString());
         break;
       case 'DELETE':
-        // TODO: implement delete functionaty
+        submit({ id: domain.id.toString() }, { method: 'delete' });
         break;
       case 'RENEW':
-        // TODO: implement renew functionaty
+        submit({ id: domain.id.toString() }, { method: 'put' });
         break;
     }
   }
@@ -48,7 +60,7 @@ export default function DomainsIndexRoute() {
           <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
         </Link>
       </Flex>
-      <DomainsTable domains={domains} onAction={onDomainAction} />
+      <DomainsTable domains={domains} onAction={onDomainAction} transition={transition} />
     </Container>
   );
 }
