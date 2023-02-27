@@ -1,5 +1,5 @@
 import type { LoaderArgs } from '@remix-run/node';
-import { metadata } from '~/saml.server';
+import { metadata } from '~/lib/saml.server';
 
 export async function loader({ params }: LoaderArgs) {
   const meta = metadata();

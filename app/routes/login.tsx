@@ -15,7 +15,7 @@ import { redirect } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 
 import { getUsername } from '~/session.server';
-import { createLoginRequest } from '~/saml.server';
+import { createLoginRequest } from '~/lib/saml.server';
 
 export const action = async ({ request }: ActionArgs) => {
   // Check if a session with a username exists
