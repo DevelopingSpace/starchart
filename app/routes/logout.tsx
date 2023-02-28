@@ -9,7 +9,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   // Do the opposite of login
   if (user) {
-    const context = await createLogoutRequest(user);
+    const context = createLogoutRequest(user);
     return redirect(context);
   }
 };

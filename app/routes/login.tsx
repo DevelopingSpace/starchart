@@ -25,7 +25,7 @@ export const action = async ({ request }: ActionArgs) => {
   if (!user) {
     const url = new URL(request.url);
     const redirectTo = url.searchParams.get('redirectTo') ?? undefined;
-    const samlRedirectURL = await createLoginRequest(redirectTo);
+    const samlRedirectURL = createLoginRequest(redirectTo);
     return redirect(samlRedirectURL);
   }
 
