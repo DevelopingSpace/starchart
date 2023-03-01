@@ -14,6 +14,7 @@ import { addNotification } from '~/queues/notifications.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+import { addDnsRequest } from '~/queues/dns/dns-flow.server';
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
@@ -43,6 +44,17 @@ export const action = async ({ request }: ActionArgs) => {
       return json({
         result: 'ok',
         message: 'Notification sent, see mail at http://localhost:8025',
+      });
+    case 'dns-record-request':
+      await addDnsRequest({
+        type: 'A',
+        name: 'osd700-a1.user1.starchart.com',
+        value: '192.168.0.1',
+        username: 'user1',
+      });
+      return json({
+        result: 'ok',
+        message: 'DNS record creation requested',
       });
     default:
       logger.warn('Unknown intent', intent);
@@ -74,6 +86,11 @@ export default function Index() {
         <Form method="post">
           <input type="hidden" name="intent" value="certificate-request" />
           <Button type="submit">Request Certificate</Button>
+        </Form>
+
+        <Form method="post">
+          <input type="hidden" name="intent" value="dns-record-request" />
+          <Button type="submit">Request DNS Record</Button>
         </Form>
 
         {data && (
