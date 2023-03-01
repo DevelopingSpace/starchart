@@ -14,11 +14,23 @@ describe('DNS server lib function test', () => {
   const rootDomain = 'starchart.com';
   const username = 'jdo12';
 
+  const resetHostedZone = () => {
+    try {
+      fetch('http://localhost:5053/moto-api/reset', {
+        method: 'POST',
+      });
+    } catch (error) {
+      throw new Error(`Error occurred while deleting records in hosted zone: ${error}`);
+    }
+  };
+
   beforeAll(async () => {
     hostedZoneId = await createHostedZone(rootDomain);
     process.env.AWS_ROUTE53_HOSTED_ZONE_ID = hostedZoneId;
     process.env.ROOT_DOMAIN = rootDomain;
   });
+
+  afterAll(() => resetHostedZone());
 
   test('Hosted zone is created and hosted zone is returned', () => {
     expect(hostedZoneId.length).toBeGreaterThan(0);

@@ -13,8 +13,8 @@ import { requireUser, requireUsername } from '~/session.server';
 import { addNotification } from '~/queues/notifications.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
+import { addDnsRequest, updateDnsRequest, deleteDnsRequest } from '~/queues/dns/dns-flow.server';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
-import { addDnsRequest } from '~/queues/dns/dns-flow.server';
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
@@ -48,8 +48,32 @@ export const action = async ({ request }: ActionArgs) => {
     case 'dns-record-request':
       await addDnsRequest({
         type: 'A',
-        name: `osd700-a1.${user.baseDomain}`,
+        name: `osd700-a1`,
         value: '192.168.0.1',
+        username: user.username,
+      });
+      return json({
+        result: 'ok',
+        message: 'DNS record creation requested',
+      });
+    case 'update-dns-record-request':
+      await updateDnsRequest({
+        id: 71,
+        type: 'A',
+        name: 'osd700-a2',
+        value: '192.168.0.2',
+        username: user.username,
+      });
+      return json({
+        result: 'ok',
+        message: 'DNS record creation requested',
+      });
+    case 'delete-dns-record-request':
+      await deleteDnsRequest({
+        id: 71,
+        type: 'A',
+        name: 'osd700-a2',
+        value: '192.168.0.2',
         username: user.username,
       });
       return json({
@@ -90,7 +114,17 @@ export default function Index() {
 
         <Form method="post">
           <input type="hidden" name="intent" value="dns-record-request" />
-          <Button type="submit">Request DNS Record</Button>
+          <Button type="submit">Add DNS Record</Button>
+        </Form>
+
+        <Form method="put">
+          <input type="hidden" name="intent" value="update-dns-record-request" />
+          <Button type="submit">Update DNS Record</Button>
+        </Form>
+
+        <Form method="delete">
+          <input type="hidden" name="intent" value="delete-dns-record-request" />
+          <Button type="submit">Delete DNS Record</Button>
         </Form>
 
         {data && (

@@ -67,6 +67,13 @@ export function buildUserBaseDomain(username: PrismaUser['username']) {
   return `${cleanUsername(username)}.${process.env.ROOT_DOMAIN}`;
 }
 
+export function buildDomain(username: PrismaUser['username'], name?: string) {
+  if (name) {
+    return `${name}.${buildUserBaseDomain(username)}`;
+  }
+  return buildUserBaseDomain(username);
+}
+
 export function useOptionalUser(): User | undefined {
   const data = useMatchesData('root');
   if (!data || !isUser(data.user)) {

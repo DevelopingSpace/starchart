@@ -48,7 +48,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   // Create a pending record... for now
   // This will most likely be replaced by some other logic
-  const record = await createRecord({ username: user.username, ...data, status: 'pending' });
+  const record = await createRecord({ username: user.username, ...data });
   return redirect(`/domains/${record.id}`);
 };
 
