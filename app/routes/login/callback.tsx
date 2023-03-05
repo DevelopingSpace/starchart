@@ -1,6 +1,6 @@
 import type { ActionArgs } from '@remix-run/node';
 import { createUserSession } from '~/session.server';
-import { parseLoginResponse } from '~/saml.server';
+import { parseLoginResponse } from '~/lib/saml.server';
 import { redirect } from '@remix-run/node';
 import { createUser, getUserByUsername } from '~/models/user.server';
 

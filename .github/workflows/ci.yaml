@@ -141,7 +141,10 @@ jobs:
         image: redis:7.0.8-alpine3.17
         ports:
           - 6379:6379
-
+      dns:
+        image: motoserver/moto:4.1.1
+        ports:
+          - 5053:5000
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

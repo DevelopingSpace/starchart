@@ -15,7 +15,7 @@ import { redirect } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 
 import { getUsername } from '~/session.server';
-import { createLoginRequest } from '~/saml.server';
+import { createLoginRequest } from '~/lib/saml.server';
 
 export const action = async ({ request }: ActionArgs) => {
   // Check if a session with a username exists
@@ -25,7 +25,7 @@ export const action = async ({ request }: ActionArgs) => {
   if (!user) {
     const url = new URL(request.url);
     const redirectTo = url.searchParams.get('redirectTo') ?? undefined;
-    const samlRedirectURL = await createLoginRequest(redirectTo);
+    const samlRedirectURL = createLoginRequest(redirectTo);
     return redirect(samlRedirectURL);
   }
 

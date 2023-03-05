@@ -9,6 +9,8 @@ import cors from 'cors';
 
 import logger from '~/lib/logger.server';
 import { notificationsWorker } from '~/queues/notifications.server';
+import { init as samlInit } from '~/lib/saml.server';
+import { init as dnsInit } from '~/lib/dns.server';
 import {
   orderCreatorWorker,
   dnsWaiterWorker,
@@ -84,36 +86,48 @@ app.all(
       }
 );
 
-const port = process.env.PORT || 8080;
+// Any startup process that needs to get done before we load any
+// of the app code (e.g., creating or populating items) should
+// happen here.
+async function init() {
+  logger.info('app initializing...');
+  return Promise.all([samlInit(), dnsInit()]);
+}
 
-const server = app.listen(port, () => {
-  // require the built app so we're ready when the first request comes in
-  require(BUILD_DIR);
-  logger.info(`✅ app ready: http://localhost:${port}`);
-});
+async function start() {
+  await init();
 
-gracefulShutdown(server, {
-  forceExit: true,
-  development: process.env.NODE_ENV !== 'production',
-  onShutdown: async function (signal) {
-    logger.info(`Received ${signal}, starting shutdown...`);
-    try {
-      await Promise.all([
-        notificationsWorker.close(),
-        orderCreatorWorker.close(),
-        dnsWaiterWorker.close(),
-        challengeCompleterWorker.close(),
-        orderCompleterWorker.close(),
-        dnsCleanerWorker.close(),
-      ]);
-    } catch (err) {
-      logger.warn('Error closing database connections', err);
-    }
-  },
-  finally: function () {
-    logger.info('Graceful shutdown complete');
-  },
-});
+  const port = process.env.PORT || 8080;
+
+  const server = app.listen(port, () => {
+    // require the built app so we're ready when the first request comes in
+    require(BUILD_DIR);
+    logger.info(`✅ app ready: http://localhost:${port}`);
+  });
+
+  gracefulShutdown(server, {
+    forceExit: true,
+    development: process.env.NODE_ENV !== 'production',
+    onShutdown: async function (signal) {
+      logger.info(`Received ${signal}, starting shutdown...`);
+      try {
+        await Promise.all([
+          notificationsWorker.close(),
+          orderCreatorWorker.close(),
+          dnsWaiterWorker.close(),
+          challengeCompleterWorker.close(),
+          orderCompleterWorker.close(),
+          dnsCleanerWorker.close(),
+        ]);
+      } catch (err) {
+        logger.warn('Error closing database connections', err);
+      }
+    },
+    finally: function () {
+      logger.info('Graceful shutdown complete');
+    },
+  });
+}
 
 function purgeRequireCache() {
   // purge require cache on requests for "server side HMR" this won't let
@@ -128,3 +142,5 @@ function purgeRequireCache() {
     }
   }
 }
+
+start();

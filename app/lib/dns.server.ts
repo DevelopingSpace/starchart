@@ -17,23 +17,48 @@ import type {
 } from '@aws-sdk/client-route-53';
 import type { RecordType } from '@prisma/client';
 
-if (process.env.NODE_ENV === 'production') {
-  if (!process.env.AWS_ROUTE53_HOSTED_ZONE_ID) {
-    throw new Error('AWS_ROUTE53_HOSTED_ZONE_ID is missing');
-  }
-}
-
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
 
-const credentials = () => {
+/**
+ * In production, we require the root domain, hosted zone id, and AWS
+ * credentials to be configured. In development/testing, we will do
+ * it automatically if these are not set in the environment.
+ */
+export async function init() {
   if (process.env.NODE_ENV === 'production') {
+    if (!process.env.AWS_ROUTE53_HOSTED_ZONE_ID) {
+      throw new Error('AWS_ROUTE53_HOSTED_ZONE_ID environment variable is missing');
+    }
+
+    if (!process.env.ROOT_DOMAIN) {
+      throw new Error('ROOT_DOMAIN environment variable is missing');
+    }
+
     if (!AWS_ACCESS_KEY_ID) {
       throw new Error('Missing AWS_ACCESS_KEY_ID secret');
     }
+
     if (!AWS_SECRET_ACCESS_KEY) {
       throw new Error('Missing AWS_SECRET_ACCESS_KEY secret');
     }
+  } else {
+    process.env.ROOT_DOMAIN = process.env.ROOT_DOMAIN || 'starchart.com';
+    if (!process.env.AWS_ROUTE53_HOSTED_ZONE_ID) {
+      try {
+        process.env.AWS_ROUTE53_HOSTED_ZONE_ID = await createHostedZone(process.env.ROOT_DOMAIN);
+        logger.debug(
+          `DNS: created hosted zone ${process.env.AWS_ROUTE53_HOSTED_ZONE_ID} for ${process.env.ROOT_DOMAIN}`
+        );
+      } catch (err) {
+        logger.error('DNS init error', err);
+        throw err;
+      }
+    }
+  }
+}
 
+const credentials = () => {
+  if (process.env.NODE_ENV === 'production') {
     return {
       accessKeyId: AWS_ACCESS_KEY_ID,
       secretAccessKey: AWS_SECRET_ACCESS_KEY,
@@ -53,7 +78,7 @@ export const route53Client = new Route53Client({
   credentials: credentials(),
 });
 
-export const createHostedZone = async (domain: string) => {
+export async function createHostedZone(domain: string) {
   try {
     const command = new CreateHostedZoneCommand({
       Name: domain,
@@ -69,7 +94,7 @@ export const createHostedZone = async (domain: string) => {
     logger.warn(error);
     throw new Error(`Error while creating hosted zone`);
   }
-};
+}
 
 export const createRecord = (username: string, type: RecordType, name: string, value: string) => {
   try {
