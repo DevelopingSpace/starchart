@@ -145,17 +145,6 @@ jobs:
         image: motoserver/moto:4.1.1
         ports:
           - 5053:5000
-      login:
-        image: kristophjunge/test-saml-idp
-        ports:
-          - 8081:8080
-        env:
-          SIMPLESAMLPHP_SP_ENTITY_ID: http://host.docker.internal:8080/sp
-          SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE: http://localhost:8811/login/callback
-          SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE: http://localhost:8811/logout/callback
-        volumes:
-          - /config/simplesamlphp-users.php:/var/www/simplesamlphp/config/authsources.php
-          - /config/saml20-idp-hosted.php:/var/www/simplesamlphp/metadata/saml20-idp-hosted.php
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -179,6 +168,9 @@ jobs:
         # install node modules manually only if cache was not restored
         if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
+
+      - name: Run Login container
+        run: docker compose run --env SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://localhost:8811/login/callback --env SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE=http://localhost:8811/logout/callback-d login
 
       - name: Get installed Playwright version
         id: playwright-version
