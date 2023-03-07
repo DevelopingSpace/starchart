@@ -6,7 +6,7 @@ import { redirect, typedjson, useTypedActionData } from 'remix-typedjson';
 
 import DnsRecordForm from '~/components/dns-record/form';
 import { createRecord } from '~/models/record.server';
-import { requireUsername } from '~/session.server';
+import { requireUser } from '~/session.server';
 
 import type { ActionArgs } from '@remix-run/node';
 import type { ZodError } from 'zod';
@@ -16,7 +16,7 @@ function errorForField(error: ZodError, field: string) {
 }
 
 export const action = async ({ request }: ActionArgs) => {
-  const username = await requireUsername(request);
+  const user = await requireUser(request);
 
   // Create a Zod schema for validation
   // Optional is not needed as we get '' if nothing is entered
@@ -40,9 +40,15 @@ export const action = async ({ request }: ActionArgs) => {
     });
   }
 
+  // Update the DNS record's name with the user's full base domain.
+  // In the UI, we only ask the user to give us the first part of
+  // the domain name (e.g., `foo` in `foo.username.root.com`).
+  const { data } = newDnsRecordParams;
+  data.name = `${data.name}.${user.baseDomain}`;
+
   // Create a pending record... for now
   // This will most likely be replaced by some other logic
-  const record = await createRecord({ username, ...newDnsRecordParams.data, status: 'pending' });
+  const record = await createRecord({ username: user.username, ...data, status: 'pending' });
   return redirect(`/domains/${record.id}`);
 };
 

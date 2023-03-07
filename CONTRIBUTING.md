@@ -6,6 +6,7 @@
   - [Development](#development)
     - [System prerequisites](#system-prerequisites)
     - [Dev environment set up](#dev-environment-set-up)
+  - [SAML Accounts to use in Dev](#saml-accounts-to-use-in-dev)
   - [`.env` and `./dev-secrets/*`](#env-and-dev-secrets)
     - [Usage](#usage)
   - [Pull requests](#pull-requests)
@@ -62,11 +63,11 @@ $ npm run db:studio
 
 Our IDP is configured with a few accounts that exist for testing, the usernames and passwords to use are as follows:
 
-| user        | pass      |
-| ----------- | --------- |
-| user1       | user1pass |
-| user2       | user2pass |
-| lippersheyh | telescope |
+| user     | pass      |
+| -------- | --------- |
+| user1    | user1pass |
+| user2    | user2pass |
+| han.solo | starchart |
 
 They can be configured in `./config/simplesamlphp-users`
 

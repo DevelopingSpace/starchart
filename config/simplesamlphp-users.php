@@ -38,16 +38,16 @@ $config = array(
             'sAMAccountName'=> 'user2',
             'http://schemas.microsoft.com/identity/claims/displayname' => 'Galileo Galilei',
         ),
-        'lippersheyh:telescope' => array(
+        'han.solo:starchart' => array(
           'uid' => array('2'),
           'eduPersonAffiliation' => array('group2'),
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => 'hansolo@myseneca.ca',
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => 'han.solo@myseneca.ca',
           'email' => 'hansolo@myseneca.ca',
           'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => 'Hans',
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'Lippershey',
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'=> 'hansolo@myseneca.ca',
-          'sAMAccountName'=> 'hansolo',
-          'http://schemas.microsoft.com/identity/claims/displayname' => 'Hans Lippershey',
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'Solo',
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'=> 'han.solo@myseneca.ca',
+          'sAMAccountName'=> 'han.solo',
+          'http://schemas.microsoft.com/identity/claims/displayname' => 'Hans Solo',
           
       ),
     ),
