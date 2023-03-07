@@ -154,8 +154,8 @@ jobs:
           SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE: http://localhost:8811/login/callback
           SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE: http://localhost:8811/logout/callback
         volumes:
-          - /starchart/config/simplesamlphp-users.php:/var/www/simplesamlphp/config/authsources.php
-          - /starchart/config/saml20-idp-hosted.php:/var/www/simplesamlphp/metadata/saml20-idp-hosted.php
+          - /config/simplesamlphp-users.php:/var/www/simplesamlphp/config/authsources.php
+          - /config/saml20-idp-hosted.php:/var/www/simplesamlphp/metadata/saml20-idp-hosted.php
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
