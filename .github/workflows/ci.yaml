@@ -147,7 +147,6 @@ jobs:
           - 5053:5000
       login:
         image: kristophjunge/test-saml-idp
-        container_name: 'login'
         ports:
           - '8081:8080'
         env:
