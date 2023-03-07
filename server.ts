@@ -7,7 +7,7 @@ import gracefulShutdown from 'http-graceful-shutdown';
 import helmet from 'helmet';
 import cors from 'cors';
 
-import logger from '~/lib/logger.server';
+import logger, { init as loggerInit } from '~/lib/logger.server';
 import { notificationsWorker } from '~/queues/notifications.server';
 import { init as samlInit } from '~/lib/saml.server';
 import { init as dnsInit } from '~/lib/dns.server';
@@ -91,7 +91,7 @@ app.all(
 // happen here.
 async function init() {
   logger.info('app initializing...');
-  return Promise.all([samlInit(), dnsInit()]);
+  return Promise.all([loggerInit(), samlInit(), dnsInit()]);
 }
 
 async function start() {

@@ -6,7 +6,7 @@ import type { Redis as RedisType, RedisOptions } from 'ioredis';
 // Using Redis means we'll need a lot more event listeners for BullMQ
 // or we will hit the default max limit of 10 listeners. The preferred
 // fix for this warning is to increase that default.
-EventEmitter.defaultMaxListeners = 32;
+EventEmitter.defaultMaxListeners = 64;
 
 let redis: RedisType;
 
