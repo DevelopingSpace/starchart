@@ -1,6 +1,17 @@
 import { AddIcon, InfoIcon } from '@chakra-ui/icons';
-import { Button, Input, Select, Textarea, Tooltip, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  Input,
+  InputGroup,
+  InputRightAddon,
+  Select,
+  Textarea,
+  Tooltip,
+  VStack,
+} from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
+
+import { useUser } from '~/utils';
 import FormField from './form-field';
 
 interface DnsRecordFormProps {
@@ -8,12 +19,17 @@ interface DnsRecordFormProps {
 }
 
 export default function DnsRecordForm({ typeError }: DnsRecordFormProps) {
+  const user = useUser();
+
   return (
     <Form className="domain-form" method="post">
       <VStack maxW="xl" spacing="2">
-        <FormField label="Domain Name" isRequired={true}>
-          <Input name="name" />
-          <Tooltip label="Enter domain name for the DNS Record">
+        <FormField label="Record Name" isRequired={true}>
+          <InputGroup>
+            <Input name="name" />
+            <InputRightAddon children={`.${user.baseDomain}`} />
+          </InputGroup>
+          <Tooltip label="Enter a name for the DNS Record: name">
             <InfoIcon color="#d9d9d9" fontSize="xl" />
           </Tooltip>
         </FormField>
