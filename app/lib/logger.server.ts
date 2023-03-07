@@ -15,16 +15,20 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 });
 
-// https://nodejs.org/api/process.html#event-uncaughtexception
-process.on('uncaughtException', (err, origin) => {
-  logger.error('uncaughtException', err, origin);
-  throw err;
-});
+export async function init() {
+  logger.debug(`logger init: adding logging for unhandled process errors`);
 
-// https://nodejs.org/api/process.html#event-unhandledrejection
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('unhandledRejection', reason, promise);
-  throw reason;
-});
+  // https://nodejs.org/api/process.html#event-uncaughtexception
+  process.on('uncaughtException', (err, origin) => {
+    logger.error(`uncaughtException: origin=${origin}`, err);
+    throw err;
+  });
+
+  // https://nodejs.org/api/process.html#event-unhandledrejection
+  process.on('unhandledRejection', (reason) => {
+    logger.error(`unhandledRejection:`, reason);
+    throw reason;
+  });
+}
 
 export default logger;
