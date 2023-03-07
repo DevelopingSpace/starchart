@@ -8,8 +8,8 @@ test('Login w User 1', async ({ page }) => {
   await page.getByLabel('Password').click();
   await page.getByLabel('Password').fill('user1pass');
   await page.getByRole('button', { name: 'Login' }).click();
-  const locator = await page.getByText('user1', { exact: true });
-  const starchartHeading = await page.getByRole('heading', { name: 'Starchart' });
+  const locator = page.getByText('user1', { exact: true });
+  const starchartHeading = page.getByRole('heading', { name: 'Starchart' });
   await expect(locator).toHaveCount(1);
   await expect(starchartHeading).toHaveCount(1);
 });
