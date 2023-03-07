@@ -67,13 +67,13 @@ const sp = samlify.ServiceProvider({
   assertionConsumerService: [
     {
       Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-      Location: process.env.HOSTNAME + '/login/callback',
+      Location: '/login/callback',
     },
   ],
   singleLogoutService: [
     {
       Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-      Location: process.env.HOSTNAME + '/logout/callback',
+      Location: '/logout/callback',
     },
   ],
 });
