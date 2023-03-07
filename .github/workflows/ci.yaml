@@ -170,7 +170,7 @@ jobs:
         run: npm ci
 
       - name: Run Login container
-        run: docker compose run -d login
+        run: docker compose up -d login
 
       - name: Get installed Playwright version
         id: playwright-version
