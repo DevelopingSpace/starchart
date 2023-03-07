@@ -170,7 +170,7 @@ jobs:
         run: npm ci
 
       - name: Run Login container
-        run: docker compose run -e "SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://localhost:8811/login/callback" -e "SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE=http://localhost:8811/logout/callback" -d login
+        run: docker compose run -e SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://localhost:8811/login/callback -e SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE=http://localhost:8811/logout/callback -d login
 
       - name: Get installed Playwright version
         id: playwright-version
