@@ -86,7 +86,7 @@ export default function Header() {
       </Heading>
       <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5">
         <Hide below="lg">
-          <Text>{user.username}</Text>
+          <Text id="header-user">{user.username}</Text>
         </Hide>
 
         <Menu>
