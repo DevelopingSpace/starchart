@@ -5,9 +5,9 @@ const prisma = new PrismaClient();
 
 async function seed() {
   const username = 'starchartdev';
-  const firstName = 'Starchart';
-  const lastName = 'Developer';
+  const displayName = 'Starchart Developer';
   const email = 'dev@starchart.invalid';
+  const group = 'mycustomdomain-admins';
   let recordExpDate = new Date();
   recordExpDate.setMonth(recordExpDate.getMonth() + 6); // a record expires after 6 months
   let certExpDate = new Date();
@@ -23,12 +23,28 @@ async function seed() {
     data: [
       {
         username,
-        firstName,
-        lastName,
+        displayName,
         email,
+        group,
       },
-      { username: 'user1', firstName: 'Johannes', lastName: 'Kepler', email: 'user1@myseneca.ca' },
-      { username: 'user2', firstName: 'Galileo', lastName: 'Galilei', email: 'user2@myseneca.ca' },
+      {
+        username: 'user1',
+        displayName: 'Johannes Kepler',
+        email: 'user1@myseneca.ca',
+        group: 'mycustomdomain-faculty',
+      },
+      {
+        username: 'user2',
+        displayName: 'Galileo Galilei',
+        email: 'user2@myseneca.ca',
+        group: 'mycustomdomain-students',
+      },
+      {
+        username: 'user3',
+        displayName: 'Adam Mason',
+        email: 'user3@myseneca.ca',
+        group: 'mycustomdomain-admins',
+      },
     ],
   });
 

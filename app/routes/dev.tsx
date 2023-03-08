@@ -39,7 +39,7 @@ export const action = async ({ request }: ActionArgs) => {
       await addNotification({
         emailAddress: user.email,
         subject: 'Notification Example',
-        message: `Hello ${user.firstName}! Welcome to Starchart.`,
+        message: `Hello ${user.displayName}! Welcome to Starchart.`,
       });
       return json({
         result: 'ok',
