@@ -150,6 +150,8 @@ class LetsEncrypt {
       txtRecords = (await resolver.resolveTxt(domain))
         // Flatten array of arrays
         .flat();
+
+      return txtRecords.includes(key);
     } catch (e) {
       /**
        * Noop, this is expected
@@ -160,9 +162,9 @@ class LetsEncrypt {
        *   hostname: '_acme-challenge.testing.user1.starchart.com'
        * }
        */
-    }
 
-    return txtRecords?.includes(key) ?? false;
+      return false;
+    }
   };
 
   /**
