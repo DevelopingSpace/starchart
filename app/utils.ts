@@ -2,6 +2,7 @@ import { useMatches } from '@remix-run/react';
 import { useMemo } from 'react';
 
 import type { User } from '~/models/user.server';
+import type { Job } from 'bullmq';
 
 const DEFAULT_REDIRECT = '/';
 
@@ -62,4 +63,30 @@ export function useUser(): User {
     );
   }
   return maybeUser;
+}
+
+/**
+ * This async Fn takes a BullMQ job, and the queue name
+ * and returns children jobs that are of that queue name
+ * @param {string} jobName
+ * @param {Job} job
+ *
+ * @returns {Promise<Object>}
+ */
+
+export async function getChildrenValuesOfQueueName<CT>({
+  queueName,
+  job,
+}: {
+  queueName: string;
+  job: Job;
+}): Promise<{
+  [jobKey: string]: CT;
+}> {
+  const childrenValues = await job.getChildrenValues();
+  const filteredChildrenValues = Object.keys(childrenValues)
+    .filter((jobKey) => jobKey.includes(queueName))
+    .reduce((acc, jobKey) => ({ ...acc, [jobKey]: childrenValues[jobKey] }), {});
+
+  return filteredChildrenValues;
 }

@@ -144,11 +144,25 @@ class LetsEncrypt {
   }): Promise<boolean> => {
     const resolver = await getAuthoritativeResolverForDomain(domain);
 
-    const txtRecords = (await resolver.resolveTxt(domain))
-      // Flatten array of arrays
-      .flat();
+    let txtRecords;
 
-    return txtRecords.includes(key);
+    try {
+      txtRecords = (await resolver.resolveTxt(domain))
+        // Flatten array of arrays
+        .flat();
+    } catch (e) {
+      /**
+       * Noop, this is expected
+       * example: {
+       *   errno: undefined,
+       *   code: 'ENODATA',
+       *   syscall: 'queryTxt',
+       *   hostname: '_acme-challenge.testing.user1.starchart.com'
+       * }
+       */
+    }
+
+    return txtRecords?.includes(key) ?? false;
   };
 
   /**

@@ -29,7 +29,7 @@ export const action = async ({ request }: ActionArgs) => {
       // Because of the foreign key constraint, it needs to be an existing user
       await addCertRequest({
         username: 'starchartdev',
-        rootDomain: 'testing.starchartdev.starchart.com',
+        rootDomain: 'testing.user1.starchart.com',
       });
       return json({
         result: 'ok',
