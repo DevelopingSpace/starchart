@@ -54,12 +54,10 @@ export const dnsWaiterWorker = new Worker<DnsWaiterData>(
         key: challenge.challengeKey,
       });
 
-      console.log('foo');
       const challengeResult = await LetsEncrypt.verifyChallenge({
         domain: challenge.domain,
         key: challenge.challengeKey,
       });
-      console.log('bar');
 
       if (!challengeResult) {
         logger.debug('Challenge **not found** in DNS', {
