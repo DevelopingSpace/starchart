@@ -50,17 +50,35 @@ export async function checkUsernameExists(username: PrismaUser['username']) {
 
 export async function createUser(
   username: PrismaUser['username'],
-  firstName: PrismaUser['firstName'],
-  lastName: PrismaUser['lastName'],
-  email: PrismaUser['email']
+  displayName: PrismaUser['displayName'],
+  email: PrismaUser['email'],
+  group: PrismaUser['group']
 ) {
   logger.info(`Creating new user ${username}`);
   return prisma.user.create({
     data: {
       username,
-      firstName,
-      lastName,
+      displayName,
       email,
+      group,
     },
   });
+}
+
+export async function isStudent(username: PrismaUser['username']) {
+  const { group } = await prisma.user.findUniqueOrThrow({ where: { username } });
+  // The group will have -dev in it on staging but not on prod
+  return /mycustomdomain(-dev)?-students/.test(group);
+}
+
+export async function isFaculty(username: PrismaUser['username']) {
+  const { group } = await prisma.user.findUniqueOrThrow({ where: { username } });
+  // The group will have -dev in it on staging but not on prod
+  return /mycustomdomain(-dev)?-faculty/.test(group);
+}
+
+export async function isAdmin(username: PrismaUser['username']) {
+  const { group } = await prisma.user.findUniqueOrThrow({ where: { username } });
+  // The group will have -dev in it on staging but not on prod
+  return /mycustomdomain(-dev)?-admins/.test(group);
 }

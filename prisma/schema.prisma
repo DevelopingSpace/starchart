@@ -8,13 +8,12 @@ generator client {
 }
 
 model User {
-  username  String @id
-  firstName String
-  lastName  String
-  email     String @unique
-
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  username    String        @id
+  displayName String
+  email       String        @unique
+  group       String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   record      Record[]
   certificate Certificate[]
 }
