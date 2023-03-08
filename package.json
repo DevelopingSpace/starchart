@@ -84,7 +84,7 @@
     "c8": "^7.13.0",
     "cookie": "^0.5.0",
     "dotenv": "^16.0.3",
-    "esbuild": "^0.17.8",
+    "esbuild": "^0.17.11",
     "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-playwright": "^0.12.0",
