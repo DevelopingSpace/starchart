@@ -67,6 +67,7 @@ Our IDP is configured with a few accounts that exist for testing, the usernames 
 | -------- | --------- |
 | user1    | user1pass |
 | user2    | user2pass |
+| user3    | user3pass |
 | han.solo | starchart |
 
 They can be configured in `./config/simplesamlphp-users`
