@@ -16,8 +16,6 @@ import { Form } from '@remix-run/react';
 
 import { getUsername } from '~/session.server';
 import { createLoginRequest } from '~/lib/saml.server';
-import DisplayPage from '~/components/display-page';
-import undraw from '~/assets/undraw_server_down_s-4-lk.svg';
 
 export const action = async ({ request }: ActionArgs) => {
   // Check if a session with a username exists
@@ -37,7 +35,6 @@ export const action = async ({ request }: ActionArgs) => {
 export default function Login() {
   return (
     <Container>
-      {/* <DisplayPage desc="An error has occurred when processing your account" img={undraw} /> */}
       <Center height="full">
         <Grid gap="12">
           <GridItem>

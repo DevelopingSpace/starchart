@@ -1,4 +1,5 @@
 import {
+  Heading,
   Text,
   Avatar,
   Flex,
@@ -25,7 +26,6 @@ export default function Header() {
     <Flex
       as="header"
       backgroundColor="brand.500"
-      height="auto"
       width="100%"
       alignItems="center"
       shadow="2xl"
@@ -36,16 +36,7 @@ export default function Header() {
       position="absolute"
     >
       <Hide below="lg">
-        <HStack color="white" justifyContent="flex-start" gap="10">
-          <Flex justifySelf="flex-start">
-            <IconButton
-              as={Link}
-              to={{ pathname: '/' }}
-              aria-label="Redirect to main"
-              _hover={{ backgroundColor: 'transparent' }}
-              icon={<LockIcon color="gray.600" />}
-            />
-          </Flex>
+        <HStack color="white" justifyContent="flex-start" gap="10" width="100%">
           <Flex gap="5">
             <Link to={{ pathname: '/domains' }}>
               <Flex alignItems="center">
@@ -91,15 +82,13 @@ export default function Header() {
           </MenuList>
         </Menu>
       </Show>
-      <Show below="lg">
-        <Link to={{ pathname: '/' }}>
-          <Flex justifySelf="flex-start">
-            <LockIcon color="gray.600" />
-          </Flex>
-        </Link>
-      </Show>
+      <Show below="lg"></Show>
 
-      <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5">
+      <Heading as="h1" size="xl" color="white" width="100%" textAlign="center">
+        My.Custom.Domain
+      </Heading>
+
+      <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5" width="100%">
         <Hide below="lg">
           <Text id="header-user">{user.username}</Text>
         </Hide>

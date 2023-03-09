@@ -1,4 +1,4 @@
-import { Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { Flex, Text, VStack } from '@chakra-ui/react';
 import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 
@@ -22,9 +22,6 @@ export default function IndexRoute() {
         marginTop="16"
         gap={{ md: '16' }}
       >
-        <Heading color="brand.500" size={{ base: 'lg', md: 'xl' }}>
-          My.Custom.Domains
-        </Heading>
         <Flex width={{ base: '100%', md: '50%' }} textAlign="center" padding="5">
           <Text fontSize={{ base: 'sm', md: 'lg' }}>
             Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
@@ -42,13 +39,13 @@ export default function IndexRoute() {
       >
         <LandingPageCard
           path="/domains"
-          pathName="Records Table"
+          pathName="View DNS Records"
           cardName="DNS Records"
-          cardDescription="DNS: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+          cardDescription="DNS Record: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
         />
         <LandingPageCard
           path="/certificate"
-          pathName="Certificate"
+          pathName="View Certificate"
           cardName="Certificate"
           cardDescription="Certificate: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
         />

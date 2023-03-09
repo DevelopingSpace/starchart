@@ -8,9 +8,9 @@ test('Login with User 1', async ({ page }) => {
   await page.getByRole('button', { name: 'Login' }).click();
   await page.waitForURL('http://localhost:8080');
   const locator = page.locator('#header-user');
-  const starchartHeading = page.getByRole('heading', { name: 'Starchart' });
+  const starchartHeading = page.getByRole('heading', { name: 'My.Custom.Domain' });
   await expect(locator).toContainText('user1');
-  await expect(starchartHeading).toContainText('Starchart');
+  await expect(starchartHeading).toContainText('My.Custom.Domain');
 });
 
 test('Login with User 1 dev redirect', async ({ page }) => {
