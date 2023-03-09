@@ -1,6 +1,5 @@
 import {
   Text,
-  Heading,
   Avatar,
   Flex,
   HStack,
@@ -32,24 +31,36 @@ export default function Header() {
       shadow="2xl"
       fontSize="18"
       paddingY="2"
-      paddingX={{ base: '1', md: '10' }}
+      paddingX={{ base: '1', md: '5' }}
       justifyContent="space-between"
+      position="absolute"
     >
       <Hide below="lg">
-        <HStack color="white" justifyContent="flex-start">
-          <Link to={{ pathname: '/domains' }}>
-            <Flex alignItems="center">
-              <TriangleUpIcon marginRight="2" />
-              <Text>Domains</Text>
-            </Flex>
-          </Link>
+        <HStack color="white" justifyContent="flex-start" gap="10">
+          <Flex justifySelf="flex-start">
+            <IconButton
+              as={Link}
+              to={{ pathname: '/' }}
+              aria-label="Redirect to main"
+              _hover={{ backgroundColor: 'transparent' }}
+              icon={<LockIcon color="gray.600" />}
+            />
+          </Flex>
+          <Flex gap="5">
+            <Link to={{ pathname: '/domains' }}>
+              <Flex alignItems="center">
+                <TriangleUpIcon marginRight="2" />
+                <Text>Domains</Text>
+              </Flex>
+            </Link>
 
-          <Link to={{ pathname: '/certificate' }}>
-            <Flex alignItems="center" marginLeft="5">
-              <LockIcon marginRight="2" />
-              <Text>Certificate</Text>
-            </Flex>
-          </Link>
+            <Link to={{ pathname: '/certificate' }}>
+              <Flex alignItems="center" marginLeft="5">
+                <LockIcon marginRight="2" />
+                <Text>Certificate</Text>
+              </Flex>
+            </Link>
+          </Flex>
         </HStack>
       </Hide>
       <Show below="lg">
@@ -80,10 +91,14 @@ export default function Header() {
           </MenuList>
         </Menu>
       </Show>
+      <Show below="lg">
+        <Link to={{ pathname: '/' }}>
+          <Flex justifySelf="flex-start">
+            <LockIcon color="gray.600" />
+          </Flex>
+        </Link>
+      </Show>
 
-      <Heading as="h1" size={{ base: 'md', xs: 'lg', sm: 'xl' }} color="white">
-        My.Custom.Domain
-      </Heading>
       <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5">
         <Hide below="lg">
           <Text id="header-user">{user.username}</Text>

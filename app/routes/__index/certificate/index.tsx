@@ -2,13 +2,13 @@ import { Flex, Center } from '@chakra-ui/react';
 import type { Certificate } from '@prisma/client';
 import { useState } from 'react';
 
-import Loading from '~/components/certificate/loading';
-
+import undrawSvg from '~/assets/undraw_processing_re_tbdu.svg';
+import Loading from '~/components/display-page';
 import CertificateAvailable from '~/components/certificate/certificate-available';
 import CertificateRequestView from '~/components/certificate/certificate-request';
 
 export default function CertificateIndexRoute() {
-  const [certificateRequested, setCertificateRequested] = useState(false);
+  const [certificateRequested, setCertificateRequested] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const currentDate: Date = new Date(2023, 2);
@@ -46,12 +46,22 @@ export default function CertificateIndexRoute() {
   }
 
   if (loading) {
-    return <Loading />;
+    return (
+      <Loading
+        img={undrawSvg}
+        desc="We have received your request, and will notify you when your certificate is ready"
+      />
+    );
   }
 
   return (
     <Center>
-      <Flex flexDirection="column" gap="5" width={{ base: 'md', sm: 'lg', md: '2xl', lg: '4xl' }}>
+      <Flex
+        flexDirection="column"
+        gap="5"
+        width={{ base: 'md', sm: 'lg', md: '2xl', lg: '4xl' }}
+        marginTop={{ base: '16', md: '5' }}
+      >
         {certificateRequested ? (
           <CertificateAvailable
             publicKey={certificate.certificate!}

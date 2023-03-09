@@ -1,8 +1,11 @@
 import { Center, Flex, Image, Heading } from '@chakra-ui/react';
 
-import undrawSvg from '~/assets/undraw_processing_re_tbdu.svg';
+interface DisplayPageProps {
+  img: string;
+  desc: string;
+}
 
-export default function LoadingView() {
+export default function DisplayPage({ img, desc }: DisplayPageProps) {
   return (
     <Center paddingY="24" paddingX="2">
       <Flex
@@ -11,7 +14,7 @@ export default function LoadingView() {
         textAlign="center"
         gap="5"
       >
-        <Image src={undrawSvg} />
+        <Image src={img} />
         <Heading
           as="h2"
           size={{ base: 'md', sm: 'lg', md: 'xl' }}
@@ -19,7 +22,7 @@ export default function LoadingView() {
           fontWeight="light"
           color="brand.500"
         >
-          We have received your request, and will notify you when your certificate is ready
+          {desc}
         </Heading>
       </Flex>
     </Center>

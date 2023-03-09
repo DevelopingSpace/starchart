@@ -47,20 +47,22 @@ export default function DomainsIndexRoute() {
 
   return (
     <Container maxW="contianer.xl">
-      <Heading as="h1" size="xl" mt="8">
-        Domains
-      </Heading>
-      <Text maxW="container.sm" mb="4" mt="2">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-        been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-        galley of type and scrambled it to make a type specimen book.
-      </Text>
-      <Flex justifyContent="flex-end">
-        <Link to="/domains/new">
-          <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
-        </Link>
+      <Flex flexDirection="column">
+        <Heading as="h1" size="xl" mt="20">
+          Domains
+        </Heading>
+        <Text maxW="container.sm" mb="4" mt="2">
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+          been the industry's standard dummy text ever since the 1500s, when an unknown printer took
+          a galley of type and scrambled it to make a type specimen book.
+        </Text>
+        <Flex justifyContent="flex-end">
+          <Link to="/domains/new">
+            <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
+          </Link>
+        </Flex>
+        <DomainsTable domains={domains} onAction={onDomainAction} transition={transition} />
       </Flex>
-      <DomainsTable domains={domains} onAction={onDomainAction} transition={transition} />
     </Container>
   );
 }
