@@ -45,7 +45,7 @@ export const dnsWaiterWorker = new Worker<DnsWaiterData>(
       orderCreatorRetval.certificateId
     );
 
-    // Using a for .. of loop here instear of forEach to be able to await
+    // Using a for .. of loop here instead of forEach to be able to await
     for (const challenge of challenges) {
       logger.debug('Checking challenge', {
         rootDomain,

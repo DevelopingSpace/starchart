@@ -9,6 +9,7 @@ import isIP from 'validator/lib/isIP';
 
 import logger from '~/lib/logger.server';
 import secrets from '~/lib/secrets.server';
+import { buildUserBaseDomain } from '~/utils';
 
 import type {
   CreateHostedZoneResponse,
@@ -116,7 +117,7 @@ export const upsertRecord = async (
       logger.error('Invalid record name provided', {
         name,
         username,
-        baseDomian: `${username}.${process.env.ROOT_DOMAIN}`,
+        baseDomain: buildUserBaseDomain(username),
       });
 
       throw new Error('Invalid record name provided');
@@ -236,12 +237,12 @@ export const getChangeStatus = async (changeId: string) => {
 4. Domain name cannot contain multiple consecutive '-' or '_'
 5. Domain name can contain uppercase in UI but it is converted to lowercase before validation */
 export const isNameValid = (name: string, username: string) => {
-  const rootDomain = process.env.ROOT_DOMAIN!;
+  const baseDomain = buildUserBaseDomain(username);
 
   /* Domain name must end with username and root domain.
   Here it removes username and root domain,
   to validate only subdomain that user has input */
-  const toRemove = `.${username}.${rootDomain}`;
+  const toRemove = `.${baseDomain}`;
   if (!name.endsWith(toRemove)) {
     return false;
   }

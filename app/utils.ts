@@ -1,8 +1,9 @@
 import { useMatches } from '@remix-run/react';
 import { useMemo } from 'react';
 
-import type { User } from '~/models/user.server';
 import type { Job } from 'bullmq';
+import type { User as PrismaUser } from '@prisma/client';
+import type { User } from '~/models/user.server';
 
 const DEFAULT_REDIRECT = '/';
 
@@ -45,6 +46,25 @@ export function useMatchesData(id: string): Record<string, unknown> | undefined 
 
 function isUser(user: any): user is User {
   return user && typeof user === 'object' && typeof user.email === 'string';
+}
+
+/**
+ * Remove invalid/unwanted characters from a username. In the case
+ * of faculty/admins, we will have a `.` in the username, which we
+ * don't want to use as part of domain names.
+ * @param username The user's username (e.g., `jsmith` or `john.smith`)
+ */
+function cleanUsername(username: PrismaUser['username']) {
+  return username.replace(/\./g, '');
+}
+
+/**
+ * Create the domain for a user, using their username
+ * @param username The user's username (e.g., `jsmith` or `john.smith`)
+ * @returns string j.smith -> jsmith.starchart.com
+ */
+export function buildUserBaseDomain(username: PrismaUser['username']) {
+  return `${cleanUsername(username)}.${process.env.ROOT_DOMAIN}`;
 }
 
 export function useOptionalUser(): User | undefined {

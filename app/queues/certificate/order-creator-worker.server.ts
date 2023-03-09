@@ -39,7 +39,7 @@ const handleChallenges = ({
      */
     await addDnsRequest({
       username,
-      type: 'A',
+      type: 'TXT',
       name: domain,
       value: challengeKey,
     });
