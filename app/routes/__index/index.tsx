@@ -19,7 +19,6 @@ export default function IndexRoute() {
         alignItems="center"
         width="100%"
         paddingY={{ base: '2', md: '7' }}
-        marginTop="16"
         gap={{ md: '16' }}
       >
         <Flex width={{ base: '100%', md: '50%' }} textAlign="center" padding="5">

@@ -33,7 +33,6 @@ export default function Header() {
       paddingY="2"
       paddingX={{ base: '1', md: '5' }}
       justifyContent="space-between"
-      position="absolute"
     >
       <Hide below="lg">
         <HStack color="white" justifyContent="flex-start" gap="10" width="100%">

@@ -17,7 +17,7 @@ export default function DescriptionSection({
     <Flex
       flexDirection="column"
       gap="3"
-      marginTop={{ base: '5', md: '14' }}
+      marginTop="5"
       fontSize={{ base: 'sm', md: 'md' }}
       alignItems={{ base: 'center', md: 'flex-start' }}
       textAlign={{ base: 'center', md: 'left' }}

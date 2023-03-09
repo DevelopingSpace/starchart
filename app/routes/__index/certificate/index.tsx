@@ -8,7 +8,7 @@ import CertificateAvailable from '~/components/certificate/certificate-available
 import CertificateRequestView from '~/components/certificate/certificate-request';
 
 export default function CertificateIndexRoute() {
-  const [certificateRequested, setCertificateRequested] = useState(true);
+  const [certificateRequested, setCertificateRequested] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const currentDate: Date = new Date(2023, 2);
