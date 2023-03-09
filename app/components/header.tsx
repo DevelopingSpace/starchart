@@ -55,38 +55,42 @@ export default function Header() {
         </HStack>
       </Hide>
       <Show below="lg">
-        <Menu>
-          <MenuButton
-            as={Button}
-            rightIcon={<HamburgerIcon />}
-            size="auto"
-            style={{ backgroundColor: 'transparent' }}
-          />
-          <MenuList>
-            <MenuItem>
-              <Link to={{ pathname: '/domains' }}>
-                <Flex alignItems="center">
-                  <TriangleUpIcon marginRight="2" />
-                  <Text>Domains</Text>
-                </Flex>
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <Link to={{ pathname: '/certificate' }}>
-                <Flex alignItems="center">
-                  <LockIcon marginRight="2" />
-                  <Text>Certificate</Text>
-                </Flex>
-              </Link>
-            </MenuItem>
-          </MenuList>
-        </Menu>
+        <Flex width="100%">
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<HamburgerIcon />}
+              size="auto"
+              style={{ backgroundColor: 'transparent' }}
+            />
+            <MenuList>
+              <MenuItem>
+                <Link to={{ pathname: '/domains' }}>
+                  <Flex alignItems="center">
+                    <TriangleUpIcon marginRight="2" />
+                    <Text>Domains</Text>
+                  </Flex>
+                </Link>
+              </MenuItem>
+              <MenuItem>
+                <Link to={{ pathname: '/certificate' }}>
+                  <Flex alignItems="center">
+                    <LockIcon marginRight="2" />
+                    <Text>Certificate</Text>
+                  </Flex>
+                </Link>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
       </Show>
       <Show below="lg"></Show>
 
-      <Heading as="h1" size="xl" color="white" width="100%" textAlign="center">
-        My.Custom.Domain
-      </Heading>
+      <Link to={{ pathname: '/' }}>
+        <Heading as="h1" size={{ base: 'md', xs: 'lg', sm: 'xl' }} color="white">
+          My.Custom.Domain
+        </Heading>
+      </Link>
 
       <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5" width="100%">
         <Hide below="lg">
