@@ -13,8 +13,6 @@ $config = array(
     'example-userpass' => array(
         'exampleauth:UserPass',
         'user1:user1pass' => array(
-            'uid' => array('1'),
-            'eduPersonAffiliation' => array('group1'),
             /*
               NOTE: we add a bunch of claims that we expect to get back from Seneca,
               and need to simulate here.
@@ -25,24 +23,18 @@ $config = array(
             'group'=>'mycustomdomain-students',
         ),
         'user2:user2pass' => array(
-            'uid' => array('2'),
-            'eduPersonAffiliation' => array('group2'),
             'displayname' => 'Galileo Galilei',
             'email' => 'user2@myseneca.ca',
             'sAMAccountName'=> 'user2',
             'group'=>'mycustomdomain-faculty',
         ),
         'user3:user3pass' => array(
-          'uid' => array('2'),
-          'eduPersonAffiliation' => array('group2'),
           'displayname' => 'Adam Mason',
           'email' => 'user3@myseneca.ca',
           'sAMAccountName'=> 'user3',
           'group'=>'mycustomdomain-admins',
       ),
         'han.solo:starchart' => array(
-          'uid' => array('2'),
-          'eduPersonAffiliation' => array('group2'),
           'displayname' => 'Hans Solo',
           'email' => 'hansolo@myseneca.ca',
           'sAMAccountName'=> 'han.solo',
