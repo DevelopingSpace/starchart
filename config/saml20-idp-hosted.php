@@ -26,7 +26,7 @@ $metadata['__DYNAMIC:1__'] = array(
     'authproc' => array(
         3 => array(
             'class' => 'saml:AttributeNameID',
-            'attribute' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+            'attribute' => 'sAMAccountName',
             'Format' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
         )
     )

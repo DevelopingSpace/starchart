@@ -30,13 +30,10 @@ The response from SimpleSAMLPhp
   attributes: {
     uid: '1',
     eduPersonAffiliation: 'group1',
-    'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress': 'user1@myseneca.ca',
     email: 'user1@myseneca.ca',
-    'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname': 'Johannes',
-    'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname': 'Kepler',
-    'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name': 'user1@myseneca.ca',
+    displayname: 'Johannes Kepler'
     sAMAccountName: 'user1',
-    'http://schemas.microsoft.com/identity/claims/displayname': 'Johannes Kepler'
+    group:'mycustomdomain-dev-students',
   }
 }
 */
@@ -61,9 +58,9 @@ export const action = async ({ request }: ActionArgs) => {
   if (!(await checkUsernameExists(username))) {
     await createUser(
       username,
-      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
-      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
-      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']
+      samlResponse.attributes['displayname'],
+      samlResponse.attributes['email'],
+      samlResponse.attributes['group']
     );
   }
 
