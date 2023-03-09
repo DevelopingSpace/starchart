@@ -28,8 +28,8 @@ export const action = async ({ request }: ActionArgs) => {
     case 'certificate-request':
       // Because of the foreign key constraint, it needs to be an existing user
       await addCertRequest({
-        username: 'starchartdev',
-        rootDomain: 'testing.starchartdev.starchart.com',
+        username: user.username,
+        rootDomain: user.baseDomain,
       });
       return json({
         result: 'ok',
@@ -48,9 +48,9 @@ export const action = async ({ request }: ActionArgs) => {
     case 'dns-record-request':
       await addDnsRequest({
         type: 'A',
-        name: 'osd700-a1.user1.starchart.com',
+        name: `osd700-a1.${user.baseDomain}`,
         value: '192.168.0.1',
-        username: 'user1',
+        username: user.username,
       });
       return json({
         result: 'ok',

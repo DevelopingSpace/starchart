@@ -4,6 +4,7 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 import * as challengeModel from '~/models/challenge.server';
+import { addDnsRequest } from '~/queues/dns/dns-flow.server';
 
 import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
 
@@ -14,14 +15,6 @@ export interface OrderCreatorData {
 
 export interface OrderCreatorOutputData {
   certificateId: number;
-  username: string;
-  rootDomain: string;
-  orderUrl: string;
-  challengeEntries: {
-    id: number;
-    domain: string;
-    challengeKey: string;
-  }[];
 }
 
 export const orderCreatorQueueName = 'certificate-createOrder';
@@ -29,13 +22,27 @@ export const orderCreatorQueueName = 'certificate-createOrder';
 /**
  * This async fn handles adding challenges to DB and DNS
  */
-const handleChallenges = (certificateId: number, bundles: ChallengeBundle[]) => {
+const handleChallenges = ({
+  username,
+  certificateId,
+  bundles,
+}: {
+  username: string;
+  certificateId: number;
+  bundles: ChallengeBundle[];
+}) => {
   const challengeInsertPromises = bundles.map(async ({ domain, value: challengeKey }) => {
     logger.info(`Adding challenge to DNS`, { domain, challengeKey });
 
     /**
-     * TODO actually add challenge to DNS
+     * add challenge to DNS
      */
+    await addDnsRequest({
+      username,
+      type: 'TXT',
+      name: domain,
+      value: challengeKey,
+    });
 
     return challengeModel.createChallenge({
       domain,
@@ -115,15 +122,8 @@ export const orderCreatorWorker = new Worker<OrderCreatorData, OrderCreatorOutpu
      * Add challenges to DB and DNS, get back id, domain, challengeKey, for each of them
      */
 
-    let challengeEntries;
     try {
-      challengeEntries = (await handleChallenges(certificateId, letsEncrypt.challengeBundles!)).map(
-        ({ id, domain, challengeKey }) => ({
-          id,
-          domain,
-          challengeKey,
-        })
-      );
+      await handleChallenges({ username, certificateId, bundles: letsEncrypt.challengeBundles! });
       logger.info('All challenge entries have been added');
     } catch (e) {
       // Log and rethrow the same error to keep message and stack
@@ -136,10 +136,6 @@ export const orderCreatorWorker = new Worker<OrderCreatorData, OrderCreatorOutpu
      */
     return {
       certificateId,
-      username,
-      rootDomain,
-      orderUrl: letsEncrypt.order!.url,
-      challengeEntries,
     } as OrderCreatorOutputData;
   },
   { connection: redis }
