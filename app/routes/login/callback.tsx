@@ -58,9 +58,9 @@ export const action = async ({ request }: ActionArgs) => {
   if (!(await checkUsernameExists(username))) {
     await createUser(
       username,
-      samlResponse.attributes['displayname'],
-      samlResponse.attributes['email'],
-      samlResponse.attributes['group']
+      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
+      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
+      samlResponse.attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']
     );
   }
 
