@@ -53,3 +53,5 @@ export const notificationsWorker = new Worker<NotificationData>(
   },
   { connection: redis }
 );
+
+process.on('SIGINT', () => notificationsWorker.close());

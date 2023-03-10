@@ -19,43 +19,52 @@ import type {
 import type { RecordType } from '@prisma/client';
 
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
+const { NODE_ENV } = process.env;
 
 /**
  * In production, we require the root domain, hosted zone id, and AWS
- * credentials to be configured. In development/testing, we will do
- * it automatically if these are not set in the environment.
+ * credentials to be configured.
  */
-export async function init() {
-  if (process.env.NODE_ENV === 'production') {
-    if (!process.env.AWS_ROUTE53_HOSTED_ZONE_ID) {
+if (NODE_ENV === 'production') {
+  if (!process.env.AWS_ROUTE53_HOSTED_ZONE_ID) {
+    throw new Error('AWS_ROUTE53_HOSTED_ZONE_ID environment variable is missing');
+  }
+
+  if (!process.env.ROOT_DOMAIN) {
+    throw new Error('ROOT_DOMAIN environment variable is missing');
+  }
+
+  if (!AWS_ACCESS_KEY_ID) {
+    throw new Error('Missing AWS_ACCESS_KEY_ID secret');
+  }
+
+  if (!AWS_SECRET_ACCESS_KEY) {
+    throw new Error('Missing AWS_SECRET_ACCESS_KEY secret');
+  }
+} else {
+  // In dev, we only need a root domain, and can fake the rest
+  process.env.ROOT_DOMAIN = process.env.ROOT_DOMAIN || 'starchart.com';
+}
+
+/**
+ * In production, we have to have a zone id to do anything, but in
+ * dev, we create it on startup if not set.
+ * @returns string - the AWS Hosted Zone ID to use
+ */
+async function hostedZoneId() {
+  if (!process.env.AWS_ROUTE53_HOSTED_ZONE_ID) {
+    if (process.env.NODE_ENV === 'production') {
       throw new Error('AWS_ROUTE53_HOSTED_ZONE_ID environment variable is missing');
     }
 
-    if (!process.env.ROOT_DOMAIN) {
-      throw new Error('ROOT_DOMAIN environment variable is missing');
-    }
-
-    if (!AWS_ACCESS_KEY_ID) {
-      throw new Error('Missing AWS_ACCESS_KEY_ID secret');
-    }
-
-    if (!AWS_SECRET_ACCESS_KEY) {
-      throw new Error('Missing AWS_SECRET_ACCESS_KEY secret');
-    }
-  } else {
-    process.env.ROOT_DOMAIN = process.env.ROOT_DOMAIN || 'starchart.com';
-    if (!process.env.AWS_ROUTE53_HOSTED_ZONE_ID) {
-      try {
-        process.env.AWS_ROUTE53_HOSTED_ZONE_ID = await createHostedZone(process.env.ROOT_DOMAIN);
-        logger.debug(
-          `DNS: created hosted zone ${process.env.AWS_ROUTE53_HOSTED_ZONE_ID} for ${process.env.ROOT_DOMAIN}`
-        );
-      } catch (err) {
-        logger.error('DNS init error', err);
-        throw err;
-      }
-    }
+    // In development/testing, create a hosted zone if the variables are missing
+    process.env.AWS_ROUTE53_HOSTED_ZONE_ID = await createHostedZone(process.env.ROOT_DOMAIN!);
+    logger.debug(
+      `DNS: created hosted zone ${process.env.AWS_ROUTE53_HOSTED_ZONE_ID} for ${process.env.ROOT_DOMAIN}`
+    );
   }
+
+  return process.env.AWS_ROUTE53_HOSTED_ZONE_ID;
 }
 
 const credentials = () => {
@@ -73,8 +82,16 @@ const credentials = () => {
   };
 };
 
+/**
+ * Allow overriding the AWS URL endpoint for Route53 in dev for moto server
+ * @returns string | undefined - if we override, we provide a new URL
+ */
+const awsEndpoint = () => {
+  return process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:5053';
+};
+
 export const route53Client = new Route53Client({
-  endpoint: process.env.AWS_ENDPOINT_URL || 'http://localhost:5053',
+  endpoint: awsEndpoint(),
   region: process.env.AWS_REGION || 'us-east-1',
   credentials: credentials(),
 });
@@ -151,7 +168,7 @@ export const upsertRecord = async (
           },
         ],
       },
-      HostedZoneId: process.env.AWS_ROUTE53_HOSTED_ZONE_ID,
+      HostedZoneId: await hostedZoneId(),
     });
     const response: ChangeResourceRecordSetsResponse = await route53Client.send(command);
 
@@ -198,7 +215,7 @@ export const deleteRecord = async (
           },
         ],
       },
-      HostedZoneId: process.env.AWS_ROUTE53_HOSTED_ZONE_ID,
+      HostedZoneId: await hostedZoneId(),
     });
 
     const response: ChangeResourceRecordSetsResponse = await route53Client.send(command);

@@ -68,6 +68,7 @@ services:
     image: kristophjunge/test-saml-idp
     container_name: 'login'
     ports:
+      # If this port ever gets changed, make sure to update config/dev-idp-metadata.xml
       - '8081:8080'
     environment:
       - SIMPLESAMLPHP_SP_ENTITY_ID=http://host.docker.internal:8080/sp

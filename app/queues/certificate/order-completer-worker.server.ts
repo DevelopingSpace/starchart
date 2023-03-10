@@ -17,3 +17,5 @@ export const orderCompleterWorker = new Worker<OrderCompleterData>(
   },
   { connection: redis }
 );
+
+process.on('SIGINT', () => orderCompleterWorker.close());

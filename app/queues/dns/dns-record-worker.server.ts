@@ -171,3 +171,12 @@ export const syncDbStatusWorker = new Worker(
   },
   { connection: redis }
 );
+
+process.on('SIGINT', () =>
+  Promise.all([
+    dbRecordWorker.close(),
+    dnsRecordWorker.close(),
+    checkDnsStatusWorker.close(),
+    syncDbStatusWorker.close(),
+  ])
+);

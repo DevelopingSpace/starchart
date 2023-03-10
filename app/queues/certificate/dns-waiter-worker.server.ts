@@ -77,3 +77,5 @@ export const dnsWaiterWorker = new Worker<DnsWaiterData>(
   },
   { connection: redis }
 );
+
+process.on('SIGINT', () => dnsWaiterWorker.close());
