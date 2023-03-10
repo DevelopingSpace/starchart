@@ -19,24 +19,21 @@ export default function LandingPageCard({
       height={{ base: 'xs', md: 'sm' }}
       borderRadius="xl"
       padding="5"
-      gap="5"
       backgroundColor="whitesmoke"
     >
-      <Heading size="lg" color="brand.500">
+      <Heading size={{ base: 'md', md: 'lg' }} color="brand.500" height="100%">
         {cardName}
       </Heading>
 
-      <Flex width={{ md: 'xs' }} height={{ md: 'xl' }}>
-        <Text fontSize={{ base: 'sm', md: 'md' }}>{cardDescription}</Text>
+      <Flex width={{ md: 'xs' }} height={{ sm: 'xl' }}>
+        <Text fontSize={{ base: 'xs', md: 'md' }}>{cardDescription}</Text>
       </Flex>
-      <ButtonGroup size={{ base: 'sm', md: 'md' }} gap="5">
-        <Button as={Link} to={{ pathname: `${path}/instructions` }}>
-          Information
-        </Button>
-        <Button as={Link} to={{ pathname: path }}>
+
+      <Flex width="100%" justifyContent="flex-end" height="100%" alignItems="flex-end">
+        <Button as={Link} to={{ pathname: path }} size={{ base: 'xs', xs: 'sm', md: 'md' }}>
           {pathName}
         </Button>
-      </ButtonGroup>
+      </Flex>
     </VStack>
   );
 }
