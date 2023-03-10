@@ -12,8 +12,7 @@ test.describe('authenticated as user', () => {
   test.use({ storageState: 'test/e2e/.auth/user.json' });
 
   test('redirects to edit dns record page when required fields are filled', async ({ page }) => {
-    await page.goto('/');
-    await page.goto('/domains/new');
+    await page.goto('/domains/new', { waitUntil: 'domcontentloaded' });
     await page.getByLabel('Record Name*').fill('test');
     await page.getByRole('combobox', { name: 'Type' }).selectOption('A');
     await page.getByLabel('Value*').fill('test');
@@ -22,8 +21,7 @@ test.describe('authenticated as user', () => {
   });
 
   test('redirects to edit dns record page when all fields are filled', async ({ page }) => {
-    await page.goto('/');
-    await page.goto('/domains/new');
+    await page.goto('/domains/new', { waitUntil: 'domcontentloaded' });
     await page.getByLabel('Record Name*').fill('test');
     await page.getByRole('combobox', { name: 'Type' }).selectOption('A');
     await page.getByLabel('Value*').fill('test');
@@ -35,8 +33,7 @@ test.describe('authenticated as user', () => {
   });
 
   test('does not create dns record if required fields are empty', async ({ page }) => {
-    await page.goto('/');
-    await page.goto('/domains/new');
+    await page.goto('/domains/new', { waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'Create' }).click();
     await expect(page).toHaveURL(/.*domains\/new/);
   });
