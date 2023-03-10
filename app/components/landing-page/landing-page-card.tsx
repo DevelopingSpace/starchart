@@ -25,7 +25,7 @@ export default function LandingPageCard({
         {cardName}
       </Heading>
 
-      <Flex width={{ md: 'xs' }} height={{ sm: 'xl' }} border="solid" flexDirection="column">
+      <Flex width={{ md: 'xs' }} height={{ sm: 'xl' }} flexDirection="column">
         <Text fontSize={{ base: 'xs', md: 'md' }}>
           {cardDescription}
           <Text as={Link} to={`${path}/instructions`} color="blue.300">
