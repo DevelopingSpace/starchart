@@ -40,11 +40,20 @@ const config: PlaywrightTestConfig = {
 
   /* Configure projects for major browsers */
   projects: [
+    /**
+     * Setup project to save authentication state
+     * This is to avoid having to login before each test
+     */
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
       },
+      dependencies: ['setup'],
     },
 
     {
@@ -52,6 +61,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Firefox'],
       },
+      dependencies: ['setup'],
     },
 
     {
@@ -59,6 +69,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Safari'],
       },
+      dependencies: ['setup'],
     },
 
     /* Test against mobile viewports. */
@@ -67,12 +78,14 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Pixel 5'],
       },
+      dependencies: ['setup'],
     },
     {
       name: 'Mobile Safari',
       use: {
         ...devices['iPhone 12'],
       },
+      dependencies: ['setup'],
     },
 
     /* Test against branded browsers. */
@@ -81,12 +94,14 @@ const config: PlaywrightTestConfig = {
       use: {
         channel: 'msedge',
       },
+      dependencies: ['setup'],
     },
     {
       name: 'Google Chrome',
       use: {
         channel: 'chrome',
       },
+      dependencies: ['setup'],
     },
   ],
 
