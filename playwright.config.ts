@@ -83,7 +83,12 @@ const config: PlaywrightTestConfig = {
     {
       name: 'Mobile Safari',
       use: {
-        ...devices['iPhone 12'],
+        userAgent: devices['iPhone 12'].userAgent,
+        viewport: devices['iPhone12'].viewport,
+        deviceScaleFactor: devices['iPhone12'].deviceScaleFactor,
+        isMobile: false,
+        hasTouch: devices['iPhone12'].hasTouch,
+        defaultBrowserType: devices['iPhone12'].defaultBrowserType,
       },
       dependencies: ['setup'],
     },
