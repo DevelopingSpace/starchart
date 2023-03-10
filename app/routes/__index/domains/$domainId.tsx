@@ -1,11 +1,11 @@
-import { Heading } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 
 export default function DomainRoute() {
   return (
-    <div>
+    <Flex>
       <Heading as="h1" size="3xl">
         Domain Edit Page
       </Heading>
-    </div>
+    </Flex>
   );
 }
