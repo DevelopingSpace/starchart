@@ -17,3 +17,5 @@ export const dnsCleanerWorker = new Worker<DnsCleanerData>(
   },
   { connection: redis }
 );
+
+process.on('SIGINT', () => dnsCleanerWorker.close());

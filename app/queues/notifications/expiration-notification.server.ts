@@ -11,6 +11,10 @@ import { prisma } from '~/db.server';
 // Types
 import type { NotificationData } from './notifications.server';
 
+declare global {
+  var __expiration_init__: boolean;
+}
+
 enum RecordType {
   Certificate = 'certificate',
   DnsRecord = 'record',
@@ -22,6 +26,31 @@ interface ExpirationStatusPayload {
 const NOTIFICATION_FREQUENCY = 7;
 // name for the queue
 const expirationNotificationQueueName = 'expiration-notification';
+
+function init() {
+  logger.debug(
+    'Expiration Notifications init: adding jobs for certificate/record expiration notices'
+  );
+  Promise.all([
+    addExpirationNotifications(RecordType.Certificate),
+    addExpirationNotifications(RecordType.DnsRecord),
+  ]).catch((err) =>
+    logger.error(`Unable to start expiration notification workers: ${err.message}`)
+  );
+}
+
+if (process.env.NODE_ENV === 'production') {
+  init();
+} else {
+  // Only do this setup once in dev
+  if (!global.__expiration_init__) {
+    init();
+    global.__expiration_init__ = true;
+  }
+}
+
+/**
+ */
 
 const updateNotificationStatus = (type: RecordType, id: number) => {
   switch (type) {
@@ -113,7 +142,7 @@ expirationNotificationQueue.on('error', (err) => {
 });
 
 // function to add jobs
-const addExpirationNotifications = async (type: RecordType) => {
+async function addExpirationNotifications(type: RecordType) {
   let jobName = `${expirationNotificationQueueName}-${type}`;
   return expirationNotificationQueue.add(
     jobName,
@@ -122,12 +151,7 @@ const addExpirationNotifications = async (type: RecordType) => {
       repeat: { every: 5 * 60 * 1000 },
     }
   );
-};
-// only way to interact add jobs
-export const addRecordExpirationNotifications = async () =>
-  addExpirationNotifications(RecordType.DnsRecord);
-export const addCertificateExpirationNotifications = async () =>
-  addExpirationNotifications(RecordType.Certificate);
+}
 
 // function to update notification and add notification jobs
 const updateStatusAndNotify = async (type: RecordType, id: number, data: NotificationData) => {
@@ -175,3 +199,5 @@ const expirationNotificationWorker = new Worker<ExpirationStatusPayload>(
 expirationNotificationWorker.on('failed', (job, err) => {
   logger.warn(`Notifications: job ${job?.name} failed with error: `, err);
 });
+
+process.on('SIGINT', () => expirationNotificationWorker.close());

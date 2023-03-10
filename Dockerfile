@@ -2,7 +2,9 @@ FROM node:18-bullseye-slim@sha256:e2fbe082615911b184e192b05c55e7e38460a2c24c88d9
 
 ARG CURL_VERSION=7.74.* \
   OPENSSL_VERSION=1.1.* \
-  TINI_VERSION=0.19.*
+  TINI_VERSION=0.19.* \
+  # Specify the XML file to use for configuring the SAML IDP (see config/idp-metadata-*.xml)
+  SAML_IDP_METADATA_PATH=config/idp-metadata-dev.xml
   
 # hadolint ignore=SC2086
 RUN apt-get update && \
@@ -57,6 +59,11 @@ COPY --chown=node:node --from=production-deps /app/node_modules ./node_modules
 COPY --chown=node:node --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY --chown=node:node --from=build /app/build ./build
 COPY --chown=node:node --from=build /app/public ./public
+
+# Include the SAML IDP metadata in the image. Specify the file to use in the build arg
+# and override the SAML_IDP_METADATA_PATH to use when loading this file at startup
+COPY --chown=node:node ${SAML_IDP_METADATA_PATH} ./config/idp-metadata.xml
+ENV SAML_IDP_METADATA_PATH=/app/build/config/idp-metadata.xml
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["node", "./build/server.js"]

@@ -2,6 +2,24 @@ import winston from 'winston';
 
 const { combine, json, simple, colorize, errors, timestamp } = winston.format;
 
+declare global {
+  var __logger_init__: boolean;
+}
+
+function init() {
+  // https://nodejs.org/api/process.html#event-uncaughtexception
+  process.on('uncaughtException', (err, origin) => {
+    logger.error(`uncaughtException: origin=${origin}`, err);
+    throw err;
+  });
+
+  // https://nodejs.org/api/process.html#event-unhandledrejection
+  process.on('unhandledRejection', (reason) => {
+    logger.error(`unhandledRejection:`, reason);
+    throw reason;
+  });
+}
+
 const logger = winston.createLogger({
   // Default to info level, but use whatever's defined in the env
   level: process.env.LOG_LEVEL?.toLowerCase() || 'info',
@@ -15,20 +33,14 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 });
 
-export async function init() {
-  logger.debug(`logger init: adding logging for unhandled process errors`);
-
-  // https://nodejs.org/api/process.html#event-uncaughtexception
-  process.on('uncaughtException', (err, origin) => {
-    logger.error(`uncaughtException: origin=${origin}`, err);
-    throw err;
-  });
-
-  // https://nodejs.org/api/process.html#event-unhandledrejection
-  process.on('unhandledRejection', (reason) => {
-    logger.error(`unhandledRejection:`, reason);
-    throw reason;
-  });
+if (process.env.NODE_ENV === 'production') {
+  init();
+} else {
+  // Only do this setup once in dev
+  if (!global.__logger_init__) {
+    init();
+    global.__logger_init__ = true;
+  }
 }
 
 export default logger;

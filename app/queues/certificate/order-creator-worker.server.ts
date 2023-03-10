@@ -140,3 +140,5 @@ export const orderCreatorWorker = new Worker<OrderCreatorData, OrderCreatorOutpu
   },
   { connection: redis }
 );
+
+process.on('SIGINT', () => orderCreatorWorker.close());

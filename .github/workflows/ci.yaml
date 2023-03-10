@@ -354,6 +354,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          build-args: |
+            SAML_IDP_METADATA_PATH=config/staging-idp-metadata.xml
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

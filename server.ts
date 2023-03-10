@@ -7,19 +7,7 @@ import gracefulShutdown from 'http-graceful-shutdown';
 import helmet from 'helmet';
 import cors from 'cors';
 
-import logger, { init as loggerInit } from '~/lib/logger.server';
-import { notificationsWorker } from '~/queues/notifications/notifications.server';
-import { init as samlInit } from '~/lib/saml.server';
-import { init as dnsInit } from '~/lib/dns.server';
-import { init as notificationsInit } from '~/lib/notifications.server';
-
-import {
-  orderCreatorWorker,
-  dnsWaiterWorker,
-  challengeCompleterWorker,
-  orderCompleterWorker,
-  dnsCleanerWorker,
-} from '~/queues/certificate/certificate-flow.server';
+import logger from '~/lib/logger.server';
 
 import type { Request, Response } from 'express';
 
@@ -88,55 +76,23 @@ app.all(
       }
 );
 
-// Any startup process that needs to get done before we load any
-// of the app code (e.g., creating or populating items) should
-// happen here.
-async function init() {
-  logger.info('app initializing...');
-  return Promise.all([loggerInit(), samlInit(), dnsInit(), notificationsInit()]);
-}
+const port = process.env.PORT || 8080;
 
-async function start() {
-  await init();
+const server = app.listen(port, () => {
+  // require the built app so we're ready when the first request comes in
+  require(BUILD_DIR);
+  logger.info(`✅ app ready: http://localhost:${port}`);
+});
 
-  const port = process.env.PORT || 8080;
-
-  const server = app.listen(port, () => {
-    // require the built app so we're ready when the first request comes in
-    require(BUILD_DIR);
-    logger.info(`✅ app ready: http://localhost:${port}`);
-  });
-
-  gracefulShutdown(server, {
-    forceExit: true,
-    development: process.env.NODE_ENV !== 'production',
-    onShutdown: async function (signal) {
-      logger.info(`Received ${signal}, starting shutdown...`);
-      try {
-        await Promise.all([
-          notificationsWorker.close(),
-          orderCreatorWorker.close(),
-          dnsWaiterWorker.close(),
-          challengeCompleterWorker.close(),
-          orderCompleterWorker.close(),
-          dnsCleanerWorker.close(),
-        ]);
-      } catch (err) {
-        logger.warn('Error closing database connections', err);
-      }
-    },
-    finally: function () {
-      logger.info('Graceful shutdown complete');
-    },
-  });
-}
+gracefulShutdown(server, {
+  development: process.env.NODE_ENV !== 'production',
+});
 
 function purgeRequireCache() {
-  // purge require cache on requests for "server side HMR" this won't let
-  // you have in-memory objects between requests in development,
-  // alternatively you can set up nodemon/pm2-dev to restart the server on
-  // file changes, we prefer the DX of this though, so we've included it
-  // for you by default
+  // purge require cache on requests for "server side HMR." NOTE: doing
+  // this means that any modules that have global values will lose them
+  // and get re-initialized whenever the server reloads in development.
+  // Store values you need to cache on the global to survive this.
   for (const key in require.cache) {
     if (key.startsWith(BUILD_DIR)) {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -144,5 +100,3 @@ function purgeRequireCache() {
     }
   }
 }
-
-start();

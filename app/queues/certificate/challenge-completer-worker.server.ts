@@ -17,3 +17,5 @@ export const challengeCompleterWorker = new Worker<ChallengeCompleterData>(
   },
   { connection: redis }
 );
+
+process.on('SIGINT', () => challengeCompleterWorker.close());
