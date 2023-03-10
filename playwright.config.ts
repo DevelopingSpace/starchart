@@ -48,38 +48,38 @@ const config: PlaywrightTestConfig = {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
     },
-    // {
-    //   name: 'chromium',
-    //   use: {
-    //     ...devices['Desktop Chrome'],
-    //   },
-    //   dependencies: ['setup'],
-    // },
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+      dependencies: ['setup'],
+    },
 
-    // {
-    //   name: 'firefox',
-    //   use: {
-    //     ...devices['Desktop Firefox'],
-    //   },
-    //   dependencies: ['setup'],
-    // },
+    {
+      name: 'firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+      },
+      dependencies: ['setup'],
+    },
 
-    // {
-    //   name: 'webkit',
-    //   use: {
-    //     ...devices['Desktop Safari'],
-    //   },
-    //   dependencies: ['setup'],
-    // },
+    {
+      name: 'webkit',
+      use: {
+        ...devices['Desktop Safari'],
+      },
+      dependencies: ['setup'],
+    },
 
-    // /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: {
-    //     ...devices['Pixel 5'],
-    //   },
-    //   dependencies: ['setup'],
-    // },
+    /* Test against mobile viewports. */
+    {
+      name: 'Mobile Chrome',
+      use: {
+        ...devices['Pixel 5'],
+      },
+      dependencies: ['setup'],
+    },
     {
       name: 'Mobile Safari',
       use: {
@@ -88,21 +88,21 @@ const config: PlaywrightTestConfig = {
       dependencies: ['setup'],
     },
 
-    // /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: {
-    //     channel: 'msedge',
-    //   },
-    //   dependencies: ['setup'],
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: {
-    //     channel: 'chrome',
-    //   },
-    //   dependencies: ['setup'],
-    // },
+    /* Test against branded browsers. */
+    {
+      name: 'Microsoft Edge',
+      use: {
+        channel: 'msedge',
+      },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'Google Chrome',
+      use: {
+        channel: 'chrome',
+      },
+      dependencies: ['setup'],
+    },
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
