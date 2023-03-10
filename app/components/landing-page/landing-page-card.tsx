@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 
 interface LandingPageCardProps {
@@ -25,11 +25,16 @@ export default function LandingPageCard({
         {cardName}
       </Heading>
 
-      <Flex width={{ md: 'xs' }} height={{ sm: 'xl' }}>
-        <Text fontSize={{ base: 'xs', md: 'md' }}>{cardDescription}</Text>
+      <Flex width={{ md: 'xs' }} height={{ sm: 'xl' }} border="solid" flexDirection="column">
+        <Text fontSize={{ base: 'xs', md: 'md' }}>
+          {cardDescription}
+          <Text as={Link} to={`${path}/instructions`} color="blue.300">
+            to learn more, see these instructions...
+          </Text>
+        </Text>
       </Flex>
 
-      <Flex width="100%" justifyContent="flex-end" height="100%" alignItems="flex-end">
+      <Flex width="100%" justifyContent="center" height="100%" alignItems="flex-end">
         <Button as={Link} to={{ pathname: path }} size={{ base: 'xs', xs: 'sm', md: 'md' }}>
           {pathName}
         </Button>
