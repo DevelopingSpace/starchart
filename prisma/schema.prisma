@@ -12,40 +12,42 @@ model User {
   displayName String
   email       String        @unique
   group       String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
   record      Record[]
   certificate Certificate[]
 }
 
 model Record {
-  id          Int          @id @default(autoincrement())
-  username    String
-  name        String
-  type        RecordType
-  value       String
-  description String?
-  course      String?
-  ports       String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  expiresAt   DateTime
-  status      RecordStatus
-  user        User         @relation(fields: [username], references: [username])
+  id           Int          @id @default(autoincrement())
+  username     String
+  name         String
+  type         RecordType
+  value        String
+  description  String?
+  course       String?
+  ports        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  expiresAt    DateTime
+  status       RecordStatus
+  lastNotified DateTime?
+  user         User         @relation(fields: [username], references: [username])
 }
 
 model Certificate {
-  id          Int               @id @default(autoincrement())
-  username    String
-  domain      String
-  orderUrl    String            @unique @db.VarChar(255)
-  privateKey  String?
-  certificate String?
-  validFrom   DateTime?
-  validTo     DateTime?
-  status      CertificateStatus @default(pending)
-  user        User              @relation(fields: [username], references: [username])
-  challenge   Challenge[]
+  id           Int               @id @default(autoincrement())
+  username     String
+  domain       String
+  orderUrl     String            @unique @db.VarChar(255)
+  privateKey   String?
+  certificate  String?
+  validFrom    DateTime?
+  validTo      DateTime?
+  lastNotified DateTime?
+  status       CertificateStatus @default(pending)
+  user         User              @relation(fields: [username], references: [username])
+  challenge    Challenge[]
 }
 
 model Challenge {

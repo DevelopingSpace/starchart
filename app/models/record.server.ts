@@ -31,7 +31,8 @@ export async function updateRecordById(
   description?: Record['description'],
   course?: Record['course'],
   ports?: Record['ports'],
-  expiresAt?: Record['expiresAt']
+  expiresAt?: Record['expiresAt'],
+  lastNotified?: Record['lastNotified']
 ) {
   return prisma.record.update({
     where: { id },
@@ -45,6 +46,7 @@ export async function updateRecordById(
       course,
       ports,
       expiresAt,
+      lastNotified,
     },
   });
 }

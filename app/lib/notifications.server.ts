@@ -3,6 +3,11 @@ import { createTransport } from 'nodemailer';
 import secrets from '~/lib/secrets.server';
 import logger from './logger.server';
 
+import {
+  addCertificateExpirationNotifications,
+  addRecordExpirationNotifications,
+} from '~/queues/notifications/expiration-notification.server';
+
 const { NOTIFICATIONS_EMAIL_USER, NODE_ENV, SMTP_PORT } = process.env;
 const { NOTIFICATIONS_USERNAME, NOTIFICATIONS_PASSWORD } = secrets;
 
@@ -45,5 +50,11 @@ const sendNotification = async (emailAddress: string, subject: string, text: str
     logger.warn('Unable to send notification', error);
   }
 };
+
+export async function init() {
+  logger.debug('Notifications init: adding jobs for certificate/record expiration notices');
+  await addCertificateExpirationNotifications();
+  await addRecordExpirationNotifications();
+}
 
 export default sendNotification;

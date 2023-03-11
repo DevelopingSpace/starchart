@@ -8,9 +8,11 @@ import helmet from 'helmet';
 import cors from 'cors';
 
 import logger, { init as loggerInit } from '~/lib/logger.server';
-import { notificationsWorker } from '~/queues/notifications.server';
+import { notificationsWorker } from '~/queues/notifications/notifications.server';
 import { init as samlInit } from '~/lib/saml.server';
 import { init as dnsInit } from '~/lib/dns.server';
+import { init as notificationsInit } from '~/lib/notifications.server';
+
 import {
   orderCreatorWorker,
   dnsWaiterWorker,
@@ -91,7 +93,7 @@ app.all(
 // happen here.
 async function init() {
   logger.info('app initializing...');
-  return Promise.all([loggerInit(), samlInit(), dnsInit()]);
+  return Promise.all([loggerInit(), samlInit(), dnsInit(), notificationsInit()]);
 }
 
 async function start() {
