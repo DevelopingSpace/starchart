@@ -80,6 +80,11 @@ const config: PlaywrightTestConfig = {
       },
       dependencies: ['setup'],
     },
+    /**
+     * We override the isMobile for Mobile Safari to false to make it work in CI
+     * Relevant comment on currently open issue in playwright:
+     * https://www.github.com/microsoft/playwright/issues/11812#issuecomment-1462829766
+     */
     {
       name: 'Mobile Safari',
       use: {
