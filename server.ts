@@ -9,6 +9,7 @@ import cors from 'cors';
 
 import logger, { init as loggerInit } from '~/lib/logger.server';
 import { notificationsWorker } from '~/queues/notifications/notifications.server';
+import { expirationNotificationWorker } from '~/queues/notifications/expiration-notification.server';
 import { init as samlInit } from '~/lib/saml.server';
 import { init as dnsInit } from '~/lib/dns.server';
 import { init as notificationsInit } from '~/lib/notifications.server';
@@ -115,6 +116,7 @@ async function start() {
       try {
         await Promise.all([
           notificationsWorker.close(),
+          expirationNotificationWorker.close(),
           orderCreatorWorker.close(),
           dnsWaiterWorker.close(),
           challengeCompleterWorker.close(),

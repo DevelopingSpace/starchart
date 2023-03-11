@@ -47,7 +47,8 @@ const sendNotification = async (emailAddress: string, subject: string, text: str
       text,
     });
   } catch (error) {
-    logger.warn('Unable to send notification', error);
+    logger.error('Unable to send notification', error);
+    throw error;
   }
 };
 

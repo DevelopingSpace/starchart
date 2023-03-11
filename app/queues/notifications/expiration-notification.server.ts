@@ -140,7 +140,7 @@ const updateStatusAndNotify = async (type: RecordType, id: number, data: Notific
   });
 };
 // worker instance to process DNS Record/Certificates expiration notification jobs
-const expirationNotificationWorker = new Worker<ExpirationStatusPayload>(
+export const expirationNotificationWorker = new Worker<ExpirationStatusPayload>(
   expirationNotificationQueueName,
   async (job) => {
     const { type } = job.data;
