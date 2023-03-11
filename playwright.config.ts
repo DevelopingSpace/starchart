@@ -40,11 +40,20 @@ const config: PlaywrightTestConfig = {
 
   /* Configure projects for major browsers */
   projects: [
+    /**
+     * Setup project to save authentication state
+     * This is to avoid having to login before each test
+     */
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
       },
+      dependencies: ['setup'],
     },
 
     {
@@ -52,6 +61,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Firefox'],
       },
+      dependencies: ['setup'],
     },
 
     {
@@ -59,6 +69,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Safari'],
       },
+      dependencies: ['setup'],
     },
 
     /* Test against mobile viewports. */
@@ -67,12 +78,24 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Pixel 5'],
       },
+      dependencies: ['setup'],
     },
+    /**
+     * We override the isMobile for Mobile Safari to false to make it work in CI
+     * Relevant comment on currently open issue in playwright:
+     * https://www.github.com/microsoft/playwright/issues/11812#issuecomment-1462829766
+     */
     {
       name: 'Mobile Safari',
       use: {
-        ...devices['iPhone 12'],
+        userAgent: devices['iPhone 12'].userAgent,
+        viewport: devices['iPhone 12'].viewport,
+        deviceScaleFactor: devices['iPhone 12'].deviceScaleFactor,
+        isMobile: false,
+        hasTouch: devices['iPhone 12'].hasTouch,
+        defaultBrowserType: devices['iPhone 12'].defaultBrowserType,
       },
+      dependencies: ['setup'],
     },
 
     /* Test against branded browsers. */
@@ -81,12 +104,14 @@ const config: PlaywrightTestConfig = {
       use: {
         channel: 'msedge',
       },
+      dependencies: ['setup'],
     },
     {
       name: 'Google Chrome',
       use: {
         channel: 'chrome',
       },
+      dependencies: ['setup'],
     },
   ],
 
