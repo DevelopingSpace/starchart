@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+import { loggedInAsUser } from './utils';
+
 test.describe('not authenticated', () => {
   test('redirects to login page', async ({ page }) => {
     await page.goto('/');
@@ -8,8 +10,7 @@ test.describe('not authenticated', () => {
 });
 
 test.describe('authenticated as user', () => {
-  // Use shared state for being logged in as user
-  test.use({ storageState: 'test/e2e/.auth/user.json' });
+  loggedInAsUser();
 
   test('redirects to edit dns record page when required fields are filled', async ({ page }) => {
     await page.goto('/domains/new');
