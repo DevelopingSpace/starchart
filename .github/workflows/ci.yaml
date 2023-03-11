@@ -355,7 +355,7 @@ jobs:
         with:
           context: .
           build-args: |
-            SAML_IDP_METADATA_PATH=config/staging-idp-metadata.xml
+            SAML_IDP_METADATA_PATH=./config/idp-metadata-staging.xml
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
