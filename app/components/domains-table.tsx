@@ -90,7 +90,7 @@ export default function DomainsTable(props: DomainsTableProps) {
     }
   }
 
-  function renderDomainName(domainName: string) {
+  function renderDnsRecordName(domainName: string) {
     const words: string[] = domainName.split('.');
     const nameBase: string = words[0];
     const restOfName: string = words.slice(1).join('.');
@@ -161,7 +161,7 @@ export default function DomainsTable(props: DomainsTableProps) {
                         <Td>{renderDomainStatus(domain.status)}</Td>
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
-                            {renderDomainName(domain.name)}
+                            {renderDnsRecordName(domain.name)}
                             <Tooltip label="Copy name to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
