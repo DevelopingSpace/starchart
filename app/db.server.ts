@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
+
 import logger from '~/lib/logger.server';
+import secrets from './lib/secrets.server';
 
 let prisma: PrismaClient;
 
@@ -21,9 +23,14 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 function getClient() {
-  const { DATABASE_URL } = process.env;
+  const DATABASE_URL =
+    process.env.NODE_ENV === 'production'
+      ? secrets.DATABASE_URL
+      : // Allow using env or secrets in dev/testing only
+        secrets.DATABASE_URL || process.env.DATABASE_URL;
+
   if (typeof DATABASE_URL !== 'string') {
-    throw new Error('DATABASE_URL env var not set');
+    throw new Error('DATABASE_URL secret not set');
   }
 
   const databaseUrl = new URL(DATABASE_URL);

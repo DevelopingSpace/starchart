@@ -34,11 +34,12 @@ The following configuration values must be set via environment variables.
 
 The following secrets must be added to the Docker engine using [Docker Swarm secrets](https://docs.docker.com/engine/swarm/secrets/).
 
-| Secret Name                            | Description                                                      |
-| -------------------------------------- | ---------------------------------------------------------------- |
-| `AWS_ACCESS_KEY_ID`                    | The AWS Account Access Key ID for use with Route 53              |
-| `AWS_SECRET_ACCESS_KEY`                | The AWS Account Secret Access Key for use with Route 53          |
-| `LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM` | The RSA Private Key for the Let's Encrypt account, in PEM format |
-| `SESSION_SECRET`                       | The long, random string to use for keying sessions               |
-| `NOTIFICATIONS_USERNAME`               | The SMTP username to use for sending notifications               |
-| `NOTIFICATIONS_PASSWORD`               | The SMTP password to use for sending notifications               |
+| Secret Name                            | Description                                                                                                                                                                  |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AWS_ACCESS_KEY_ID`                    | The AWS Account Access Key ID for use with Route 53                                                                                                                          |
+| `AWS_SECRET_ACCESS_KEY`                | The AWS Account Secret Access Key for use with Route 53                                                                                                                      |
+| `LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM` | The RSA Private Key for the Let's Encrypt account, in PEM format                                                                                                             |
+| `SESSION_SECRET`                       | The long, random string to use for keying sessions                                                                                                                           |
+| `NOTIFICATIONS_USERNAME`               | The SMTP username to use for sending notifications                                                                                                                           |
+| `NOTIFICATIONS_PASSWORD`               | The SMTP password to use for sending notifications                                                                                                                           |
+| `DATABASE_URL`                         | The MySQL database connection string URL. NOTE: this is needed as an environment variable only when doing database setup commands, but read as a secret when running the app |
