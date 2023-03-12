@@ -9,7 +9,7 @@ import DomainsTable from '~/components/domains-table';
 import { getRecordById, getRecordsByUsername } from '~/models/record.server';
 import { requireUsername } from '~/session.server';
 import type { Record } from '@prisma/client';
-import { addDnsRequest, deleteDnsRequest, updateDnsRequest } from '~/queues/dns/dns-flow.server';
+import { deleteDnsRequest, updateDnsRequest } from '~/queues/dns/dns-flow.server';
 import invariant from 'tiny-invariant';
 import { json } from '@remix-run/node';
 import logger from '~/lib/logger.server';
