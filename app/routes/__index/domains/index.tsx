@@ -1,18 +1,19 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Button, Container, Flex, Heading, Icon, Text } from '@chakra-ui/react';
-import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { Link, useNavigate, useSubmit, useTransition } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
+import invariant from 'tiny-invariant';
+import { json } from '@remix-run/node';
+import type { Record } from '@prisma/client';
+import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { FaRedoAlt } from 'react-icons/fa';
-import type { DomainsTableAction } from '~/components/domains-table';
 import DomainsTable from '~/components/domains-table';
 import { getRecordById, getRecordsByUsername } from '~/models/record.server';
 import { requireUsername } from '~/session.server';
-import type { Record } from '@prisma/client';
 import { deleteDnsRequest, updateDnsRequest } from '~/queues/dns/dns-flow.server';
-import invariant from 'tiny-invariant';
-import { json } from '@remix-run/node';
 import logger from '~/lib/logger.server';
+
+import type { DomainsTableAction } from '~/components/domains-table';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const username = await requireUsername(request);
