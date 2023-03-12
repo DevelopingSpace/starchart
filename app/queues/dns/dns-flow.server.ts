@@ -11,7 +11,6 @@ import { WorkType } from './dns-record-worker.server';
 import type { FlowJob } from 'bullmq';
 import type { JobRecord } from './dns-record-worker.server';
 import { buildDomain } from '~/utils';
-import logger from '~/lib/logger.server';
 
 const flowProducer = new FlowProducer({ connection: redis });
 

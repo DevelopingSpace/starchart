@@ -5,7 +5,6 @@ import { parseFormSafe } from 'zodix';
 import { redirect, typedjson, useTypedActionData } from 'remix-typedjson';
 
 import DnsRecordForm from '~/components/dns-record/form';
-import { createRecord } from '~/models/record.server';
 import { requireUser } from '~/session.server';
 
 import type { ActionArgs } from '@remix-run/node';
