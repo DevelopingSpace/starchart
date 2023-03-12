@@ -34,7 +34,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   if (!record) {
     throw new Response('The record is not found', {
-      status: 404,
+      status: 422,
     });
   }
 
