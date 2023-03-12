@@ -314,7 +314,7 @@ jobs:
             # cache node modules using the same key as restore.
           key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
 
-  Docker-Build:
+  Starchart-Docker:
     # We'll only build and push when landing on main, not for PRs
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -326,9 +326,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -350,7 +347,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push Starchart Docker image
         uses: docker/build-push-action@v4
         with:
           context: .

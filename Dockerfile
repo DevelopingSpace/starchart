@@ -1,4 +1,4 @@
-FROM node:18-bullseye-slim@sha256:e2fbe082615911b184e192b05c55e7e38460a2c24c88d92e8c122ea0175fbe56 as base
+FROM node:18-bullseye-slim@sha256:7d67f2765f8d1b13f3833001bebbc6513581ef3f300aa4b1019a0b6dff2c0b25 as base
 
 ARG CURL_VERSION=7.74.* \
   OPENSSL_VERSION=1.1.* \
@@ -44,28 +44,28 @@ COPY . .
 RUN npx prisma generate \
   && npm run build
 
-###############################################################################
-
 # Deploy the built app on top of the production deps, run as non-root
 FROM base as deploy
 
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=8080 \
-    LOG_LEVEL=info
+    LOG_LEVEL=${LOG_LEVEL:-info}
 
 USER node
+COPY --chown=node:node --from=production-deps /app/.npmrc ./.npmrc
 COPY --chown=node:node --from=production-deps /app/node_modules ./node_modules
-COPY --chown=node:node --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY --chown=node:node --from=build /app/build ./build
 COPY --chown=node:node --from=build /app/public ./public
+COPY --chown=node:node --from=build /app/prisma ./prisma
 
 # Include the SAML IDP metadata in the image. Specify the file to use in the build arg
 # and override the SAML_IDP_METADATA_PATH to use when loading this file at startup
 COPY --chown=node:node ${SAML_IDP_METADATA_PATH} ./config/idp-metadata.xml
 ENV SAML_IDP_METADATA_PATH=/app/build/config/idp-metadata.xml
 
-ENTRYPOINT ["/usr/bin/tini", "--"]
+COPY docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["/usr/bin/tini", "--", "docker-entrypoint.sh"]
 CMD ["node", "./build/server.js"]
 
 HEALTHCHECK CMD curl --fail http://localhost:${PORT}/healthcheck || exit 1

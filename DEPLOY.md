@@ -43,3 +43,15 @@ The following secrets must be added to the Docker engine using [Docker Swarm sec
 | `NOTIFICATIONS_USERNAME`               | The SMTP username to use for sending notifications                                                                                                                           |
 | `NOTIFICATIONS_PASSWORD`               | The SMTP password to use for sending notifications                                                                                                                           |
 | `DATABASE_URL`                         | The MySQL database connection string URL. NOTE: this is needed as an environment variable only when doing database setup commands, but read as a secret when running the app |
+
+## Running the App via Docker
+
+The app can be started via Docker. If it is the first time you are starting the app, or if there are database changes that need to be applied first, you can set `DATABASE_SETUP=1` in the environment to run Prisma and sync the schema and database:
+
+```sh
+# Run the app without doing anything to the database
+$ docker run ghcr.io/developingspace/starchart
+
+# OR, run the app, but sync the datbase first
+$ docker run -e DATABASE_SETUP=1 ghcr.io/developingspace/starchart
+```
