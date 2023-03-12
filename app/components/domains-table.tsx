@@ -14,6 +14,7 @@ import {
   useToast,
   useDisclosure,
   Spinner,
+  Text,
 } from '@chakra-ui/react';
 import type { Record, RecordStatus } from '@prisma/client';
 import {
@@ -89,6 +90,25 @@ export default function DomainsTable(props: DomainsTableProps) {
     }
   }
 
+  function renderDomainName(domainName: string) {
+    const words: string[] = domainName.split('.');
+    const nameBase: string = words[0];
+    const restOfName: string = words.slice(1).join('.');
+
+    return (
+      <Flex alignItems="flex-end" flexDirection="row">
+        <Text>
+          <Text as="span" sx={{ fontSize: 'md', fontWeight: 'medium' }}>
+            {nameBase}
+          </Text>
+          <Text as="span" color="gray.500" sx={{ fontSize: 'sm' }}>
+            .{restOfName}
+          </Text>
+        </Text>
+      </Flex>
+    );
+  }
+
   function onDeleteDomainOpen(domain: Record) {
     onDeleteAlerDialogOpen();
     setDomainToDelete(domain);
@@ -141,7 +161,7 @@ export default function DomainsTable(props: DomainsTableProps) {
                         <Td>{renderDomainStatus(domain.status)}</Td>
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
-                            {domain.name}
+                            {renderDomainName(domain.name)}
                             <Tooltip label="Copy name to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
