@@ -156,8 +156,6 @@ export const updateDnsRequest = async ({ id, username, type, name, value }: JobR
 };
 
 export const deleteDnsRequest = async ({ id, username, type, name, value }: JobRecord) => {
-  logger.debug(process.env.AWS_ROUTE53_HOSTED_ZONE_ID);
-
   // Step 1. Request Route53 to delete the record
   const updateDnsRecord: FlowJob = {
     name: `deleteDnsRecord:${name}-${username}`,
