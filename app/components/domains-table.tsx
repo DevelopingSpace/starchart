@@ -29,6 +29,7 @@ import {
 import RecordDeleteAlertDialog from './record-delete-alert-dialog';
 
 import { Form, useNavigate, useTransition } from '@remix-run/react';
+import DnsRecordName from './dns-record/dns-record-name';
 
 interface DomainsTableProps {
   domains: Record[];
@@ -90,22 +91,6 @@ export default function DomainsTable(props: DomainsTableProps) {
     }
   }
 
-  function renderDnsRecordName(domainName: string) {
-    const [nameBase, ...restOfName] = domainName.split('.');
-    return (
-      <Flex alignItems="flex-end" flexDirection="row">
-        <Text>
-          <Text as="span" sx={{ fontWeight: 'medium' }}>
-            {nameBase}
-          </Text>
-          <Text as="span" color="gray.500">
-            .{restOfName}
-          </Text>
-        </Text>
-      </Flex>
-    );
-  }
-
   function onDeleteDomainOpen(domain: Record) {
     onDeleteAlerDialogOpen();
     setDomainToDelete(domain);
@@ -159,7 +144,7 @@ export default function DomainsTable(props: DomainsTableProps) {
                         <Td>{renderDomainStatus(domain.status)}</Td>
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
-                            {renderDnsRecordName(domain.name)}
+                            <DnsRecordName name={domain.name} />
                             <Tooltip label="Copy name to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
