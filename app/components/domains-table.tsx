@@ -14,7 +14,6 @@ import {
   useToast,
   useDisclosure,
   Spinner,
-  Text,
 } from '@chakra-ui/react';
 import type { Record, RecordStatus } from '@prisma/client';
 import {
