@@ -27,20 +27,20 @@ import {
   WarningIcon,
 } from '@chakra-ui/icons';
 import RecordDeleteAlertDialog from './record-delete-alert-dialog';
-import type { Transition } from '@remix-run/react/dist/transition';
+
+import { Form, useNavigate, useTransition } from '@remix-run/react';
 
 interface DomainsTableProps {
   domains: Record[];
-  onAction: (domain: Record, action: DomainsTableAction) => void;
-  transition: Transition;
 }
 
-export type DomainsTableAction = 'EDIT' | 'DELETE' | 'RENEW';
-
 export default function DomainsTable(props: DomainsTableProps) {
-  const { domains, onAction, transition } = props;
+  const { domains } = props;
 
   const toast = useToast();
+  const navigate = useNavigate();
+  const transition = useTransition();
+
   const {
     isOpen: isDeleteAlertDialogOpen,
     onOpen: onDeleteAlerDialogOpen,
@@ -91,17 +91,16 @@ export default function DomainsTable(props: DomainsTableProps) {
   }
 
   function renderDnsRecordName(domainName: string) {
-    const words: string[] = domainName.split('.');
-    const nameBase: string = words[0];
-    const restOfName: string = words.slice(1).join('.');
+    const words = domainName.split('.');
+    const [nameBase, ...restOfName] = words;
 
     return (
       <Flex alignItems="flex-end" flexDirection="row">
         <Text>
-          <Text as="span" sx={{ fontSize: 'md', fontWeight: 'medium' }}>
+          <Text as="span" sx={{ fontWeight: 'medium' }}>
             {nameBase}
           </Text>
-          <Text as="span" color="gray.500" sx={{ fontSize: 'sm' }}>
+          <Text as="span" color="gray.500">
             .{restOfName}
           </Text>
         </Text>
@@ -121,10 +120,11 @@ export default function DomainsTable(props: DomainsTableProps) {
 
   function onDomainDeleteConfirm() {
     onDeleteAlertDialogClose();
-    if (domainToDelete) {
-      onAction(domainToDelete, 'DELETE');
-    }
     setDomainToDelete(undefined);
+  }
+
+  function onDnsRecordEdit(dnsRecord: Record) {
+    navigate(dnsRecord.id.toString());
   }
 
   return (
@@ -178,34 +178,41 @@ export default function DomainsTable(props: DomainsTableProps) {
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
                             {domain.expiresAt.toLocaleDateString('en-US')}
-                            <Tooltip label="Renew domain">
-                              <IconButton
-                                onClick={() => onAction(domain, 'RENEW')}
-                                icon={<RepeatIcon color="black" boxSize="5" />}
-                                aria-label="Refresh domain"
-                                variant="ghost"
-                              />
-                            </Tooltip>
+                            <Form method="patch" style={{ margin: 0 }}>
+                              <input type="hidden" name="id" value={domain.id} />
+                              <input type="hidden" name="intent" value="renew-record" />
+                              <Tooltip label="Renew domain">
+                                <IconButton
+                                  icon={<RepeatIcon color="black" boxSize="5" />}
+                                  aria-label="Refresh domain"
+                                  variant="ghost"
+                                  type="submit"
+                                />
+                              </Tooltip>
+                            </Form>
                           </Flex>
                         </Td>
                         <Td>
-                          <Tooltip label="Edit domain">
-                            <IconButton
-                              onClick={() => onAction(domain, 'EDIT')}
-                              icon={<EditIcon color="black" boxSize={5} />}
-                              aria-label="Edit domain"
-                              variant="ghost"
-                              mr="1"
-                            />
-                          </Tooltip>
-                          <Tooltip label="Delete domain">
-                            <IconButton
-                              onClick={() => onDeleteDomainOpen(domain)}
-                              icon={<DeleteIcon color="black" boxSize={5} />}
-                              aria-label="Delete domain"
-                              variant="ghost"
-                            />
-                          </Tooltip>
+                          <Flex>
+                            <Tooltip label="Edit domain">
+                              <IconButton
+                                onClick={() => onDnsRecordEdit(domain)}
+                                icon={<EditIcon color="black" boxSize={5} />}
+                                aria-label="Edit domain"
+                                variant="ghost"
+                                mr="1"
+                              />
+                            </Tooltip>
+                            <Tooltip label="Delete domain">
+                              <IconButton
+                                onClick={() => onDeleteDomainOpen(domain)}
+                                icon={<DeleteIcon color="black" boxSize={5} />}
+                                aria-label="Delete domain"
+                                variant="ghost"
+                                type="submit"
+                              />
+                            </Tooltip>
+                          </Flex>
                         </Td>
                       </>
                     )}
@@ -220,6 +227,7 @@ export default function DomainsTable(props: DomainsTableProps) {
         isOpen={isDeleteAlertDialogOpen}
         onCancel={onDomainDeleteCancel}
         onConfirm={onDomainDeleteConfirm}
+        dnsRecord={domainToDelete}
       />
     </>
   );

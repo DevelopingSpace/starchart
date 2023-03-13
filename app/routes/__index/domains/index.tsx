@@ -1,19 +1,19 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Button, Container, Flex, Heading, Icon, Text } from '@chakra-ui/react';
-import { Link, useNavigate, useSubmit, useTransition } from '@remix-run/react';
+import { Form, Link } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
-import invariant from 'tiny-invariant';
 import { json } from '@remix-run/node';
-import type { Record } from '@prisma/client';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+import { z } from 'zod';
+import { parseFormSafe } from 'zodix';
 import { FaRedoAlt } from 'react-icons/fa';
 import DomainsTable from '~/components/domains-table';
-import { getRecordById, getRecordsByUsername } from '~/models/record.server';
+import { getRecordById, getRecordsByUsername, renewRecordById } from '~/models/record.server';
 import { requireUsername } from '~/session.server';
-import { deleteDnsRequest, updateDnsRequest } from '~/queues/dns/dns-flow.server';
+import { deleteDnsRequest } from '~/queues/dns/dns-flow.server';
 import logger from '~/lib/logger.server';
 
-import type { DomainsTableAction } from '~/components/domains-table';
+export type DomainActionIntent = 'renew-record' | 'delete-record';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const username = await requireUsername(request);
@@ -23,37 +23,42 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const action = async ({ request }: ActionArgs) => {
   const username = await requireUsername(request);
-  const formData = await request.formData();
-  const intent = formData.get('intent');
-  const id = formData.get('id');
-  invariant(intent, 'Missing `intent` in posted form data');
-  invariant(id, 'Missing `id` in posted form data');
+
+  const dnsRecordActionParams = await parseFormSafe(
+    request,
+    z.object({
+      id: z.string(),
+      intent: z.enum(['renew-record', 'delete-record']),
+    })
+  );
+
+  if (dnsRecordActionParams.success === false) {
+    throw new Response(dnsRecordActionParams.error.message, {
+      status: 400,
+    });
+  }
+
+  const { id, intent } = dnsRecordActionParams.data;
 
   const recordID = Number(id);
   const record = await getRecordById(recordID);
 
   if (!record) {
     throw new Response('The record is not found', {
-      status: 422,
+      status: 404,
     });
   }
 
   switch (intent) {
     case 'renew-record':
-      await updateDnsRequest({
-        id: recordID,
-        type: record.type,
-        name: record.name,
-        value: record.value,
-        username,
-      });
+      await renewRecordById(record.id);
       return json({
         result: 'ok',
         message: 'DNS record was renewed',
       });
     case 'delete-record':
       await deleteDnsRequest({
-        id: recordID,
+        id: record.id,
         type: record.type,
         name: record.name,
         value: record.value,
@@ -71,23 +76,6 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function DomainsIndexRoute() {
   const domains = useTypedLoaderData<typeof loader>();
-  const navigate = useNavigate();
-  const submit = useSubmit();
-  const transition = useTransition();
-
-  function onDomainAction(domain: Record, action: DomainsTableAction) {
-    switch (action) {
-      case 'EDIT':
-        navigate(domain.id.toString());
-        break;
-      case 'DELETE':
-        submit({ id: domain.id.toString(), intent: 'delete-record' }, { method: 'delete' });
-        break;
-      case 'RENEW':
-        submit({ id: domain.id.toString(), intent: 'renew-record' }, { method: 'put' });
-        break;
-    }
-  }
 
   return (
     <Container maxW="contianer.xl">
@@ -101,16 +89,16 @@ export default function DomainsIndexRoute() {
           a galley of type and scrambled it to make a type specimen book.
         </Text>
         <Flex justifyContent="flex-end">
-          <form method="get">
+          <Form method="get">
             <Button rightIcon={<Icon as={FaRedoAlt} />} sx={{ mr: '2' }} type="submit">
               Reload domains
             </Button>
-          </form>
+          </Form>
           <Link to="/domains/new">
             <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
           </Link>
         </Flex>
-        <DomainsTable domains={domains} onAction={onDomainAction} transition={transition} />
+        <DomainsTable domains={domains} />
       </Flex>
     </Container>
   );

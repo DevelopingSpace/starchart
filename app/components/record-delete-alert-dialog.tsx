@@ -8,15 +8,18 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
 } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
+import type { Record } from '@prisma/client';
 
 interface RecordDeleteAlertDialogProps {
   isOpen: boolean;
   onCancel: () => void;
   onConfirm: () => void;
+  dnsRecord: Record | undefined;
 }
 
 export default function RecordDeleteAlertDialog(props: RecordDeleteAlertDialogProps) {
-  const { isOpen, onCancel, onConfirm } = props;
+  const { isOpen, onCancel, onConfirm, dnsRecord } = props;
   const cancelRef = useRef(null);
 
   return (
@@ -31,9 +34,13 @@ export default function RecordDeleteAlertDialog(props: RecordDeleteAlertDialogPr
             <Button colorScheme="gray" onClick={onCancel} ref={cancelRef}>
               Cancel
             </Button>
-            <Button colorScheme="brand" onClick={onConfirm} ml="3">
-              Delete
-            </Button>
+            <Form method="delete" style={{ margin: 0 }}>
+              <input type="hidden" name="id" value={dnsRecord?.id} />
+              <input type="hidden" name="intent" value="delete-record" />
+              <Button colorScheme="brand" onClick={onConfirm} ml="3" type="submit">
+                Delete
+              </Button>
+            </Form>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialogOverlay>
