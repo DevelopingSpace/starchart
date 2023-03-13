@@ -91,9 +91,7 @@ export default function DomainsTable(props: DomainsTableProps) {
   }
 
   function renderDnsRecordName(domainName: string) {
-    const words = domainName.split('.');
-    const [nameBase, ...restOfName] = words;
-
+    const [nameBase, ...restOfName] = domainName.split('.');
     return (
       <Flex alignItems="flex-end" flexDirection="row">
         <Text>

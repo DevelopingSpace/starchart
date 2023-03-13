@@ -83,7 +83,7 @@ export async function deleteRecordById(id: Record['id']) {
   return prisma.record.delete({ where: { id } });
 }
 
-export async function renewRecordById(id: Record['id']) {
+export function renewRecordById(id: Record['id']) {
   const expiresAt = dayjs().set('month', 6).toDate();
   return prisma.record.update({
     where: {
