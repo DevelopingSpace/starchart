@@ -55,6 +55,7 @@ ENV NODE_ENV=production \
 USER node
 COPY --chown=node:node --from=production-deps /app/.npmrc ./.npmrc
 COPY --chown=node:node --from=production-deps /app/node_modules ./node_modules
+COPY --chown=node:node --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY --chown=node:node --from=build /app/build ./build
 COPY --chown=node:node --from=build /app/public ./public
 COPY --chown=node:node --from=build /app/prisma ./prisma
@@ -62,7 +63,7 @@ COPY --chown=node:node --from=build /app/prisma ./prisma
 # Include the SAML IDP metadata in the image. Specify the file to use in the build arg
 # and override the SAML_IDP_METADATA_PATH to use when loading this file at startup
 COPY --chown=node:node ${SAML_IDP_METADATA_PATH} ./config/idp-metadata.xml
-ENV SAML_IDP_METADATA_PATH=/app/build/config/idp-metadata.xml
+ENV SAML_IDP_METADATA_PATH=/app/config/idp-metadata.xml
 
 COPY docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["/usr/bin/tini", "--", "docker-entrypoint.sh"]
