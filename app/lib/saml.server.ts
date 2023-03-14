@@ -48,11 +48,6 @@ export function createLoginRequest(redirectUrl: string = '/') {
   return url.href;
 }
 
-export function createLogoutRequest(user: string) {
-  const { context } = sp.createLogoutRequest(idp, 'redirect', { nameID: user });
-  return context;
-}
-
 export async function parseLoginResponse(body: { [k: string]: FormDataEntryValue }) {
   const { extract } = await sp.parseLoginResponse(idp, 'post', {
     body,
