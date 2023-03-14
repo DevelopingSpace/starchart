@@ -112,3 +112,16 @@ export function renewDnsRecordById(id: Record['id']) {
     },
   });
 }
+
+export function getExpiredRecords() {
+  return prisma.record.findMany({
+    where: {
+      expiresAt: {
+        lt: new Date(),
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+}
