@@ -60,7 +60,7 @@ export const action = async ({ request }: ActionArgs) => {
       username,
       samlResponse.attributes.displayname,
       samlResponse.attributes.email,
-      samlResponse.attributes.group
+      samlResponse.attributes.group.join(',')
     );
   }
 

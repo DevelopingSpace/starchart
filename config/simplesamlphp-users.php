@@ -38,7 +38,7 @@ $config = array(
           'displayname' => 'Hans Solo',
           'email' => 'hansolo@myseneca.ca',
           'sAMAccountName'=> 'han.solo',
-          'group'=>'mycustomdomain-admins',
+          'group'=>array('mycustomdomain-faculty', 'mycustomdomain-admins'),
       ),
     ),
 
