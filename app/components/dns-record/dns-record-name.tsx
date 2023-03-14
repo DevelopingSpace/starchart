@@ -1,13 +1,10 @@
-import type { FC } from 'react';
-import React from 'react';
 import { Flex, Text } from '@chakra-ui/react';
 
 interface DnsRecordNameProps {
   name: string;
 }
 
-const DnsRecordName: FC<DnsRecordNameProps> = (props) => {
-  const { name } = props;
+const DnsRecordName = ({ name }: DnsRecordNameProps) => {
   const [nameBase, ...restOfName] = name.split('.');
 
   return (

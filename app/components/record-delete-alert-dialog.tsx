@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import {
   AlertDialog,
   Button,
@@ -18,8 +18,12 @@ interface RecordDeleteAlertDialogProps {
   dnsRecord: Record | undefined;
 }
 
-export default function RecordDeleteAlertDialog(props: RecordDeleteAlertDialogProps) {
-  const { isOpen, onCancel, onConfirm, dnsRecord } = props;
+export default function RecordDeleteAlertDialog({
+  isOpen,
+  onCancel,
+  onConfirm,
+  dnsRecord,
+}: RecordDeleteAlertDialogProps) {
   const cancelRef = useRef(null);
 
   return (

@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
 import { FaRedoAlt } from 'react-icons/fa';
 import DomainsTable from '~/components/domains-table';
-import { getRecordById, getRecordsByUsername, renewRecordById } from '~/models/record.server';
+import { getRecordById, getRecordsByUsername, renewDnsRecordById } from '~/models/record.server';
 import { requireUsername } from '~/session.server';
 import { deleteDnsRequest } from '~/queues/dns/dns-flow.server';
 import logger from '~/lib/logger.server';
@@ -51,7 +51,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   switch (intent) {
     case 'renew-record':
-      await renewRecordById(record.id);
+      await renewDnsRecordById(record.id);
       return json({
         result: 'ok',
         message: 'DNS record was renewed',
