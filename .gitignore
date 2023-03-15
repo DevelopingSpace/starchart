@@ -6,6 +6,7 @@ node_modules
 
 /redis-data
 /mysql-data
+/mysql-data-test
 /test-results/
 /playwright-report/
 /playwright/.cache/

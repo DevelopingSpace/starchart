@@ -3,6 +3,7 @@
 /img
 /e2e/
 /mysql-data
+/mysql-data-test
 /node_modules
 /playwright-report
 /test

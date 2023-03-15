@@ -2,6 +2,7 @@
 /build
 /public/build
 /mysql-data
+/mysql-data-test
 /redis-data
 /img
 /dev-secrets

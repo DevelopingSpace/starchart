@@ -5,6 +5,7 @@ node_modules
 .env
 /redis-data
 /mysql-data
+/mysql-data-test
 /img
 /playwright-report/
 /dev-secrets
