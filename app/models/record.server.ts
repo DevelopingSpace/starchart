@@ -1,19 +1,41 @@
 import { RecordStatus } from '@prisma/client';
-import { prisma } from '~/db.server';
 import dayjs from 'dayjs';
+import { prisma } from '~/db.server';
 
 import type { Record } from '@prisma/client';
-export type { Record } from '@prisma/client';
 
-export async function getRecordsByUsername(username: Record['username']) {
+export const createUserRecord = async (
+  data: Pick<Record, 'username' | 'type' | 'name' | 'value'>
+) => {
+  if (await doesRecordExist(data)) {
+    throw new Error('Record already exists');
+  }
+
+  const result = await createRecord(data);
+
+  if (!result) {
+    throw new Error('Could not create a record in DB');
+  }
+  return result.id;
+};
+
+export function getRecordsByUsername(username: Record['username']) {
   return prisma.record.findMany({ where: { username } });
 }
 
-export async function getRecordById(id: Record['id']) {
+export function getRecordById(id: Record['id']) {
   return prisma.record.findUnique({ where: { id } });
 }
 
-export async function createRecord(data: Pick<Record, 'username' | 'type' | 'name' | 'value'>) {
+export function getUserRecordCount(username: Record['username']) {
+  return prisma.record.count({
+    where: {
+      username,
+    },
+  });
+}
+
+export function createRecord(data: Pick<Record, 'username' | 'type' | 'name' | 'value'>) {
   // Set expiration date 6 months from now
   const expiresAt = dayjs().set('month', 6).toDate();
   const status = RecordStatus.pending;
@@ -21,39 +43,22 @@ export async function createRecord(data: Pick<Record, 'username' | 'type' | 'nam
   return prisma.record.create({ data: { ...data, expiresAt, status } });
 }
 
-export async function updateRecordById(
-  id: Record['id'],
-  type?: Record['type'],
-  name?: Record['name'],
-  value?: Record['value'],
-  status?: Record['status'],
-  username?: Record['username'],
-  description?: Record['description'],
-  course?: Record['course'],
-  ports?: Record['ports'],
-  expiresAt?: Record['expiresAt'],
-  lastNotified?: Record['lastNotified']
+export function updateRecordById(
+  data: Pick<Record, 'id' | 'type' | 'name' | 'value'> &
+    Partial<Pick<Record, 'description' | 'course' | 'ports'>>
 ) {
+  const { id, ...values } = data;
   return prisma.record.update({
     where: { id },
     data: {
-      type,
-      name,
-      value,
-      status,
-      username,
-      description,
-      course,
-      ports,
-      expiresAt,
-      lastNotified,
+      ...values,
+      expiresAt: dayjs().set('month', 6).toDate(),
     },
   });
 }
 
-export async function updateRecordStatusById(id: Record['id'], status: Record['status']) {
+export function updateRecordStatusById(id: Record['id'], status: Record['status']) {
   const expireToSet = dayjs().set('month', 6).toDate();
-
   return prisma.record.update({
     where: {
       id,
@@ -61,6 +66,17 @@ export async function updateRecordStatusById(id: Record['id'], status: Record['s
     data: {
       status,
       expiresAt: status === RecordStatus.active ? expireToSet : undefined,
+    },
+  });
+}
+
+export function renewRecordById(id: Record['id']) {
+  return prisma.record.update({
+    where: {
+      id,
+    },
+    data: {
+      expiresAt: dayjs().set('month', 6).toDate(),
     },
   });
 }
@@ -79,7 +95,7 @@ export async function doesRecordExist(data: Pick<Record, 'username' | 'type' | '
   return count > 0;
 }
 
-export async function deleteRecordById(id: Record['id']) {
+export function deleteRecordById(id: Record['id']) {
   return prisma.record.delete({ where: { id } });
 }
 

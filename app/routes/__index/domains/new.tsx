@@ -6,10 +6,11 @@ import { redirect, typedjson, useTypedActionData } from 'remix-typedjson';
 
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
+import { addDnsRequest } from '~/queues/dns/add-record-flow.server';
 
 import type { ActionArgs } from '@remix-run/node';
 import type { ZodError } from 'zod';
-import { addDnsRequest } from '~/queues/dns/dns-flow.server';
+import logger from '~/lib/logger.server';
 
 function errorForField(error: ZodError, field: string) {
   return error.issues.find((issue) => issue.path[0] === field)?.message;
@@ -45,16 +46,20 @@ export const action = async ({ request }: ActionArgs) => {
   // the domain name (e.g., `foo` in `foo.username.root.com`).
   const { data } = newDnsRecordParams;
 
-  // Create a pending record... for now
-  // This will most likely be replaced by some other logic
-  await addDnsRequest({
-    username: user.username,
-    type: data.type,
-    name: data.name,
-    value: data.value,
-  });
+  try {
+    await addDnsRequest({
+      username: user.username,
+      type: data.type,
+      subdomain: data.name,
+      value: data.value,
+    });
 
-  return redirect(`/domains`);
+    return redirect(`/domains`);
+  } catch (error) {
+    logger.warn('Add DNS request error', error);
+    //Need to display an error response
+    return typedjson({});
+  }
 };
 
 export default function NewDomainRoute() {
