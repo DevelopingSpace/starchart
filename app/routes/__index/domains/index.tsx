@@ -1,17 +1,20 @@
+import { useMemo } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
-import { Button, Container, Flex, Heading, Icon, Text } from '@chakra-ui/react';
-import { Form, Link } from '@remix-run/react';
+import { Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
+import { Link, useRevalidator } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { json } from '@remix-run/node';
-import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
-import { FaRedoAlt } from 'react-icons/fa';
+import { useInterval } from 'react-use';
+
 import DomainsTable from '~/components/domains-table';
 import { getRecordById, getRecordsByUsername, renewDnsRecordById } from '~/models/record.server';
 import { requireUsername } from '~/session.server';
 import { deleteDnsRequest } from '~/queues/dns/delete-record-flow.server';
 import logger from '~/lib/logger.server';
+
+import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
 export type DomainActionIntent = 'renew-record' | 'delete-record';
 
@@ -75,10 +78,20 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export default function DomainsIndexRoute() {
+  const revalidator = useRevalidator();
   const domains = useTypedLoaderData<typeof loader>();
+  const pending = useMemo(() => domains.some((domain) => domain.status === 'pending'), [domains]);
+
+  // Check to see if any change is pending, and if so, reload every 5s until finished
+  useInterval(
+    () => {
+      revalidator.revalidate();
+    },
+    pending ? 5_000 : null
+  );
 
   return (
-    <Container maxW="contianer.xl">
+    <Container maxW="container.xl">
       <Flex flexDirection="column">
         <Heading as="h1" size="xl" mt="20">
           Domains
@@ -89,11 +102,6 @@ export default function DomainsIndexRoute() {
           a galley of type and scrambled it to make a type specimen book.
         </Text>
         <Flex justifyContent="flex-end">
-          <Form method="get">
-            <Button rightIcon={<Icon as={FaRedoAlt} />} sx={{ mr: '2' }} type="submit">
-              Reload domains
-            </Button>
-          </Form>
           <Link to="/domains/new">
             <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
           </Link>
