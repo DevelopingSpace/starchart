@@ -82,3 +82,15 @@ export async function doesRecordExist(data: Pick<Record, 'username' | 'type' | '
 export async function deleteRecordById(id: Record['id']) {
   return prisma.record.delete({ where: { id } });
 }
+
+export function renewDnsRecordById(id: Record['id']) {
+  const expiresAt = dayjs().set('month', 6).toDate();
+  return prisma.record.update({
+    where: {
+      id,
+    },
+    data: {
+      expiresAt,
+    },
+  });
+}

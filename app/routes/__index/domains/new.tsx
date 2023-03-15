@@ -5,11 +5,11 @@ import { parseFormSafe } from 'zodix';
 import { redirect, typedjson, useTypedActionData } from 'remix-typedjson';
 
 import DnsRecordForm from '~/components/dns-record/form';
-import { createRecord } from '~/models/record.server';
 import { requireUser } from '~/session.server';
 
 import type { ActionArgs } from '@remix-run/node';
 import type { ZodError } from 'zod';
+import { addDnsRequest } from '~/queues/dns/dns-flow.server';
 
 function errorForField(error: ZodError, field: string) {
   return error.issues.find((issue) => issue.path[0] === field)?.message;
@@ -44,12 +44,17 @@ export const action = async ({ request }: ActionArgs) => {
   // In the UI, we only ask the user to give us the first part of
   // the domain name (e.g., `foo` in `foo.username.root.com`).
   const { data } = newDnsRecordParams;
-  data.name = `${data.name}.${user.baseDomain}`;
 
   // Create a pending record... for now
   // This will most likely be replaced by some other logic
-  const record = await createRecord({ username: user.username, ...data });
-  return redirect(`/domains/${record.id}`);
+  await addDnsRequest({
+    username: user.username,
+    type: data.type,
+    name: data.name,
+    value: data.value,
+  });
+
+  return redirect(`/domains`);
 };
 
 export default function NewDomainRoute() {

@@ -82,8 +82,6 @@ export const addDnsRequest = async ({ username, type, name, value }: JobRecord) 
 };
 
 export const updateDnsRequest = async ({ id, username, type, name, value }: JobRecord) => {
-  const fullRecordName = buildDomain(username, name);
-
   // Step 1. Update the record in MySQL with pending status
   const updateDbRecord: FlowJob = {
     name: `updateDbRecord:${name}-${username}`,
@@ -93,7 +91,7 @@ export const updateDnsRequest = async ({ id, username, type, name, value }: JobR
       id,
       username,
       type,
-      name: fullRecordName,
+      name,
       value,
     } as JobRecord,
     opts: {
@@ -111,7 +109,7 @@ export const updateDnsRequest = async ({ id, username, type, name, value }: JobR
     name: `updateDnsRecord:${name}-${username}`,
     queueName: dnsRecordUpdateQueueName,
     children: [updateDbRecord],
-    data: { workType: WorkType.update, username, type, name: fullRecordName, value } as JobRecord,
+    data: { workType: WorkType.update, username, type, name, value } as JobRecord,
     opts: {
       failParentOnFailure: true,
       attempts: 5,
@@ -157,13 +155,11 @@ export const updateDnsRequest = async ({ id, username, type, name, value }: JobR
 };
 
 export const deleteDnsRequest = async ({ id, username, type, name, value }: JobRecord) => {
-  const fullRecordName = buildDomain(username, name);
-
   // Step 1. Request Route53 to delete the record
   const updateDnsRecord: FlowJob = {
     name: `deleteDnsRecord:${name}-${username}`,
     queueName: dnsRecordUpdateQueueName,
-    data: { workType: WorkType.delete, username, type, name: fullRecordName, value } as JobRecord,
+    data: { workType: WorkType.delete, username, type, name, value } as JobRecord,
     opts: {
       failParentOnFailure: true,
       attempts: 5,
