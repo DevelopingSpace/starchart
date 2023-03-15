@@ -6,7 +6,7 @@ import type { ActionArgs } from '@remix-run/node';
 export const action = async ({ request }: ActionArgs) => {
   const user = await getUsername(request);
 
-  // Do the opposite of login
+  // Invalidate the Starchart session but do not log out from Seneca IDP.
   if (user) {
     return await logout(request);
   }
