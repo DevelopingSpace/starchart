@@ -10,7 +10,8 @@
   - [`.env` and `./dev-secrets/*`](#env-and-dev-secrets)
     - [Usage](#usage)
   - [Pull requests](#pull-requests)
-  - [Debugging end to end test failures in CI](#debugging-end-to-end-test-failures-in-ci)
+  - [End-to-end tests](#end-to-end-tests)
+    - [Debugging CI failures](#debugging-ci-failures)
   - [Merging to main](#merging-to-main)
     - [Stages: Draft and Ready for review](#stages-draft-and-ready-for-review)
 
@@ -100,11 +101,14 @@ If you need to add a secret, for example, a secret named `MY_SECRET` with a valu
 - Avoid cosmetic changes to unrelated files in the same commit.
 - Use a [feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows) instead of the main branch.
 
-## Debugging end-to-end test failures in CI
+## End-to-end tests
 
-We use [Playwright](https://playwright.dev/) for end-to-end testing. This is configured so that a report is generated for test failures. This report is available to download from the GitHub Actions Summary page for the failed test run, and contains video(s) and trace(s) of the failed test(s).
+We use [Playwright](https://playwright.dev/) for end-to-end testing. For a brief overview of how to use Playwright, you can also go to our [wiki page](https://github.com/DevelopingSpace/starchart/wiki/Playwright).
 
-See [our wiki page for information about how to download and use this report](https://github.com/DevelopingSpace/starchart/wiki/Playwright#debugging-failures-in-ci) for more details.
+### Debugging CI failures
+Playwright is configured to generate a report for test failures. This report is available to download from the GitHub Actions Summary page for the failed test run, and contains video(s) and trace(s) of the failed test(s).
+
+See [our wiki page for information about how to download and use this report](https://github.com/DevelopingSpace/starchart/wiki/Playwright#debugging-ci-failures).
 
 ## Merging to main
 
