@@ -41,7 +41,7 @@
     "@prisma/client": "^4.11.0",
     "@remix-run/express": "^1.14.0",
     "@remix-run/node": "^1.14.0",
-    "@remix-run/react": "^1.14.0",
+    "@remix-run/react": "^1.14.2",
     "@remix-run/server-runtime": "^1.14.0",
     "acme-client": "^5.0.0",
     "bullmq": "^3.6.5",
