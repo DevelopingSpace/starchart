@@ -8,7 +8,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   // Invalidate the Starchart session but do not log out from Seneca IDP.
   if (user) {
-    return await logout(request);
+    return logout(request);
   }
   return redirect('/');
 };
