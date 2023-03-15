@@ -1,17 +1,16 @@
 import { redirect } from '@remix-run/node';
-import { getUsername } from '~/session.server';
+import { getUsername, logout } from '~/session.server';
 
 import type { ActionArgs } from '@remix-run/node';
-import { createLogoutRequest } from '~/lib/saml.server';
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await getUsername(request);
 
-  // Do the opposite of login
+  // Invalidate the Starchart session but do not log out from Seneca IDP.
   if (user) {
-    const context = createLogoutRequest(user);
-    return redirect(context);
+    return logout(request);
   }
+  return redirect('/');
 };
 
 export const loader = async () => {
