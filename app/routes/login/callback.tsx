@@ -54,13 +54,19 @@ export const action = async ({ request }: ActionArgs) => {
   const returnTo = relayState ? relayState : '/';
   const username = samlResponse.attributes.sAMAccountName;
 
+  let groups = samlResponse.attributes.group;
+
+  if (typeof groups !== 'string') {
+    groups = groups.join(' ,');
+  }
+
   // If this user has never logged in before, add to our system
   if (!(await checkUsernameExists(username))) {
     await createUser(
       username,
       samlResponse.attributes.displayname,
       samlResponse.attributes.email,
-      samlResponse.attributes.group.join(',')
+      groups
     );
   }
 
