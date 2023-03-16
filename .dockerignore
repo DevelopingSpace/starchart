@@ -2,8 +2,7 @@
 /.vscode
 /img
 /e2e/
-/mysql-data
-/mysql-data-test
+/mysql/data
 /node_modules
 /playwright-report
 /test
