@@ -19,7 +19,7 @@ export function getIssuedCertificateByUsername(username: Certificate['username']
 }
 
 export function getCertificateById(id: Certificate['id']) {
-  return prisma.certificate.findUnique({ where: { id } });
+  return prisma.certificate.findUniqueOrThrow({ where: { id } });
 }
 
 export function createCertificate(data: Pick<Certificate, 'username' | 'domain' | 'orderUrl'>) {
