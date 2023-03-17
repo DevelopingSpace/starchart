@@ -1,0 +1,24 @@
+[
+  {
+    "id": "deploy",
+    "execute-command": "/home/customdomain/deploy.sh",
+    "command-working-directory": "/home/customdomain",
+    "pass-environment-to-command": [
+      {
+        "source": "payload",
+        "name": "tag",
+        "envname": "TAG"
+      }
+    ],
+    "trigger-rule": {
+      "match": {
+        "type": "payload-hmac-sha256",
+        "secret": "TODO: update me to match secret stored in GitHub Actions...",
+        "parameter": {
+          "source": "header",
+          "name": "X-Hub-Signature"
+        }
+      }
+    }
+  }
+]
