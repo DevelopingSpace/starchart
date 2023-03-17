@@ -10,7 +10,7 @@ import { FaRedoAlt } from 'react-icons/fa';
 import DomainsTable from '~/components/domains-table';
 import { getRecordById, getRecordsByUsername, renewDnsRecordById } from '~/models/record.server';
 import { requireUsername } from '~/session.server';
-import { deleteDnsRequest } from '~/queues/dns/dns-flow.server';
+import { deleteDnsRequest } from '~/queues/dns/delete-record-flow.server';
 import logger from '~/lib/logger.server';
 
 export type DomainActionIntent = 'renew-record' | 'delete-record';
@@ -57,16 +57,16 @@ export const action = async ({ request }: ActionArgs) => {
         message: 'DNS record was renewed',
       });
     case 'delete-record':
-      await deleteDnsRequest({
-        id: record.id,
-        type: record.type,
-        name: record.name,
-        value: record.value,
+      deleteDnsRequest({
         username,
+        type: record.type,
+        subdomain: record.name,
+        value: record.value,
+        id: record.id,
       });
       return json({
         result: 'ok',
-        message: 'DNS record was deleted',
+        message: 'Deleting DNS record is requested',
       });
     default:
       logger.warn('Unknown intent', intent);

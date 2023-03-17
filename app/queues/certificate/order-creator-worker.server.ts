@@ -4,7 +4,7 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 import * as challengeModel from '~/models/challenge.server';
-import { addDnsRequest } from '~/queues/dns/dns-flow.server';
+import { addDnsRequest } from '~/queues/dns/add-record-flow.server';
 
 import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
 
@@ -40,7 +40,7 @@ const handleChallenges = ({
     await addDnsRequest({
       username,
       type: 'TXT',
-      name: domain,
+      subdomain: domain,
       value: challengeKey,
     });
 

@@ -12,8 +12,14 @@ import logger from '~/lib/logger.server';
 import { requireUser, requireUsername } from '~/session.server';
 import { addNotification } from '~/queues/notifications/notifications.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
+import { addDnsRequest } from '~/queues/dns/add-record-flow.server';
+import { updateDnsRequest } from '~/queues/dns/update-record-flow.server';
+import { deleteDnsRequest } from '~/queues/dns/delete-record-flow.server';
+import { RecordType } from '@prisma/client';
 
-import { addDnsRequest, updateDnsRequest, deleteDnsRequest } from '~/queues/dns/dns-flow.server';
+import type { AddDnsRequestData } from '~/queues/dns/add-record-flow.server';
+import type { UpdateDnsRequestData } from '~/queues/dns/update-record-flow.server';
+import type { DeleteDnsRequestData } from '~/queues/dns/delete-record-flow.server';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
 export const action = async ({ request }: ActionArgs) => {
@@ -46,40 +52,68 @@ export const action = async ({ request }: ActionArgs) => {
         message: 'Notification sent, see mail at http://localhost:8025',
       });
     case 'dns-record-request':
-      await addDnsRequest({
-        type: 'A',
-        name: `osd700-a1`,
+      const data: AddDnsRequestData = {
+        username: user.username,
+        type: RecordType.A,
+        subdomain: `osd700-a11`,
         value: '192.168.0.1',
-        username: user.username,
-      });
-      return json({
-        result: 'ok',
-        message: 'DNS record creation requested',
-      });
+      };
+      try {
+        await addDnsRequest(data);
+        return json({
+          result: 'ok',
+          message: 'DNS record creation requested',
+        });
+      } catch (error: unknown) {
+        return json({
+          result: 'error',
+          message: `${error}`,
+        });
+      }
+
     case 'update-dns-record-request':
-      await updateDnsRequest({
-        id: 71,
-        type: 'A',
-        name: 'osd700-a2',
-        value: '192.168.0.2',
-        username: user.username,
-      });
-      return json({
-        result: 'ok',
-        message: 'DNS record creation requested',
-      });
+      try {
+        const data: UpdateDnsRequestData = {
+          id: 1,
+          username: user.username,
+          type: RecordType.A,
+          subdomain: `osd700-a2`,
+          value: '192.168.0.2',
+          ports: '8080',
+          description: 'assignment 2',
+        };
+
+        await updateDnsRequest(data);
+        return json({
+          result: 'ok',
+          message: 'DNS record creation requested',
+        });
+      } catch (error: unknown) {
+        return json({
+          result: 'error',
+          message: `${error}`,
+        });
+      }
     case 'delete-dns-record-request':
-      await deleteDnsRequest({
-        id: 71,
-        type: 'A',
-        name: 'osd700-a2',
-        value: '192.168.0.2',
-        username: user.username,
-      });
-      return json({
-        result: 'ok',
-        message: 'DNS record creation requested',
-      });
+      try {
+        const data: DeleteDnsRequestData = {
+          username: user.username,
+          type: 'A',
+          subdomain: 'osd700-a2',
+          value: '192.168.0.2',
+          id: 3,
+        };
+        await deleteDnsRequest(data);
+        return json({
+          result: 'ok',
+          message: 'DNS record creation requested',
+        });
+      } catch (error: unknown) {
+        return json({
+          result: 'error',
+          message: `${error}`,
+        });
+      }
     default:
       logger.warn('Unknown intent', intent);
       return json({ result: 'error', message: 'Unknown intent' });
