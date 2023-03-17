@@ -1,4 +1,4 @@
-import { AddIcon, InfoIcon } from '@chakra-ui/icons';
+import { AddIcon, InfoIcon, EditIcon } from '@chakra-ui/icons';
 import {
   Button,
   Input,
@@ -10,23 +10,31 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
-
+import type { Record } from '@prisma/client';
 import { useUser } from '~/utils';
 import FormField from './form-field';
+import { useMemo } from 'react';
+
+type FormMode = 'CREATE' | 'EDIT';
 
 interface DnsRecordFormProps {
+  mode: FormMode;
   typeError?: string; // Error for 'Type' field
+  defaultDnsRecord?: Record;
 }
 
-export default function DnsRecordForm({ typeError }: DnsRecordFormProps) {
+export default function DnsRecordForm({ typeError, defaultDnsRecord, mode }: DnsRecordFormProps) {
   const user = useUser();
+
+  const submitButtonText = useMemo(() => (mode === 'CREATE' ? 'Create' : 'Update'), [mode]);
+  const SubmitButtonIcon = useMemo(() => (mode === 'CREATE' ? AddIcon : EditIcon), [mode]);
 
   return (
     <Form className="domain-form" method="post">
       <VStack maxW="xl" spacing="2">
         <FormField label="Record Name" isRequired={true}>
           <InputGroup>
-            <Input name="name" />
+            <Input name="name" defaultValue={defaultDnsRecord?.name} />
             <InputRightAddon children={`.${user.baseDomain}`} />
           </InputGroup>
           <Tooltip label="Enter a name for the DNS Record: name">
@@ -35,7 +43,7 @@ export default function DnsRecordForm({ typeError }: DnsRecordFormProps) {
         </FormField>
 
         <FormField label="Type" isRequired={true} error={typeError}>
-          <Select placeholder="Select a type" name="type">
+          <Select placeholder="Select a type" name="type" defaultValue={defaultDnsRecord?.type}>
             <option value="A">A</option>
             <option value="AAAA">AAAA</option>
             <option value="CNAME">CNAME</option>
@@ -47,14 +55,14 @@ export default function DnsRecordForm({ typeError }: DnsRecordFormProps) {
         </FormField>
 
         <FormField label="Value" isRequired={true}>
-          <Input name="value" />
+          <Input name="value" defaultValue={defaultDnsRecord?.value} />
           <Tooltip label="Enter DNS Record value">
             <InfoIcon />
           </Tooltip>
         </FormField>
 
         <FormField label="Ports">
-          <Input name="ports" />
+          <Input name="ports" defaultValue={defaultDnsRecord?.ports ?? ''} />
           <Tooltip label="Enter port(s) separated by commas (E.g. 8080, 1234)">
             <InfoIcon />
           </Tooltip>
@@ -68,11 +76,16 @@ export default function DnsRecordForm({ typeError }: DnsRecordFormProps) {
         </FormField>
 
         <FormField label="Description">
-          <Textarea rows={10} name="description" />
+          <Textarea
+            rows={10}
+            name="description"
+            defaultValue={defaultDnsRecord?.description ?? ''}
+          />
         </FormField>
       </VStack>
-      <Button type="submit" mt="6" rightIcon={<AddIcon boxSize={3.5} mt="0.15rem" />}>
-        Create
+      {defaultDnsRecord && <input type="hidden" name="id" value={defaultDnsRecord.id} />}
+      <Button type="submit" mt="6" rightIcon={<SubmitButtonIcon boxSize={3.5} mt="0.15rem" />}>
+        {submitButtonText}
       </Button>
     </Form>
   );
