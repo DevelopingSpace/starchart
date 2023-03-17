@@ -12,8 +12,11 @@ test.describe('not authenticated', () => {
 test.describe('authenticated as user', () => {
   loggedInAsUser();
 
-  test('redirects to edit dns record page when required fields are filled', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/domains/new');
+  });
+
+  test('redirects to edit dns record page when required fields are filled', async ({ page }) => {
     await page.getByLabel('Record Name*').fill('test');
     await page.getByRole('combobox', { name: 'Type' }).selectOption('A');
     await page.getByLabel('Value*').fill('test');
@@ -22,7 +25,6 @@ test.describe('authenticated as user', () => {
   });
 
   test('redirects to edit dns record page when all fields are filled', async ({ page }) => {
-    await page.goto('/domains/new');
     await page.getByLabel('Record Name*').fill('test');
     await page.getByRole('combobox', { name: 'Type' }).selectOption('A');
     await page.getByLabel('Value*').fill('test');
@@ -34,8 +36,7 @@ test.describe('authenticated as user', () => {
   });
 
   test('does not create dns record if required fields are empty', async ({ page }) => {
-    await page.goto('/domains/new');
     await page.getByRole('button', { name: 'Create' }).click();
-    await expect(page).toHaveURL(/.*domains\/new/);
+    await expect(page).toHaveURL('/domains/new');
   });
 });

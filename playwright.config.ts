@@ -34,12 +34,12 @@ const config: PlaywrightTestConfig = {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: `http://localhost:${process.env.PORT}`,
+    baseURL: `http://localhost:${process.env.PORT || 8080}`,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     /* Record video on first retry */
-    video: 'on-first-retry',
+    video: 'retain-on-failure',
   },
 
   /* Configure projects for major browsers */
@@ -58,6 +58,7 @@ const config: PlaywrightTestConfig = {
         ...devices['Desktop Chrome'],
       },
       dependencies: ['setup'],
+      testIgnore: /.*\.mobile\.spec\.ts/,
     },
 
     {
@@ -66,6 +67,7 @@ const config: PlaywrightTestConfig = {
         ...devices['Desktop Firefox'],
       },
       dependencies: ['setup'],
+      testIgnore: /.*\.mobile\.spec\.ts/,
     },
 
     {
@@ -74,6 +76,7 @@ const config: PlaywrightTestConfig = {
         ...devices['Desktop Safari'],
       },
       dependencies: ['setup'],
+      testIgnore: /.*\.mobile\.spec\.ts/,
     },
 
     /* Test against mobile viewports. */
@@ -83,6 +86,7 @@ const config: PlaywrightTestConfig = {
         ...devices['Pixel 5'],
       },
       dependencies: ['setup'],
+      testIgnore: /.*\.desktop\.spec\.ts/,
     },
     /**
      * We override the isMobile for Mobile Safari to false to make it work in CI
@@ -100,6 +104,7 @@ const config: PlaywrightTestConfig = {
         defaultBrowserType: devices['iPhone 12'].defaultBrowserType,
       },
       dependencies: ['setup'],
+      testIgnore: /.*\.desktop\.spec\.ts/,
     },
 
     /* Test against branded browsers. */
@@ -109,6 +114,7 @@ const config: PlaywrightTestConfig = {
         channel: 'msedge',
       },
       dependencies: ['setup'],
+      testIgnore: /.*\.mobile\.spec\.ts/,
     },
     {
       name: 'Google Chrome',
@@ -116,6 +122,7 @@ const config: PlaywrightTestConfig = {
         channel: 'chrome',
       },
       dependencies: ['setup'],
+      testIgnore: /.*\.mobile\.spec\.ts/,
     },
   ],
 
