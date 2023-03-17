@@ -43,7 +43,7 @@ export default function DomainsTable(props: DomainsTableProps) {
 
   const {
     isOpen: isDeleteAlertDialogOpen,
-    onOpen: onDeleteAlerDialogOpen,
+    onOpen: onDeleteAlertDialogOpen,
     onClose: onDeleteAlertDialogClose,
   } = useDisclosure();
   const [domainToDelete, setDomainToDelete] = useState<Record | undefined>();
@@ -91,7 +91,7 @@ export default function DomainsTable(props: DomainsTableProps) {
   }
 
   function onDeleteDomainOpen(domain: Record) {
-    onDeleteAlerDialogOpen();
+    onDeleteAlertDialogOpen();
     setDomainToDelete(domain);
   }
 
