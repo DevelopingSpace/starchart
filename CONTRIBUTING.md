@@ -59,6 +59,8 @@ $ npm run db:studio
 
 > **Note** `npm run build` needs to be executed the first time running the project. As it generates a `build/server.js` script that `npm run dev` depends on. Subsequent times, only `npm run dev` is needed to run the app in development mode.
 
+> **Note** If you are running test scripts for the first time, change `DATABASE_URL` in `.env` to `DATABASE_URL="mysql://starchart:starchart_password@127.0.0.1:3306/starchart"` and run `npm run setup` to setup the test database. You can change this back afterward.
+
 ## SAML Accounts to use in Dev
 
 Our IDP is configured with a few accounts that exist for testing, the usernames and passwords to use are as follows:
