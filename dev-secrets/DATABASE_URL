@@ -1,1 +1,1 @@
-mysql://starchart:starchart_password@127.0.0.1:3306/starchart
+mysql://root:root_password@127.0.0.1:3306/starchart

@@ -1,7 +1,7 @@
 /node_modules
 /build
 /public/build
-/mysql/data
+/mysql-data
 /redis-data
 /img
 /dev-secrets

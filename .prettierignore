@@ -4,7 +4,7 @@ node_modules
 /public/build
 .env
 /redis-data
-/mysql/data
+/mysql-data
 /img
 /playwright-report/
 /dev-secrets

@@ -5,7 +5,7 @@ node_modules
 .env
 
 /redis-data
-/mysql/data
+/mysql-data
 /test-results/
 /playwright-report/
 /playwright/.cache/

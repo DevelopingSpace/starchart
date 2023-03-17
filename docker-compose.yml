@@ -9,10 +9,10 @@ services:
       # Only for dev
       - 3306:3306
     volumes:
-      # Persist data to ./mysql/data. Remove if you want to clear the db.
-      - ./mysql/data:/var/lib/mysql
+      # Persist data to ./mysql-data. Remove if you want to clear the db.
+      - ./mysql-data:/var/lib/mysql
       # Locate SQL file to setup database
-      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./config/01-databases.sql:/docker-entrypoint-initdb.d/init/01-databases.sql
     environment:
       MYSQL_ROOT_PASSWORD: root_password
 
