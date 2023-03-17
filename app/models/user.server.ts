@@ -79,7 +79,7 @@ export async function isAdmin(username: PrismaUser['username']) {
 export async function isDeactivated(username: PrismaUser['username']) {
   const user = await prisma.user.findUnique({ where: { username } });
   if (!user) {
-    return true;
+    return undefined;
   }
 
   return user.deactivated;
