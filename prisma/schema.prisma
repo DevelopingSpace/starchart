@@ -56,7 +56,7 @@ model Challenge {
   domain        String      @db.VarChar(255)
   challengeKey  String      @db.VarChar(255)
   certificateId Int
-  certificate   Certificate @relation(fields: [certificateId], references: [id])
+  certificate   Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
 }
 
 enum RecordType {
