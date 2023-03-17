@@ -20,7 +20,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      - HOSTNAME=https://mycustomdomain-dev.senecacollege.ca
+      - APP_URL=https://mycustomdomain-dev.senecacollege.ca
       - AWS_ROUTE53_HOSTED_ZONE_ID=Z0228625ICAL609E0BBT
       - LETS_ENCRYPT_ACCOUNT_EMAIL=mycustomdomain-dev@senecacollege.ca
       - LETS_ENCRYPT_DIRECTORY_URL=https://acme-staging-v02.api.letsencrypt.org/directory

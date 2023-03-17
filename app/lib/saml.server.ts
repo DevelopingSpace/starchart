@@ -18,30 +18,30 @@ const idp = samlify.IdentityProvider({
   metadata: xml,
 });
 
-const { HOSTNAME } = process.env;
+const { APP_URL } = process.env;
 
 /**
- * We require the hostname or can't configure SAML.
+ * We require the app url or can't configure SAML.
  */
-if (!HOSTNAME) {
-  throw new Error('HOSTNAME environment variable is missing');
+if (!APP_URL) {
+  throw new Error('APP_URL environment variable is missing');
 }
 
 // Here we configure the service provider: https://samlify.js.org/#/sp-configuration
 const sp = samlify.ServiceProvider({
-  entityID: new URL('/sp', HOSTNAME).href,
+  entityID: new URL('/sp', APP_URL).href,
   nameIDFormat: ['urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'],
   wantAssertionsSigned: true,
   assertionConsumerService: [
     {
       Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-      Location: new URL('/login/callback', HOSTNAME).href,
+      Location: new URL('/login/callback', APP_URL).href,
     },
   ],
   singleLogoutService: [
     {
       Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-      Location: new URL('/logout/callback', HOSTNAME).href,
+      Location: new URL('/logout/callback', APP_URL).href,
     },
   ],
 });
