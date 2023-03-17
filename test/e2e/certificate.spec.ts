@@ -15,6 +15,7 @@ test.describe('Certificate Page', () => {
     await expect(domainName).toContainText('user1.starchart.com');
     await expect(titleHeader).toContainText('Certificate');
     await page.getByRole('button', { name: 'Request a Certificate' }).click();
+
     page
       .locator('div')
       .filter({
