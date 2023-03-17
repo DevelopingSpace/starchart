@@ -109,7 +109,7 @@ export async function createHostedZone(domain: string) {
     }
     return response.HostedZone.Id.replace('/hostedzone/', '');
   } catch (error) {
-    logger.warn(error);
+    logger.warn('DNS Error in createHostedZone', { domain, error });
     throw new Error(`Error while creating hosted zone`);
   }
 }
@@ -118,7 +118,7 @@ export const createRecord = (username: string, type: RecordType, name: string, v
   try {
     return upsertRecord(username, type, name, value);
   } catch (error) {
-    logger.warn(error);
+    logger.warn('DNS Error in createRecord', { username, type, name, value, error });
     throw new Error(`Error occurred while creating resource record`);
   }
 };
@@ -131,23 +131,23 @@ export const upsertRecord = async (
 ) => {
   try {
     if (!isNameValid(name, username)) {
-      logger.error('Invalid record name provided', {
+      logger.error('DNS Error in upsertRecord - invalid record name provided', {
         name,
         username,
         baseDomain: buildUserBaseDomain(username),
       });
 
-      throw new Error('Invalid record name provided');
+      throw new Error('DNS Error in upsertRecord - invalid record name provided');
     }
 
     if (!isValueValid(type, value)) {
-      logger.error('Invalid record value provided', {
+      logger.error('DNS Error in upsertRecord - invalid record value provided', {
         name,
         username,
         type,
         value,
       });
-      throw new Error('Invalid record value provided');
+      throw new Error('DNS Error in upsertRecord - invalid record value provided');
     }
 
     const command = new ChangeResourceRecordSetsCommand({
@@ -173,12 +173,12 @@ export const upsertRecord = async (
     const response: ChangeResourceRecordSetsResponse = await route53Client.send(command);
 
     if (!response.ChangeInfo?.Id) {
-      throw new Error(`Missing ID in ChangeInfo`);
+      throw new Error(`DNS Error - missing ID in AWS ChangeInfo response`);
     }
     return response.ChangeInfo.Id;
   } catch (error) {
-    logger.warn(error);
-    throw new Error(`Error occurred while updating resource record: ${error}`);
+    logger.warn('DNS Error in upsertRecord', { username, type, name, value, error });
+    throw new Error(`DNS Error occurred while updating resource record: ${error}`);
   }
 };
 
@@ -190,11 +190,22 @@ export const deleteRecord = async (
 ) => {
   try {
     if (!isNameValid(name, username)) {
-      throw new Error('Invalid name provided');
+      logger.error('DNS Error in deleteRecord - invalid record name provided', {
+        name,
+        username,
+        baseDomain: buildUserBaseDomain(username),
+      });
+      throw new Error('DNS Error in deleteRecord - invalid name provided');
     }
 
     if (!isValueValid(type, value)) {
-      throw new Error('Invalid value provided');
+      logger.error('DNS Error in deleteRecord - invalid record value provided', {
+        name,
+        username,
+        type,
+        value,
+      });
+      throw new Error('DNS Error in deleteRecord - invalid value provided');
     }
 
     const command = new ChangeResourceRecordSetsCommand({
@@ -221,12 +232,12 @@ export const deleteRecord = async (
     const response: ChangeResourceRecordSetsResponse = await route53Client.send(command);
 
     if (!response.ChangeInfo?.Id) {
-      throw new Error('Missing ID in ChangeInfo');
+      throw new Error('DNS Error - missing ID in AWS ChangeInfo response');
     }
     return response.ChangeInfo.Id;
   } catch (error) {
-    logger.warn(error);
-    throw new Error(`Error occurred while deleting resource record`);
+    logger.warn('DNS Error in deleteRecord', { username, type, name, value, error });
+    throw new Error(`DNS Error occurred while deleting resource record`);
   }
 };
 
@@ -238,11 +249,11 @@ export const getChangeStatus = async (changeId: string) => {
     const response: GetChangeResponse = await route53Client.send(command);
 
     if (!response.ChangeInfo?.Status) {
-      throw new Error('Could not get ChangeIno for requested ID');
+      throw new Error('DNS Error - could not get ChangeIno for requested ID from AWS response');
     }
     return response.ChangeInfo.Status;
   } catch (error) {
-    logger.warn(error);
+    logger.warn('DNS Error in getChangeStatus', { changeId, error });
     throw new Error(`Error occurred while getting change status`);
   }
 };
