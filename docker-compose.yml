@@ -11,9 +11,12 @@ services:
     volumes:
       # Persist data to ./mysql-data. Remove if you want to clear the db.
       - ./mysql-data:/var/lib/mysql
-      # Locate SQL file to setup database
+      # Locate SQL file to setup test database
       - ./config/01-databases.sql:/docker-entrypoint-initdb.d/init/01-databases.sql
     environment:
+      MYSQL_DATABASE: starchart
+      MYSQL_USER: starchart
+      MYSQL_PASSWORD: starchart_password
       MYSQL_ROOT_PASSWORD: root_password
 
   redis:
