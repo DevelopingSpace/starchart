@@ -47,6 +47,13 @@ async function seed() {
         email: 'user3@myseneca.ca',
         group: 'mycustomdomain-admins',
       },
+      {
+        username: 'user4',
+        displayName: 'Deactivated User',
+        email: 'user4@myseneca.ca',
+        group: 'mycustomdomain-students',
+        deactivated: true,
+      },
     ],
   });
 
