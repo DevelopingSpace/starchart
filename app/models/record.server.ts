@@ -7,6 +7,12 @@ import type { Record } from '@prisma/client';
 export const createUserRecord = async (
   data: Pick<Record, 'username' | 'type' | 'subdomain' | 'value'>
 ) => {
+  if (process.env.USER_RECORD_LIMIT) {
+    if ((await getUserRecordCount(data.username)) >= Number(process.env.USER_RECORD_LIMIT)) {
+      throw new Error('User has reached the maximum number of records');
+    }
+  }
+
   if (await doesRecordExist(data)) {
     throw new Error('Record already exists');
   }
