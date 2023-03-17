@@ -32,8 +32,6 @@ export const challengeCompleterWorker = new Worker<ChallengeCompleterData>(
       certificateId: orderCreatorRetval.certificateId,
     });
 
-    let letsEncrypt;
-
     /**
      * Reload certificate URL from DB
      */
@@ -57,6 +55,7 @@ export const challengeCompleterWorker = new Worker<ChallengeCompleterData>(
     /**
      * Initialize Let's Encrypt
      */
+    let letsEncrypt;
     try {
       logger.debug("Initializing Let's encrypt");
       letsEncrypt = await new LetsEncrypt().initialize();
