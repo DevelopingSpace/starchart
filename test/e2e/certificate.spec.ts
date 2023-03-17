@@ -14,21 +14,41 @@ test.describe('Certificate Page', () => {
 
     await expect(domainName).toContainText('user1.starchart.com');
     await expect(titleHeader).toContainText('Certificate');
+
     await page.getByRole('button', { name: 'Request a Certificate' }).click();
 
-    page
+    const loadingPageText = page
       .locator('div')
       .filter({
         hasText: 'We have received your request, and will notify you when your certificate is read',
       })
       .nth(1);
 
+    await expect(loadingPageText).toContainText(
+      'We have received your request, and will notify you when your certificate is read'
+    );
+
+    //Copy Key Toast Text
     await page.getByRole('button', { name: 'Copy Public Key' }).click();
     await page.getByRole('button', { name: 'Copy Private Key' }).click();
 
+    const publicCopyToastText = page.getByText('Public Key was copied to the clipboard');
+    const privateCopyToastText = page.getByText('Private Key was copied to the clipboard');
+
+    await expect(publicCopyToastText).toContainText('Public Key was copied to the clipboard');
+    await expect(privateCopyToastText).toContainText('Private Key was copied to the clipboard');
+
+    //Download Key Toast Text
     await page.getByRole('button', { name: 'Download Public Key' }).click();
     await page.getByRole('button', { name: 'Download Private Key' }).click();
 
+    const publicDownloadToastText = page.getByText('Public Key is Downloaded');
+    const privateDownloadToastText = page.getByText('Private Key is Downloaded');
+
+    await expect(publicDownloadToastText).toContainText('Public Key is Downloaded');
+    await expect(privateDownloadToastText).toContainText('Private Key is Downloaded');
+
+    //Text Titles
     const publicKey = page.getByRole('heading', { name: 'Public Key' });
     const privateKey = page.getByRole('heading', { name: 'Private Key' });
 

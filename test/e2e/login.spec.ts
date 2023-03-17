@@ -22,9 +22,11 @@ test('Login with User 1 dev redirect', async ({ page }) => {
   await page.getByLabel('Password').fill('user1pass');
   await page.getByRole('button', { name: 'Login' }).click();
   await page.waitForURL('/domains');
+
   const locator1 = page.locator('#header-user');
   const userInNav = page.getByRole('heading', { name: 'My.Custom.Domain' });
   const domainHeading = page.getByRole('heading', { name: 'Domains' });
+
   await expect(locator1).toContainText('user1');
   await expect(userInNav).toContainText('My.Custom.Domain');
   await expect(domainHeading).toContainText('Domains');

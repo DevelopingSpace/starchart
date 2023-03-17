@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loggedInAsUser } from './utils';
 
-test.describe('landing page link', () => {
+test.describe('Landing Page', () => {
   loggedInAsUser();
 
   test.beforeEach(async ({ page }) => {
@@ -14,12 +14,13 @@ test.describe('landing page link', () => {
     await expect(certCard).toContainText('Certificate');
   });
 
-  test('Manage DNS Records Link Button', async ({ page }) => {
+  test('Manage DNS Records Button', async ({ page }) => {
     await page.getByRole('link', { name: 'Manage DNS Records' }).click();
+
     await expect(page).toHaveURL('/domains');
   });
 
-  test('Manage DNS Records Instruction Link', async ({ page }) => {
+  test('DNS Records Instructions Link', async ({ page }) => {
     await page
       .getByRole('paragraph')
       .filter({
@@ -31,12 +32,13 @@ test.describe('landing page link', () => {
     await expect(page).toHaveURL('/domains/instructions');
   });
 
-  test('Manage Certificate Link Button', async ({ page }) => {
+  test('Manage Certificate Button', async ({ page }) => {
     await page.getByRole('link', { name: 'Manage Certificate' }).click();
+
     await expect(page).toHaveURL('/certificate');
   });
 
-  test('Manage Certificate Instruction Link', async ({ page }) => {
+  test('Certificate Instructions Link', async ({ page }) => {
     await page
       .getByRole('paragraph')
       .filter({
@@ -45,6 +47,7 @@ test.describe('landing page link', () => {
       })
       .getByRole('link', { name: 'to learn more, see these instructions...' })
       .click();
+
     await expect(page).toHaveURL('/certificate/instructions');
   });
 });

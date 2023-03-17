@@ -58,7 +58,7 @@ export default function CertificateDisplay({ title, description, value }: Certif
             onClick={() => onCopy()}
           />
         </Tooltip>
-        <Tooltip label={`${title} is Downloaded`}>
+        <Tooltip label={`Download ${title}`}>
           <IconButton
             backgroundColor="transparent"
             color="black"
