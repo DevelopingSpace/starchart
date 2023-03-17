@@ -33,7 +33,7 @@ model Record {
   expiresAt    DateTime
   status       RecordStatus
   lastNotified DateTime?
-  user         User         @relation(fields: [username], references: [username])
+  user         User         @relation(fields: [username], references: [username], onDelete: Cascade)
 }
 
 model Certificate {
@@ -47,7 +47,7 @@ model Certificate {
   validTo      DateTime?
   lastNotified DateTime?
   status       CertificateStatus @default(pending)
-  user         User              @relation(fields: [username], references: [username])
+  user         User              @relation(fields: [username], references: [username], onDelete: Cascade)
   challenge    Challenge[]
 }
 
