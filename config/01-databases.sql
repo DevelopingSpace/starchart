@@ -1,4 +1,4 @@
--- create regular and test databases
+-- create test databases
 CREATE DATABASE IF NOT EXISTS `starchart_test`;
 
 -- create root user and grant rights
