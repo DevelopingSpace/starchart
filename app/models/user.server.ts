@@ -64,3 +64,12 @@ export async function isAdmin(username: PrismaUser['username']) {
   // The group will have -dev in it on staging but not on prod
   return /mycustomdomain(-dev)?-admins/.test(group);
 }
+
+export async function isDeactivated(username: PrismaUser['username']) {
+  const user = await prisma.user.findUnique({ where: { username } });
+  if (!user) {
+    return true;
+  }
+
+  return user.deactivated;
+}
