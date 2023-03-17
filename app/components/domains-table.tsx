@@ -29,6 +29,7 @@ import RecordDeleteAlertDialog from './record-delete-alert-dialog';
 
 import { Form, useNavigate, useTransition } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
+import { useUser } from '~/utils';
 
 interface DomainsTableProps {
   domains: Record[];
@@ -37,6 +38,7 @@ interface DomainsTableProps {
 export default function DomainsTable(props: DomainsTableProps) {
   const { domains } = props;
 
+  const { baseDomain } = useUser();
   const toast = useToast();
   const navigate = useNavigate();
   const transition = useTransition();
@@ -143,14 +145,16 @@ export default function DomainsTable(props: DomainsTableProps) {
                         <Td>{renderDomainStatus(domain.status)}</Td>
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
-                            <DnsRecordName name={domain.subdomain} />
+                            <DnsRecordName subdomain={domain.subdomain} baseDomain={baseDomain} />
                             <Tooltip label="Copy name to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
                                 aria-label="Refresh domain"
                                 variant="ghost"
                                 ml="2"
-                                onClick={() => onCopyNameToClipboard(domain.subdomain)}
+                                onClick={() =>
+                                  onCopyNameToClipboard(`${domain.subdomain}.${baseDomain}`)
+                                }
                               />
                             </Tooltip>
                           </Flex>
