@@ -6,7 +6,9 @@ test.describe('Landing Page', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+  });
 
+  test('Contains DNS Record and Certificate cards', async ({ page }) => {
     const dnsCard = page.getByRole('heading', { name: 'DNS Records' });
     const certCard = page.getByRole('heading', { name: 'Certificate' });
 
