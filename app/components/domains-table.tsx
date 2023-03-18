@@ -143,14 +143,14 @@ export default function DomainsTable(props: DomainsTableProps) {
                         <Td>{renderDomainStatus(domain.status)}</Td>
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
-                            <DnsRecordName name={domain.name} />
+                            <DnsRecordName name={domain.subdomain} />
                             <Tooltip label="Copy name to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
                                 aria-label="Refresh domain"
                                 variant="ghost"
                                 ml="2"
-                                onClick={() => onCopyNameToClipboard(domain.name)}
+                                onClick={() => onCopyNameToClipboard(domain.subdomain)}
                               />
                             </Tooltip>
                           </Flex>

@@ -5,7 +5,7 @@ import { prisma } from '~/db.server';
 import type { Record } from '@prisma/client';
 
 export const createUserRecord = async (
-  data: Pick<Record, 'username' | 'type' | 'name' | 'value'>
+  data: Pick<Record, 'username' | 'type' | 'subdomain' | 'value'>
 ) => {
   if (await doesRecordExist(data)) {
     throw new Error('Record already exists');
@@ -35,7 +35,7 @@ export function getUserRecordCount(username: Record['username']) {
   });
 }
 
-export function createRecord(data: Pick<Record, 'username' | 'type' | 'name' | 'value'>) {
+export function createRecord(data: Pick<Record, 'username' | 'type' | 'subdomain' | 'value'>) {
   // Set expiration date 6 months from now
   const expiresAt = dayjs().set('month', 6).toDate();
   const status = RecordStatus.pending;
@@ -44,7 +44,7 @@ export function createRecord(data: Pick<Record, 'username' | 'type' | 'name' | '
 }
 
 export function updateRecordById(
-  data: Pick<Record, 'id' | 'type' | 'name' | 'value'> &
+  data: Pick<Record, 'id' | 'type' | 'subdomain' | 'value'> &
     Partial<Pick<Record, 'description' | 'course' | 'ports'>>
 ) {
   const { id, ...values } = data;
@@ -81,13 +81,15 @@ export function renewRecordById(id: Record['id']) {
   });
 }
 
-export async function doesRecordExist(data: Pick<Record, 'username' | 'type' | 'name' | 'value'>) {
-  const { username, type, name, value } = data;
+export async function doesRecordExist(
+  data: Pick<Record, 'username' | 'type' | 'subdomain' | 'value'>
+) {
+  const { username, type, subdomain, value } = data;
   const count = await prisma.record.count({
     where: {
       username,
       type,
-      name,
+      subdomain,
       value,
     },
   });

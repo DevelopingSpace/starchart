@@ -63,7 +63,7 @@ export const action = async ({ request }: ActionArgs) => {
       deleteDnsRequest({
         username,
         type: record.type,
-        subdomain: record.name,
+        subdomain: record.subdomain,
         value: record.value,
         id: record.id,
       });

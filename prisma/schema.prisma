@@ -22,7 +22,7 @@ model User {
 model Record {
   id           Int          @id @default(autoincrement())
   username     String
-  name         String
+  subdomain    String
   type         RecordType
   value        String
   description  String?
