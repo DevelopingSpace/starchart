@@ -2,10 +2,10 @@ import { Flex, Text } from '@chakra-ui/react';
 
 interface DnsRecordNameProps {
   subdomain: string;
-  basedomain: string;
+  baseDomain: string;
 }
 
-const DnsRecordName = ({ subdomain, basedomain }: DnsRecordNameProps) => {
+const DnsRecordName = ({ subdomain, baseDomain }: DnsRecordNameProps) => {
   return (
     <Flex alignItems="flex-end" flexDirection="row">
       <Text>
@@ -13,7 +13,7 @@ const DnsRecordName = ({ subdomain, basedomain }: DnsRecordNameProps) => {
           {subdomain}
         </Text>
         <Text as="span" color="gray.500">
-          .{basedomain}
+          .{baseDomain}
         </Text>
       </Text>
     </Flex>

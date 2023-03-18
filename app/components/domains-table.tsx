@@ -148,7 +148,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                           <Flex justifyContent="space-between" alignItems="center">
                             <DnsRecordName
                               subdomain={dnsRecord.subdomain}
-                              basedomain={baseDomain}
+                              baseDomain={baseDomain}
                             />
                             <Tooltip label="Copy name to clipboard">
                               <IconButton
