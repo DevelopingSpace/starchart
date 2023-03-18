@@ -12,8 +12,9 @@ model User {
   displayName String
   email       String        @unique
   group       String
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deactivated Boolean       @default(false)
   record      Record[]
   certificate Certificate[]
 }
@@ -32,7 +33,7 @@ model Record {
   expiresAt    DateTime
   status       RecordStatus
   lastNotified DateTime?
-  user         User         @relation(fields: [username], references: [username])
+  user         User         @relation(fields: [username], references: [username], onDelete: Cascade)
 }
 
 model Certificate {
@@ -46,7 +47,7 @@ model Certificate {
   validTo      DateTime?
   lastNotified DateTime?
   status       CertificateStatus @default(pending)
-  user         User              @relation(fields: [username], references: [username])
+  user         User              @relation(fields: [username], references: [username], onDelete: Cascade)
   challenge    Challenge[]
 }
 
@@ -55,7 +56,7 @@ model Challenge {
   domain        String      @db.VarChar(255)
   challengeKey  String      @db.VarChar(255)
   certificateId Int
-  certificate   Certificate @relation(fields: [certificateId], references: [id])
+  certificate   Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
 }
 
 enum RecordType {

@@ -1,0 +1,67 @@
+# Stack Definition for Staging
+services:
+  # Redis is used to back our worker queues. It is not exposed.
+  redis:
+    image: redis:7.0.9-alpine3.17@sha256:8201775852e31262823ac8da9d76d0c8f36583f1a028b4800c35fc319c75289f
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    deploy:
+      placement:
+        # We run the redis instance on the manager node only
+        constraints: [node.role == manager]
+
+  mycustomdomain:
+    # Staging runs the most recent commit on the main branch
+    image: ghcr.io/developingspace/starchart:main
+    restart: unless-stopped
+    depends_on:
+      - redis
+    ports:
+      - 8080:8080
+    environment:
+      - APP_URL=https://mycustomdomain-dev.senecacollege.ca
+      - AWS_ROUTE53_HOSTED_ZONE_ID=Z0228625ICAL609E0BBT
+      - LETS_ENCRYPT_ACCOUNT_EMAIL=mycustomdomain-dev@senecacollege.ca
+      - LETS_ENCRYPT_DIRECTORY_URL=https://acme-staging-v02.api.letsencrypt.org/directory
+      - LOG_LEVEL=info
+      - NODE_ENV=production
+      - NOTIFICATIONS_EMAIL_USER=mycustomdomain-dev@senecacollege.ca
+      - PORT=8080
+      - REDIS_URL=redis://redis:6379
+      - ROOT_DOMAIN=_stage_.mystudentproject.ca
+    secrets:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - DATABASE_URL
+      - LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM
+      - NOTIFICATIONS_USERNAME
+      - NOTIFICATIONS_PASSWORD
+      - SESSION_SECRET
+    deploy:
+      mode: replicated
+      replicas: 2
+      update_config:
+        # Only update 1 instance at a time, not all at once (rolling-update)
+        parallelism: 1
+        # If the update fails, rollback to last-known-good
+        failure_action: rollback
+
+secrets:
+  AWS_ACCESS_KEY_ID:
+    external: true
+  AWS_SECRET_ACCESS_KEY:
+    external: true
+  DATABASE_URL:
+    external: true
+  LETS_ENCRYPT_ACCOUNT_PRIVATE_KEY_PEM:
+    external: true
+  NOTIFICATIONS_USERNAME:
+    external: true
+  NOTIFICATIONS_PASSWORD:
+    external: true
+  SESSION_SECRET:
+    external: true
+
+volumes:
+  redis-data:
