@@ -14,13 +14,13 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { TriangleUpIcon, LockIcon, HamburgerIcon } from '@chakra-ui/icons';
-import { Link } from '@remix-run/react';
+import { Link, useFetcher } from '@remix-run/react';
 
-import { useUser } from '~/utils';
+import { useOptionalUser } from '~/utils';
 
 export default function Header() {
-  const user = useUser();
-
+  const user = useOptionalUser();
+  const fetcher = useFetcher();
   return (
     <Flex
       as="header"
@@ -93,7 +93,7 @@ export default function Header() {
 
       <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5" width="100%">
         <Hide below="lg">
-          <Text id="header-user">{user.username}</Text>
+          <Text id="header-user">{user ? user.username : ''}</Text>
         </Hide>
 
         <Menu>
@@ -103,13 +103,11 @@ export default function Header() {
             style={{ backgroundColor: 'transparent' }}
           />
           <MenuList color="black">
-            <Link to={{ pathname: '/logout' }}>
-              <MenuItem>
-                <Text fontSize="sm" color="brand.500">
-                  Sign Out
-                </Text>
-              </MenuItem>
-            </Link>
+            <MenuItem onClick={() => fetcher.submit({}, { method: 'post', action: '/logout' })}>
+              <Text fontSize="sm" color="brand.500">
+                Sign Out
+              </Text>
+            </MenuItem>
           </MenuList>
         </Menu>
       </Flex>
