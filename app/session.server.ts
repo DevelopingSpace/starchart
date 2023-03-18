@@ -99,7 +99,7 @@ export async function logout(request: Request, redirectTo?: string) {
   await sessionStorage.destroySession(session);
 
   const headers = new Headers();
-  headers.append('Set-Cookie', await hasUserLoggedOut.serialize({ user }));
+  headers.append('Set-Cookie', await hasUserLoggedOut.serialize(user));
   headers.append('Set-Cookie', await sessionStorage.destroySession(session));
 
   return redirect(redirectTo ? redirectTo : '/', {

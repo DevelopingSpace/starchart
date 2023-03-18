@@ -29,35 +29,32 @@ export const loader = async ({ request }: LoaderArgs) => {
   const cookies = request.headers.get('Cookie');
 
   const tempUser = await hasUserLoggedOut.parse(cookies);
-  if (!tempUser.user) {
+  if (!tempUser) {
     return redirect('/');
   } else {
     //remove the cookie
-    return json(
-      { tempUser },
-      {
-        headers: {
-          'Set-Cookie': await hasUserLoggedOut.serialize({}),
-        },
-      }
-    );
+    return json(tempUser, {
+      headers: {
+        'Set-Cookie': await hasUserLoggedOut.serialize(null),
+      },
+    });
   }
 };
 
 export default function Index() {
-  const user = useLoaderData<typeof loader>();
+  const user = useLoaderData<string>();
   return (
     <AbsoluteCenter>
       <Container>
         <Stack spacing={6} align="left">
-          <Text fontSize={'40px'}>{user.tempUser.user}</Text>
+          <Text fontSize={'40px'}>{user}</Text>
           <Text fontSize={'30px'}>You have been logged out of My.Custom.Domain.</Text>
           <Text fontSize={'25px'}>
             If you would also like to be logged out of all other Seneca services click the "Seneca
             Logout" Button
           </Text>
           <Form method="post">
-            <input type="hidden" name="tempUser" value={user.tempUser.user} />
+            <input type="hidden" name="tempUser" value={user} />
             <Button type="submit">Seneca Logout</Button>
           </Form>
         </Stack>
