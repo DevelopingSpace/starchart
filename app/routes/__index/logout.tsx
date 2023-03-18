@@ -50,11 +50,12 @@ export default function Index() {
           <Text fontSize={'40px'}>{user ? user : ''}</Text>
           <Text fontSize={'30px'}>You have been logged out of My.Custom.Domain.</Text>
           <Text fontSize={'25px'}>
-            If you would also like to be logged out of all other Seneca services...
+            If you would also like to be logged out of all other Seneca services click the "Seneca
+            Logout" Button
           </Text>
           <Form method="post">
             <input type="hidden" name="tempUser" value={user} />
-            <Button type="submit">Click Here</Button>
+            <Button type="submit">Seneca Logout</Button>
           </Form>
         </Stack>
       </Container>
