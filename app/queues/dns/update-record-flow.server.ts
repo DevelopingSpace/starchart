@@ -28,7 +28,7 @@ export const updateDnsRequest = async (data: UpdateDnsRequestData) => {
   await updateRecordById({
     id: data.id,
     type: data.type,
-    name: subdomain,
+    subdomain,
     value: data.value,
     description: data.description,
     course: data.course,
