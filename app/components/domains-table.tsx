@@ -156,7 +156,9 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                                 aria-label="Refresh domain"
                                 variant="ghost"
                                 ml="2"
-                                onClick={() => onCopyNameToClipboard(dnsRecord.subdomain)}
+                                onClick={() =>
+                                  onCopyNameToClipboard(`${dnsRecord.subdomain}.${baseDomain}`)
+                                }
                               />
                             </Tooltip>
                           </Flex>
