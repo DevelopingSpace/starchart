@@ -49,8 +49,8 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
   } = useDisclosure();
   const [dnsRecordToDelete, setDnsRecordToDelete] = useState<Record | undefined>();
 
-  function onCopyNameToClipboard(name: string) {
-    navigator.clipboard.writeText(name);
+  function onCopyNameToClipboard(subdomain: string) {
+    navigator.clipboard.writeText(subdomain);
     toast({
       title: 'Name was copied to clipboard',
       position: 'bottom-right',
@@ -144,14 +144,17 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                         <Td>{renderDnsRecordStatus(dnsRecord.status)}</Td>
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
-                            <DnsRecordName subdomain={dnsRecord.name} basedomain={userBaseDomain} />
+                            <DnsRecordName
+                              subdomain={dnsRecord.subdomain}
+                              basedomain={userBaseDomain}
+                            />
                             <Tooltip label="Copy name to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
                                 aria-label="Refresh domain"
                                 variant="ghost"
                                 ml="2"
-                                onClick={() => onCopyNameToClipboard(dnsRecord.name)}
+                                onClick={() => onCopyNameToClipboard(dnsRecord.subdomain)}
                               />
                             </Tooltip>
                           </Flex>

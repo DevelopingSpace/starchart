@@ -34,7 +34,7 @@ export const addDnsRequest = async (data: AddDnsRequestData) => {
   const recordId = await createUserRecord({
     username,
     type,
-    name: subdomain,
+    subdomain,
     value,
   });
 

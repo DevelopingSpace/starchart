@@ -34,7 +34,7 @@ export default function DnsRecordForm({ typeError, defaultDnsRecord, mode }: Dns
       <VStack maxW="xl" spacing="2">
         <FormField label="Record Name" isRequired={true}>
           <InputGroup>
-            <Input name="name" defaultValue={defaultDnsRecord?.name} />
+            <Input name="subdomain" defaultValue={defaultDnsRecord?.subdomain} />
             <InputRightAddon children={`.${user.baseDomain}`} />
           </InputGroup>
           <Tooltip label="Enter a name for the DNS Record: name">

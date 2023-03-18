@@ -33,7 +33,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   const DnsRecord = z.object({
     id: z.string(),
-    name: z.string().min(1), // We do not want to consider '' a valid string
+    subdomain: z.string().min(1), // We do not want to consider '' a valid string
     type: z.nativeEnum(RecordType),
     value: z.string().min(1),
     ports: z.string().optional(),
@@ -55,7 +55,7 @@ export const action = async ({ request }: ActionArgs) => {
     id: Number(data.id),
     username: user.username,
     type: data.type,
-    subdomain: data.name,
+    subdomain: data.subdomain,
     value: data.value,
   });
 
