@@ -5,9 +5,9 @@ import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import DnsRecordForm from '~/components/dns-record/form';
-import { updateDnsRequest } from '~/queues/dns/dns-flow.server';
 import { requireUser } from '~/session.server';
 import { getRecordById } from '~/models/record.server';
+import { updateDnsRequest } from '~/queues/dns/update-record-flow.server';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   await requireUser(request);
@@ -55,7 +55,7 @@ export const action = async ({ request }: ActionArgs) => {
     id: Number(data.id),
     username: user.username,
     type: data.type,
-    name: data.name,
+    subdomain: data.name,
     value: data.value,
   });
 
