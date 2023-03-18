@@ -1,4 +1,4 @@
-import { createCookieSessionStorage, redirect } from '@remix-run/node';
+import { createCookie, createCookieSessionStorage, redirect } from '@remix-run/node';
 
 import type { User } from '~/models/user.server';
 import { getUserByUsername } from '~/models/user.server';
@@ -95,9 +95,16 @@ export async function createUserSession({
 
 export async function logout(request: Request, redirectTo?: string) {
   const session = await getSession(request);
+  const user = session.get(USER_SESSION_KEY);
+  await sessionStorage.destroySession(session);
+
+  const headers = new Headers();
+  headers.append('Set-Cookie', await hasUserLoggedOut.serialize({ user }));
+  headers.append('Set-Cookie', await sessionStorage.destroySession(session));
+
   return redirect(redirectTo ? redirectTo : '/', {
-    headers: {
-      'Set-Cookie': await sessionStorage.destroySession(session),
-    },
+    headers,
   });
 }
+
+export const hasUserLoggedOut = createCookie('tempUser');
