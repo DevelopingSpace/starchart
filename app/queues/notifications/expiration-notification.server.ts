@@ -14,12 +14,11 @@ import type { NotificationData } from './notifications.server';
 declare global {
   var __expiration_init__: boolean;
 }
-
-enum RecordType {
+export enum RecordType {
   Certificate = 'certificate',
   DnsRecord = 'record',
 }
-interface ExpirationStatusPayload {
+export interface ExpirationStatusPayload {
   type: RecordType;
 }
 // constant for notification frequency in days

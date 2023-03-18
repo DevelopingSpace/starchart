@@ -3,12 +3,31 @@ import { Queue, Worker } from 'bullmq';
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 import sendNotification from '~/lib/notifications.server';
+import { addExpirationRequest } from '../common/expiration-request.server';
 
 export type NotificationData = {
   emailAddress: string;
   subject: string;
   message: string;
 };
+
+async function init() {
+  try {
+    logger.debug('Expiration Requests init: adding jobs for certificate/record expiration');
+    await addExpirationRequest();
+  } catch (err) {
+    logger.error(`Unable to start expiration notification workers: ${err}`);
+  }
+}
+if (process.env.NODE_ENV === 'production') {
+  init();
+} else {
+  // Only do this setup once in dev
+  if (!global.__expiration_request_init__) {
+    init();
+    global.__expiration_request_init__ = true;
+  }
+}
 
 /**
  * This is the main way callers interact with the notifications
