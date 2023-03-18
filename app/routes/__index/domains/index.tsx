@@ -12,7 +12,6 @@ import { getRecordById, getRecordsByUsername, renewDnsRecordById } from '~/model
 import { requireUsername } from '~/session.server';
 import { deleteDnsRequest } from '~/queues/dns/delete-record-flow.server';
 import logger from '~/lib/logger.server';
-import { buildUserBaseDomain } from '~/utils';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
@@ -21,10 +20,7 @@ export type DomainActionIntent = 'renew-record' | 'delete-record';
 export const loader = async ({ request }: LoaderArgs) => {
   const username = await requireUsername(request);
 
-  return typedjson({
-    dnsRecords: await getRecordsByUsername(username),
-    userBaseDomain: buildUserBaseDomain(username),
-  });
+  return typedjson(await getRecordsByUsername(username));
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -82,7 +78,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function DomainsIndexRoute() {
   const revalidator = useRevalidator();
-  const { dnsRecords, userBaseDomain } = useTypedLoaderData<typeof loader>();
+  const dnsRecords = useTypedLoaderData<typeof loader>();
   const pending = useMemo(
     () => dnsRecords.some((dnsRecord) => dnsRecord.status === 'pending'),
     [dnsRecords]
@@ -112,7 +108,7 @@ export default function DomainsIndexRoute() {
             <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
           </Link>
         </Flex>
-        <DnsRecordsTable dnsRecords={dnsRecords} userBaseDomain={userBaseDomain} />
+        <DnsRecordsTable dnsRecords={dnsRecords} />
       </Flex>
     </Container>
   );

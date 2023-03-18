@@ -29,14 +29,16 @@ import RecordDeleteAlertDialog from './record-delete-alert-dialog';
 
 import { Form, useNavigate, useTransition } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
+import { useUser } from '~/utils';
 
 interface DnsRecordsTableProps {
   dnsRecords: Record[];
-  userBaseDomain: string;
 }
 
 export default function DnsRecordsTable(props: DnsRecordsTableProps) {
-  const { dnsRecords, userBaseDomain } = props;
+  const { dnsRecords } = props;
+
+  const { baseDomain } = useUser();
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -146,7 +148,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                           <Flex justifyContent="space-between" alignItems="center">
                             <DnsRecordName
                               subdomain={dnsRecord.subdomain}
-                              basedomain={userBaseDomain}
+                              basedomain={baseDomain}
                             />
                             <Tooltip label="Copy name to clipboard">
                               <IconButton
