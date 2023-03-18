@@ -1,20 +1,19 @@
 import { Flex, Text } from '@chakra-ui/react';
 
 interface DnsRecordNameProps {
-  name: string;
+  subdomain: string;
+  basedomain: string;
 }
 
-const DnsRecordName = ({ name }: DnsRecordNameProps) => {
-  const [nameBase, ...restOfName] = name.split('.');
-
+const DnsRecordName = ({ subdomain, basedomain }: DnsRecordNameProps) => {
   return (
     <Flex alignItems="flex-end" flexDirection="row">
       <Text>
         <Text as="span" sx={{ fontWeight: 'medium' }}>
-          {nameBase}
+          {subdomain}
         </Text>
         <Text as="span" color="gray.500">
-          .{restOfName}
+          .{basedomain}
         </Text>
       </Text>
     </Flex>

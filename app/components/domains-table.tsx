@@ -30,12 +30,13 @@ import RecordDeleteAlertDialog from './record-delete-alert-dialog';
 import { Form, useNavigate, useTransition } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
 
-interface DomainsTableProps {
-  domains: Record[];
+interface DnsRecordsTableProps {
+  dnsRecords: Record[];
+  userBaseDomain: string;
 }
 
-export default function DomainsTable(props: DomainsTableProps) {
-  const { domains } = props;
+export default function DnsRecordsTable(props: DnsRecordsTableProps) {
+  const { dnsRecords, userBaseDomain } = props;
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ export default function DomainsTable(props: DomainsTableProps) {
     onOpen: onDeleteAlertDialogOpen,
     onClose: onDeleteAlertDialogClose,
   } = useDisclosure();
-  const [domainToDelete, setDomainToDelete] = useState<Record | undefined>();
+  const [dnsRecordToDelete, setDnsRecordToDelete] = useState<Record | undefined>();
 
   function onCopyNameToClipboard(name: string) {
     navigator.clipboard.writeText(name);
@@ -57,7 +58,7 @@ export default function DomainsTable(props: DomainsTableProps) {
     });
   }
 
-  function renderDomainStatus(action: RecordStatus) {
+  function renderDnsRecordStatus(action: RecordStatus) {
     if (action === 'active') {
       return (
         <Tooltip label="Domain is live">
@@ -90,19 +91,19 @@ export default function DomainsTable(props: DomainsTableProps) {
     }
   }
 
-  function onDeleteDomainOpen(domain: Record) {
+  function onDeleteDnsRecordOpen(dnsRecord: Record) {
     onDeleteAlertDialogOpen();
-    setDomainToDelete(domain);
+    setDnsRecordToDelete(dnsRecord);
   }
 
-  function onDomainDeleteCancel() {
+  function onDnsRecordDeleteCancel() {
     onDeleteAlertDialogClose();
-    setDomainToDelete(undefined);
+    setDnsRecordToDelete(undefined);
   }
 
-  function onDomainDeleteConfirm() {
+  function onDnsRecordDeleteConfirm() {
     onDeleteAlertDialogClose();
-    setDomainToDelete(undefined);
+    setDnsRecordToDelete(undefined);
   }
 
   function onDnsRecordEdit(dnsRecord: Record) {
@@ -125,13 +126,13 @@ export default function DomainsTable(props: DomainsTableProps) {
               </Tr>
             </Thead>
             <Tbody>
-              {domains.map((domain) => {
+              {dnsRecords.map((dnsRecord) => {
                 const isLoading =
                   transition.state === 'submitting' &&
-                  Number(transition.submission.formData.get('id')) === domain.id;
+                  Number(transition.submission.formData.get('id')) === dnsRecord.id;
 
                 return (
-                  <Tr key={domain.id}>
+                  <Tr key={dnsRecord.id}>
                     {isLoading ? (
                       <Td py="8" colSpan={7}>
                         <Flex justifyContent="center">
@@ -140,28 +141,28 @@ export default function DomainsTable(props: DomainsTableProps) {
                       </Td>
                     ) : (
                       <>
-                        <Td>{renderDomainStatus(domain.status)}</Td>
+                        <Td>{renderDnsRecordStatus(dnsRecord.status)}</Td>
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
-                            <DnsRecordName name={domain.name} />
+                            <DnsRecordName subdomain={dnsRecord.name} basedomain={userBaseDomain} />
                             <Tooltip label="Copy name to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
                                 aria-label="Refresh domain"
                                 variant="ghost"
                                 ml="2"
-                                onClick={() => onCopyNameToClipboard(domain.name)}
+                                onClick={() => onCopyNameToClipboard(dnsRecord.name)}
                               />
                             </Tooltip>
                           </Flex>
                         </Td>
-                        <Td>{domain.type}</Td>
-                        <Td>{domain.value}</Td>
+                        <Td>{dnsRecord.type}</Td>
+                        <Td>{dnsRecord.value}</Td>
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
-                            {domain.expiresAt.toLocaleDateString('en-US')}
+                            {dnsRecord.expiresAt.toLocaleDateString('en-US')}
                             <Form method="patch" style={{ margin: 0 }}>
-                              <input type="hidden" name="id" value={domain.id} />
+                              <input type="hidden" name="id" value={dnsRecord.id} />
                               <input type="hidden" name="intent" value="renew-record" />
                               <Tooltip label="Renew domain">
                                 <IconButton
@@ -178,7 +179,7 @@ export default function DomainsTable(props: DomainsTableProps) {
                           <Flex>
                             <Tooltip label="Edit domain">
                               <IconButton
-                                onClick={() => onDnsRecordEdit(domain)}
+                                onClick={() => onDnsRecordEdit(dnsRecord)}
                                 icon={<EditIcon color="black" boxSize={5} />}
                                 aria-label="Edit domain"
                                 variant="ghost"
@@ -187,7 +188,7 @@ export default function DomainsTable(props: DomainsTableProps) {
                             </Tooltip>
                             <Tooltip label="Delete domain">
                               <IconButton
-                                onClick={() => onDeleteDomainOpen(domain)}
+                                onClick={() => onDeleteDnsRecordOpen(dnsRecord)}
                                 icon={<DeleteIcon color="black" boxSize={5} />}
                                 aria-label="Delete domain"
                                 variant="ghost"
@@ -207,9 +208,9 @@ export default function DomainsTable(props: DomainsTableProps) {
       </Card>
       <RecordDeleteAlertDialog
         isOpen={isDeleteAlertDialogOpen}
-        onCancel={onDomainDeleteCancel}
-        onConfirm={onDomainDeleteConfirm}
-        dnsRecord={domainToDelete}
+        onCancel={onDnsRecordDeleteCancel}
+        onConfirm={onDnsRecordDeleteConfirm}
+        dnsRecord={dnsRecordToDelete}
       />
     </>
   );
