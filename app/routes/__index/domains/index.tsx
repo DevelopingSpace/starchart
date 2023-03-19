@@ -52,7 +52,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 
   if (record.status !== 'active') {
-    throw new Response('Record is not active, action forbiden', {
+    throw new Response('Record is not active, action forbidden', {
       status: 403,
     });
   }
