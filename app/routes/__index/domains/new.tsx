@@ -22,7 +22,7 @@ export const action = async ({ request }: ActionArgs) => {
   // Create a Zod schema for validation
   // Optional is not needed as we get '' if nothing is entered
   const DnsRecord = z.object({
-    name: z.string().min(1), // We do not want to consider '' a valid string
+    subdomain: z.string().min(1), // We do not want to consider '' a valid string
     type: z.nativeEnum(RecordType),
     value: z.string().min(1),
     ports: z.string(),
@@ -50,7 +50,7 @@ export const action = async ({ request }: ActionArgs) => {
     await addDnsRequest({
       username: user.username,
       type: data.type,
-      subdomain: data.name,
+      subdomain: data.subdomain,
       value: data.value,
     });
 
@@ -74,7 +74,7 @@ export default function NewDomainRoute() {
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
         been the industry's standard dummy text ever since the 1500s
       </Text>
-      <DnsRecordForm {...errors} />
+      <DnsRecordForm {...errors} mode="CREATE" />
     </Container>
   );
 }

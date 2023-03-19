@@ -7,8 +7,7 @@ import { json } from '@remix-run/node';
 import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
 import { useInterval } from 'react-use';
-
-import DomainsTable from '~/components/domains-table';
+import DnsRecordsTable from '~/components/domains-table';
 import { getRecordById, getRecordsByUsername, renewDnsRecordById } from '~/models/record.server';
 import { requireUsername } from '~/session.server';
 import { deleteDnsRequest } from '~/queues/dns/delete-record-flow.server';
@@ -79,8 +78,11 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function DomainsIndexRoute() {
   const revalidator = useRevalidator();
-  const domains = useTypedLoaderData<typeof loader>();
-  const pending = useMemo(() => domains.some((domain) => domain.status === 'pending'), [domains]);
+  const dnsRecords = useTypedLoaderData<typeof loader>();
+  const pending = useMemo(
+    () => dnsRecords.some((dnsRecord) => dnsRecord.status === 'pending'),
+    [dnsRecords]
+  );
 
   // Check to see if any change is pending, and if so, reload every 5s until finished
   useInterval(
@@ -106,7 +108,7 @@ export default function DomainsIndexRoute() {
             <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
           </Link>
         </Flex>
-        <DomainsTable domains={domains} />
+        <DnsRecordsTable dnsRecords={dnsRecords} />
       </Flex>
     </Container>
   );
