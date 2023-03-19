@@ -132,6 +132,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                 const isLoading =
                   transition.state === 'submitting' &&
                   Number(transition.submission.formData.get('id')) === dnsRecord.id;
+                const isRecordActive = dnsRecord.status === 'active';
 
                 return (
                   <Tr key={dnsRecord.id}>
@@ -177,6 +178,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                                   aria-label="Refresh domain"
                                   variant="ghost"
                                   type="submit"
+                                  isDisabled={!isRecordActive}
                                 />
                               </Tooltip>
                             </Form>
@@ -191,6 +193,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                                 aria-label="Edit domain"
                                 variant="ghost"
                                 mr="1"
+                                isDisabled={!isRecordActive}
                               />
                             </Tooltip>
                             <Tooltip label="Delete domain">
@@ -200,6 +203,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                                 aria-label="Delete domain"
                                 variant="ghost"
                                 type="submit"
+                                isDisabled={!isRecordActive}
                               />
                             </Tooltip>
                           </Flex>
