@@ -17,13 +17,13 @@ import { useMemo } from 'react';
 
 type FormMode = 'CREATE' | 'EDIT';
 
-interface DnsRecordFormProps {
+interface dnsRecordFormProps {
   mode: FormMode;
   typeError?: string; // Error for 'Type' field
-  defaultDnsRecord?: Record;
+  dnsRecord?: Record;
 }
 
-export default function DnsRecordForm({ typeError, defaultDnsRecord, mode }: DnsRecordFormProps) {
+export default function DomainForm({ typeError, dnsRecord, mode }: dnsRecordFormProps) {
   const user = useUser();
 
   const submitButtonText = useMemo(() => (mode === 'CREATE' ? 'Create' : 'Update'), [mode]);
@@ -34,7 +34,7 @@ export default function DnsRecordForm({ typeError, defaultDnsRecord, mode }: Dns
       <VStack maxW="xl" spacing="2">
         <FormField label="Record Name" isRequired={true}>
           <InputGroup>
-            <Input name="subdomain" defaultValue={defaultDnsRecord?.subdomain} />
+            <Input name="subdomain" defaultValue={dnsRecord?.subdomain} />
             <InputRightAddon children={`.${user.baseDomain}`} />
           </InputGroup>
           <Tooltip label="Enter a name for the DNS Record: name">
@@ -43,7 +43,7 @@ export default function DnsRecordForm({ typeError, defaultDnsRecord, mode }: Dns
         </FormField>
 
         <FormField label="Type" isRequired={true} error={typeError}>
-          <Select placeholder="Select a type" name="type" defaultValue={defaultDnsRecord?.type}>
+          <Select placeholder="Select a type" name="type" defaultValue={dnsRecord?.type}>
             <option value="A">A</option>
             <option value="AAAA">AAAA</option>
             <option value="CNAME">CNAME</option>
@@ -55,14 +55,14 @@ export default function DnsRecordForm({ typeError, defaultDnsRecord, mode }: Dns
         </FormField>
 
         <FormField label="Value" isRequired={true}>
-          <Input name="value" defaultValue={defaultDnsRecord?.value} />
+          <Input name="value" defaultValue={dnsRecord?.value} />
           <Tooltip label="Enter DNS Record value">
             <InfoIcon />
           </Tooltip>
         </FormField>
 
         <FormField label="Ports">
-          <Input name="ports" defaultValue={defaultDnsRecord?.ports ?? ''} />
+          <Input name="ports" defaultValue={dnsRecord?.ports ?? ''} />
           <Tooltip label="Enter port(s) separated by commas (E.g. 8080, 1234)">
             <InfoIcon />
           </Tooltip>
@@ -76,14 +76,10 @@ export default function DnsRecordForm({ typeError, defaultDnsRecord, mode }: Dns
         </FormField>
 
         <FormField label="Description">
-          <Textarea
-            rows={10}
-            name="description"
-            defaultValue={defaultDnsRecord?.description ?? ''}
-          />
+          <Textarea rows={10} name="description" defaultValue={dnsRecord?.description ?? ''} />
         </FormField>
       </VStack>
-      {defaultDnsRecord && <input type="hidden" name="id" value={defaultDnsRecord.id} />}
+      {dnsRecord && <input type="hidden" name="id" value={dnsRecord.id} />}
       <Button type="submit" mt="6" rightIcon={<SubmitButtonIcon boxSize={3.5} mt="0.15rem" />}>
         {submitButtonText}
       </Button>

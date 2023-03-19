@@ -54,7 +54,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
   function onCopyNameToClipboard(subdomain: string) {
     navigator.clipboard.writeText(subdomain);
     toast({
-      title: 'Name was copied to clipboard',
+      title: 'Subdomain was copied to clipboard',
       position: 'bottom-right',
       status: 'success',
     });
@@ -120,7 +120,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
             <Thead>
               <Tr>
                 <Th />
-                <Th>Name</Th>
+                <Th>Subdomain</Th>
                 <Th>Type</Th>
                 <Th>Value</Th>
                 <Th>Expiration date</Th>
@@ -150,7 +150,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                               subdomain={dnsRecord.subdomain}
                               baseDomain={baseDomain}
                             />
-                            <Tooltip label="Copy name to clipboard">
+                            <Tooltip label="Copy subdomain to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
                                 aria-label="Refresh domain"
