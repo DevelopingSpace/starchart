@@ -74,7 +74,7 @@ export default function DomainRoute() {
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
         been the industry's standard dummy text ever since the 1500s
       </Text>
-      <DnsRecordForm defaultDnsRecord={record} mode="EDIT" />
+      <DnsRecordForm dnsRecord={record} mode="EDIT" />
     </Container>
   );
 }
