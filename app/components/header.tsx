@@ -57,6 +57,7 @@ export default function Header() {
         <Flex width="100%">
           <Menu>
             <MenuButton
+              className="header-hamburger"
               as={Button}
               rightIcon={<HamburgerIcon />}
               size="auto"

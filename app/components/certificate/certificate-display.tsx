@@ -53,12 +53,12 @@ export default function CertificateDisplay({ title, description, value }: Certif
               background: 'whitesmoke',
               color: 'teal.500',
             }}
-            aria-label="Copy to Clipboard"
+            aria-label={`Copy ${title}`}
             icon={<CopyIcon fontSize="md" />}
             onClick={() => onCopy()}
           />
         </Tooltip>
-        <Tooltip label={`${title} is Downloaded`}>
+        <Tooltip label={`Download ${title}`}>
           <IconButton
             backgroundColor="transparent"
             color="black"
@@ -67,7 +67,7 @@ export default function CertificateDisplay({ title, description, value }: Certif
               background: 'brand.500',
               color: 'white',
             }}
-            aria-label="Download"
+            aria-label={`Download ${title}`}
             icon={
               <DownloadIcon
                 fontSize="md"
