@@ -7,12 +7,13 @@ import { syncDbStatusQueueName } from './workers/sync-db-status-worker.server';
 import { WorkType } from './add-record-flow.server';
 
 import type { FlowJob } from 'bullmq';
-import type { Record } from '@prisma/client';
+import type { DnsRecord } from '@prisma/client';
 import type { DnsUpdaterData } from './workers/dns-update-worker.server';
 import type { DbRecordSynchronizerData } from './workers/sync-db-status-worker.server';
 import type { Subdomain } from './add-record-flow.server';
 
-export type DeleteDnsRequestData = Pick<Record, 'id' | 'username' | 'type' | 'value'> & Subdomain;
+export type DeleteDnsRequestData = Pick<DnsRecord, 'id' | 'username' | 'type' | 'value'> &
+  Subdomain;
 
 const flowProducer = new FlowProducer({ connection: redis });
 
@@ -21,7 +22,7 @@ export const deleteDnsRequest = async (data: DeleteDnsRequestData) => {
 
   const fqdn = buildDomain(username, subdomain);
 
-  // Step 1. Request Route53 to delete the record
+  // Step 1. Request Route53 to delete the dns record
   const updateDnsRecord: FlowJob = {
     name: `deleteDnsRecord:${subdomain}-${username}`,
     queueName: dnsUpdateQueueName,

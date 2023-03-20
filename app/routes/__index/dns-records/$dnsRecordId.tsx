@@ -1,12 +1,12 @@
 import { Container, Heading, Text } from '@chakra-ui/react';
-import { RecordType } from '@prisma/client';
+import { DnsRecordType } from '@prisma/client';
 import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
-import { getRecordById } from '~/models/record.server';
+import { getDnsRecordById } from '~/models/dns-record.server';
 import { updateDnsRequest } from '~/queues/dns/update-record-flow.server';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -18,18 +18,18 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     });
   }
 
-  const record = await getRecordById(Number(dnsRecordId));
-  if (!record) {
-    throw new Response('The record is not found', {
+  const dnsRecord = await getDnsRecordById(Number(dnsRecordId));
+  if (!dnsRecord) {
+    throw new Response('The DNS record is not found', {
       status: 404,
     });
   }
 
-  if (record.status !== 'active') {
-    return redirect('/domains');
+  if (dnsRecord.status !== 'active') {
+    return redirect('/dns-records');
   }
 
-  return typedjson(record);
+  return typedjson(dnsRecord);
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -38,7 +38,7 @@ export const action = async ({ request }: ActionArgs) => {
   const DnsRecord = z.object({
     id: z.string(),
     subdomain: z.string().min(1), // We do not want to consider '' a valid string
-    type: z.nativeEnum(RecordType),
+    type: z.nativeEnum(DnsRecordType),
     value: z.string().min(1),
     ports: z.string().optional(),
     course: z.string().optional(),
@@ -63,11 +63,11 @@ export const action = async ({ request }: ActionArgs) => {
     value: data.value,
   });
 
-  return redirect(`/domains`);
+  return redirect(`/dns-records`);
 };
 
-export default function DomainRoute() {
-  const record = useTypedLoaderData<typeof loader>();
+export default function DnsRecordRoute() {
+  const dnsRecord = useTypedLoaderData<typeof loader>();
 
   return (
     <Container maxW="container.xl" ml={[null, null, '10vw']}>
@@ -78,7 +78,7 @@ export default function DomainRoute() {
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
         been the industry's standard dummy text ever since the 1500s
       </Text>
-      <DnsRecordForm dnsRecord={record} mode="EDIT" />
+      <DnsRecordForm dnsRecord={dnsRecord} mode="EDIT" />
     </Container>
   );
 }

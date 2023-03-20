@@ -15,25 +15,25 @@ model User {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   deactivated Boolean       @default(false)
-  record      Record[]
+  dnsRecord   DnsRecord[]
   certificate Certificate[]
 }
 
-model Record {
-  id           Int          @id @default(autoincrement())
+model DnsRecord {
+  id           Int             @id @default(autoincrement())
   username     String
   subdomain    String
-  type         RecordType
+  type         DnsRecordType
   value        String
   description  String?
   course       String?
   ports        String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
   expiresAt    DateTime
-  status       RecordStatus
+  status       DnsRecordStatus
   lastNotified DateTime?
-  user         User         @relation(fields: [username], references: [username], onDelete: Cascade)
+  user         User            @relation(fields: [username], references: [username], onDelete: Cascade)
 }
 
 model Certificate {
@@ -59,14 +59,14 @@ model Challenge {
   certificate   Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
 }
 
-enum RecordType {
+enum DnsRecordType {
   A
   AAAA
   CNAME
   TXT
 }
 
-enum RecordStatus {
+enum DnsRecordStatus {
   active
   error
   pending

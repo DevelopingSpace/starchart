@@ -5,16 +5,16 @@ import { dnsUpdateQueueName } from './workers/dns-update-worker.server';
 import { pollDnsStatusQueueName } from './workers/poll-dns-status-worker.server';
 import { syncDbStatusQueueName } from './workers/sync-db-status-worker.server';
 import { WorkType } from './add-record-flow.server';
-import { updateRecordById } from '~/models/record.server';
+import { updateDnsRecordById } from '~/models/dns-record.server';
 
-import type { Record } from '@prisma/client';
+import type { DnsRecord } from '@prisma/client';
 import type { FlowJob } from 'bullmq';
 import type { DnsUpdaterData } from './workers/dns-update-worker.server';
 import type { DbRecordSynchronizerData } from './workers/sync-db-status-worker.server';
 import type { Subdomain } from './add-record-flow.server';
 
-export type UpdateDnsRequestData = Pick<Record, 'id' | 'username' | 'type' | 'value'> &
-  Partial<Pick<Record, 'description' | 'course' | 'ports'>> &
+export type UpdateDnsRequestData = Pick<DnsRecord, 'id' | 'username' | 'type' | 'value'> &
+  Partial<Pick<DnsRecord, 'description' | 'course' | 'ports'>> &
   Subdomain;
 
 const flowProducer = new FlowProducer({ connection: redis });
@@ -24,8 +24,8 @@ export const updateDnsRequest = async (data: UpdateDnsRequestData) => {
 
   const fqdn = buildDomain(username, subdomain);
 
-  // Before running workflow, update the record in DB
-  await updateRecordById({
+  // Before running workflow, update the dns record in DB
+  await updateDnsRecordById({
     id: data.id,
     type: data.type,
     subdomain,

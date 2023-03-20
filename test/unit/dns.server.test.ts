@@ -1,13 +1,13 @@
 import {
   createHostedZone,
-  createRecord,
-  upsertRecord,
-  deleteRecord,
+  createDnsRecord,
+  upsertDnsRecord,
+  deleteDnsRecord,
   getChangeStatus,
   isNameValid,
   isValueValid,
 } from '~/lib/dns.server';
-import { RecordType } from '@prisma/client';
+import { DnsRecordType } from '@prisma/client';
 
 describe('DNS server lib function test', () => {
   let hostedZoneId: string;
@@ -37,71 +37,81 @@ describe('DNS server lib function test', () => {
     expect(/^[A-Z0-9]+/.test(hostedZoneId)).toBe(true);
   });
 
-  test('createRecord() creates a record in existing hosted zone and returns changeId', async () => {
-    const changeId = await createRecord(
+  test('createDnsRecord() creates a DNS record in existing hosted zone and returns changeId', async () => {
+    const changeId = await createDnsRecord(
       username,
-      RecordType.A,
+      DnsRecordType.A,
       `_osd600.${username}.${rootDomain}`,
       '192.168.0.1'
     );
     expect(changeId.length).toBeGreaterThan(1);
   });
 
-  test('createRecord() throws an error when invalid name or value is provided ', async () => {
+  test('createDnsRecord() throws an error when invalid name or value is provided ', async () => {
     await expect(
-      createRecord(
+      createDnsRecord(
         username,
-        RecordType.A,
+        DnsRecordType.A,
         `invalid__domain.${username}.${rootDomain}`,
         '192.168.0.1'
       )
     ).rejects.toThrow();
     await expect(
-      createRecord(username, RecordType.A, `osd700.${username}.${rootDomain}`, '192-168-0-1')
+      createDnsRecord(username, DnsRecordType.A, `osd700.${username}.${rootDomain}`, '192-168-0-1')
     ).rejects.toThrow();
     await expect(
-      createRecord(username, RecordType.AAAA, `osd700.${username}.${rootDomain}`, '192.168.0.1')
+      createDnsRecord(
+        username,
+        DnsRecordType.AAAA,
+        `osd700.${username}.${rootDomain}`,
+        '192.168.0.1'
+      )
     ).rejects.toThrow();
   });
 
-  test('upsertRecord() updates an existing record in hosted zone and returns changeId ', async () => {
-    await createRecord(username, RecordType.A, `osd700.${username}.${rootDomain}`, '192.168.0.2');
-    const changeId = await upsertRecord(
+  test('upsertDnsRecord() updates an existing DNS record in hosted zone and returns changeId ', async () => {
+    await createDnsRecord(
       username,
-      RecordType.AAAA,
+      DnsRecordType.A,
+      `osd700.${username}.${rootDomain}`,
+      '192.168.0.2'
+    );
+    const changeId = await upsertDnsRecord(
+      username,
+      DnsRecordType.AAAA,
       `osd700.${username}.${rootDomain}`,
       '2001:db8:3333:4444:5555:6666:7777:8888'
     );
     expect(changeId.length).toBeGreaterThan(1);
   });
 
-  test('upsertRecord() throws an error when invalid name or value is provided', async () => {
+  test('upsertDnsRecord() throws an error when invalid name or value is provided', async () => {
     await expect(
-      upsertRecord(
+      upsertDnsRecord(
         username,
-        RecordType.A,
+        DnsRecordType.A,
         `invalid.domain.${username}.${rootDomain}`,
         '192.168.0.2'
       )
     ).rejects.toThrow();
     await expect(
-      upsertRecord(username, RecordType.A, `osd600.${username}.${rootDomain}`, '192-168-0-2')
+      upsertDnsRecord(username, DnsRecordType.A, `osd600.${username}.${rootDomain}`, '192-168-0-2')
     ).rejects.toThrow();
     await expect(
-      upsertRecord(username, RecordType.CNAME, `osd600.${username}.${rootDomain}`, '')
+      upsertDnsRecord(username, DnsRecordType.CNAME, `osd600.${username}.${rootDomain}`, '')
     ).rejects.toThrow();
   });
 
-  test('deleteRecord() deletes an existing record in hosted zone and returns changeId', async () => {
-    await createRecord(
+  test('deleteDnsRecord() deletes an existing record in hosted zone and returns changeId', async () => {
+    await createDnsRecord(
       username,
-      RecordType.A,
+      DnsRecordType.A,
       `to-be-deleted.${username}.${rootDomain}`,
       '192.168.0.0'
     );
-    const changeId = await deleteRecord(
+    const changeId = await deleteDnsRecord(
       username,
-      RecordType.A,
+      DnsRecordType.A,
       `to-be-deleted.${username}.${rootDomain}`,
       '192.168.0.0'
     );
@@ -109,25 +119,40 @@ describe('DNS server lib function test', () => {
     expect(changeId.length).toBeGreaterThan(1);
   });
 
-  test('deleteRecord() throws an error when attempting to delete non existing record', async () => {
+  test('deleteDnsRecord() throws an error when attempting to delete non existing record', async () => {
     await expect(
-      deleteRecord(username, RecordType.A, `not-exist.${username}.${rootDomain}`, '192.168.0.1')
+      deleteDnsRecord(
+        username,
+        DnsRecordType.A,
+        `not-exist.${username}.${rootDomain}`,
+        '192.168.0.1'
+      )
     ).rejects.toThrow();
   });
 
-  test('deleteRecord() throws an error when invalid name or value is provided', async () => {
+  test('deleteDnsRecord() throws an error when invalid name or value is provided', async () => {
     await expect(
-      deleteRecord(username, RecordType.A, `invalid_name.${username}.${rootDomain}`, '192.168.0.2')
+      deleteDnsRecord(
+        username,
+        DnsRecordType.A,
+        `invalid_name.${username}.${rootDomain}`,
+        '192.168.0.2'
+      )
     ).rejects.toThrow();
     await expect(
-      deleteRecord(username, RecordType.AAAA, `valid-name.${username}.${rootDomain}`, '192.168.0.2')
+      deleteDnsRecord(
+        username,
+        DnsRecordType.AAAA,
+        `valid-name.${username}.${rootDomain}`,
+        '192.168.0.2'
+      )
     ).rejects.toThrow();
   });
 
-  test('Get the status of record update using changeId', async () => {
-    const changeId = await upsertRecord(
+  test('Get the status of the DNS record update using changeId', async () => {
+    const changeId = await upsertDnsRecord(
       username,
-      RecordType.A,
+      DnsRecordType.A,
       `osd700.${username}.${rootDomain}`,
       '192.168.0.2'
     );
@@ -155,20 +180,20 @@ describe('DNS server lib function test', () => {
     expect(isNameValid(`localhost`, username)).toBeFalsy();
   });
 
-  test('isValueValud() return true when valid IP address is passed, otherwise returns false', () => {
-    expect(isValueValid(RecordType.A, '192.168.0.1')).toBe(true);
-    expect(isValueValid(RecordType.A, '0.0.0.0')).toBe(true);
-    expect(isValueValid(RecordType.AAAA, '2001:db8:3333:4444:5555:6666:7777:8888')).toBe(true);
-    expect(isValueValid(RecordType.AAAA, 'a:b:c:d:e:f:0:1')).toBe(true);
-    expect(isValueValid(RecordType.CNAME, 'test-domain')).toBe(true);
+  test('isValueValue() return true when valid IP address is passed, otherwise returns false', () => {
+    expect(isValueValid(DnsRecordType.A, '192.168.0.1')).toBe(true);
+    expect(isValueValid(DnsRecordType.A, '0.0.0.0')).toBe(true);
+    expect(isValueValid(DnsRecordType.AAAA, '2001:db8:3333:4444:5555:6666:7777:8888')).toBe(true);
+    expect(isValueValid(DnsRecordType.AAAA, 'a:b:c:d:e:f:0:1')).toBe(true);
+    expect(isValueValid(DnsRecordType.CNAME, 'test-domain')).toBe(true);
 
-    expect(isValueValid(RecordType.A, '192.168.0')).toBe(false);
-    expect(isValueValid(RecordType.A, '192.168.0.')).toBe(false);
-    expect(isValueValid(RecordType.A, '192.168.0.')).toBe(false);
-    expect(isValueValid(RecordType.A, 'a.b.c.d')).toBe(false);
-    expect(isValueValid(RecordType.AAAA, 'a:b:c:d:e:f:0:1:')).toBe(false);
-    expect(isValueValid(RecordType.AAAA, 'a:b:c:d:e:f:0:')).toBe(false);
-    expect(isValueValid(RecordType.AAAA, 'g:g:g:g:g:g:g:g')).toBe(false);
-    expect(isValueValid(RecordType.CNAME, '')).toBe(false);
+    expect(isValueValid(DnsRecordType.A, '192.168.0')).toBe(false);
+    expect(isValueValid(DnsRecordType.A, '192.168.0.')).toBe(false);
+    expect(isValueValid(DnsRecordType.A, '192.168.0.')).toBe(false);
+    expect(isValueValid(DnsRecordType.A, 'a.b.c.d')).toBe(false);
+    expect(isValueValid(DnsRecordType.AAAA, 'a:b:c:d:e:f:0:1:')).toBe(false);
+    expect(isValueValid(DnsRecordType.AAAA, 'a:b:c:d:e:f:0:')).toBe(false);
+    expect(isValueValid(DnsRecordType.AAAA, 'g:g:g:g:g:g:g:g')).toBe(false);
+    expect(isValueValid(DnsRecordType.CNAME, '')).toBe(false);
   });
 });

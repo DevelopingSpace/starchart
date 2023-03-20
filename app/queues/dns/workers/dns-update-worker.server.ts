@@ -2,19 +2,19 @@ import { UnrecoverableError, Worker } from 'bullmq';
 
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
-import { createRecord, upsertRecord, deleteRecord } from '~/lib/dns.server';
+import { createDnsRecord, upsertDnsRecord, deleteDnsRecord } from '~/lib/dns.server';
 
 import type { WorkType } from '../add-record-flow.server';
-import type { Record } from '@prisma/client';
+import type { DnsRecord } from '@prisma/client';
 
 export const dnsUpdateQueueName = 'dns-record-update';
 
 export interface DnsUpdaterData {
   workType: WorkType;
-  username: Record['username'];
-  type: Record['type'];
+  username: DnsRecord['username'];
+  type: DnsRecord['type'];
   fqdn: string;
-  value: Record['value'];
+  value: DnsRecord['value'];
 }
 
 export type DnsRecordUpdateJobResult = string;
@@ -29,19 +29,19 @@ export const dnsUpdateWorker = new Worker<DnsUpdaterData, DnsRecordUpdateJobResu
     try {
       switch (workType) {
         case 'create':
-          return createRecord(username, type, name, value);
+          return createDnsRecord(username, type, name, value);
 
         case 'update':
-          return upsertRecord(username, type, name, value);
+          return upsertDnsRecord(username, type, name, value);
 
         case 'delete':
-          return deleteRecord(username, type, name, value);
+          return deleteDnsRecord(username, type, name, value);
 
         default:
           throw new UnrecoverableError(`Invalid work type: ${workType}`);
       }
     } catch (error) {
-      logger.warn('Could not update record in Route53', error);
+      logger.warn('Could not update DNS record in Route53', error);
       throw error;
     }
   },

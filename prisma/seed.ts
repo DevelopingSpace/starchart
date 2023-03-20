@@ -8,15 +8,15 @@ async function seed() {
   const displayName = 'Starchart Developer';
   const email = 'dev@starchart.invalid';
   const group = 'mycustomdomain-admins';
-  let recordExpDate = new Date();
-  recordExpDate.setMonth(recordExpDate.getMonth() + 6); // a record expires after 6 months
+  let dnsRecordExpDate = new Date();
+  dnsRecordExpDate.setMonth(dnsRecordExpDate.getMonth() + 6); // a dns record expires after 6 months
   let certExpDate = new Date();
   certExpDate.setDate(certExpDate.getDate() + 90); // certificate expires after 90 days
   let temporaryExpDate = new Date();
   temporaryExpDate.setDate(temporaryExpDate.getDate() + 7); // expiration for notifications
 
   // cleanup the existing database; no worries if it doesn't exist yet
-  await prisma.record.deleteMany().catch(() => {});
+  await prisma.dnsRecord.deleteMany().catch(() => {});
   await prisma.challenge.deleteMany().catch(() => {});
   await prisma.certificate.deleteMany().catch(() => {});
   await prisma.user.deleteMany().catch(() => {});

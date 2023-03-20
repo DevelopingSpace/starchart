@@ -1,19 +1,19 @@
 import { UnrecoverableError, Worker } from 'bullmq';
-import { RecordStatus } from '@prisma/client';
+import { DnsRecordStatus } from '@prisma/client';
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
-import { deleteRecordById, updateRecordStatusById } from '~/models/record.server';
+import { deleteDnsRecordById, updateDnsRecordStatusById } from '~/models/dns-record.server';
 import type { PollDnsStatusJobResult } from './poll-dns-status-worker.server';
 import { pollDnsStatusQueueName } from './poll-dns-status-worker.server';
 
-import type { Record } from '@prisma/client';
+import type { DnsRecord } from '@prisma/client';
 import type { WorkType } from '../add-record-flow.server';
 
 export const syncDbStatusQueueName = 'sync-db-status';
 
 export interface DbRecordSynchronizerData {
   workType: WorkType;
-  id: Record['id'];
+  id: DnsRecord['id'];
 }
 
 export const syncDbStatusWorker = new Worker<DbRecordSynchronizerData>(
@@ -42,16 +42,16 @@ export const syncDbStatusWorker = new Worker<DbRecordSynchronizerData>(
       switch (workType) {
         case 'delete':
           if (dnsStatus === 'INSYNC') {
-            await deleteRecordById(id);
+            await deleteDnsRecordById(id);
           }
           break;
         default:
-          const status = dnsStatus === 'INSYNC' ? RecordStatus.active : RecordStatus.error;
-          await updateRecordStatusById(id, status);
+          const status = dnsStatus === 'INSYNC' ? DnsRecordStatus.active : DnsRecordStatus.error;
+          await updateDnsRecordStatusById(id, status);
           break;
       }
     } catch (error) {
-      logger.warn('Could not update the record in DB', error);
+      logger.warn('Could not update the DNS record in DB', error);
       throw error;
     }
   },

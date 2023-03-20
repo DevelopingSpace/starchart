@@ -3,7 +3,7 @@ import { Worker, Queue, UnrecoverableError } from 'bullmq';
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 
-import { getExpiredRecords } from '~/models/record.server';
+import { getExpiredDnsRecords } from '~/models/dns-record.server';
 import { addNotification } from '../notifications/notifications.server';
 import { deleteDnsRequest } from '../dns/delete-record-flow.server';
 
@@ -36,7 +36,7 @@ const expirationRequestWorker = new Worker(
   async (job) => {
     try {
       logger.info('process DNS record expiration');
-      let dnsRecords = await getExpiredRecords();
+      let dnsRecords = await getExpiredDnsRecords();
       Promise.all(
         dnsRecords.map(async ({ id, username, type, subdomain, value, user }) => {
           // delete records from Route53 and DB
