@@ -51,6 +51,12 @@ export const action = async ({ request }: ActionArgs) => {
     });
   }
 
+  if (record.status !== 'active') {
+    throw new Response('Record is not active, action forbidden', {
+      status: 409,
+    });
+  }
+
   switch (intent) {
     case 'renew-record':
       await renewDnsRecordById(record.id);

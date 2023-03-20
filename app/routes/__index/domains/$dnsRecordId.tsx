@@ -25,6 +25,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     });
   }
 
+  if (record.status !== 'active') {
+    return redirect('/domains');
+  }
+
   return typedjson(record);
 };
 
