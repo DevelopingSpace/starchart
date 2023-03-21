@@ -16,11 +16,11 @@ import { getUsername, sloUsernameCookie, logout } from '~/session.server';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 
 export const action = async ({ request }: ActionArgs) => {
-  // const user = await getUsername(request);
+  const user = await getUsername(request);
   const formData = await request.formData();
 
   const value = formData.get('sloUsername');
-  if (value !== undefined) {
+  if (user !== undefined) {
     // Invalidate the Starchart session but do not log out from Seneca IDP.
     return logout(request, '/logout');
   }
@@ -38,7 +38,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   const cookies = request.headers.get('Cookie');
 
   const sloUsername = await sloUsernameCookie.parse(cookies);
-  console.log(sloUsername);
   if (!sloUsername) {
     return redirect('/');
   } else {
