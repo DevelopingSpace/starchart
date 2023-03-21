@@ -11,6 +11,6 @@ test.describe('sign out of the account', () => {
   test('sign out', async ({ page }) => {
     await page.getByRole('banner').getByRole('button').click();
     await page.getByRole('menuitem', { name: 'Sign Out' }).click();
-    await expect(page).toHaveURL('/login?redirectTo=%2F');
+    await expect(page).toHaveURL('/logout');
   });
 });
