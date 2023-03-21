@@ -17,7 +17,11 @@ export interface DnsUpdaterData {
   value: DnsRecord['value'];
 }
 
-export type DnsRecordUpdateJobResult = string;
+// We expect to get back a Change ID, so that we can wait on Route53
+// to sync all changes.  However, in the case of delete, when a record
+// is already gone from Route53, there is nothing to wait for, so there
+// will be no Change ID (null)
+export type DnsRecordUpdateJobResult = string | null;
 
 export const dnsUpdateWorker = new Worker<DnsUpdaterData, DnsRecordUpdateJobResult>(
   dnsUpdateQueueName,

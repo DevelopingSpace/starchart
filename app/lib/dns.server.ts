@@ -2,6 +2,7 @@ import {
   Route53Client,
   CreateHostedZoneCommand,
   ChangeResourceRecordSetsCommand,
+  ListResourceRecordSetsCommand,
   GetChangeCommand,
 } from '@aws-sdk/client-route-53';
 import isFQDN from 'validator/lib/isFQDN';
@@ -15,6 +16,7 @@ import type {
   CreateHostedZoneResponse,
   ChangeResourceRecordSetsResponse,
   GetChangeResponse,
+  ListResourceRecordSetsResponse,
 } from '@aws-sdk/client-route-53';
 import type { DnsRecordType } from '@prisma/client';
 
@@ -45,6 +47,10 @@ if (NODE_ENV === 'production') {
   // In dev, we only need a root domain, and can fake the rest
   process.env.ROOT_DOMAIN = process.env.ROOT_DOMAIN || 'starchart.com';
 }
+
+// Ensure a trailing `.` on a domain to make it fully qualified:
+// a.b.c -> a.b.c. | a.b.c. -> a.b.c.
+const toFQDN = (domain: string) => domain.replace(/\.?$/, '.');
 
 /**
  * In production, we have to have a zone id to do anything, but in
@@ -127,6 +133,36 @@ export const createDnsRecord = (
     throw new Error(`Error occurred while creating resource record`);
   }
 };
+
+async function checkDnsRecordExists(type: DnsRecordType, name: string, value: string) {
+  try {
+    const command = new ListResourceRecordSetsCommand({
+      HostedZoneId: await hostedZoneId(),
+      StartRecordName: name,
+      StartRecordType: type,
+      MaxItems: 1,
+    });
+    const { ResourceRecordSets }: ListResourceRecordSetsResponse = await route53Client.send(
+      command
+    );
+
+    // If we don't get back a single Resource Record Set, it's not a match
+    if (ResourceRecordSets?.length !== 1) {
+      return false;
+    }
+    // Grab the one and only one and compare values
+    const { Name, Type, ResourceRecords } = ResourceRecordSets[0];
+    return (
+      Name === toFQDN(name) &&
+      Type === type &&
+      ResourceRecords?.length === 1 &&
+      ResourceRecords[0].Value === value
+    );
+  } catch (error) {
+    logger.warn('DNS Error in checkDnsRecordExists', { name, type, value, error });
+    throw new Error(`Error while checking if DNS record exists`);
+  }
+}
 
 export const upsertDnsRecord = async (
   username: string,
@@ -211,6 +247,16 @@ export const deleteDnsRecord = async (
         value,
       });
       throw new Error('DNS Error in deleteDnsRecord - invalid value provided');
+    }
+
+    // If no such record exists in Route53, we're done ("delete" state already achieved)
+    if (!(await checkDnsRecordExists(type, name, value))) {
+      logger.debug('DNS deleteDnsRecord - no such record in Route53, skipping', {
+        type,
+        name,
+        value,
+      });
+      return null;
     }
 
     const command = new ChangeResourceRecordSetsCommand({

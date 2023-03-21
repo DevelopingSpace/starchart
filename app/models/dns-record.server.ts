@@ -51,29 +51,21 @@ export function createDnsRecord(
   return prisma.dnsRecord.create({ data: { ...data, expiresAt, status } });
 }
 
+// Update an existing DNS Record's data, or status, or both.
 export function updateDnsRecordById(
-  data: Pick<DnsRecord, 'id' | 'type' | 'subdomain' | 'value'> &
-    Partial<Pick<DnsRecord, 'description' | 'course' | 'ports'>>
+  id: DnsRecord['id'],
+  data:
+    | Pick<DnsRecord, 'status'>
+    | (Pick<DnsRecord, 'type' | 'subdomain' | 'value'> &
+        Partial<Pick<DnsRecord, 'description' | 'course' | 'ports' | 'status'>>)
 ) {
-  const { id, ...values } = data;
   return prisma.dnsRecord.update({
     where: { id },
     data: {
-      ...values,
-      expiresAt: dayjs().set('month', 6).toDate(),
-    },
-  });
-}
-
-export function updateDnsRecordStatusById(id: DnsRecord['id'], status: DnsRecord['status']) {
-  const expireToSet = dayjs().set('month', 6).toDate();
-  return prisma.dnsRecord.update({
-    where: {
-      id,
-    },
-    data: {
-      status,
-      expiresAt: status === DnsRecordStatus.active ? expireToSet : undefined,
+      ...data,
+      // If the record is changing to the `active` status, update expiry too
+      expiresAt:
+        data.status === DnsRecordStatus.active ? dayjs().set('month', 6).toDate() : undefined,
     },
   });
 }

@@ -116,18 +116,17 @@ describe('DNS server lib function test', () => {
       '192.168.0.0'
     );
 
-    expect(changeId.length).toBeGreaterThan(1);
+    expect(changeId?.length).toBeGreaterThan(1);
   });
 
-  test('deleteDnsRecord() throws an error when attempting to delete non existing record', async () => {
-    await expect(
-      deleteDnsRecord(
-        username,
-        DnsRecordType.A,
-        `not-exist.${username}.${rootDomain}`,
-        '192.168.0.1'
-      )
-    ).rejects.toThrow();
+  test('deleteDnsRecord() returns null for Change ID when attempting to delete non existing record', async () => {
+    const changeId = await deleteDnsRecord(
+      username,
+      DnsRecordType.A,
+      `not-exist.${username}.${rootDomain}`,
+      '192.168.0.1'
+    );
+    expect(changeId).toBe(null);
   });
 
   test('deleteDnsRecord() throws an error when invalid name or value is provided', async () => {
@@ -135,7 +134,7 @@ describe('DNS server lib function test', () => {
       deleteDnsRecord(
         username,
         DnsRecordType.A,
-        `invalid_name.${username}.${rootDomain}`,
+        `inv@lid_name.${username}.${rootDomain}`,
         '192.168.0.2'
       )
     ).rejects.toThrow();

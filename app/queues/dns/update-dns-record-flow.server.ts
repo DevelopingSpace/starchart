@@ -1,4 +1,6 @@
 import { FlowProducer } from 'bullmq';
+import { DnsRecordStatus } from '@prisma/client';
+
 import { redis } from '~/lib/redis.server';
 import { buildDomain } from '~/utils';
 import { dnsUpdateQueueName } from './workers/dns-update-worker.server';
@@ -7,12 +9,12 @@ import { syncDbStatusQueueName } from './workers/sync-db-status-worker.server';
 import { WorkType } from './add-dns-record-flow.server';
 import { updateDnsRecordById } from '~/models/dns-record.server';
 
-import type { DnsRecord } from '@prisma/client';
 import type { FlowJob } from 'bullmq';
 import type { DnsUpdaterData } from './workers/dns-update-worker.server';
 import type { DbRecordSynchronizerData } from './workers/sync-db-status-worker.server';
 import type { Subdomain } from './add-dns-record-flow.server';
 
+import type { DnsRecord } from '@prisma/client';
 export type UpdateDnsRequestData = Pick<DnsRecord, 'id' | 'username' | 'type' | 'value'> &
   Partial<Pick<DnsRecord, 'description' | 'course' | 'ports'>> &
   Subdomain;
@@ -25,14 +27,14 @@ export const updateDnsRequest = async (data: UpdateDnsRequestData) => {
   const fqdn = buildDomain(username, subdomain);
 
   // Before running workflow, update the dns record in DB
-  await updateDnsRecordById({
-    id: data.id,
+  await updateDnsRecordById(id, {
     type: data.type,
     subdomain,
     value: data.value,
     description: data.description,
     course: data.course,
     ports: data.ports,
+    status: DnsRecordStatus.pending,
   });
 
   // Step 1. Request Route53 to update the record
