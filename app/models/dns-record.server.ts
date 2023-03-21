@@ -108,18 +108,6 @@ export async function doesDnsRecordExist(
 export function deleteDnsRecordById(id: DnsRecord['id']) {
   return prisma.dnsRecord.delete({ where: { id } });
 }
-/* duplicate function */
-// export function renewDnsRecordById(id: DnsRecord['id']) {
-//   const expiresAt = dayjs().set('month', 6).toDate();
-//   return prisma.dnsRecord.update({
-//     where: {
-//       id,
-//     },
-//     data: {
-//       expiresAt,
-//     },
-//   });
-// }
 
 export function getExpiredDnsRecords() {
   return prisma.dnsRecord.findMany({
