@@ -8,12 +8,16 @@ if (!secrets.SESSION_SECRET?.length) {
   throw new Error('SESSION_SECRET must be set');
 }
 
+if (!process.env.APP_URL) {
+  throw new Error('APP_URL Env Var not set.');
+}
+
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: '__session',
     httpOnly: true,
     path: '/',
-    sameSite: 'lax',
+    sameSite: 'strict',
     secrets: [secrets.SESSION_SECRET],
     secure: process.env.NODE_ENV === 'production',
   },
@@ -97,7 +101,7 @@ export async function logout(request: Request, redirectTo?: string) {
   const session = await getSession(request);
 
   const headers = new Headers();
-  headers.append('Set-Cookie', await hasUserLoggedOut.serialize(session.get(USER_SESSION_KEY)));
+  headers.append('Set-Cookie', await sloUsernameCookie.serialize(session.get(USER_SESSION_KEY)));
   headers.append('Set-Cookie', await sessionStorage.destroySession(session));
 
   return redirect(redirectTo ? redirectTo : '/', {
@@ -105,4 +109,13 @@ export async function logout(request: Request, redirectTo?: string) {
   });
 }
 
-export const hasUserLoggedOut = createCookie('tempUser');
+export const sloUsernameCookie = createCookie('sloUsername', {
+  domain: new URL(process.env.APP_URL).hostname,
+  path: '/logout',
+  sameSite: 'strict',
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  /* An Hour before sloUsername Cookie Expires, after which logout will
+     redirect to session-less sign-in button page */
+  maxAge: 60 * 60,
+});

@@ -16,10 +16,10 @@ import {
 import { TriangleUpIcon, LockIcon, HamburgerIcon } from '@chakra-ui/icons';
 import { Link, useFetcher } from '@remix-run/react';
 
-import { useOptionalUser } from '~/utils';
+import { useUser } from '~/utils';
 
 export default function Header() {
-  const user = useOptionalUser();
+  const user = useUser();
   const fetcher = useFetcher();
   return (
     <Flex

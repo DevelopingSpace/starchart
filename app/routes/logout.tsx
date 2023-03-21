@@ -1,23 +1,32 @@
 import { json, redirect } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
-import { AbsoluteCenter, Button, Container, Stack, Text } from '@chakra-ui/react';
+import { Form, Link, useLoaderData } from '@remix-run/react';
+import {
+  AbsoluteCenter,
+  Box,
+  Button,
+  ButtonGroup,
+  Center,
+  Container,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import { createLogoutRequest } from '~/lib/saml.server';
-import { getUsername, hasUserLoggedOut, logout } from '~/session.server';
+import { getUsername, sloUsernameCookie, logout } from '~/session.server';
 
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 
 export const action = async ({ request }: ActionArgs) => {
-  const user = await getUsername(request);
+  // const user = await getUsername(request);
   const formData = await request.formData();
 
-  const value = formData.get('tempUser');
-  if (user !== undefined) {
+  const value = formData.get('sloUsername');
+  if (value !== undefined) {
     // Invalidate the Starchart session but do not log out from Seneca IDP.
     return logout(request, '/logout');
   }
 
   if (value) {
-    //create slo request with saml stuff
+    // create slo request with saml stuff
     const context = createLogoutRequest(value as string);
 
     return redirect(context);
@@ -28,14 +37,15 @@ export const action = async ({ request }: ActionArgs) => {
 export const loader = async ({ request }: LoaderArgs) => {
   const cookies = request.headers.get('Cookie');
 
-  const tempUser = await hasUserLoggedOut.parse(cookies);
-  if (!tempUser) {
+  const sloUsername = await sloUsernameCookie.parse(cookies);
+  console.log(sloUsername);
+  if (!sloUsername) {
     return redirect('/');
   } else {
-    //remove the cookie
-    return json(tempUser, {
+    // remove the cookie
+    return json(sloUsername, {
       headers: {
-        'Set-Cookie': await hasUserLoggedOut.serialize(null),
+        'Set-Cookie': await sloUsernameCookie.serialize(null),
       },
     });
   }
@@ -53,11 +63,22 @@ export default function Index() {
             If you would also like to be logged out of all other Seneca services click the "Seneca
             Logout" Button
           </Text>
-          <Form method="post">
-            <input type="hidden" name="tempUser" value={user} />
-            <Button type="submit">Seneca Logout</Button>
-          </Form>
         </Stack>
+        <Box marginTop={10}>
+          <Form method="post">
+            <input type="hidden" name="sloUsername" value={user} />
+            <Center>
+              <ButtonGroup>
+                <Button type="submit" backgroundColor={'grey'}>
+                  Seneca Logout
+                </Button>
+                <Link to={{ pathname: '/' }}>
+                  <Button>Back to Sign In</Button>
+                </Link>
+              </ButtonGroup>
+            </Center>
+          </Form>
+        </Box>
       </Container>
     </AbsoluteCenter>
   );
