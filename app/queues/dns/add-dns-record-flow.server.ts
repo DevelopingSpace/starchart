@@ -4,17 +4,17 @@ import { buildDomain } from '~/utils';
 import { dnsUpdateQueueName } from './workers/dns-update-worker.server';
 import { pollDnsStatusQueueName } from './workers/poll-dns-status-worker.server';
 import { syncDbStatusQueueName } from './workers/sync-db-status-worker.server';
-import { createUserRecord } from '~/models/record.server';
+import { createUserDnsRecord } from '~/models/dns-record.server';
 
 import type { FlowJob } from 'bullmq';
-import type { Record } from '@prisma/client';
+import type { DnsRecord } from '@prisma/client';
 import type { DnsUpdaterData } from './workers/dns-update-worker.server';
 import type { DbRecordSynchronizerData } from './workers/sync-db-status-worker.server';
 
 export type Subdomain = { subdomain: string };
 
-export type AddDnsRequestData = Pick<Record, 'username' | 'type' | 'value'> &
-  Partial<Pick<Record, 'description' | 'course' | 'ports'>> &
+export type AddDnsRequestData = Pick<DnsRecord, 'username' | 'type' | 'value'> &
+  Partial<Pick<DnsRecord, 'description' | 'course' | 'ports'>> &
   Subdomain;
 
 export enum WorkType {
@@ -31,14 +31,14 @@ export const addDnsRequest = async (data: AddDnsRequestData) => {
   const fqdn = buildDomain(username, subdomain);
 
   // Before running workflow. Add a record to DB
-  const recordId = await createUserRecord({
+  const dnsRecordId = await createUserDnsRecord({
     username,
     type,
     subdomain,
     value,
   });
 
-  // Step 1. Request Route53 to create a record
+  // Step 1. Request Route53 to create a dns record
   const createDnsRecord: FlowJob = {
     name: `createDnsRecord:${subdomain}-${username}`,
     queueName: dnsUpdateQueueName,
@@ -79,7 +79,7 @@ export const addDnsRequest = async (data: AddDnsRequestData) => {
     name: `syncDbStatus:${subdomain}-${username}`,
     queueName: syncDbStatusQueueName,
     children: [pollDnsStatus],
-    data: { workType: WorkType.create, id: recordId } as DbRecordSynchronizerData,
+    data: { workType: WorkType.create, id: dnsRecordId } as DbRecordSynchronizerData,
     opts: {
       failParentOnFailure: true,
       attempts: 5,

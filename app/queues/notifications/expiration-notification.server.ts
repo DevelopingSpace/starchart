@@ -28,7 +28,7 @@ const expirationNotificationQueueName = 'expiration-notification';
 
 function init() {
   logger.debug(
-    'Expiration Notifications init: adding jobs for certificate/record expiration notices'
+    'Expiration Notifications init: adding jobs for certificate/DNS record expiration notices'
   );
   Promise.all([
     addExpirationNotifications(RecordType.Certificate),
@@ -63,7 +63,7 @@ const updateNotificationStatus = (type: RecordType, id: number) => {
         },
       });
     case RecordType.DnsRecord:
-      return prisma.record.update({
+      return prisma.dnsRecord.update({
         where: {
           id,
         },
@@ -101,7 +101,7 @@ const getRecordsByExpiration = (type: RecordType) => {
         },
       });
     case RecordType.DnsRecord:
-      return prisma.record.findMany({
+      return prisma.dnsRecord.findMany({
         where: {
           expiresAt: {
             lte: dayjs().add(1, 'M').toDate(),

@@ -7,20 +7,24 @@ import { json } from '@remix-run/node';
 import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
 import { useInterval } from 'react-use';
-import DnsRecordsTable from '~/components/domains-table';
-import { getRecordById, getRecordsByUsername, renewDnsRecordById } from '~/models/record.server';
+import DnsRecordsTable from '~/components/dns-records-table';
+import {
+  getDnsRecordById,
+  getDnsRecordsByUsername,
+  renewDnsRecordById,
+} from '~/models/dns-record.server';
 import { requireUsername } from '~/session.server';
-import { deleteDnsRequest } from '~/queues/dns/delete-record-flow.server';
+import { deleteDnsRequest } from '~/queues/dns/delete-dns-record-flow.server';
 import logger from '~/lib/logger.server';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
-export type DomainActionIntent = 'renew-record' | 'delete-record';
+export type DnsRecordActionIntent = 'renew-dns-record' | 'delete-dns-record';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const username = await requireUsername(request);
 
-  return typedjson(await getRecordsByUsername(username));
+  return typedjson(await getDnsRecordsByUsername(username));
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -30,7 +34,7 @@ export const action = async ({ request }: ActionArgs) => {
     request,
     z.object({
       id: z.string(),
-      intent: z.enum(['renew-record', 'delete-record']),
+      intent: z.enum(['renew-dns-record', 'delete-dns-record']),
     })
   );
 
@@ -42,35 +46,35 @@ export const action = async ({ request }: ActionArgs) => {
 
   const { id, intent } = dnsRecordActionParams.data;
 
-  const recordID = Number(id);
-  const record = await getRecordById(recordID);
+  const dnsRecordID = Number(id);
+  const dnsRecord = await getDnsRecordById(dnsRecordID);
 
-  if (!record) {
-    throw new Response('The record is not found', {
+  if (!dnsRecord) {
+    throw new Response('The DNS record is not found', {
       status: 404,
     });
   }
 
-  if (record.status !== 'active') {
-    throw new Response('Record is not active, action forbidden', {
+  if (dnsRecord.status !== 'active') {
+    throw new Response('DNS Record is not active, action forbidden', {
       status: 409,
     });
   }
 
   switch (intent) {
-    case 'renew-record':
-      await renewDnsRecordById(record.id);
+    case 'renew-dns-record':
+      await renewDnsRecordById(dnsRecord.id);
       return json({
         result: 'ok',
         message: 'DNS record was renewed',
       });
-    case 'delete-record':
+    case 'delete-dns-record':
       deleteDnsRequest({
         username,
-        type: record.type,
-        subdomain: record.subdomain,
-        value: record.value,
-        id: record.id,
+        type: dnsRecord.type,
+        subdomain: dnsRecord.subdomain,
+        value: dnsRecord.value,
+        id: dnsRecord.id,
       });
       return json({
         result: 'ok',
@@ -82,7 +86,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 };
 
-export default function DomainsIndexRoute() {
+export default function DnsRecordsIndexRoute() {
   const revalidator = useRevalidator();
   const dnsRecords = useTypedLoaderData<typeof loader>();
   const pending = useMemo(
@@ -102,7 +106,7 @@ export default function DomainsIndexRoute() {
     <Container maxW="container.xl">
       <Flex flexDirection="column">
         <Heading as="h1" size="xl" mt="20">
-          Domains
+          DNS Records
         </Heading>
         <Text maxW="container.sm" mb="4" mt="2">
           Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
@@ -110,8 +114,8 @@ export default function DomainsIndexRoute() {
           a galley of type and scrambled it to make a type specimen book.
         </Text>
         <Flex justifyContent="flex-end">
-          <Link to="/domains/new">
-            <Button rightIcon={<AddIcon boxSize={3} />}>Create new domain</Button>
+          <Link to="/dns-records/new">
+            <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS record</Button>
           </Link>
         </Flex>
         <DnsRecordsTable dnsRecords={dnsRecords} />

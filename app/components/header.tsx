@@ -37,10 +37,10 @@ export default function Header() {
       <Hide below="lg">
         <HStack color="white" justifyContent="flex-start" gap="10" width="100%">
           <Flex gap="5">
-            <Link to={{ pathname: '/domains' }}>
+            <Link to={{ pathname: '/dns-records' }}>
               <Flex alignItems="center">
                 <TriangleUpIcon marginRight="2" />
-                <Text>Domains</Text>
+                <Text>DNS Records</Text>
               </Flex>
             </Link>
 
@@ -65,10 +65,10 @@ export default function Header() {
             />
             <MenuList>
               <MenuItem>
-                <Link to={{ pathname: '/domains' }}>
+                <Link to={{ pathname: '/dns-records' }}>
                   <Flex alignItems="center">
                     <TriangleUpIcon marginRight="2" />
-                    <Text>Domains</Text>
+                    <Text>DNS Records</Text>
                   </Flex>
                 </Link>
               </MenuItem>

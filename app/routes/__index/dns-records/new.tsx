@@ -1,12 +1,12 @@
 import { Container, Heading, Text } from '@chakra-ui/react';
-import { RecordType } from '@prisma/client';
+import { DnsRecordType } from '@prisma/client';
 import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
 import { redirect, typedjson, useTypedActionData } from 'remix-typedjson';
 
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
-import { addDnsRequest } from '~/queues/dns/add-record-flow.server';
+import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
 
 import type { ActionArgs } from '@remix-run/node';
 import type { ZodError } from 'zod';
@@ -23,7 +23,7 @@ export const action = async ({ request }: ActionArgs) => {
   // Optional is not needed as we get '' if nothing is entered
   const DnsRecord = z.object({
     subdomain: z.string().min(1), // We do not want to consider '' a valid string
-    type: z.nativeEnum(RecordType),
+    type: z.nativeEnum(DnsRecordType),
     value: z.string().min(1),
     ports: z.string(),
     course: z.string(),
@@ -54,7 +54,7 @@ export const action = async ({ request }: ActionArgs) => {
       value: data.value,
     });
 
-    return redirect(`/domains`);
+    return redirect(`/dns-records`);
   } catch (error) {
     logger.warn('Add DNS request error', error);
     //Need to display an error response
@@ -62,7 +62,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 };
 
-export default function NewDomainRoute() {
+export default function NewDnsRecordRoute() {
   const errors = useTypedActionData<typeof action>();
 
   return (

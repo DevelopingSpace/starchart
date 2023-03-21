@@ -19,7 +19,7 @@ test.describe('Landing Page', () => {
   test('Manage DNS Records Button', async ({ page }) => {
     await page.getByRole('link', { name: 'Manage DNS Records' }).click();
 
-    await expect(page).toHaveURL('/domains');
+    await expect(page).toHaveURL('/dns-records');
   });
 
   test('DNS Records Instructions Link', async ({ page }) => {
@@ -31,7 +31,7 @@ test.describe('Landing Page', () => {
       .getByRole('link', { name: 'to learn more, see these instructions...' })
       .click();
 
-    await expect(page).toHaveURL('/domains/instructions');
+    await expect(page).toHaveURL('/dns-records/instructions');
   });
 
   test('Manage Certificate Button', async ({ page }) => {

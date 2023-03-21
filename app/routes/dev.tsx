@@ -12,14 +12,14 @@ import logger from '~/lib/logger.server';
 import { requireUser, requireUsername } from '~/session.server';
 import { addNotification } from '~/queues/notifications/notifications.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
-import { addDnsRequest } from '~/queues/dns/add-record-flow.server';
-import { updateDnsRequest } from '~/queues/dns/update-record-flow.server';
-import { deleteDnsRequest } from '~/queues/dns/delete-record-flow.server';
-import { RecordType } from '@prisma/client';
+import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
+import { updateDnsRequest } from '~/queues/dns/update-dns-record-flow.server';
+import { deleteDnsRequest } from '~/queues/dns/delete-dns-record-flow.server';
+import { DnsRecordType } from '@prisma/client';
 
-import type { AddDnsRequestData } from '~/queues/dns/add-record-flow.server';
-import type { UpdateDnsRequestData } from '~/queues/dns/update-record-flow.server';
-import type { DeleteDnsRequestData } from '~/queues/dns/delete-record-flow.server';
+import type { AddDnsRequestData } from '~/queues/dns/add-dns-record-flow.server';
+import type { UpdateDnsRequestData } from '~/queues/dns/update-dns-record-flow.server';
+import type { DeleteDnsRequestData } from '~/queues/dns/delete-dns-record-flow.server';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
 export const action = async ({ request }: ActionArgs) => {
@@ -54,7 +54,7 @@ export const action = async ({ request }: ActionArgs) => {
     case 'dns-record-request':
       const data: AddDnsRequestData = {
         username: user.username,
-        type: RecordType.A,
+        type: DnsRecordType.A,
         subdomain: `osd700-a11`,
         value: '192.168.0.1',
       };
@@ -76,7 +76,7 @@ export const action = async ({ request }: ActionArgs) => {
         const data: UpdateDnsRequestData = {
           id: 1,
           username: user.username,
-          type: RecordType.A,
+          type: DnsRecordType.A,
           subdomain: `osd700-a2`,
           value: '192.168.0.2',
           ports: '8080',

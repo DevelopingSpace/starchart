@@ -15,7 +15,7 @@ import {
   useDisclosure,
   Spinner,
 } from '@chakra-ui/react';
-import type { Record, RecordStatus } from '@prisma/client';
+import type { DnsRecord, DnsRecordStatus } from '@prisma/client';
 import {
   EditIcon,
   DeleteIcon,
@@ -25,14 +25,14 @@ import {
   TimeIcon,
   WarningIcon,
 } from '@chakra-ui/icons';
-import RecordDeleteAlertDialog from './record-delete-alert-dialog';
+import DnsRecordDeleteAlertDialog from './dns-record-delete-alert-dialog';
 
 import { Form, useNavigate, useTransition } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
 import { useUser } from '~/utils';
 
 interface DnsRecordsTableProps {
-  dnsRecords: Record[];
+  dnsRecords: DnsRecord[];
 }
 
 export default function DnsRecordsTable(props: DnsRecordsTableProps) {
@@ -49,7 +49,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
     onOpen: onDeleteAlertDialogOpen,
     onClose: onDeleteAlertDialogClose,
   } = useDisclosure();
-  const [dnsRecordToDelete, setDnsRecordToDelete] = useState<Record | undefined>();
+  const [dnsRecordToDelete, setDnsRecordToDelete] = useState<DnsRecord | undefined>();
 
   function onCopyNameToClipboard(subdomain: string) {
     navigator.clipboard.writeText(subdomain);
@@ -60,24 +60,24 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
     });
   }
 
-  function renderDnsRecordStatus(action: RecordStatus) {
+  function renderDnsRecordStatus(action: DnsRecordStatus) {
     if (action === 'active') {
       return (
-        <Tooltip label="Domain is live">
+        <Tooltip label="DNS Record is active">
           <CheckCircleIcon color="green.500" boxSize="6" />
         </Tooltip>
       );
     }
     if (action === 'error') {
       return (
-        <Tooltip label="Domain error">
+        <Tooltip label="DNS Record error">
           <WarningIcon color="brand.500" boxSize="6" />
         </Tooltip>
       );
     }
     if (action === 'pending') {
       return (
-        <Tooltip label="Domain is pending">
+        <Tooltip label="DNS Record is pending">
           <Flex
             width="6"
             height="6"
@@ -93,7 +93,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
     }
   }
 
-  function onDeleteDnsRecordOpen(dnsRecord: Record) {
+  function onDeleteDnsRecordOpen(dnsRecord: DnsRecord) {
     onDeleteAlertDialogOpen();
     setDnsRecordToDelete(dnsRecord);
   }
@@ -108,7 +108,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
     setDnsRecordToDelete(undefined);
   }
 
-  function onDnsRecordEdit(dnsRecord: Record) {
+  function onDnsRecordEdit(dnsRecord: DnsRecord) {
     navigate(dnsRecord.id.toString());
   }
 
@@ -132,7 +132,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                 const isLoading =
                   transition.state === 'submitting' &&
                   Number(transition.submission.formData.get('id')) === dnsRecord.id;
-                const isRecordActive = dnsRecord.status === 'active';
+                const isDnsRecordActive = dnsRecord.status === 'active';
 
                 return (
                   <Tr key={dnsRecord.id}>
@@ -154,7 +154,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                             <Tooltip label="Copy subdomain to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
-                                aria-label="Refresh domain"
+                                aria-label="Refresh DNS record"
                                 variant="ghost"
                                 ml="2"
                                 onClick={() =>
@@ -171,14 +171,14 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                             {dnsRecord.expiresAt.toLocaleDateString('en-US')}
                             <Form method="patch" style={{ margin: 0 }}>
                               <input type="hidden" name="id" value={dnsRecord.id} />
-                              <input type="hidden" name="intent" value="renew-record" />
-                              <Tooltip label="Renew domain">
+                              <input type="hidden" name="intent" value="renew-dns-record" />
+                              <Tooltip label="Renew DNS record">
                                 <IconButton
                                   icon={<RepeatIcon color="black" boxSize="5" />}
-                                  aria-label="Refresh domain"
+                                  aria-label="Refresh DNS record"
                                   variant="ghost"
                                   type="submit"
-                                  isDisabled={!isRecordActive}
+                                  isDisabled={!isDnsRecordActive}
                                 />
                               </Tooltip>
                             </Form>
@@ -186,24 +186,24 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                         </Td>
                         <Td>
                           <Flex>
-                            <Tooltip label="Edit domain">
+                            <Tooltip label="Edit DNS record">
                               <IconButton
                                 onClick={() => onDnsRecordEdit(dnsRecord)}
                                 icon={<EditIcon color="black" boxSize={5} />}
-                                aria-label="Edit domain"
+                                aria-label="Edit DNS record"
                                 variant="ghost"
                                 mr="1"
-                                isDisabled={!isRecordActive}
+                                isDisabled={!isDnsRecordActive}
                               />
                             </Tooltip>
-                            <Tooltip label="Delete domain">
+                            <Tooltip label="Delete DNS record">
                               <IconButton
                                 onClick={() => onDeleteDnsRecordOpen(dnsRecord)}
                                 icon={<DeleteIcon color="black" boxSize={5} />}
-                                aria-label="Delete domain"
+                                aria-label="Delete DNS record"
                                 variant="ghost"
                                 type="submit"
-                                isDisabled={!isRecordActive}
+                                isDisabled={!isDnsRecordActive}
                               />
                             </Tooltip>
                           </Flex>
@@ -217,7 +217,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
           </Table>
         </TableContainer>
       </Card>
-      <RecordDeleteAlertDialog
+      <DnsRecordDeleteAlertDialog
         isOpen={isDeleteAlertDialogOpen}
         onCancel={onDnsRecordDeleteCancel}
         onConfirm={onDnsRecordDeleteConfirm}

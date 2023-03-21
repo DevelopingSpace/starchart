@@ -14,7 +14,7 @@ test.describe('navigate to links through mobile', () => {
     await expect(page).toHaveURL('/certificate');
 
     await page.click('.header-hamburger');
-    await page.getByRole('link', { name: 'Domains', exact: true }).click();
-    await expect(page).toHaveURL('/domains');
+    await page.getByRole('link', { name: 'DNS Records', exact: true }).click();
+    await expect(page).toHaveURL('/dns-records');
   });
 });

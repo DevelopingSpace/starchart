@@ -9,21 +9,21 @@ import {
   AlertDialogBody,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
-import type { Record } from '@prisma/client';
+import type { DnsRecord } from '@prisma/client';
 
-interface RecordDeleteAlertDialogProps {
+interface DnsRecordDeleteAlertDialogProps {
   isOpen: boolean;
   onCancel: () => void;
   onConfirm: () => void;
-  dnsRecord: Record | undefined;
+  dnsRecord: DnsRecord | undefined;
 }
 
-export default function RecordDeleteAlertDialog({
+export default function DnsRecordDeleteAlertDialog({
   isOpen,
   onCancel,
   onConfirm,
   dnsRecord,
-}: RecordDeleteAlertDialogProps) {
+}: DnsRecordDeleteAlertDialogProps) {
   const cancelRef = useRef(null);
 
   return (
@@ -31,7 +31,7 @@ export default function RecordDeleteAlertDialog({
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete Domain
+            Delete DNS Record
           </AlertDialogHeader>
           <AlertDialogBody>Are you sure? You can't undo this action afterwards.</AlertDialogBody>
           <AlertDialogFooter>
@@ -40,7 +40,7 @@ export default function RecordDeleteAlertDialog({
             </Button>
             <Form method="delete" style={{ margin: 0 }}>
               <input type="hidden" name="id" value={dnsRecord?.id} />
-              <input type="hidden" name="intent" value="delete-record" />
+              <input type="hidden" name="intent" value="delete-dns-record" />
               <Button colorScheme="brand" onClick={onConfirm} ml="3" type="submit">
                 Delete
               </Button>

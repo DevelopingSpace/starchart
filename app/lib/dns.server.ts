@@ -16,7 +16,7 @@ import type {
   ChangeResourceRecordSetsResponse,
   GetChangeResponse,
 } from '@aws-sdk/client-route-53';
-import type { RecordType } from '@prisma/client';
+import type { DnsRecordType } from '@prisma/client';
 
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
 const { NODE_ENV } = process.env;
@@ -114,40 +114,45 @@ export async function createHostedZone(domain: string) {
   }
 }
 
-export const createRecord = (username: string, type: RecordType, name: string, value: string) => {
+export const createDnsRecord = (
+  username: string,
+  type: DnsRecordType,
+  name: string,
+  value: string
+) => {
   try {
-    return upsertRecord(username, type, name, value);
+    return upsertDnsRecord(username, type, name, value);
   } catch (error) {
     logger.warn('DNS Error in createRecord', { username, type, name, value, error });
     throw new Error(`Error occurred while creating resource record`);
   }
 };
 
-export const upsertRecord = async (
+export const upsertDnsRecord = async (
   username: string,
-  type: RecordType,
+  type: DnsRecordType,
   name: string,
   value: string
 ) => {
   try {
     if (!isNameValid(name, username)) {
-      logger.error('DNS Error in upsertRecord - invalid record name provided', {
+      logger.error('DNS Error in upsertDnsRecord - invalid record name provided', {
         name,
         username,
         baseDomain: buildUserBaseDomain(username),
       });
 
-      throw new Error('DNS Error in upsertRecord - invalid record name provided');
+      throw new Error('DNS Error in upsertDnsRecord - invalid record name provided');
     }
 
     if (!isValueValid(type, value)) {
-      logger.error('DNS Error in upsertRecord - invalid record value provided', {
+      logger.error('DNS Error in upsertDnsRecord - invalid record value provided', {
         name,
         username,
         type,
         value,
       });
-      throw new Error('DNS Error in upsertRecord - invalid record value provided');
+      throw new Error('DNS Error in upsertDnsRecord - invalid record value provided');
     }
 
     const command = new ChangeResourceRecordSetsCommand({
@@ -177,35 +182,35 @@ export const upsertRecord = async (
     }
     return response.ChangeInfo.Id;
   } catch (error) {
-    logger.warn('DNS Error in upsertRecord', { username, type, name, value, error });
+    logger.warn('DNS Error in upsertDnsRecord', { username, type, name, value, error });
     throw new Error(`DNS Error occurred while updating resource record: ${error}`);
   }
 };
 
-export const deleteRecord = async (
+export const deleteDnsRecord = async (
   username: string,
-  type: RecordType,
+  type: DnsRecordType,
   name: string,
   value: string
 ) => {
   try {
     if (!isNameValid(name, username)) {
-      logger.error('DNS Error in deleteRecord - invalid record name provided', {
+      logger.error('DNS Error in deleteDnsRecord - invalid record name provided', {
         name,
         username,
         baseDomain: buildUserBaseDomain(username),
       });
-      throw new Error('DNS Error in deleteRecord - invalid name provided');
+      throw new Error('DNS Error in deleteDnsRecord - invalid name provided');
     }
 
     if (!isValueValid(type, value)) {
-      logger.error('DNS Error in deleteRecord - invalid record value provided', {
+      logger.error('DNS Error in deleteDnsRecord - invalid record value provided', {
         name,
         username,
         type,
         value,
       });
-      throw new Error('DNS Error in deleteRecord - invalid value provided');
+      throw new Error('DNS Error in deleteDnsRecord - invalid value provided');
     }
 
     const command = new ChangeResourceRecordSetsCommand({
@@ -236,7 +241,7 @@ export const deleteRecord = async (
     }
     return response.ChangeInfo.Id;
   } catch (error) {
-    logger.warn('DNS Error in deleteRecord', { username, type, name, value, error });
+    logger.warn('DNS Error in deleteDnsRecord', { username, type, name, value, error });
     throw new Error(`DNS Error occurred while deleting resource record`);
   }
 };
@@ -285,7 +290,7 @@ export const isNameValid = (name: string, username: string) => {
   );
 };
 
-export const isValueValid = (type: RecordType, value: string) => {
+export const isValueValid = (type: DnsRecordType, value: string) => {
   if (type === 'A') {
     return isIP(value, 4);
   }

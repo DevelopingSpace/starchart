@@ -12,7 +12,7 @@ test.describe('navigate to links', () => {
     await page.getByRole('link', { name: 'Certificate', exact: true }).click();
     await expect(page).toHaveURL('/certificate');
 
-    await page.getByRole('link', { name: 'Domains', exact: true }).click();
-    await expect(page).toHaveURL('/domains');
+    await page.getByRole('link', { name: 'DNS Records', exact: true }).click();
+    await expect(page).toHaveURL('/dns-records');
   });
 });

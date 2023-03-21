@@ -10,7 +10,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
-import type { Record } from '@prisma/client';
+import type { DnsRecord } from '@prisma/client';
 import { useUser } from '~/utils';
 import FormField from './form-field';
 import { useMemo } from 'react';
@@ -20,19 +20,19 @@ type FormMode = 'CREATE' | 'EDIT';
 interface dnsRecordFormProps {
   mode: FormMode;
   typeError?: string; // Error for 'Type' field
-  dnsRecord?: Record;
+  dnsRecord?: DnsRecord;
 }
 
-export default function DomainForm({ typeError, dnsRecord, mode }: dnsRecordFormProps) {
+export default function DnsRecordForm({ typeError, dnsRecord, mode }: dnsRecordFormProps) {
   const user = useUser();
 
   const submitButtonText = useMemo(() => (mode === 'CREATE' ? 'Create' : 'Update'), [mode]);
   const SubmitButtonIcon = useMemo(() => (mode === 'CREATE' ? AddIcon : EditIcon), [mode]);
 
   return (
-    <Form className="domain-form" method="post">
+    <Form className="dns-record-form" method="post">
       <VStack maxW="xl" spacing="2">
-        <FormField label="Record Name" isRequired={true}>
+        <FormField label="DNS Record Name" isRequired={true}>
           <InputGroup>
             <Input name="subdomain" defaultValue={dnsRecord?.subdomain} />
             <InputRightAddon children={`.${user.baseDomain}`} />
@@ -49,7 +49,7 @@ export default function DomainForm({ typeError, dnsRecord, mode }: dnsRecordForm
             <option value="CNAME">CNAME</option>
             <option value="TXT">TXT</option>
           </Select>
-          <Tooltip label="Select the DNS Record type">
+          <Tooltip label="Select DNS Record type">
             <InfoIcon />
           </Tooltip>
         </FormField>
