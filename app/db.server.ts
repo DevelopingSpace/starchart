@@ -27,7 +27,7 @@ function getClient() {
     process.env.NODE_ENV === 'production'
       ? secrets.DATABASE_URL
       : // Allow using env or secrets in dev/testing only
-        secrets.DATABASE_URL || process.env.DATABASE_URL;
+        process.env.DATABASE_URL || secrets.DATABASE_URL;
 
   if (typeof DATABASE_URL !== 'string') {
     throw new Error('DATABASE_URL secret not set');

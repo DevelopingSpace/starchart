@@ -47,6 +47,9 @@ $ npm install
 # Setup the database
 $ npm run setup
 
+# (Optional) Setup test database
+$ npm run setup:test
+
 # Generate a build folder the first time running the app
 $ npm run build
 
@@ -55,13 +58,16 @@ $ npm run dev
 
 # Visually see the database in a GUI:
 $ npm run db:studio
+
+# Visually see the test database in a GUI
+$ npm run db:studio:test
 ```
 
 > **Note** `npm run setup` creates a local `mysql-data/` directory, and is a one time setup. That directory can be safely deleted if the database needs to be reset, or if errors occur during database startup.
 
 > **Note** `npm run build` needs to be executed the first time running the project. As it generates a `build/server.js` script that `npm run dev` depends on. Subsequent times, only `npm run dev` is needed to run the app in development mode.
 
-> **Note** If you are running test scripts for the first time, change `DATABASE_URL` in `.env` to `DATABASE_URL="mysql://starchart:starchart_password@127.0.0.1:3306/starchart"` and run `npm run setup` to setup the test database. You can change this back afterward.
+> **Note** `npm run setup:test` is required for running tests locally
 
 ## SAML Accounts to use in Dev
 

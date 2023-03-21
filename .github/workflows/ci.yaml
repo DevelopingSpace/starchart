@@ -67,7 +67,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_DATABASE: starchart
+          MYSQL_DATABASE: starchart_test
           MYSQL_USER: starchart
           MYSQL_PASSWORD: starchart_password
           MYSQL_ROOT_PASSWORD: root_password
@@ -111,7 +111,7 @@ jobs:
       - name: Seed database
         run: |
           cp .env.example .env
-          npm run setup
+          npm run setup:test
 
       - name: Run tests
         run: npm test
@@ -133,7 +133,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_DATABASE: starchart
+          MYSQL_DATABASE: starchart_test
           MYSQL_USER: starchart
           MYSQL_PASSWORD: starchart_password
           MYSQL_ROOT_PASSWORD: root_password
@@ -199,7 +199,7 @@ jobs:
       - name: Seed database
         run: |
           cp .env.example .env
-          npm run setup
+          npm run setup:test
 
       - name: Run Playwright tests
         run: npm run test:e2e:run
