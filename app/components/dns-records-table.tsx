@@ -25,7 +25,7 @@ import {
   TimeIcon,
   WarningIcon,
 } from '@chakra-ui/icons';
-import RecordDeleteAlertDialog from './record-delete-alert-dialog';
+import DnsRecordDeleteAlertDialog from './dns-record-delete-alert-dialog';
 
 import { Form, useNavigate, useTransition } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
@@ -200,7 +200,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                               <IconButton
                                 onClick={() => onDeleteDnsRecordOpen(dnsRecord)}
                                 icon={<DeleteIcon color="black" boxSize={5} />}
-                                aria-label="Delete record"
+                                aria-label="Delete DNS record"
                                 variant="ghost"
                                 type="submit"
                                 isDisabled={!isDnsRecordActive}
@@ -217,7 +217,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
           </Table>
         </TableContainer>
       </Card>
-      <RecordDeleteAlertDialog
+      <DnsRecordDeleteAlertDialog
         isOpen={isDeleteAlertDialogOpen}
         onCancel={onDnsRecordDeleteCancel}
         onConfirm={onDnsRecordDeleteConfirm}

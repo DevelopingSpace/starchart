@@ -106,7 +106,7 @@ export default function DnsRecordsIndexRoute() {
     <Container maxW="container.xl">
       <Flex flexDirection="column">
         <Heading as="h1" size="xl" mt="20">
-          Records
+          DNS Records
         </Heading>
         <Text maxW="container.sm" mb="4" mt="2">
           Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has

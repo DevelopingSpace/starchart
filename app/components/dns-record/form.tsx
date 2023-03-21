@@ -23,7 +23,7 @@ interface dnsRecordFormProps {
   dnsRecord?: DnsRecord;
 }
 
-export default function DomainForm({ typeError, dnsRecord, mode }: dnsRecordFormProps) {
+export default function DnsRecordForm({ typeError, dnsRecord, mode }: dnsRecordFormProps) {
   const user = useUser();
 
   const submitButtonText = useMemo(() => (mode === 'CREATE' ? 'Create' : 'Update'), [mode]);

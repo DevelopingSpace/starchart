@@ -8,7 +8,7 @@ const theme = extendTheme(
     breakpoints,
     styles: {
       global: {
-        '.domain-form': {
+        '.dns-record-form': {
           // InfoIcon
           '.chakra-icon': {
             color: colors.brand_gray[300],
