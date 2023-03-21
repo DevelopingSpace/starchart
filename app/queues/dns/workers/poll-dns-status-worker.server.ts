@@ -28,5 +28,11 @@ export const pollDnsStatusWorker = new Worker<void, PollDnsStatusJobResult>(
     }
     return status;
   },
-  { connection: redis }
+  {
+    connection: redis,
+    limiter: {
+      max: 3,
+      duration: 1_000,
+    },
+  }
 );
