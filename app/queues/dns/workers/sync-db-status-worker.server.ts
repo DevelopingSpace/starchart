@@ -2,7 +2,7 @@ import { UnrecoverableError, Worker } from 'bullmq';
 import { DnsRecordStatus } from '@prisma/client';
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
-import { deleteDnsRecordById, updateDnsRecordStatusById } from '~/models/dns-record.server';
+import { deleteDnsRecordById, updateDnsRecordById } from '~/models/dns-record.server';
 import type { PollDnsStatusJobResult } from './poll-dns-status-worker.server';
 import { pollDnsStatusQueueName } from './poll-dns-status-worker.server';
 
@@ -47,7 +47,7 @@ export const syncDbStatusWorker = new Worker<DbRecordSynchronizerData>(
           break;
         default:
           const status = dnsStatus === 'INSYNC' ? DnsRecordStatus.active : DnsRecordStatus.error;
-          await updateDnsRecordStatusById(id, status);
+          await updateDnsRecordById(id, { status });
           break;
       }
     } catch (error) {

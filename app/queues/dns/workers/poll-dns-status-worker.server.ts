@@ -21,8 +21,14 @@ export const pollDnsStatusWorker = new Worker<void, PollDnsStatusJobResult>(
 
     const [changeId] = Object.values(childrenValues);
 
-    const status = (await getChangeStatus(changeId)) as PollDnsStatusJobResult;
+    // If we don't get back a Change ID, it means there's nothing to wait on
+    // and everything is already in sync.
+    if (!changeId) {
+      return 'INSYNC';
+    }
 
+    // Otherwise, wait on Route53 to sync this change
+    const status = (await getChangeStatus(changeId)) as PollDnsStatusJobResult;
     if (status === 'PENDING') {
       throw new Error('Change status is still pending');
     }
