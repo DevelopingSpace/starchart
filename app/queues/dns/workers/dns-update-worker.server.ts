@@ -45,5 +45,11 @@ export const dnsUpdateWorker = new Worker<DnsUpdaterData, DnsRecordUpdateJobResu
       throw error;
     }
   },
-  { connection: redis }
+  {
+    connection: redis,
+    limiter: {
+      max: 3,
+      duration: 1_000,
+    },
+  }
 );
