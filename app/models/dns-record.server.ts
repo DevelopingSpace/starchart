@@ -8,7 +8,7 @@ export const createUserDnsRecord = async (
   data: Pick<DnsRecord, 'username' | 'type' | 'subdomain' | 'value'>
 ) => {
   if (process.env.USER_DNS_RECORD_LIMIT) {
-    if ((await getUserDnsRecordCount(data.username)) >= Number(process.env.USER_RECORD_LIMIT)) {
+    if ((await getUserDnsRecordCount(data.username)) >= Number(process.env.USER_DNS_RECORD_LIMIT)) {
       throw new Error('User has reached the maximum number of dns records');
     }
   }
