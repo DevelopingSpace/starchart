@@ -14,7 +14,7 @@ import {
   renewDnsRecordById,
 } from '~/models/dns-record.server';
 import { requireUsername } from '~/session.server';
-import { deleteDnsRequest } from '~/queues/dns/delete-record-flow.server';
+import { deleteDnsRequest } from '~/queues/dns/delete-dns-record-flow.server';
 import logger from '~/lib/logger.server';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';

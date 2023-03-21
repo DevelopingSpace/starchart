@@ -4,7 +4,7 @@ import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 import { createDnsRecord, upsertDnsRecord, deleteDnsRecord } from '~/lib/dns.server';
 
-import type { WorkType } from '../add-record-flow.server';
+import type { WorkType } from '../add-dns-record-flow.server';
 import type { DnsRecord } from '@prisma/client';
 
 export const dnsUpdateQueueName = 'dns-record-update';

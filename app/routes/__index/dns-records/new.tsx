@@ -6,7 +6,7 @@ import { redirect, typedjson, useTypedActionData } from 'remix-typedjson';
 
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
-import { addDnsRequest } from '~/queues/dns/add-record-flow.server';
+import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
 
 import type { ActionArgs } from '@remix-run/node';
 import type { ZodError } from 'zod';

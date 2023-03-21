@@ -7,7 +7,7 @@ import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById } from '~/models/dns-record.server';
-import { updateDnsRequest } from '~/queues/dns/update-record-flow.server';
+import { updateDnsRequest } from '~/queues/dns/update-dns-record-flow.server';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   await requireUser(request);

@@ -7,7 +7,7 @@ import type { PollDnsStatusJobResult } from './poll-dns-status-worker.server';
 import { pollDnsStatusQueueName } from './poll-dns-status-worker.server';
 
 import type { DnsRecord } from '@prisma/client';
-import type { WorkType } from '../add-record-flow.server';
+import type { WorkType } from '../add-dns-record-flow.server';
 
 export const syncDbStatusQueueName = 'sync-db-status';
 

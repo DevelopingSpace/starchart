@@ -5,7 +5,7 @@ import logger from '~/lib/logger.server';
 
 import { getExpiredDnsRecords } from '~/models/dns-record.server';
 import { addNotification } from '../notifications/notifications.server';
-import { deleteDnsRequest } from '../dns/delete-record-flow.server';
+import { deleteDnsRequest } from '../dns/delete-dns-record-flow.server';
 
 const { EXPIRATION_REPEAT_FREQUENCY_MS, JOB_REMOVAL_FREQUENCY_MS } = process.env;
 
