@@ -27,19 +27,18 @@ export const dnsUpdateWorker = new Worker<DnsUpdaterData, DnsRecordUpdateJobResu
   dnsUpdateQueueName,
   async (job) => {
     const { workType, username, type, fqdn, value } = job.data;
-    const name = fqdn.toLowerCase();
     logger.debug(`${workType} DNS record in Route 53`);
 
     try {
       switch (workType) {
         case 'create':
-          return createDnsRecord(username, type, name, value);
+          return createDnsRecord(username, type, fqdn, value);
 
         case 'update':
-          return upsertDnsRecord(username, type, name, value);
+          return upsertDnsRecord(username, type, fqdn, value);
 
         case 'delete':
-          return deleteDnsRecord(username, type, name, value);
+          return deleteDnsRecord(username, type, fqdn, value);
 
         default:
           throw new UnrecoverableError(`Invalid work type: ${workType}`);
