@@ -92,7 +92,9 @@ export default function Header() {
       </Link>
 
       <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5" width="100%">
-        <Hide below="lg">{user && <Text id="header-user">{user.username}</Text>}</Hide>
+        <Hide below="lg">
+          <Text id="header-user">{user?.username}</Text>
+        </Hide>
 
         <Menu>
           <MenuButton

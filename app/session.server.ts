@@ -111,7 +111,6 @@ export async function logout(request: Request, redirectTo?: string) {
 
 export const sloUsernameCookie = createCookie('sloUsername', {
   domain: process.env.NODE_ENV === 'production' ? new URL(process.env.APP_URL).hostname : undefined,
-  // domain: 'localhost',
   path: '/logout',
   sameSite: 'strict',
   httpOnly: true,

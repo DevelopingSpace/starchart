@@ -19,15 +19,15 @@ export const action = async ({ request }: ActionArgs) => {
   const user = await getUsername(request);
   const formData = await request.formData();
 
-  const value = formData.get('sloUsername');
+  const sloUsername = formData.get('sloUsername');
   if (user !== undefined) {
     // Invalidate the Starchart session but do not log out from Seneca IDP.
     return logout(request, '/logout');
   }
 
-  if (value) {
+  if (typeof sloUsername === 'string') {
     // create slo request with saml stuff
-    const context = createLogoutRequest(value as string);
+    const context = createLogoutRequest(sloUsername);
 
     return redirect(context);
   }
@@ -41,7 +41,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (!sloUsername) {
     return redirect('/');
   } else {
-    // remove the cookie
+    // remove the SLO cookie
     return json(sloUsername, {
       headers: {
         'Set-Cookie': await sloUsernameCookie.serialize(null),
