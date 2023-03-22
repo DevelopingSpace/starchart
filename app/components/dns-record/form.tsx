@@ -14,16 +14,17 @@ import type { DnsRecord } from '@prisma/client';
 import { useUser } from '~/utils';
 import FormField from './form-field';
 import { useMemo } from 'react';
+import type { z } from 'zod';
 
 type FormMode = 'CREATE' | 'EDIT';
 
 interface dnsRecordFormProps {
   mode: FormMode;
-  typeError?: string; // Error for 'Type' field
   dnsRecord?: DnsRecord;
+  errors?: z.typeToFlattenedError<DnsRecord>;
 }
 
-export default function DnsRecordForm({ typeError, dnsRecord, mode }: dnsRecordFormProps) {
+export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordFormProps) {
   const user = useUser();
 
   const submitButtonText = useMemo(() => (mode === 'CREATE' ? 'Create' : 'Update'), [mode]);
@@ -32,7 +33,11 @@ export default function DnsRecordForm({ typeError, dnsRecord, mode }: dnsRecordF
   return (
     <Form className="dns-record-form" method="post">
       <VStack maxW="xl" spacing="2">
-        <FormField label="DNS Record Name" isRequired={true}>
+        <FormField
+          label="DNS Record Name"
+          isRequired={true}
+          error={errors?.fieldErrors.subdomain?.join(' ')}
+        >
           <InputGroup>
             <Input name="subdomain" defaultValue={dnsRecord?.subdomain} />
             <InputRightAddon children={`.${user.baseDomain}`} />
@@ -42,7 +47,7 @@ export default function DnsRecordForm({ typeError, dnsRecord, mode }: dnsRecordF
           </Tooltip>
         </FormField>
 
-        <FormField label="Type" isRequired={true} error={typeError}>
+        <FormField label="Type" isRequired={true} error={errors?.fieldErrors.type?.join(' ')}>
           <Select placeholder="Select a type" name="type" defaultValue={dnsRecord?.type}>
             <option value="A">A</option>
             <option value="AAAA">AAAA</option>
@@ -54,28 +59,28 @@ export default function DnsRecordForm({ typeError, dnsRecord, mode }: dnsRecordF
           </Tooltip>
         </FormField>
 
-        <FormField label="Value" isRequired={true}>
+        <FormField label="Value" isRequired={true} error={errors?.fieldErrors.value?.join(' ')}>
           <Input name="value" defaultValue={dnsRecord?.value} />
           <Tooltip label="Enter DNS Record value">
             <InfoIcon />
           </Tooltip>
         </FormField>
 
-        <FormField label="Ports">
+        <FormField label="Ports" error={errors?.fieldErrors.ports?.join(' ')}>
           <Input name="ports" defaultValue={dnsRecord?.ports ?? ''} />
           <Tooltip label="Enter port(s) separated by commas (E.g. 8080, 1234)">
             <InfoIcon />
           </Tooltip>
         </FormField>
 
-        <FormField label="Course">
+        <FormField label="Course" error={errors?.fieldErrors.course?.join(' ')}>
           <Input name="course" />
           <Tooltip label="Enter course name (E.g. OSD700)">
             <InfoIcon />
           </Tooltip>
         </FormField>
 
-        <FormField label="Description">
+        <FormField label="Description" error={errors?.fieldErrors.description?.join(' ')}>
           <Textarea rows={10} name="description" defaultValue={dnsRecord?.description ?? ''} />
         </FormField>
       </VStack>

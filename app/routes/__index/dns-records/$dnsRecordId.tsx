@@ -8,6 +8,8 @@ import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById } from '~/models/dns-record.server';
 import { updateDnsRequest } from '~/queues/dns/update-dns-record-flow.server';
+import { UpdateDnsRecordSchema } from '~/lib/dns.server';
+import { useActionData } from '@remix-run/react';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   await requireUser(request);
@@ -35,22 +37,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
 
-  const DnsRecord = z.object({
-    id: z.string(),
-    subdomain: z.string().min(1), // We do not want to consider '' a valid string
-    type: z.nativeEnum(DnsRecordType),
-    value: z.string().min(1),
-    ports: z.string().optional(),
-    course: z.string().optional(),
-    description: z.string().optional(),
-  });
-
-  const updatedDnsRecordParams = await parseFormSafe(request, DnsRecord);
-
+  const updatedDnsRecordParams = await parseFormSafe(request, UpdateDnsRecordSchema);
   if (updatedDnsRecordParams.success === false) {
-    throw new Response(updatedDnsRecordParams.error.message, {
-      status: 400,
-    });
+    return updatedDnsRecordParams.error.flatten();
   }
 
   const { data } = updatedDnsRecordParams;
@@ -68,6 +57,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function DnsRecordRoute() {
   const dnsRecord = useTypedLoaderData<typeof loader>();
+  const actionData = useActionData();
 
   return (
     <Container maxW="container.xl" ml={[null, null, '10vw']}>
@@ -78,7 +68,7 @@ export default function DnsRecordRoute() {
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
         been the industry's standard dummy text ever since the 1500s
       </Text>
-      <DnsRecordForm dnsRecord={dnsRecord} mode="EDIT" />
+      <DnsRecordForm errors={actionData} dnsRecord={dnsRecord} mode="EDIT" />
     </Container>
   );
 }
