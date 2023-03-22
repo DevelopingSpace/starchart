@@ -6,7 +6,7 @@ import { redirect, typedjson, useTypedActionData } from 'remix-typedjson';
 
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
-import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
+import { addCreateDnsRequest } from '~/queues/dns/index.server';
 
 import type { ActionArgs } from '@remix-run/node';
 import type { ZodError } from 'zod';
@@ -47,7 +47,7 @@ export const action = async ({ request }: ActionArgs) => {
   const { data } = newDnsRecordParams;
 
   try {
-    await addDnsRequest({
+    await addCreateDnsRequest({
       username: user.username,
       type: data.type,
       subdomain: data.subdomain,

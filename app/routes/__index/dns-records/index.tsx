@@ -14,7 +14,7 @@ import {
   renewDnsRecordById,
 } from '~/models/dns-record.server';
 import { requireUsername } from '~/session.server';
-import { deleteDnsRequest } from '~/queues/dns/delete-dns-record-flow.server';
+import { addDeleteDnsRequest } from '~/queues/dns/index.server';
 import logger from '~/lib/logger.server';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
@@ -55,21 +55,20 @@ export const action = async ({ request }: ActionArgs) => {
     });
   }
 
-  if (dnsRecord.status !== 'active') {
-    throw new Response('DNS Record is not active, action forbidden', {
-      status: 409,
-    });
-  }
-
   switch (intent) {
     case 'renew-dns-record':
+      if (dnsRecord.status !== 'active') {
+        throw new Response('DNS Record is not active, action forbidden', {
+          status: 409,
+        });
+      }
       await renewDnsRecordById(dnsRecord.id);
       return json({
         result: 'ok',
         message: 'DNS record was renewed',
       });
     case 'delete-dns-record':
-      deleteDnsRequest({
+      addDeleteDnsRequest({
         username,
         type: dnsRecord.type,
         subdomain: dnsRecord.subdomain,

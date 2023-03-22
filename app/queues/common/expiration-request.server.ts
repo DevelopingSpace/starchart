@@ -5,7 +5,7 @@ import logger from '~/lib/logger.server';
 
 import { getExpiredDnsRecords } from '~/models/dns-record.server';
 import { addNotification } from '../notifications/notifications.server';
-import { deleteDnsRequest } from '../dns/delete-dns-record-flow.server';
+import { addDeleteDnsRequest } from '~/queues/dns/index.server';
 
 const { EXPIRATION_REPEAT_FREQUENCY_MS, JOB_REMOVAL_FREQUENCY_MS } = process.env;
 
@@ -40,7 +40,7 @@ const expirationRequestWorker = new Worker(
       Promise.all(
         dnsRecords.map(async ({ id, username, type, subdomain, value, user }) => {
           // delete records from Route53 and DB
-          await deleteDnsRequest({ id, username, type, subdomain, value });
+          await addDeleteDnsRequest({ id, username, type, subdomain, value });
           // add notification jobs (assuming deletion went successfully)
           await addNotification({
             emailAddress: user.email,

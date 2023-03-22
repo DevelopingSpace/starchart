@@ -133,6 +133,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                   transition.state === 'submitting' &&
                   Number(transition.submission.formData.get('id')) === dnsRecord.id;
                 const isDnsRecordActive = dnsRecord.status === 'active';
+                const isDnsRecordDeletable = dnsRecord.status !== 'pending';
 
                 return (
                   <Tr key={dnsRecord.id}>
@@ -203,7 +204,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                                 aria-label="Delete DNS record"
                                 variant="ghost"
                                 type="submit"
-                                isDisabled={!isDnsRecordActive}
+                                isDisabled={!isDnsRecordDeletable}
                               />
                             </Tooltip>
                           </Flex>
