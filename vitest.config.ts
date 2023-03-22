@@ -12,5 +12,8 @@ export default defineConfig({
     setupFiles: ['./test/unit/setup-test-env.ts'],
     include: ['./test/unit/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     watchExclude: ['.*\\/node_modules\\/.*', '.*\\/build\\/.*', '.*\\/mysql-data\\/.*'],
+    coverage: {
+      provider: 'istanbul',
+    },
   },
 });
