@@ -64,3 +64,8 @@ export async function parseLoginResponse(body: { [k: string]: FormDataEntryValue
   const relayState = body.RelayState as string;
   return { samlResponse: extract, relayState };
 }
+
+export function createLogoutRequest(user: string) {
+  const { context } = sp.createLogoutRequest(idp, 'redirect', { nameID: user });
+  return context;
+}
