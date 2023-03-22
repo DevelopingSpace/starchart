@@ -30,7 +30,7 @@ describe('createUser()', () => {
     await prisma.user.deleteMany().catch(() => {});
   });
 
-  test('creates an Ueser row with expected fields', async () => {
+  test('creates an User row with expected fields', async () => {
     expect(typeof user).toEqual('object');
     expect(user.username).toEqual('jsmith');
     expect(user.displayName).toEqual('John Smith');
@@ -41,13 +41,13 @@ describe('createUser()', () => {
     expect(user.deactivated).toBe(false);
   });
 
-  test('creating an Ueser with same username should throw error', async () => {
+  test('creating an User with same username should throw error', async () => {
     await expect(
       createUser('jsmith', 'Joanna Smith', 'j-smith@myseneca.ca', 'mycustomdomain-admins')
     ).rejects.toThrow();
   });
 
-  test('creating an Ueser with same email should throw error', async () => {
+  test('creating an User with same email should throw error', async () => {
     await expect(
       createUser('jsmith2', 'John Smith', 'jsmith@myseneca.ca', 'mycustomdomain-admins')
     ).rejects.toThrow();
