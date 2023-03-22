@@ -49,6 +49,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (!sloUsername) {
     return redirect('/');
   }
+
   // remove the SLO cookie
   return json(sloUsername, {
     headers: {
