@@ -17,18 +17,16 @@ import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await getUsername(request);
-  const formData = await request.formData();
-
-  const sloUsername = formData.get('sloUsername');
-  if (user !== undefined) {
+  if (user) {
     // Invalidate the Starchart session but do not log out from Seneca IDP.
     return logout(request, '/logout');
   }
 
+  const formData = await request.formData();
+  const sloUsername = formData.get('sloUsername');
   if (typeof sloUsername === 'string') {
     // create slo request with saml stuff
     const context = createLogoutRequest(sloUsername);
-
     return redirect(context);
   }
   return redirect('/');
@@ -40,14 +38,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   const sloUsername = await sloUsernameCookie.parse(cookies);
   if (!sloUsername) {
     return redirect('/');
-  } else {
-    // remove the SLO cookie
-    return json(sloUsername, {
-      headers: {
-        'Set-Cookie': await sloUsernameCookie.serialize(null),
-      },
-    });
   }
+  // remove the SLO cookie
+  return json(sloUsername, {
+    headers: {
+      'Set-Cookie': await sloUsernameCookie.serialize(null),
+    },
+  });
 };
 
 export default function Index() {
