@@ -5,10 +5,12 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 
+import type { DnsRecord } from '@prisma/client';
+
 export interface OrderCompleterData {
   rootDomain: string;
   username: string;
-  certificateId: number;
+  certificateId: DnsRecord['id'];
 }
 
 export const orderCompleterQueueName = 'certificate-completeOrder';

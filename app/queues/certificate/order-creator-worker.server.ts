@@ -8,10 +8,12 @@ import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
 import { getSubdomainFromFqdn } from '~/utils';
 import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
 
+import type { DnsRecord } from '@prisma/client';
+
 export interface OrderCreatorData {
   rootDomain: string;
   username: string;
-  certificateId: number;
+  certificateId: DnsRecord['id'];
 }
 
 export const orderCreatorQueueName = 'certificate-createOrder';
@@ -25,7 +27,7 @@ const handleChallenges = ({
   bundles,
 }: {
   username: string;
-  certificateId: number;
+  certificateId: DnsRecord['id'];
   bundles: ChallengeBundle[];
 }) => {
   const challengeInsertPromises = bundles.map(async ({ domain, value: challengeKey }) => {

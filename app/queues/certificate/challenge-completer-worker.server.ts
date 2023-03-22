@@ -4,10 +4,12 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 
+import type { DnsRecord } from '@prisma/client';
+
 export interface ChallengeCompleterData {
   rootDomain: string;
   username: string;
-  certificateId: number;
+  certificateId: DnsRecord['id'];
 }
 
 export const challengeCompleterQueueName = 'certificate-completeChallenges';

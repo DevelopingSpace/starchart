@@ -2,10 +2,12 @@ import { Worker } from 'bullmq';
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 
+import type { DnsRecord } from '@prisma/client';
+
 export interface DnsCleanerData {
   rootDomain: string;
   username: string;
-  certificateId: number;
+  certificateId: DnsRecord['id'];
 }
 
 export const dnsCleanerQueueName = 'certificate-cleanDns';

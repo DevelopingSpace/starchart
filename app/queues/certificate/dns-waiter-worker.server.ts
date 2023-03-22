@@ -4,10 +4,12 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as challengeModel from '~/models/challenge.server';
 
+import type { DnsRecord } from '@prisma/client';
+
 export interface DnsWaiterData {
   rootDomain: string;
   username: string;
-  certificateId: number;
+  certificateId: DnsRecord['id'];
 }
 
 export const dnsWaiterQueueName = 'certificate-waitDns';
