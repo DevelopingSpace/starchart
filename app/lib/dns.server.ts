@@ -256,7 +256,7 @@ export const deleteDnsRecord = async (
         fqdn,
         value,
       });
-      return null;
+      return;
     }
 
     const command = new ChangeResourceRecordSetsCommand({
