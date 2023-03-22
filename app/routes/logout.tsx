@@ -14,6 +14,7 @@ import { createLogoutRequest } from '~/lib/saml.server';
 import { getUsername, sloUsernameCookie, logout } from '~/session.server';
 
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+
 /* Initially start here, check if there is a session with getUsername if there
    is a session then logout to destroy the session cookie and add sloUsername cookie
    in session.ts file and then redirect back here to go through the loader with
@@ -34,6 +35,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
   return redirect('/');
 };
+
 /* If there is an sloUsername cookie this means the session was just destroyed
    and we should then take the value of sloUsername and make it the value of
    our SLO button. Should the slo button be pressed we will go back into the
