@@ -22,13 +22,18 @@ export function getCertificateById(id: Certificate['id']) {
   return prisma.certificate.findUniqueOrThrow({ where: { id } });
 }
 
-export function createCertificate(data: Pick<Certificate, 'username' | 'domain' | 'orderUrl'>) {
+export function createCertificate(data: Pick<Certificate, 'username' | 'domain'>) {
   return prisma.certificate.create({ data: { ...data } });
 }
 
 export function updateCertificateById(
   id: number,
-  data: Pick<Certificate, 'certificate' | 'privateKey' | 'validFrom' | 'validTo'>
+  data: Partial<
+    Pick<
+      Certificate,
+      'orderUrl' | 'certificate' | 'privateKey' | 'validFrom' | 'validTo' | 'status'
+    >
+  >
 ) {
   return prisma.certificate.update({
     where: { id },

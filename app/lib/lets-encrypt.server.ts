@@ -325,10 +325,14 @@ class LetsEncrypt {
 
     /**
      * Expand authorizations based on the order.
-     * Note, we only needed the challenges when we created the order, so we
-     * could inject them into the DNS
      */
     await this.#loadAuthorizations();
+
+    /**
+     * Expand and extract challenges based on the authorizations
+     * Need this, because challenges need to be loaded in order for them to complete
+     */
+    await this.#extractChallenges();
 
     return this;
   };
@@ -411,12 +415,14 @@ class LetsEncrypt {
       ...(altNames.length && { altNames }),
     });
 
-    const finalizedOrder = await this.#client.finalizeOrder(this.#order, csr);
-    const certificate = await this.#client.getCertificate(finalizedOrder);
+    this.#order = await this.#client.finalizeOrder(this.#order, csr);
+    const certificate = await this.#client.getCertificate(this.#order);
 
     return {
       privateKey: key.toString(),
       certificate,
+      validFrom: new Date(),
+      validTo: new Date(this.#order.expires!),
     };
   };
 

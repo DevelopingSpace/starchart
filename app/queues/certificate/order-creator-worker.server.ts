@@ -11,9 +11,6 @@ import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
 export interface OrderCreatorData {
   rootDomain: string;
   username: string;
-}
-
-export interface OrderCreatorOutputData {
   certificateId: number;
 }
 
@@ -78,10 +75,10 @@ const handleChallenges = ({
  * next BullMQ worker in our flow
  */
 
-export const orderCreatorWorker = new Worker<OrderCreatorData, OrderCreatorOutputData>(
+export const orderCreatorWorker = new Worker<OrderCreatorData>(
   orderCreatorQueueName,
   async (job) => {
-    const { rootDomain, username } = job.data;
+    const { rootDomain, username, certificateId } = job.data;
 
     logger.info(`Creating certificate order for ${rootDomain}`);
 
@@ -117,20 +114,16 @@ export const orderCreatorWorker = new Worker<OrderCreatorData, OrderCreatorOutpu
     logger.info(`Order created successfully`);
 
     /**
-     * Store order data in the DB
+     * Update order data in the DB
      */
-    let certificateId;
     try {
-      // Destructuring assignment to existing variable
-      ({ id: certificateId } = await certificateModel.createCertificate({
-        username,
-        domain: rootDomain,
+      await certificateModel.updateCertificateById(certificateId, {
         orderUrl: letsEncrypt.order!.url,
-      }));
-      logger.info(`Order created successfully, added to db with id: ${certificateId}`);
+      });
+      logger.info(`Order created successfully, updated certificate with id: ${certificateId}`);
     } catch (e) {
       // Log and rethrow the same error to keep message and stack
-      logger.error(`Failed to insert certificate into db`, e);
+      logger.error(`Failed to update certificate ${certificateId} in db`, e);
       throw e;
     }
 
@@ -146,13 +139,6 @@ export const orderCreatorWorker = new Worker<OrderCreatorData, OrderCreatorOutpu
       logger.error(`Failed to add challenge entries`, e);
       throw e;
     }
-
-    /**
-     * We will return this data to BullMQ, so subsequent jobs can make use of this information
-     */
-    return {
-      certificateId,
-    } as OrderCreatorOutputData;
   },
   { connection: redis }
 );

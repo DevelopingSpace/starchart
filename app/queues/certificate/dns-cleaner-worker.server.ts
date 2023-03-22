@@ -5,6 +5,7 @@ import logger from '~/lib/logger.server';
 export interface DnsCleanerData {
   rootDomain: string;
   username: string;
+  certificateId: number;
 }
 
 export const dnsCleanerQueueName = 'certificate-cleanDns';
