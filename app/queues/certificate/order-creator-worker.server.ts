@@ -5,7 +5,7 @@ import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 import * as challengeModel from '~/models/challenge.server';
 import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
-
+import { getSubdomainFromFqdn } from '~/utils';
 import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
 
 export interface OrderCreatorData {
@@ -34,13 +34,29 @@ const handleChallenges = ({
   const challengeInsertPromises = bundles.map(async ({ domain, value: challengeKey }) => {
     logger.info(`Adding challenge to DNS`, { domain, challengeKey });
 
+    let subdomain = '';
+    try {
+      subdomain = getSubdomainFromFqdn(username, domain);
+    } catch (e) {
+      // Let's rethrow this as an UnrecoverableError, but preserve the message and stack
+
+      logger.error("Challenge domain is not a subdomain of the user's base domain", {
+        username,
+        domain,
+      });
+
+      const newError = new UnrecoverableError((e as Error).message);
+      newError.stack = (e as Error).stack;
+      throw newError;
+    }
+
     /**
      * add challenge to DNS
      */
     await addDnsRequest({
       username,
       type: 'TXT',
-      subdomain: domain,
+      subdomain,
       value: challengeKey,
     });
 

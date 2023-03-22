@@ -74,6 +74,19 @@ export function buildDomain(username: PrismaUser['username'], name?: string) {
   return buildUserBaseDomain(username);
 }
 
+export function getSubdomainFromFqdn(username: PrismaUser['username'], fqdn: string): string {
+  const baseDomain = buildUserBaseDomain(username);
+
+  if (!fqdn.endsWith(`.${buildUserBaseDomain(username)}`)) {
+    throw new Error("fqdn is not a subdomain of user's base domain");
+  }
+
+  // Cut the base domain from
+  const subdomain = fqdn.substring(0, fqdn.length - (baseDomain.length + 1));
+
+  return subdomain;
+}
+
 export function useOptionalUser(): User | undefined {
   const data = useMatchesData('root');
   if (!data || !isUser(data.user)) {
