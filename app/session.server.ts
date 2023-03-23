@@ -1,6 +1,7 @@
 import { createCookie, createCookieSessionStorage, redirect } from '@remix-run/node';
 
 import type { User } from '~/models/user.server';
+import { isDeactivated } from '~/models/user.server';
 import { getUserByUsername } from '~/models/user.server';
 import secrets from '~/lib/secrets.server';
 
@@ -55,7 +56,7 @@ export async function requireUsername(
   redirectTo: string = new URL(request.url).pathname
 ) {
   const username = await getUsername(request);
-  if (!username) {
+  if (!username || (await isDeactivated(username))) {
     const searchParams = new URLSearchParams([['redirectTo', redirectTo]]);
     throw redirect(`/login?${searchParams}`);
   }
