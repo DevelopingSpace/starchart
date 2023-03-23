@@ -113,12 +113,14 @@ export default function DnsRecordsIndexRoute() {
           a galley of type and scrambled it to make a type specimen book.
         </Text>
         {dnsRecords.length ? (
-          <Flex justifyContent="flex-end">
-            <Link to="/dns-records/new">
-              <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
-            </Link>
+          <>
+            <Flex justifyContent="flex-end" maxW="container.xl">
+              <Link to="/dns-records/new">
+                <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
+              </Link>
+            </Flex>
             <DnsRecordsTable dnsRecords={dnsRecords} />
-          </Flex>
+          </>
         ) : (
           <Center mt="16">
             <Link to="/dns-records/new">
