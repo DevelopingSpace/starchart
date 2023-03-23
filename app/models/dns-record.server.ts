@@ -1,4 +1,4 @@
-import { DnsRecordStatus } from '@prisma/client';
+import { DnsRecordStatus, DnsRecordType } from '@prisma/client';
 import dayjs from 'dayjs';
 import { prisma } from '~/db.server';
 
@@ -26,7 +26,15 @@ export const createUserDnsRecord = async (
 };
 
 export function getDnsRecordsByUsername(username: DnsRecord['username']) {
-  return prisma.dnsRecord.findMany({ where: { username } });
+  return prisma.dnsRecord.findMany({
+    where: {
+      username,
+      NOT: {
+        type: DnsRecordType.TXT,
+        subdomain: '_acme-challenge',
+      },
+    },
+  });
 }
 
 export function getDnsRecordById(id: DnsRecord['id']) {
@@ -37,6 +45,11 @@ export function getUserDnsRecordCount(username: DnsRecord['username']) {
   return prisma.dnsRecord.count({
     where: {
       username,
+      status: DnsRecordStatus.active,
+      NOT: {
+        type: DnsRecordType.TXT,
+        subdomain: '_acme-challenge',
+      },
     },
   });
 }
