@@ -12,11 +12,7 @@ import { dnsCleanerQueueName, dnsCleanerWorker } from './dns-cleaner-worker.serv
 import { redis } from '~/lib/redis.server';
 
 import type { FlowJob } from 'bullmq';
-import type { OrderCreatorData } from './order-creator-worker.server';
-import type { DnsWaiterData } from './dns-waiter-worker.server';
-import type { ChallengeCompleterData } from './challenge-completer-worker.server';
-import type { OrderCompleterData } from './order-completer-worker.server';
-import type { DnsCleanerData } from './dns-cleaner-worker.server';
+import type { CertificateJobData } from './certificateJobTypes.server';
 
 // Exporting these to allow for graceful shutdown
 export {
@@ -56,11 +52,14 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
     domain: rootDomain,
   }));
 
+  // Uniform data passed to every worker in the flow
+  const jobData: CertificateJobData = { rootDomain, username, certificateId };
+
   // Step 1, create order
   const orderCreator: FlowJob = {
     name: `createOrder:${rootDomain}`,
     queueName: orderCreatorQueueName,
-    data: { rootDomain, username, certificateId } as OrderCreatorData,
+    data: jobData,
     opts: {
       failParentOnFailure: true,
       attempts: 5,
@@ -75,7 +74,7 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
   const dnsVerifier: FlowJob = {
     name: `waitDns:${rootDomain}`,
     queueName: dnsWaiterQueueName,
-    data: { rootDomain, username, certificateId } as DnsWaiterData,
+    data: jobData,
     children: [orderCreator],
     opts: {
       failParentOnFailure: true,
@@ -91,7 +90,7 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
   const challengeCompleter: FlowJob = {
     name: `completeChallenges:${rootDomain}`,
     queueName: challengeCompleterQueueName,
-    data: { rootDomain, username, certificateId } as ChallengeCompleterData,
+    data: jobData,
     children: [dnsVerifier],
     opts: {
       failParentOnFailure: true,
@@ -107,7 +106,7 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
   const orderCompleter: FlowJob = {
     name: `completeOrder:${rootDomain}`,
     queueName: orderCompleterQueueName,
-    data: { rootDomain, username, certificateId } as OrderCompleterData,
+    data: jobData,
     children: [challengeCompleter],
     opts: {
       failParentOnFailure: false, // Important, don't wait the cleanup step
@@ -124,7 +123,7 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
   const dnsCleaner: FlowJob = {
     name: `cleanDns:${rootDomain}`,
     queueName: dnsCleanerQueueName,
-    data: { rootDomain, username, certificateId } as DnsCleanerData,
+    data: jobData,
     children: [orderCompleter],
     opts: {
       attempts: 3,

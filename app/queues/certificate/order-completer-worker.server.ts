@@ -5,17 +5,11 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 
-import type { DnsRecord } from '@prisma/client';
-
-export interface OrderCompleterData {
-  rootDomain: string;
-  username: string;
-  certificateId: DnsRecord['id'];
-}
+import type { CertificateJobData } from './certificateJobTypes.server';
 
 export const orderCompleterQueueName = 'certificate-completeOrder';
 
-export const orderCompleterWorker = new Worker<OrderCompleterData>(
+export const orderCompleterWorker = new Worker<CertificateJobData>(
   orderCompleterQueueName,
   async (job) => {
     const { rootDomain, certificateId } = job.data;

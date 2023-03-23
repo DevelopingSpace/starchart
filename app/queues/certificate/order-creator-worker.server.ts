@@ -8,13 +8,7 @@ import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
 import { getSubdomainFromFqdn } from '~/utils';
 import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
 
-import type { DnsRecord } from '@prisma/client';
-
-export interface OrderCreatorData {
-  rootDomain: string;
-  username: string;
-  certificateId: DnsRecord['id'];
-}
+import type { CertificateJobData } from './certificateJobTypes.server';
 
 export const orderCreatorQueueName = 'certificate-createOrder';
 
@@ -26,8 +20,8 @@ const handleChallenges = ({
   certificateId,
   bundles,
 }: {
-  username: string;
-  certificateId: DnsRecord['id'];
+  username: CertificateJobData['username'];
+  certificateId: CertificateJobData['certificateId'];
   bundles: ChallengeBundle[];
 }) => {
   const challengeInsertPromises = bundles.map(async ({ domain, value: challengeKey }) => {
@@ -77,7 +71,7 @@ const handleChallenges = ({
  * next BullMQ worker in our flow
  */
 
-export const orderCreatorWorker = new Worker<OrderCreatorData>(
+export const orderCreatorWorker = new Worker<CertificateJobData>(
   orderCreatorQueueName,
   async (job) => {
     const { rootDomain, username, certificateId } = job.data;

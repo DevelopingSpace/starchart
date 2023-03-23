@@ -4,13 +4,7 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as challengeModel from '~/models/challenge.server';
 
-import type { DnsRecord } from '@prisma/client';
-
-export interface DnsWaiterData {
-  rootDomain: string;
-  username: string;
-  certificateId: DnsRecord['id'];
-}
+import type { CertificateJobData } from './certificateJobTypes.server';
 
 export const dnsWaiterQueueName = 'certificate-waitDns';
 
@@ -23,7 +17,7 @@ export const dnsWaiterQueueName = 'certificate-waitDns';
  *   - If any fails, it throws, so BullMQ will retry
  */
 
-export const dnsWaiterWorker = new Worker<DnsWaiterData>(
+export const dnsWaiterWorker = new Worker<CertificateJobData>(
   dnsWaiterQueueName,
   async (job) => {
     const { rootDomain, certificateId } = job.data;

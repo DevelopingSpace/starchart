@@ -4,17 +4,11 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 
-import type { DnsRecord } from '@prisma/client';
-
-export interface ChallengeCompleterData {
-  rootDomain: string;
-  username: string;
-  certificateId: DnsRecord['id'];
-}
+import type { CertificateJobData } from './certificateJobTypes.server';
 
 export const challengeCompleterQueueName = 'certificate-completeChallenges';
 
-export const challengeCompleterWorker = new Worker<ChallengeCompleterData>(
+export const challengeCompleterWorker = new Worker<CertificateJobData>(
   challengeCompleterQueueName,
   async (job) => {
     const { rootDomain, certificateId } = job.data;

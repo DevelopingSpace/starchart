@@ -2,17 +2,11 @@ import { Worker } from 'bullmq';
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 
-import type { DnsRecord } from '@prisma/client';
-
-export interface DnsCleanerData {
-  rootDomain: string;
-  username: string;
-  certificateId: DnsRecord['id'];
-}
+import type { CertificateJobData } from './certificateJobTypes.server';
 
 export const dnsCleanerQueueName = 'certificate-cleanDns';
 
-export const dnsCleanerWorker = new Worker<DnsCleanerData>(
+export const dnsCleanerWorker = new Worker<CertificateJobData>(
   dnsCleanerQueueName,
   async (job) => {
     const { rootDomain } = job.data;
