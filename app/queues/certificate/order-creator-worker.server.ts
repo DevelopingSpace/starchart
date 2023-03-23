@@ -5,17 +5,10 @@ import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 import * as challengeModel from '~/models/challenge.server';
 import { addCreateDnsRequest } from '~/queues/dns/index.server';
+import { getSubdomainFromFqdn } from '~/utils';
 
 import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
-
-export interface OrderCreatorData {
-  rootDomain: string;
-  username: string;
-}
-
-export interface OrderCreatorOutputData {
-  certificateId: number;
-}
+import type { CertificateJobData } from './certificateJobTypes.server';
 
 export const orderCreatorQueueName = 'certificate-createOrder';
 
@@ -27,12 +20,28 @@ const handleChallenges = ({
   certificateId,
   bundles,
 }: {
-  username: string;
-  certificateId: number;
+  username: CertificateJobData['username'];
+  certificateId: CertificateJobData['certificateId'];
   bundles: ChallengeBundle[];
 }) => {
   const challengeInsertPromises = bundles.map(async ({ domain, value: challengeKey }) => {
     logger.info(`Adding challenge to DNS`, { domain, challengeKey });
+
+    let subdomain = '';
+    try {
+      subdomain = getSubdomainFromFqdn(username, domain);
+    } catch (e) {
+      // Let's rethrow this as an UnrecoverableError, but preserve the message and stack
+
+      logger.error("Challenge domain is not a subdomain of the user's base domain", {
+        username,
+        domain,
+      });
+
+      const newError = new UnrecoverableError((e as Error).message);
+      newError.stack = (e as Error).stack;
+      throw newError;
+    }
 
     /**
      * add challenge to DNS
@@ -40,7 +49,7 @@ const handleChallenges = ({
     await addCreateDnsRequest({
       username,
       type: 'TXT',
-      subdomain: domain,
+      subdomain,
       value: challengeKey,
     });
 
@@ -62,10 +71,10 @@ const handleChallenges = ({
  * next BullMQ worker in our flow
  */
 
-export const orderCreatorWorker = new Worker<OrderCreatorData, OrderCreatorOutputData>(
+export const orderCreatorWorker = new Worker<CertificateJobData>(
   orderCreatorQueueName,
   async (job) => {
-    const { rootDomain, username } = job.data;
+    const { rootDomain, username, certificateId } = job.data;
 
     logger.info(`Creating certificate order for ${rootDomain}`);
 
@@ -101,20 +110,16 @@ export const orderCreatorWorker = new Worker<OrderCreatorData, OrderCreatorOutpu
     logger.info(`Order created successfully`);
 
     /**
-     * Store order data in the DB
+     * Update order data in the DB
      */
-    let certificateId;
     try {
-      // Destructuring assignment to existing variable
-      ({ id: certificateId } = await certificateModel.createCertificate({
-        username,
-        domain: rootDomain,
+      await certificateModel.updateCertificateById(certificateId, {
         orderUrl: letsEncrypt.order!.url,
-      }));
-      logger.info(`Order created successfully, added to db with id: ${certificateId}`);
+      });
+      logger.info(`Order created successfully, updated certificate with id: ${certificateId}`);
     } catch (e) {
       // Log and rethrow the same error to keep message and stack
-      logger.error(`Failed to insert certificate into db`, e);
+      logger.error(`Failed to update certificate ${certificateId} in db`, e);
       throw e;
     }
 
@@ -130,13 +135,6 @@ export const orderCreatorWorker = new Worker<OrderCreatorData, OrderCreatorOutpu
       logger.error(`Failed to add challenge entries`, e);
       throw e;
     }
-
-    /**
-     * We will return this data to BullMQ, so subsequent jobs can make use of this information
-     */
-    return {
-      certificateId,
-    } as OrderCreatorOutputData;
   },
   { connection: redis }
 );

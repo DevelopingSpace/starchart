@@ -2,14 +2,11 @@ import { Worker } from 'bullmq';
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 
-export interface DnsCleanerData {
-  rootDomain: string;
-  username: string;
-}
+import type { CertificateJobData } from './certificateJobTypes.server';
 
 export const dnsCleanerQueueName = 'certificate-cleanDns';
 
-export const dnsCleanerWorker = new Worker<DnsCleanerData>(
+export const dnsCleanerWorker = new Worker<CertificateJobData>(
   dnsCleanerQueueName,
   async (job) => {
     const { rootDomain } = job.data;

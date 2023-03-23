@@ -3,33 +3,19 @@ import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
-import { getChildrenValuesOfQueueName } from '~/utils';
-import { orderCreatorQueueName } from './order-creator-worker.server';
 
-import type { OrderCreatorOutputData } from './order-creator-worker.server';
-
-export interface ChallengeCompleterData {
-  rootDomain: string;
-  username: string;
-}
+import type { CertificateJobData } from './certificateJobTypes.server';
 
 export const challengeCompleterQueueName = 'certificate-completeChallenges';
 
-export const challengeCompleterWorker = new Worker<ChallengeCompleterData>(
+export const challengeCompleterWorker = new Worker<CertificateJobData>(
   challengeCompleterQueueName,
   async (job) => {
-    const { rootDomain } = job.data;
-    const childrenValues = await getChildrenValuesOfQueueName<OrderCreatorOutputData>({
-      queueName: orderCreatorQueueName,
-      job,
-    });
-
-    // Get the order creator return value
-    const [orderCreatorRetval] = Object.values(childrenValues);
+    const { rootDomain, certificateId } = job.data;
 
     logger.info('Attempting to complete ACME challenges with the provider', {
       rootDomain,
-      certificateId: orderCreatorRetval.certificateId,
+      certificateId,
     });
 
     /**
@@ -37,13 +23,11 @@ export const challengeCompleterWorker = new Worker<ChallengeCompleterData>(
      */
     let certificateEntry;
     try {
-      certificateEntry = await certificateModel.getCertificateById(
-        orderCreatorRetval.certificateId
-      );
+      certificateEntry = await certificateModel.getCertificateById(certificateId);
     } catch (e) {
       // If we cannot recall the record from db, it's certainly an unrecoverable error
       logger.error(
-        `Failed to reload certificate ${orderCreatorRetval.certificateId} from DB, rethrowing error as Unrecoverable`,
+        `Failed to reload certificate ${certificateId} from DB, rethrowing error as Unrecoverable`,
         e
       );
 
@@ -73,19 +57,40 @@ export const challengeCompleterWorker = new Worker<ChallengeCompleterData>(
     /**
      * Recall certificate status in the letsEncrypt object
      */
-    await letsEncrypt.recallOrder(certificateEntry.orderUrl);
-    const areCertificateChallengesComplete = await letsEncrypt.verifyChallenges();
+    try {
+      logger.debug(
+        `Attempting to recall order ${certificateId} using ${certificateEntry.orderUrl}`
+      );
+      await letsEncrypt.recallOrder(certificateEntry.orderUrl!);
+    } catch (e) {
+      logger.error(`Failed to recall order`, e);
+
+      throw e;
+    }
+
+    /**
+     * Complete challenges
+     */
+    let areCertificateChallengesComplete = false;
+    try {
+      logger.debug(`Attempting to complete challenges with the ACME provider`, { certificateId });
+      areCertificateChallengesComplete = await letsEncrypt.verifyChallenges();
+    } catch (e) {
+      logger.error(`Failed to completed challenges for order order ${certificateId}`, e);
+
+      throw e;
+    }
 
     if (!areCertificateChallengesComplete) {
       logger.info('Challenges are not yet ready', {
         rootDomain,
-        certificateId: orderCreatorRetval.certificateId,
+        certificateId,
       });
 
       // Adding more detail in debug log level
       logger.debug('Challenges are not yet ready', {
         rootDomain,
-        certificateId: orderCreatorRetval.certificateId,
+        certificateId,
         challengeBundles: letsEncrypt.challengeBundles,
       });
 
@@ -94,7 +99,7 @@ export const challengeCompleterWorker = new Worker<ChallengeCompleterData>(
 
     logger.info('All Challenges has been approved by the ACME provider', {
       rootDomain,
-      certificateId: orderCreatorRetval.certificateId,
+      certificateId,
     });
   },
   { connection: redis }

@@ -40,7 +40,7 @@ model Certificate {
   id           Int               @id @default(autoincrement())
   username     String
   domain       String
-  orderUrl     String            @unique @db.VarChar(255)
+  orderUrl     String?           @unique @db.VarChar(255)
   privateKey   String?
   certificate  String?
   validFrom    DateTime?
