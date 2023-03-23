@@ -1,0 +1,23 @@
+# systemd unit file for Starchart Webhook
+[Unit]
+Description=An automated deployment webhook for mycustomdomain (starchart)
+
+Documentation=https://github.com/DevelopingSpace/starchart
+
+# Start after the network is up
+After=network.target
+
+[Service]
+Type=simple
+
+# See https://github.com/adnanh/webhook 
+# Set the path to hooks.json and port to use
+ExecStart=webhook -hooks /path/to/hooks.json -port 8000
+# Specify these if want/need for the above to run
+#WorkingDirectory=
+#User=
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
