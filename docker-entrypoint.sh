@@ -5,21 +5,36 @@ set -eo pipefail
 # with the database. We pull the database URL out of
 # secrets, since Prisma requires it as an env var.
 database_setup() {
-  echo "Running database setup..."
+  echo "Running database reset and setup..."
   DATABASE_URL=$(</run/secrets/DATABASE_URL)
   export DATABASE_URL
 
-  npx prisma db push
+  # Wipes existing data as well!
+  npx prisma db push --force-reset
 
   # Clear the DATABASE_URL from the env. The app uses it via secrets
   unset DATABASE_URL
   echo "Database setup complete"
 }
 
+# Clear all keys from Redis, which will clean out
+# any old worker queues that reference rows in
+# the database.
+clear_redis() {
+  echo "Running redis cleanup for redis://redis:6379..."
+
+  # Use the `redis` Docker host
+  npx redis-cli -h redis FLUSHDB
+
+  echo "Redis cleanup complete"
+}
+
 # See if we need to do database setup before starting.
 if [[ $DATABASE_SETUP == "1" ]]; then
   # Run our database setup
   database_setup
+  # Clear Redis keys
+  clear_redis
 fi
 
 # Run the app normally, switching to the node process as PID 1
