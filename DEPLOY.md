@@ -30,7 +30,7 @@ The following configuration values must be set via environment variables.
 | `REDIS_URL`                  | The Redis server to use for the worker queues. Defaults to `redis://redis:6379` in production and `localhost:6379` in development.                                                                                                                        |
 | `SAML_IDP_METADATA_PATH`     | The file path of the SAML Identify Provider (IdP)'s metadata XML. We store various XML files in `config/` and use `config/idp-metadata-dev.xml` by default in development.                                                                                |
 | `SECRETS_OVERRIDE`           | In development, to override the Docker secrets                                                                                                                                                                                                            |
-| `DATABASE_SETUP`             | In order to sync the Prisma schema with MySQL, set `DATABASE_SETUP=1` when running the app                                                                                                                                                                |
+| `DATABASE_SETUP`             | In order to sync the Prisma schema with MySQL, set `DATABASE_SETUP=1` when running the app. NOTE: this **wipes all data** in MySQl and Redis, so be careful!                                                                                              |
 
 ### Secrets
 
@@ -48,7 +48,7 @@ The following secrets must be added to the Docker engine using [Docker Swarm sec
 
 ## Running the App via Docker
 
-The app can be started via Docker. If it is the first time you are starting the app, or if there are database changes that need to be applied first, you can set `DATABASE_SETUP=1` in the environment to run Prisma and sync the schema and database:
+The app can be started via Docker. If it is the first time you are starting the app, or if there are database changes that need to be applied first, you can set `DATABASE_SETUP=1` in the environment to run Prisma and sync the schema and database (NOTE: this **wipes all data** from MySQL and Redis so be careful!):
 
 ```sh
 # Run the app without doing anything to the database

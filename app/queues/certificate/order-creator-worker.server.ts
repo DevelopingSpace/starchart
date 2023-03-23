@@ -4,10 +4,10 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 import * as challengeModel from '~/models/challenge.server';
-import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
+import { addCreateDnsRequest } from '~/queues/dns/index.server';
 import { getSubdomainFromFqdn } from '~/utils';
-import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
 
+import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
 import type { CertificateJobData } from './certificateJobTypes.server';
 
 export const orderCreatorQueueName = 'certificate-createOrder';
@@ -46,7 +46,7 @@ const handleChallenges = ({
     /**
      * add challenge to DNS
      */
-    await addDnsRequest({
+    await addCreateDnsRequest({
       username,
       type: 'TXT',
       subdomain,

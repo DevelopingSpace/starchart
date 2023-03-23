@@ -2,6 +2,7 @@ import {
   Route53Client,
   CreateHostedZoneCommand,
   ChangeResourceRecordSetsCommand,
+  ListResourceRecordSetsCommand,
   GetChangeCommand,
 } from '@aws-sdk/client-route-53';
 import isFQDN from 'validator/lib/isFQDN';
@@ -15,6 +16,7 @@ import type {
   CreateHostedZoneResponse,
   ChangeResourceRecordSetsResponse,
   GetChangeResponse,
+  ListResourceRecordSetsResponse,
 } from '@aws-sdk/client-route-53';
 import type { DnsRecordType } from '@prisma/client';
 
@@ -45,6 +47,10 @@ if (NODE_ENV === 'production') {
   // In dev, we only need a root domain, and can fake the rest
   process.env.ROOT_DOMAIN = process.env.ROOT_DOMAIN || 'starchart.com';
 }
+
+// Ensure a trailing `.` on a domain to make it fully qualified:
+// a.b.c -> a.b.c. | a.b.c. -> a.b.c.
+const toFQDN = (domain: string) => domain.replace(/\.?$/, '.');
 
 /**
  * In production, we have to have a zone id to do anything, but in
@@ -117,27 +123,57 @@ export async function createHostedZone(domain: string) {
 export const createDnsRecord = (
   username: string,
   type: DnsRecordType,
-  name: string,
+  fqdn: string,
   value: string
 ) => {
   try {
-    return upsertDnsRecord(username, type, name, value);
+    return upsertDnsRecord(username, type, fqdn, value);
   } catch (error) {
-    logger.warn('DNS Error in createRecord', { username, type, name, value, error });
+    logger.warn('DNS Error in createDnsRecord', { username, type, fqdn, value, error });
     throw new Error(`Error occurred while creating resource record`);
   }
 };
 
+async function checkDnsRecordExists(type: DnsRecordType, fqdn: string, value: string) {
+  try {
+    const command = new ListResourceRecordSetsCommand({
+      HostedZoneId: await hostedZoneId(),
+      StartRecordName: fqdn,
+      StartRecordType: type,
+      MaxItems: 1,
+    });
+    const { ResourceRecordSets }: ListResourceRecordSetsResponse = await route53Client.send(
+      command
+    );
+
+    // If we don't get back a single Resource Record Set, it's not a match
+    if (ResourceRecordSets?.length !== 1) {
+      return false;
+    }
+    // Grab the one and only one and compare values
+    const { Name, Type, ResourceRecords } = ResourceRecordSets[0];
+    return (
+      Name === toFQDN(fqdn) &&
+      Type === type &&
+      ResourceRecords?.length === 1 &&
+      ResourceRecords[0].Value === value
+    );
+  } catch (error) {
+    logger.warn('DNS Error in checkDnsRecordExists', { type, fqdn, value, error });
+    throw new Error(`Error while checking if DNS record exists`);
+  }
+}
+
 export const upsertDnsRecord = async (
   username: string,
   type: DnsRecordType,
-  name: string,
+  fqdn: string,
   value: string
 ) => {
   try {
-    if (!isNameValid(name, username)) {
+    if (!isNameValid(fqdn, username)) {
       logger.error('DNS Error in upsertDnsRecord - invalid record name provided', {
-        name,
+        fqdn,
         username,
         baseDomain: buildUserBaseDomain(username),
       });
@@ -147,7 +183,7 @@ export const upsertDnsRecord = async (
 
     if (!isValueValid(type, value)) {
       logger.error('DNS Error in upsertDnsRecord - invalid record value provided', {
-        name,
+        fqdn,
         username,
         type,
         value,
@@ -161,7 +197,7 @@ export const upsertDnsRecord = async (
           {
             Action: 'UPSERT',
             ResourceRecordSet: {
-              Name: name,
+              Name: fqdn,
               Type: type,
               ResourceRecords: [
                 {
@@ -182,7 +218,7 @@ export const upsertDnsRecord = async (
     }
     return response.ChangeInfo.Id;
   } catch (error) {
-    logger.warn('DNS Error in upsertDnsRecord', { username, type, name, value, error });
+    logger.warn('DNS Error in upsertDnsRecord', { username, type, fqdn, value, error });
     throw new Error(`DNS Error occurred while updating resource record: ${error}`);
   }
 };
@@ -190,13 +226,13 @@ export const upsertDnsRecord = async (
 export const deleteDnsRecord = async (
   username: string,
   type: DnsRecordType,
-  name: string,
+  fqdn: string,
   value: string
 ) => {
   try {
-    if (!isNameValid(name, username)) {
+    if (!isNameValid(fqdn, username)) {
       logger.error('DNS Error in deleteDnsRecord - invalid record name provided', {
-        name,
+        fqdn,
         username,
         baseDomain: buildUserBaseDomain(username),
       });
@@ -205,12 +241,22 @@ export const deleteDnsRecord = async (
 
     if (!isValueValid(type, value)) {
       logger.error('DNS Error in deleteDnsRecord - invalid record value provided', {
-        name,
+        fqdn,
         username,
         type,
         value,
       });
       throw new Error('DNS Error in deleteDnsRecord - invalid value provided');
+    }
+
+    // If no such record exists in Route53, we're done ("delete" state already achieved)
+    if (!(await checkDnsRecordExists(type, fqdn, value))) {
+      logger.debug('DNS deleteDnsRecord - no such record in Route53, skipping', {
+        type,
+        fqdn,
+        value,
+      });
+      return;
     }
 
     const command = new ChangeResourceRecordSetsCommand({
@@ -219,7 +265,7 @@ export const deleteDnsRecord = async (
           {
             Action: 'DELETE',
             ResourceRecordSet: {
-              Name: name,
+              Name: fqdn,
               Type: type,
               ResourceRecords: [
                 {
@@ -241,7 +287,7 @@ export const deleteDnsRecord = async (
     }
     return response.ChangeInfo.Id;
   } catch (error) {
-    logger.warn('DNS Error in deleteDnsRecord', { username, type, name, value, error });
+    logger.warn('DNS Error in deleteDnsRecord', { username, type, fqdn, value, error });
     throw new Error(`DNS Error occurred while deleting resource record`);
   }
 };
@@ -264,27 +310,27 @@ export const getChangeStatus = async (changeId: string) => {
 };
 
 /* Domain name rules
-1. Domain name pattern should be [name].[username].rootDomain.com
-2. Domain name can contain only alphanumerical characters, '-', and '_'
-3. Domain name should not start or end with -
-4. Domain name cannot contain multiple consecutive '-' or '_'
-5. Domain name can contain uppercase in UI but it is converted to lowercase before validation */
-export const isNameValid = (name: string, username: string) => {
+1. Full domain name pattern should be [subdomain].[username].rootDomain.com
+2. Subdomain can contain only alphanumerical characters, '-', and '_'
+3. Subdomain should not start or end with -
+4. Subdomain cannot contain multiple consecutive '-' or '_'
+5. Subdomain can contain uppercase in UI but it is converted to lowercase before validation */
+export const isNameValid = (fqdn: string, username: string) => {
   const baseDomain = buildUserBaseDomain(username);
 
-  /* Domain name must end with username and root domain.
+  /* Full domain name must end with username and root domain.
   Here it removes username and root domain,
   to validate only subdomain that user has input */
   const toRemove = `.${baseDomain}`;
-  if (!name.endsWith(toRemove)) {
+  if (!fqdn.endsWith(toRemove)) {
     return false;
   }
-  const subdomain = name.substring(0, name.length - toRemove.length);
+  const subdomain = fqdn.substring(0, fqdn.length - toRemove.length);
 
   //It only validates subdomain name, not username and root domain
   return (
     /^(?!.*[-_]{2,})(?!^[-])[a-z0-9_-]+[a-z0-9]$/.test(subdomain) &&
-    isFQDN(name, {
+    isFQDN(fqdn, {
       allow_underscores: true,
     })
   );

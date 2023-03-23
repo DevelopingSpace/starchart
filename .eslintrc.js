@@ -11,6 +11,7 @@ module.exports = {
   // set the jest version explicitly.
   rules: {
     'no-console': ['warn'],
+    'no-else-return': ['error'],
     'curly': ['error'],
   },
   settings: {

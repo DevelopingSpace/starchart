@@ -21,7 +21,6 @@ import { useUser } from '~/utils';
 export default function Header() {
   const user = useUser();
   const fetcher = useFetcher();
-
   return (
     <Flex
       as="header"
@@ -94,7 +93,7 @@ export default function Header() {
 
       <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5" width="100%">
         <Hide below="lg">
-          <Text id="header-user">{user.username}</Text>
+          <Text id="header-user">{user?.username}</Text>
         </Hide>
 
         <Menu>
