@@ -7,13 +7,24 @@ import { requireUser } from '~/session.server';
 import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
 
 import type { ActionArgs } from '@remix-run/node';
-import { DnsRecordSchema } from '~/lib/dns.server';
+import { DnsRecordSchema, isNameValid } from '~/lib/dns.server';
 import { useActionData } from '@remix-run/react';
+import { buildDomain } from '~/utils';
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
+  const DnsRecordSchemaWithNameValidation = DnsRecordSchema.refine(
+    (data) => {
+      const fqdn = buildDomain(user.username, data.subdomain);
+      return isNameValid(fqdn, user.username);
+    },
+    {
+      message: 'Record name is invalid',
+      path: ['subdomain'],
+    }
+  );
 
-  const newDnsRecordParams = await parseFormSafe(request, DnsRecordSchema);
+  const newDnsRecordParams = await parseFormSafe(request, DnsRecordSchemaWithNameValidation);
   if (newDnsRecordParams.success === false) {
     return newDnsRecordParams.error.flatten();
   }

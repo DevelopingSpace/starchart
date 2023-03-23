@@ -1,15 +1,14 @@
 import { Container, Heading, Text } from '@chakra-ui/react';
-import { DnsRecordType } from '@prisma/client';
 import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson';
-import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById } from '~/models/dns-record.server';
 import { updateDnsRequest } from '~/queues/dns/update-dns-record-flow.server';
-import { UpdateDnsRecordSchema } from '~/lib/dns.server';
+import { isNameValid, UpdateDnsRecordSchema } from '~/lib/dns.server';
 import { useActionData } from '@remix-run/react';
+import { buildDomain } from '~/utils';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   await requireUser(request);
@@ -37,7 +36,21 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
 
-  const updatedDnsRecordParams = await parseFormSafe(request, UpdateDnsRecordSchema);
+  const UpdateDnsRecordSchemaWithNameValidation = UpdateDnsRecordSchema.refine(
+    (data) => {
+      const fqdn = buildDomain(user.username, data.subdomain);
+      return isNameValid(fqdn, user.username);
+    },
+    {
+      message: 'Record name is invalid',
+      path: ['subdomain'],
+    }
+  );
+
+  const updatedDnsRecordParams = await parseFormSafe(
+    request,
+    UpdateDnsRecordSchemaWithNameValidation
+  );
   if (updatedDnsRecordParams.success === false) {
     return updatedDnsRecordParams.error.flatten();
   }
