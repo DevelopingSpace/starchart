@@ -28,6 +28,7 @@
     "start:e2e": "cross-env NODE_ENV=test node --require dotenv/config ./build/server.js",
     "test": "cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest",
     "test:coverage": "cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest run --coverage",
+    "e2e": "cross-env PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test dev http://localhost:8080 \"playwright test --ui\"",
     "test:e2e:dev": "cross-env PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test dev http://localhost:8080 \"playwright test\"",
     "pretest:e2e:run": "cross-env NODE_ENV=test SECRETS_OVERRIDE=1 run-s build",
     "test:e2e:run": "cross-env SECRETS_OVERRIDE=1 PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test start:e2e http://localhost:8080 \"playwright test\"",
@@ -75,7 +76,7 @@
     "zodix": "^0.4.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.31.0",
+    "@playwright/test": "^1.32.0",
     "@remix-run/dev": "^1.14.3",
     "@remix-run/eslint-config": "^1.14.3",
     "@types/compression": "^1.7.2",
