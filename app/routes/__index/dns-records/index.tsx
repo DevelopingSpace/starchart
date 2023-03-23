@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
-import { Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
+import { Button, Center, Container, Flex, Heading, Text } from '@chakra-ui/react';
 import { Link, useRevalidator } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { json } from '@remix-run/node';
@@ -107,17 +107,25 @@ export default function DnsRecordsIndexRoute() {
         <Heading as="h1" size="xl" mt="20">
           DNS Records
         </Heading>
-        <Text maxW="container.sm" mb="4" mt="2">
+        <Text mb="4" mt="2">
           Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
           been the industry's standard dummy text ever since the 1500s, when an unknown printer took
           a galley of type and scrambled it to make a type specimen book.
         </Text>
-        <Flex justifyContent="flex-end">
-          <Link to="/dns-records/new">
-            <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS record</Button>
-          </Link>
-        </Flex>
-        <DnsRecordsTable dnsRecords={dnsRecords} />
+        {dnsRecords.length ? (
+          <Flex justifyContent="flex-end">
+            <Link to="/dns-records/new">
+              <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
+            </Link>
+            <DnsRecordsTable dnsRecords={dnsRecords} />
+          </Flex>
+        ) : (
+          <Center mt="16">
+            <Link to="/dns-records/new">
+              <Button rightIcon={<AddIcon boxSize={3} />}>Create your first DNS Record!</Button>
+            </Link>
+          </Center>
+        )}
       </Flex>
     </Container>
   );
