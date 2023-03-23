@@ -62,7 +62,7 @@ describe('deactivateUserByUsername()', () => {
   });
 
   afterAll(async () => {
-    await deleteUserByUsername(user.username);
+    await prisma.user.deleteMany().catch(() => {});
   });
 
   test('sets deactivated flag to true', async () => {
@@ -96,8 +96,7 @@ describe('isDeactivated()', () => {
   });
 
   afterAll(async () => {
-    await deleteUserByUsername(activeUser.username);
-    await deleteUserByUsername(deactivatedUser.username);
+    await prisma.user.deleteMany().catch(() => {});
   });
 
   test('returns true for deactivated user', async () => {
