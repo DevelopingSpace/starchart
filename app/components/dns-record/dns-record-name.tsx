@@ -1,16 +1,39 @@
-import { Flex, Text } from '@chakra-ui/react';
+import { Flex, Text, Tooltip } from '@chakra-ui/react';
+
+import type { DnsRecord } from '@prisma/client';
 
 interface DnsRecordNameProps {
-  subdomain: string;
+  dnsRecord: DnsRecord;
   baseDomain: string;
 }
 
-const DnsRecordName = ({ subdomain, baseDomain }: DnsRecordNameProps) => {
-  return (
+// If there is addition info in the record (optional fields), turn it
+// into a string we can show when hovering. If none of these fields
+// are present, don't bother (undefined)
+function buildInfoTooltip(dnsRecord: DnsRecord) {
+  const info = [];
+
+  if (dnsRecord.description) {
+    // Flatten the string into a single line
+    info.push(dnsRecord.description.replace(/\r?\n/g, ' '));
+  }
+  if (dnsRecord.ports) {
+    info.push(`Ports = ${dnsRecord.ports}`);
+  }
+  if (dnsRecord.course) {
+    info.push(`Course = ${dnsRecord.course}`);
+  }
+
+  return info.length ? info.join(', ') : undefined;
+}
+
+const DnsRecordName = ({ dnsRecord, baseDomain }: DnsRecordNameProps) => {
+  const tooltip = buildInfoTooltip(dnsRecord);
+  const children = (
     <Flex alignItems="flex-end" flexDirection="row">
       <Text>
         <Text as="span" sx={{ fontWeight: 'medium' }}>
-          {subdomain}
+          {dnsRecord.subdomain}
         </Text>
         <Text as="span" color="gray.500">
           .{baseDomain}
@@ -18,6 +41,8 @@ const DnsRecordName = ({ subdomain, baseDomain }: DnsRecordNameProps) => {
       </Text>
     </Flex>
   );
+
+  return tooltip ? <Tooltip label={tooltip}>{children}</Tooltip> : <>{children}</>;
 };
 
 export default DnsRecordName;
