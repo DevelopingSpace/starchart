@@ -10,3 +10,4 @@ node_modules
 /playwright-report/
 /playwright/.cache/
 /test/e2e/.auth
+/coverage

@@ -12,14 +12,13 @@ import logger from '~/lib/logger.server';
 import { requireUser, requireUsername } from '~/session.server';
 import { addNotification } from '~/queues/notifications/notifications.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
-import { addDnsRequest } from '~/queues/dns/add-dns-record-flow.server';
-import { updateDnsRequest } from '~/queues/dns/update-dns-record-flow.server';
-import { deleteDnsRequest } from '~/queues/dns/delete-dns-record-flow.server';
+import {
+  addCreateDnsRequest,
+  addUpdateDnsRequest,
+  addDeleteDnsRequest,
+} from '~/queues/dns/index.server';
 import { DnsRecordType } from '@prisma/client';
 
-import type { AddDnsRequestData } from '~/queues/dns/add-dns-record-flow.server';
-import type { UpdateDnsRequestData } from '~/queues/dns/update-dns-record-flow.server';
-import type { DeleteDnsRequestData } from '~/queues/dns/delete-dns-record-flow.server';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
 export const action = async ({ request }: ActionArgs) => {
@@ -52,14 +51,13 @@ export const action = async ({ request }: ActionArgs) => {
         message: 'Notification sent, see mail at http://localhost:8025',
       });
     case 'dns-record-request':
-      const data: AddDnsRequestData = {
-        username: user.username,
-        type: DnsRecordType.A,
-        subdomain: `osd700-a11`,
-        value: '192.168.0.1',
-      };
       try {
-        await addDnsRequest(data);
+        await addCreateDnsRequest({
+          username: user.username,
+          type: DnsRecordType.A,
+          subdomain: `osd700-a11`,
+          value: '192.168.0.1',
+        });
         return json({
           result: 'ok',
           message: 'DNS record creation requested',
@@ -73,7 +71,7 @@ export const action = async ({ request }: ActionArgs) => {
 
     case 'update-dns-record-request':
       try {
-        const data: UpdateDnsRequestData = {
+        await addUpdateDnsRequest({
           id: 1,
           username: user.username,
           type: DnsRecordType.A,
@@ -81,9 +79,7 @@ export const action = async ({ request }: ActionArgs) => {
           value: '192.168.0.2',
           ports: '8080',
           description: 'assignment 2',
-        };
-
-        await updateDnsRequest(data);
+        });
         return json({
           result: 'ok',
           message: 'DNS record creation requested',
@@ -96,14 +92,13 @@ export const action = async ({ request }: ActionArgs) => {
       }
     case 'delete-dns-record-request':
       try {
-        const data: DeleteDnsRequestData = {
+        await addDeleteDnsRequest({
           username: user.username,
           type: 'A',
           subdomain: 'osd700-a2',
           value: '192.168.0.2',
           id: 3,
-        };
-        await deleteDnsRequest(data);
+        });
         return json({
           result: 'ok',
           message: 'DNS record creation requested',

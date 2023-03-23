@@ -1,4 +1,4 @@
-import { DnsRecordStatus } from '@prisma/client';
+import { DnsRecordStatus, DnsRecordType } from '@prisma/client';
 import dayjs from 'dayjs';
 import { prisma } from '~/db.server';
 
@@ -26,7 +26,15 @@ export const createUserDnsRecord = async (
 };
 
 export function getDnsRecordsByUsername(username: DnsRecord['username']) {
-  return prisma.dnsRecord.findMany({ where: { username } });
+  return prisma.dnsRecord.findMany({
+    where: {
+      username,
+      NOT: {
+        type: DnsRecordType.TXT,
+        subdomain: '_acme-challenge',
+      },
+    },
+  });
 }
 
 export function getDnsRecordById(id: DnsRecord['id']) {
@@ -37,6 +45,11 @@ export function getUserDnsRecordCount(username: DnsRecord['username']) {
   return prisma.dnsRecord.count({
     where: {
       username,
+      status: DnsRecordStatus.active,
+      NOT: {
+        type: DnsRecordType.TXT,
+        subdomain: '_acme-challenge',
+      },
     },
   });
 }
@@ -51,29 +64,21 @@ export function createDnsRecord(
   return prisma.dnsRecord.create({ data: { ...data, expiresAt, status } });
 }
 
+// Update an existing DNS Record's data, or status, or both.
 export function updateDnsRecordById(
-  data: Pick<DnsRecord, 'id' | 'type' | 'subdomain' | 'value'> &
-    Partial<Pick<DnsRecord, 'description' | 'course' | 'ports'>>
+  id: DnsRecord['id'],
+  data:
+    | Pick<DnsRecord, 'status'>
+    | (Pick<DnsRecord, 'type' | 'subdomain' | 'value'> &
+        Partial<Pick<DnsRecord, 'description' | 'course' | 'ports' | 'status'>>)
 ) {
-  const { id, ...values } = data;
   return prisma.dnsRecord.update({
     where: { id },
     data: {
-      ...values,
-      expiresAt: dayjs().set('month', 6).toDate(),
-    },
-  });
-}
-
-export function updateDnsRecordStatusById(id: DnsRecord['id'], status: DnsRecord['status']) {
-  const expireToSet = dayjs().set('month', 6).toDate();
-  return prisma.dnsRecord.update({
-    where: {
-      id,
-    },
-    data: {
-      status,
-      expiresAt: status === DnsRecordStatus.active ? expireToSet : undefined,
+      ...data,
+      // If the record is changing to the `active` status, update expiry too
+      expiresAt:
+        data.status === DnsRecordStatus.active ? dayjs().set('month', 6).toDate() : undefined,
     },
   });
 }

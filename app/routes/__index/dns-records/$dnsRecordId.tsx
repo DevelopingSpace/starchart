@@ -5,10 +5,10 @@ import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById } from '~/models/dns-record.server';
-import { updateDnsRequest } from '~/queues/dns/update-dns-record-flow.server';
 import { isNameValid, UpdateDnsRecordSchema } from '~/lib/dns.server';
 import { useActionData } from '@remix-run/react';
 import { buildDomain } from '~/utils';
+import { addUpdateDnsRequest } from '~/queues/dns/index.server';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   await requireUser(request);
@@ -57,7 +57,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   const { data } = updatedDnsRecordParams;
 
-  await updateDnsRequest({
+  await addUpdateDnsRequest({
     id: Number(data.id),
     username: user.username,
     type: data.type,
