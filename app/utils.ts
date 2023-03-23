@@ -77,7 +77,7 @@ export function buildDomain(username: PrismaUser['username'], name?: string) {
 export function getSubdomainFromFqdn(username: PrismaUser['username'], fqdn: string): string {
   const baseDomain = buildUserBaseDomain(username);
 
-  if (!fqdn.endsWith(`.${buildUserBaseDomain(username)}`)) {
+  if (!fqdn.endsWith(`.${baseDomain}`)) {
     throw new Error("fqdn is not a subdomain of user's base domain");
   }
 
