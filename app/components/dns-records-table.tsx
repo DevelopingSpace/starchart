@@ -14,6 +14,7 @@ import {
   useToast,
   useDisclosure,
   Spinner,
+  HStack,
 } from '@chakra-ui/react';
 import type { DnsRecord, DnsRecordStatus } from '@prisma/client';
 import {
@@ -148,10 +149,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                         <Td>{renderDnsRecordStatus(dnsRecord.status)}</Td>
                         <Td>
                           <Flex justifyContent="space-between" alignItems="center">
-                            <DnsRecordName
-                              subdomain={dnsRecord.subdomain}
-                              baseDomain={baseDomain}
-                            />
+                            <DnsRecordName dnsRecord={dnsRecord} baseDomain={baseDomain} />
                             <Tooltip label="Copy subdomain to clipboard">
                               <IconButton
                                 icon={<CopyIcon color="black" boxSize="5" />}
@@ -186,7 +184,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                           </Flex>
                         </Td>
                         <Td>
-                          <Flex>
+                          <HStack>
                             <Tooltip label="Edit DNS record">
                               <IconButton
                                 onClick={() => onDnsRecordEdit(dnsRecord)}
@@ -207,7 +205,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                                 isDisabled={!isDnsRecordDeletable}
                               />
                             </Tooltip>
-                          </Flex>
+                          </HStack>
                         </Td>
                       </>
                     )}
