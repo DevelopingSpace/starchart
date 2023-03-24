@@ -4,7 +4,7 @@ import { getRecordPage } from '~/lib/dns.server';
 // Using this in JS code later, cannot `import type`
 import { DnsRecordType } from '@prisma/client';
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
-import type { ResourceRecordSet } from '@aws-sdk/client-route-53';
+import type { ResourceRecordSet, ListResourceRecordSetsResponse } from '@aws-sdk/client-route-53';
 
 /**
  * !!! There is cross-function object mutation in this file.
@@ -51,7 +51,7 @@ const readRuote53IntoCompareStructure = async (): Promise<ReconcilerCompareStruc
   let nextType: string | undefined = undefined;
 
   while (morePages) {
-    const response = await getRecordPage(nextFqdn, nextType);
+    const response: ListResourceRecordSetsResponse = await getRecordPage(nextFqdn, nextType);
     morePages = !!response.IsTruncated;
     nextFqdn = response.NextRecordName;
     nextType = response.NextRecordType;
