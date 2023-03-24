@@ -18,6 +18,7 @@ import {
   addDeleteDnsRequest,
 } from '~/queues/dns/index.server';
 import { DnsRecordType } from '@prisma/client';
+import reconciler from '~/reconciler';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
@@ -39,6 +40,12 @@ export const action = async ({ request }: ActionArgs) => {
       return json({
         result: 'ok',
         message: 'Certificate requested',
+      });
+    case 'dns-reconciliation':
+      await reconciler();
+      return json({
+        result: 'ok',
+        message: 'Reconciliation requested',
       });
     case 'send-notification':
       await addNotification({
@@ -139,6 +146,11 @@ export default function Index() {
         <Form method="post">
           <input type="hidden" name="intent" value="certificate-request" />
           <Button type="submit">Request Certificate</Button>
+        </Form>
+
+        <Form method="post">
+          <input type="hidden" name="intent" value="dns-reconciliation" />
+          <Button type="submit">Do DNS reconciliation</Button>
         </Form>
 
         <Form method="post">

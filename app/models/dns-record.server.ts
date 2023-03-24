@@ -126,3 +126,13 @@ export function getExpiredDnsRecords() {
     },
   });
 }
+
+/**
+ * This Fn gets the base data that is needed for reconciliation
+ * but does that for all records in the db. Should be no more than 10k
+ */
+export function getReconciliationData() {
+  return prisma.dnsRecord.findMany({
+    select: { username: true, subdomain: true, type: true, value: true },
+  });
+}
