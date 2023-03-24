@@ -1,13 +1,16 @@
 import { Flex, Heading, Text, Button } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
+import { useState } from 'react';
 
 import Description from './description';
 
 interface CertificateRequestViewProps {
   domain: string;
-  onRequest: () => void;
 }
 
-export default function CertificateRequestView({ domain, onRequest }: CertificateRequestViewProps) {
+export default function CertificateRequestView({ domain }: CertificateRequestViewProps) {
+  const [isDisabled, setIsDisabled] = useState(false);
+
   return (
     <Flex
       flexDirection="column"
@@ -38,9 +41,16 @@ export default function CertificateRequestView({ domain, onRequest }: Certificat
           <Text>{domain}</Text>
         </Flex>
       </Flex>
-      <Button width={{ base: 'full', md: '3xs' }} shadow="xl" onClick={onRequest}>
-        Request a Certificate
-      </Button>
+      <Form method="post" onSubmit={() => setIsDisabled(true)}>
+        <Button
+          type="submit"
+          width={{ base: 'full', md: '3xs' }}
+          shadow="xl"
+          isDisabled={isDisabled}
+        >
+          Request a Certificate
+        </Button>
+      </Form>
     </Flex>
   );
 }
