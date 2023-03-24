@@ -1,13 +1,12 @@
 import { Flex, Center } from '@chakra-ui/react';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useTypedLoaderData } from 'remix-typedjson';
+import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { useRevalidator } from '@remix-run/react';
 import { useInterval } from 'react-use';
 
 import { requireUser } from '~/session.server';
 import pendingSvg from '~/assets/undraw_processing_re_tbdu.svg';
-import failedSvg from '~/assets/undraw_cancel_re_pkdm.svg';
 import Loading from '~/components/display-page';
 import CertificateAvailable from '~/components/certificate/certificate-available';
 import CertificateRequestView from '~/components/certificate/certificate-request';
@@ -17,21 +16,30 @@ import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
+  const certificate = await getCertificateStatusByUsername(user.username);
 
-  return await getCertificateStatusByUsername(user.username);
+  return typedjson(certificate);
 };
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
+  const certificate = await getCertificateStatusByUsername(user.username);
 
-  await addCertRequest({
-    rootDomain: user.baseDomain,
-    username: user.username,
-  });
+  if (certificate.status !== 'pending' && certificate.status !== 'issued') {
+    await addCertRequest({
+      rootDomain: user.baseDomain,
+      username: user.username,
+    });
+
+    return json({
+      result: 'ok',
+      message: 'Certificate requested',
+    });
+  }
 
   return json({
     result: 'ok',
-    message: 'Certificate requested',
+    message: 'A certificate is already being requested',
   });
 };
 
@@ -45,7 +53,6 @@ export default function CertificateIndexRoute() {
       revalidator.revalidate();
     },
     certificate.status === 'pending' ||
-      certificate.status === 'failed' ||
       certificate.status === 'issued' ||
       certificate.status === undefined
       ? 5_000
@@ -60,15 +67,6 @@ export default function CertificateIndexRoute() {
     // });
 
     return 'string';
-  }
-
-  if (certificate.status === 'failed') {
-    return (
-      <Loading
-        img={failedSvg}
-        desc="Unfortunately we were unable to process your certificate, please try again"
-      />
-    );
   }
 
   if (certificate.status === 'pending') {
