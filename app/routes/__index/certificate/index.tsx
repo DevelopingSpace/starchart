@@ -60,13 +60,13 @@ export default function CertificateIndexRoute() {
   );
 
   function formatDate(val: Date): string {
-    // let date = val.toLocaleDateString('en-US', {
-    //   month: 'short',
-    //   day: '2-digit',
-    //   year: 'numeric',
-    // });
+    let date = val.toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    });
 
-    return 'string';
+    return date;
   }
 
   if (certificate.status === 'pending') {
