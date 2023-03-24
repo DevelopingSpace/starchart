@@ -82,18 +82,10 @@ function init() {
     if (job) {
       const { dnsRecordId } = job.data;
       try {
-        await updateDnsRecordById(dnsRecordId, {
-          status: DnsRecordStatus.active,
-        });
-        logger.debug(
-          `DNS job completed, synced record id=${dnsRecordId} to active status`,
-          job.data
-        );
         await sendDnsRecordStatusUpdateNotification(dnsRecordId, DnsRecordStatus.active);
       } catch (err) {
         logger.error(
-          `DNS job failed, unable to sync record id=${dnsRecordId} to active status and/or add notification`,
-          job.data,
+          `Notification job failed, unable add notification for failed DNS record id=${dnsRecordId}`,
           err
         );
       }
