@@ -30,6 +30,7 @@ import DnsRecordDeleteAlertDialog from './dns-record-delete-alert-dialog';
 import { Form, useNavigate, useTransition } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
 import { useUser } from '~/utils';
+import dayjs from 'dayjs';
 
 interface DnsRecordsTableProps {
   dnsRecords: DnsRecord[];
@@ -132,6 +133,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                 const isLoading =
                   transition.state === 'submitting' &&
                   Number(transition.submission.formData.get('id')) === dnsRecord.id;
+                const renewalAllowed = dayjs(dnsRecord.expiresAt).isBefore(dayjs().add(6, 'month'));
                 const isDnsRecordActive = dnsRecord.status === 'active';
                 const isDnsRecordDeletable = dnsRecord.status !== 'pending';
 
@@ -179,7 +181,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                                   aria-label="Refresh DNS record"
                                   variant="ghost"
                                   type="submit"
-                                  isDisabled={!isDnsRecordActive}
+                                  isDisabled={!isDnsRecordActive || !renewalAllowed}
                                 />
                               </Tooltip>
                             </Form>
