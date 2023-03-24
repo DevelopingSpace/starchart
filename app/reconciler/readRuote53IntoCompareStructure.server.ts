@@ -8,7 +8,7 @@ import type { ResourceRecordSet, ListResourceRecordSetsResponse } from '@aws-sdk
 
 /**
  * !!! There is cross-function object mutation in this file.
- * This is a huge anti-pattern, but in this case it made tha code
+ * This is a huge anti-pattern, but in this case it made the code
  * much more performant. So I marked the variable as such and
  * doing the mutation either way
  */
