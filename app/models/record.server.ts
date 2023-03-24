@@ -20,7 +20,16 @@ export const createUserRecord = async (
 };
 
 export function getRecordsByUsername(username: Record['username']) {
-  return prisma.record.findMany({ where: { username } });
+  return prisma.record.findMany({
+    where: {
+      username,
+      NOT: {
+        subdomain: {
+          contains: '_acme',
+        },
+      },
+    },
+  });
 }
 
 export function getRecordById(id: Record['id']) {
