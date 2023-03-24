@@ -34,7 +34,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function Login() {
   return (
-    <Container>
+    <Container height="full">
       <Center height="full">
         <Grid gap="12">
           <GridItem>

@@ -1,4 +1,4 @@
-import { ChakraProvider, chakra } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import { json } from '@remix-run/node';
 import {
   Links,
@@ -17,11 +17,14 @@ import type { MetaFunction, LoaderArgs, LinksFunction } from '@remix-run/node';
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
-  title: 'Starchart',
+  title: 'My.Custom.Domain',
+  description: 'Simple, Secure DNS Records and SSL Certificates for Seneca',
   viewport: 'width=device-width,initial-scale=1',
 });
 
 export const links: LinksFunction = () => [
+  // We want html and body to occupy the full window height for vertical centering
+  { rel: 'stylesheet', href: '/styles.css' },
   { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
   { rel: 'manifest', href: '/manifest.json' },
 ];
@@ -38,18 +41,18 @@ function Document({ children }: { children: React.ReactNode }) {
   const { nonce } = useLoaderData<typeof loader>();
 
   return (
-    <chakra.html lang="en-CA" minHeight="full">
+    <html lang="en-CA">
       <head>
         <Meta />
         <Links />
       </head>
-      <chakra.body minHeight="full">
+      <body>
         {children}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
         <LiveReload nonce={nonce} />
-      </chakra.body>
-    </chakra.html>
+      </body>
+    </html>
   );
 }
 
