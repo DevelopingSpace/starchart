@@ -38,7 +38,7 @@ export function getDnsRecordsByUsername(username: DnsRecord['username']) {
 }
 
 export function getDnsRecordById(id: DnsRecord['id']) {
-  return prisma.dnsRecord.findUnique({ where: { id } });
+  return prisma.dnsRecord.findUnique({ where: { id }, include: { user: true } });
 }
 
 export function getUserDnsRecordCount(username: DnsRecord['username']) {
