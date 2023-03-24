@@ -1,12 +1,13 @@
 import { Container, Heading, Text } from '@chakra-ui/react';
-import { DnsRecordType } from '@prisma/client';
 import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson';
-import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById } from '~/models/dns-record.server';
+import { isNameValid, UpdateDnsRecordSchema } from '~/lib/dns.server';
+import { useActionData } from '@remix-run/react';
+import { buildDomain } from '~/utils';
 import { addUpdateDnsRequest } from '~/queues/dns/index.server';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -35,22 +36,23 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
 
-  const DnsRecord = z.object({
-    id: z.string(),
-    subdomain: z.string().min(1), // We do not want to consider '' a valid string
-    type: z.nativeEnum(DnsRecordType),
-    value: z.string().min(1),
-    ports: z.string().optional(),
-    course: z.string().optional(),
-    description: z.string().optional(),
-  });
+  const UpdateDnsRecordSchemaWithNameValidation = UpdateDnsRecordSchema.refine(
+    (data) => {
+      const fqdn = buildDomain(user.username, data.subdomain);
+      return isNameValid(fqdn, user.username);
+    },
+    {
+      message: 'Record name is invalid',
+      path: ['subdomain'],
+    }
+  );
 
-  const updatedDnsRecordParams = await parseFormSafe(request, DnsRecord);
-
+  const updatedDnsRecordParams = await parseFormSafe(
+    request,
+    UpdateDnsRecordSchemaWithNameValidation
+  );
   if (updatedDnsRecordParams.success === false) {
-    throw new Response(updatedDnsRecordParams.error.message, {
-      status: 400,
-    });
+    return updatedDnsRecordParams.error.flatten();
   }
 
   const { data } = updatedDnsRecordParams;
@@ -68,6 +70,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function DnsRecordRoute() {
   const dnsRecord = useTypedLoaderData<typeof loader>();
+  const actionData = useActionData();
 
   return (
     <Container maxW="container.xl" ml={[null, null, '10vw']}>
@@ -78,7 +81,7 @@ export default function DnsRecordRoute() {
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
         been the industry's standard dummy text ever since the 1500s
       </Text>
-      <DnsRecordForm dnsRecord={dnsRecord} mode="EDIT" />
+      <DnsRecordForm errors={actionData} dnsRecord={dnsRecord} mode="EDIT" />
     </Container>
   );
 }

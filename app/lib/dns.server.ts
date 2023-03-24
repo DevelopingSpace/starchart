@@ -18,7 +18,8 @@ import type {
   GetChangeResponse,
   ListResourceRecordSetsResponse,
 } from '@aws-sdk/client-route-53';
-import type { DnsRecordType } from '@prisma/client';
+import { DnsRecordType } from '@prisma/client';
+import { z } from 'zod';
 
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
 const { NODE_ENV } = process.env;
@@ -348,3 +349,19 @@ export const isValueValid = (type: DnsRecordType, value: string) => {
   // CNAME can be any non-empty string. Let AWS validate it.
   return value.length >= 1;
 };
+
+export const DnsRecordSchema = z
+  .object({
+    subdomain: z.string().min(1),
+    type: z.nativeEnum(DnsRecordType),
+    value: z.string().min(1),
+    ports: z.string(),
+    course: z.string(),
+    description: z.string(),
+  })
+  .refine((data) => isValueValid(data.type, data.value), {
+    message: 'Record value is invalid',
+    path: ['value'],
+  });
+
+export const UpdateDnsRecordSchema = z.intersection(DnsRecordSchema, z.object({ id: z.string() }));
