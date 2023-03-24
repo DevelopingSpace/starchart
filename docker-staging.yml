@@ -3,7 +3,6 @@ services:
   # Redis is used to back our worker queues. It is not exposed.
   redis:
     image: redis:7.0.9-alpine3.17@sha256:8201775852e31262823ac8da9d76d0c8f36583f1a028b4800c35fc319c75289f
-    restart: unless-stopped
     volumes:
       - redis-data:/data
     deploy:
@@ -14,14 +13,15 @@ services:
   mycustomdomain:
     # Staging runs the most recent commit on the main branch
     image: ghcr.io/developingspace/starchart:main
-    restart: unless-stopped
     depends_on:
       - redis
     ports:
       - 8080:8080
     environment:
+      # If the database needs to be wiped and (re)setup, add this
+      #- DATABASE_SETUP=1
       - APP_URL=https://mycustomdomain-dev.senecacollege.ca
-      - AWS_ROUTE53_HOSTED_ZONE_ID=Z0228625ICAL609E0BBT
+      - AWS_ROUTE53_HOSTED_ZONE_ID=Z009022527TSGPKQVW5KF
       - LETS_ENCRYPT_ACCOUNT_EMAIL=mycustomdomain-dev@senecacollege.ca
       - LETS_ENCRYPT_DIRECTORY_URL=https://acme-staging-v02.api.letsencrypt.org/directory
       - LOG_LEVEL=info
@@ -29,7 +29,7 @@ services:
       - NOTIFICATIONS_EMAIL_USER=mycustomdomain-dev@senecacollege.ca
       - PORT=8080
       - REDIS_URL=redis://redis:6379
-      - ROOT_DOMAIN=_stage_.mystudentproject.ca
+      - ROOT_DOMAIN=stage.mystudentproject.ca
     secrets:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
