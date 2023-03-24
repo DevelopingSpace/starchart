@@ -13,13 +13,18 @@ import {
 import { getUser } from './session.server';
 import theme from './theme';
 
-import type { MetaFunction, LoaderArgs } from '@remix-run/node';
+import type { MetaFunction, LoaderArgs, LinksFunction } from '@remix-run/node';
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
   title: 'Starchart',
   viewport: 'width=device-width,initial-scale=1',
 });
+
+export const links: LinksFunction = () => [
+  { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
+  { rel: 'manifest', href: '/manifest.json' },
+];
 
 export async function loader({ request, context }: LoaderArgs) {
   return json({
