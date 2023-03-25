@@ -11,7 +11,7 @@ import Loading from '~/components/display-page';
 import CertificateAvailable from '~/components/certificate/certificate-available';
 import CertificateRequestView from '~/components/certificate/certificate-request';
 import { useUser } from '~/utils';
-import { getCertificateStatusByUsername } from '~/models/certificate.server';
+import { getCertificateByUsername } from '~/models/certificate.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -19,7 +19,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   let certificate;
 
   try {
-    certificate = await getCertificateStatusByUsername(user.username);
+    certificate = await getCertificateByUsername(user.username);
   } catch {
     certificate = {
       status: undefined,
@@ -38,7 +38,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 
   const user = await requireUser(request);
-  const certificate = await getCertificateStatusByUsername(user.username);
+  const certificate = await getCertificateByUsername(user.username);
 
   if (certificate.status !== 'pending' && certificate.status !== 'issued') {
     await addCertRequest({

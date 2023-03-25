@@ -4,18 +4,17 @@ import { prisma } from '~/db.server';
 
 export type { Certificate } from '@prisma/client';
 
-export async function getCertificateStatusByUsername(username: Certificate['username']) {
+export async function getCertificateByUsername(username: Certificate['username']) {
   return prisma.certificate
     .findMany({
       where: {
         username,
-        OR: [{ status: 'issued' }, { status: 'pending' }, { status: 'failed' }],
       },
       orderBy: { id: 'desc' },
       take: 1,
     })
     .then(([certificate]) => {
-      return certificate || {};
+      return certificate;
     });
 }
 

@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 
 import { loggedInAsUser } from './utils';
 import {
-  getCertificateStatusByUsername,
+  getCertificateByUsername,
   createCertificate,
-  deleteAllByUsername,
+  deleteAllCertificateByUsername,
   updateCertificateById,
 } from '../../app/models/certificate.server';
 
@@ -14,7 +14,7 @@ test.describe('Certificate Page', () => {
   test.beforeEach(async ({ page }) => {
     test('Request a Certificate Page', async ({ page }) => {
       await page.goto('/certificate');
-      await deleteAllByUsername('user1');
+      await deleteAllCertificateByUsername('user1');
     });
 
     const titleHeader = page.getByRole('heading', { name: 'Certificate' });
@@ -34,7 +34,7 @@ test.describe('Certificate Page', () => {
 
     loadingPageText.waitFor();
 
-    const certificate = await getCertificateStatusByUsername('user1');
+    const certificate = await getCertificateByUsername('user1');
     await updateCertificateById(certificate.id, {
       status: 'issued',
       validFrom: new Date(),
