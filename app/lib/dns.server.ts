@@ -174,7 +174,7 @@ async function checkDnsRecordExists(type: DnsRecordType, fqdn: string, value: st
  */
 export const getRecordPage = async (
   fqdn?: string,
-  // Using string as it cna be any record type not just the ones we use, also AWS sdk refers to it as string
+  // Using string as it cam be any record type not just the ones we use, also AWS sdk refers to it as string
   type?: string
 ): Promise<ListResourceRecordSetsResponse> => {
   try {
@@ -186,7 +186,7 @@ export const getRecordPage = async (
 
     return route53Client.send(command);
   } catch (error) {
-    logger.warn('Error loading record page from Route53', { type, fqdn, error });
+    logger.warn('DNS Error - Error loading record page from Route53', { type, fqdn, error });
 
     // Rethrow to keep stack
     throw error;
@@ -210,7 +210,7 @@ export const executeChangeSet = async (Changes: Change[]) => {
 
     return response.ChangeInfo.Id;
   } catch (error) {
-    logger.error('Failed to execute changeSet', { error });
+    logger.error('DNS Error - Failed to execute changeSet', { error });
     throw error;
   }
 };

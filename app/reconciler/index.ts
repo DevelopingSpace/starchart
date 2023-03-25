@@ -1,14 +1,25 @@
 import { executeChangeSet } from '~/lib/dns.server';
 import logger from '~/lib/logger.server';
 import readDbIntoCompareStructure from './readDbIntoCompareStructure.server';
-import readRuote53IntoCompareStructure from './readRuote53IntoCompareStructure.server';
-import createChangeSetFromCompareStructures from './createChangeSetFromCompareStructures';
+import readRoute53IntoCompareStructure from './readRoute53IntoCompareStructure.server';
+import {
+  createRemovedChangeSetFromCompareStructures,
+  createUpsertedChangeSetFromCompareStructures,
+} from './createChangeSetFromCompareStructures';
 
-const reconciler = async () => {
-  const dbStructure = await readDbIntoCompareStructure();
-  const route53Structure = await readRuote53IntoCompareStructure();
+// S3 limit for a ChangeSet
+const CHANGE_SET_MAX_SIZE = 1000;
 
-  const changeSet = createChangeSetFromCompareStructures({ dbStructure, route53Structure });
+export const reconcile = async () => {
+  const [dbStructure, route53Structure] = await Promise.all([
+    readDbIntoCompareStructure(),
+    readRoute53IntoCompareStructure(),
+  ]);
+
+  const changeSet = [
+    ...createRemovedChangeSetFromCompareStructures({ dbStructure, route53Structure }),
+    ...createUpsertedChangeSetFromCompareStructures({ dbStructure, route53Structure }),
+  ];
 
   // Limiting the changeSet to 1000 items. AWS limit
 
@@ -21,7 +32,8 @@ const reconciler = async () => {
     changeSet,
   });
 
-  await executeChangeSet(changeSet.slice(0, 1000));
-};
+  await executeChangeSet(changeSet.slice(0, CHANGE_SET_MAX_SIZE));
 
-export default reconciler;
+  // Returning the changeSet size we are executing
+  return Math.min(changeSet.length, CHANGE_SET_MAX_SIZE);
+};

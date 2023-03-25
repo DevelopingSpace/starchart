@@ -6,12 +6,15 @@ import { DnsRecordType } from '@prisma/client';
 import type { Change } from '@aws-sdk/client-route-53';
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
 
-interface InputType {
+interface CompareStructures {
   dbStructure: ReconcilerCompareStructure;
   route53Structure: ReconcilerCompareStructure;
 }
 
-const createChangeSetFromCompareStructures = ({ dbStructure, route53Structure }: InputType) => {
+export const createRemovedChangeSetFromCompareStructures = ({
+  dbStructure,
+  route53Structure,
+}: CompareStructures) => {
   const toChange: Change[] = [];
 
   /**
@@ -31,6 +34,7 @@ const createChangeSetFromCompareStructures = ({ dbStructure, route53Structure }:
       toChange.push({
         Action: 'DELETE',
         ResourceRecordSet: {
+          MultiValueAnswer: route53Value.length > 1,
           Name: fqdn,
           Type: type,
           ResourceRecords: route53Value.map((Value) => ({ Value })),
@@ -39,6 +43,15 @@ const createChangeSetFromCompareStructures = ({ dbStructure, route53Structure }:
       });
     });
   });
+
+  return toChange;
+};
+
+export const createUpsertedChangeSetFromCompareStructures = ({
+  dbStructure,
+  route53Structure,
+}: CompareStructures) => {
+  const toChange: Change[] = [];
 
   /**
    * Now loop through all the data from the DB. If the data in
@@ -88,5 +101,3 @@ const createChangeSetFromCompareStructures = ({ dbStructure, route53Structure }:
 
   return toChange;
 };
-
-export default createChangeSetFromCompareStructures;

@@ -17,8 +17,17 @@ const readDbIntoCompareStructure = async (): Promise<ReconcilerCompareStructure>
   dnsData.forEach(({ username, subdomain, type, value }) => {
     const fqdn = `${buildDomain(username, subdomain)}.`;
 
-    // Get the previous value for fqdn.recordType (or an empty array if missing)
-    // and combine it with the new value we are just processing
+    /**
+     * Get the previous value for fqdn.recordType (or an empty array if missing)
+     * and combine it with the new value we are just processing
+     *
+     * creates the following (example) structure
+     * {
+     *   'web.john.starchart.com.': {
+     *     'A': ['1.2.3.4']
+     *   }
+     * }
+     */
     const combinedValue = [...get(MUTATEDcompareStructure, [fqdn, type], []), value];
 
     // and set that value on our compare structure

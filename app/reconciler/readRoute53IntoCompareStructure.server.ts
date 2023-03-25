@@ -11,6 +11,20 @@ import type { ResourceRecordSet, ListResourceRecordSetsResponse } from '@aws-sdk
  * This is a huge anti-pattern, but in this case it made the code
  * much more performant. So I marked the variable as such and
  * doing the mutation either way
+ *
+ * The alternate would have been to treat objects immutable, but then
+ * every insert would need to clone the existing object to insert into it:
+ *
+ * const compareStructure = response.ResourceRecordSets.reduce((acc, item) => ({
+ *   ...acc,
+ *   [item.Name]: {
+ *     ...acc[item.Name],
+ *     [item.type]: item.Value
+ *   }
+ * }), {});
+ *
+ * This would cause scaling to be
+ * O(n^2) or even worse. With many records, this would take a very long time
  */
 
 const processRecordSets = (
@@ -24,7 +38,7 @@ const processRecordSets = (
       return;
     }
 
-    // We only care about record types that we handle. NS, CNAME, etc. should be ignored
+    // We only care about record types that we handle. NS, SOA, etc. should be ignored
     // RecordSet.Type is given as `string`, so we have to do this for TS to compare them
     if (!Object.values(DnsRecordType).includes(recordSet.Type as DnsRecordType)) {
       return;
@@ -43,7 +57,7 @@ const processRecordSets = (
  * This Fn reads the complete Route53 zone into a `ReconcilerCompareStructure` type object
  * to be used for later comparison with our database data
  */
-const readRuote53IntoCompareStructure = async (): Promise<ReconcilerCompareStructure> => {
+const readRoute53IntoCompareStructure = async (): Promise<ReconcilerCompareStructure> => {
   const MUTATEDcompareStructure: ReconcilerCompareStructure = {};
 
   let morePages: boolean = true;
@@ -67,4 +81,4 @@ const readRuote53IntoCompareStructure = async (): Promise<ReconcilerCompareStruc
   return MUTATEDcompareStructure;
 };
 
-export default readRuote53IntoCompareStructure;
+export default readRoute53IntoCompareStructure;
