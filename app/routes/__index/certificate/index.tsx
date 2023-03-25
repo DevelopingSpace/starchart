@@ -30,15 +30,15 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const user = await requireUser(request);
-  const certificate = await getCertificateStatusByUsername(user.username);
-
   if (request.method !== 'POST') {
     return json({
       result: 'error',
       message: 'Invalid Request Method',
     });
   }
+
+  const user = await requireUser(request);
+  const certificate = await getCertificateStatusByUsername(user.username);
 
   if (certificate.status !== 'pending' && certificate.status !== 'issued') {
     await addCertRequest({
