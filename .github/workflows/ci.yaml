@@ -321,7 +321,7 @@ jobs:
     # Don't bother unless everything else passes
     needs: [Build, Prettier, Unit-Tests, E2E-Tests, Dockerfile-Lint, ESLint, Type-Check]
     env:
-      IMAGE: ghcr.io/DevelopingSpace/starchart
+      IMAGE: ghcr.io/developingspace/starchart
     permissions:
       contents: read
       packages: write
