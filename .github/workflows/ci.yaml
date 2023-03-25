@@ -349,10 +349,7 @@ jobs:
           build-args: |
             SAML_IDP_METADATA_PATH=./config/idp-metadata-staging.xml
           push: true
-          tags: |
-            ${{ env.IMAGE }}:sha-${{ env.GITHUB_SHA_SHORT }}, \
-            ${{ env.IMAGE }}:main, \
-            ${{ env.IMAGE }}:latest
+          tags: ${{ env.IMAGE }}:sha-${{ env.GITHUB_SHA_SHORT }}, ${{ env.IMAGE }}:main, ${{ env.IMAGE }}:latest
 
       - name: Deploy to Staging via Webhook
         uses: navied/secure-actions-webhook@0.2.0
