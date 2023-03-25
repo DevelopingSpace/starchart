@@ -33,6 +33,13 @@ export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
   const certificate = await getCertificateStatusByUsername(user.username);
 
+  if (request.method !== 'POST') {
+    return json({
+      result: 'error',
+      message: 'Invalid Request Method',
+    });
+  }
+
   if (certificate.status !== 'pending' && certificate.status !== 'issued') {
     await addCertRequest({
       rootDomain: user.baseDomain,
