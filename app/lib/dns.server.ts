@@ -172,7 +172,7 @@ async function checkDnsRecordExists(type: DnsRecordType, fqdn: string, value: st
  *
  * https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-route-53/classes/listresourcerecordsetscommand.html
  */
-export const getRecordPage = async (
+export const getDnsRecordSetPage = async (
   fqdn?: string,
   // Using string as it cam be any record type not just the ones we use, also AWS sdk refers to it as string
   type?: string

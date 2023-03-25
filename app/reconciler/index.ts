@@ -1,19 +1,19 @@
 import { executeChangeSet } from '~/lib/dns.server';
 import logger from '~/lib/logger.server';
-import readDbIntoCompareStructure from './readDbIntoCompareStructure.server';
-import readRoute53IntoCompareStructure from './readRoute53IntoCompareStructure.server';
+import DnsDbCompareStructureGenerator from './DnsDbCompareStructureGenerator.server';
+import Route53CompareStructureGenerator from './Route53CompareStructureGenerator.server';
 import {
   createRemovedChangeSetFromCompareStructures,
   createUpsertedChangeSetFromCompareStructures,
-} from './createChangeSetFromCompareStructures';
+} from './createChangeSetFromCompareStructures.server';
 
 // S3 limit for a ChangeSet
 const CHANGE_SET_MAX_SIZE = 1000;
 
 export const reconcile = async () => {
   const [dbStructure, route53Structure] = await Promise.all([
-    readDbIntoCompareStructure(),
-    readRoute53IntoCompareStructure(),
+    new DnsDbCompareStructureGenerator().generate(),
+    new Route53CompareStructureGenerator().generate(),
   ]);
 
   const changeSet = [
