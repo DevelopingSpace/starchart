@@ -16,7 +16,15 @@ import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
-  const certificate = await getCertificateStatusByUsername(user.username);
+  let certificate;
+
+  try {
+    certificate = await getCertificateStatusByUsername(user.username);
+  } catch {
+    certificate = {
+      status: undefined,
+    };
+  }
 
   return typedjson(certificate);
 };
@@ -52,11 +60,7 @@ export default function CertificateIndexRoute() {
     () => {
       revalidator.revalidate();
     },
-    certificate.status === 'pending' ||
-      certificate.status === 'issued' ||
-      certificate.status === undefined
-      ? 5_000
-      : null
+    certificate.status === 'pending' ? 5_000 : null
   );
 
   function formatDate(val: Date): string {
