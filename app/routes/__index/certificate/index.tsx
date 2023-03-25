@@ -16,15 +16,8 @@ import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
-  let certificate;
 
-  try {
-    certificate = await getCertificateByUsername(user.username);
-  } catch {
-    certificate = {
-      status: undefined,
-    };
-  }
+  const certificate = (await getCertificateByUsername(user.username)) || {};
 
   return typedjson(certificate);
 };
@@ -40,7 +33,7 @@ export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
   const certificate = await getCertificateByUsername(user.username);
 
-  if (certificate.status !== 'pending' && certificate.status !== 'issued') {
+  if (certificate?.status !== 'pending' && certificate?.status !== 'issued') {
     await addCertRequest({
       rootDomain: user.baseDomain,
       username: user.username,
@@ -67,7 +60,7 @@ export default function CertificateIndexRoute() {
     () => {
       revalidator.revalidate();
     },
-    certificate.status === 'pending' ? 5_000 : null
+    certificate?.status === 'pending' ? 5_000 : null
   );
 
   function formatDate(val: Date): string {
@@ -80,7 +73,7 @@ export default function CertificateIndexRoute() {
     return date;
   }
 
-  if (certificate.status === 'pending') {
+  if (certificate?.status === 'pending') {
     return (
       <Loading
         img={pendingSvg}
@@ -97,7 +90,7 @@ export default function CertificateIndexRoute() {
         width={{ base: 'md', sm: 'lg', md: '2xl', lg: '4xl' }}
         marginTop={{ base: '16', md: '5' }}
       >
-        {certificate.status === 'issued' ? (
+        {certificate?.status === 'issued' ? (
           <CertificateAvailable
             publicKey={certificate.certificate!}
             privateKey={certificate.privateKey!}
