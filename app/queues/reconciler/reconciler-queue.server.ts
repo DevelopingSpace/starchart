@@ -1,12 +1,24 @@
 import logger from '~/lib/logger.server';
 import { reconcilerQueue } from './reconciler-worker.server';
 
+declare global {
+  var __reconciler_queue_init__: boolean;
+}
+
 reconcilerQueue.on('error', (err) => {
   logger.error('Reconciler encountered an error', err);
 });
 
 // function to add jobs
 export const addReconcilerJob = async () => {
+  if (process.env.NODE_ENV !== 'production') {
+    return;
+  } else if (global.__reconciler_queue_init__) {
+    // Only do this setup once in dev
+    return;
+  }
+  global.__reconciler_queue_init__ = true;
+
   logger.info('Starting DNS reconciler queue');
 
   const jobName = `reconciler-scheduler`;
@@ -18,7 +30,7 @@ export const addReconcilerJob = async () => {
     const repeatableJobs = await reconcilerQueue.getRepeatableJobs();
     Promise.all(repeatableJobs.map(({ key }) => reconcilerQueue.removeRepeatableByKey(key)));
 
-    return await reconcilerQueue.add(
+    await reconcilerQueue.add(
       jobName,
       {},
       {
