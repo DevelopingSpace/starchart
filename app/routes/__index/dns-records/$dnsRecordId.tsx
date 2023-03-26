@@ -42,7 +42,8 @@ export const action = async ({ request }: ActionArgs) => {
       return isNameValid(fqdn, user.username);
     },
     {
-      message: 'Record name is invalid',
+      message:
+        'Record name is invalid or inappropriate (only alphanumerical character, -, and _ allowed)',
       path: ['subdomain'],
     }
   );

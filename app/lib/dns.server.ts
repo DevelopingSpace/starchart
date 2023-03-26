@@ -7,6 +7,7 @@ import {
 } from '@aws-sdk/client-route-53';
 import isFQDN from 'validator/lib/isFQDN';
 import isIP from 'validator/lib/isIP';
+import Filter from 'bad-words';
 
 import logger from '~/lib/logger.server';
 import secrets from '~/lib/secrets.server';
@@ -21,6 +22,8 @@ import type {
 } from '@aws-sdk/client-route-53';
 import { DnsRecordType } from '@prisma/client';
 import { z } from 'zod';
+
+const filter = new Filter();
 
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
 const { NODE_ENV } = process.env;
@@ -377,6 +380,11 @@ export const isNameValid = (fqdn: string, username: string) => {
     return false;
   }
   const subdomain = fqdn.substring(0, fqdn.length - toRemove.length);
+
+  // Decline if subdomain has inappropriate word(s)
+  if (filter.isProfane(subdomain)) {
+    return false;
+  }
 
   //It only validates subdomain name, not username and root domain
   return (
