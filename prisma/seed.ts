@@ -16,10 +16,18 @@ async function seed() {
   temporaryExpDate.setDate(temporaryExpDate.getDate() + 7); // expiration for notifications
 
   // cleanup the existing database; no worries if it doesn't exist yet
+  await prisma.systemState.deleteMany().catch(() => {});
   await prisma.dnsRecord.deleteMany().catch(() => {});
   await prisma.challenge.deleteMany().catch(() => {});
   await prisma.certificate.deleteMany().catch(() => {});
   await prisma.user.deleteMany().catch(() => {});
+
+  await prisma.systemState.create({
+    data: {
+      unique: 'unique',
+      reconciliationNeeded: false,
+    },
+  });
 
   await prisma.user.createMany({
     data: [
