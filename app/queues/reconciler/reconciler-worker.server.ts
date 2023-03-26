@@ -104,10 +104,14 @@ const reconcilerWorker = new Worker(
       return;
     }
 
+    // We are defaulting to true, if everything fails, the queue will retry in 2 mins
     let isAdditionalReconciliationNeeded = true;
     try {
+      // First, we try to bulk push all the cahnges at once.
       isAdditionalReconciliationNeeded = await pushChangesBulk(changeSet);
     } catch (error) {
+      // If that fails, we switch to limp mode, that pushes changes one by one
+      // This way we can pinpoint the offending change in the set
       logger.error('Reconciler - Change set failed, switching to limp mode', { error });
 
       await pushChangesLimp(changeSet);
@@ -116,7 +120,7 @@ const reconcilerWorker = new Worker(
     /**
      * Update system state
      *
-     * If  changeSet is < 1000 elements, then dns data that has been altered
+     * If changeSet is < 1000 elements, then dns data that has been altered
      * have now been reconciled
      */
     await setIsReconciliationNeeded(isAdditionalReconciliationNeeded);
