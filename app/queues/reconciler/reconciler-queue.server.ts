@@ -11,12 +11,11 @@ reconcilerQueue.on('error', (err) => {
 
 // function to add jobs
 export const addReconcilerJob = async () => {
-  if (process.env.NODE_ENV !== 'production') {
-    return;
-  } else if (global.__reconciler_queue_init__) {
-    // Only do this setup once in dev
+  if (process.env.NODE_ENV !== 'production' && global.__reconciler_queue_init__) {
+    // Only do this setup once if in dev
     return;
   }
+
   global.__reconciler_queue_init__ = true;
 
   logger.info('Starting DNS reconciler queue');
@@ -28,7 +27,9 @@ export const addReconcilerJob = async () => {
     // This is important because multiple repeatable jobs can exist and they persist
     // within redis (even with the same key)
     const repeatableJobs = await reconcilerQueue.getRepeatableJobs();
-    Promise.all(repeatableJobs.map(({ key }) => reconcilerQueue.removeRepeatableByKey(key)));
+    repeatableJobs.forEach(async ({ key }) => {
+      await reconcilerQueue.removeRepeatableByKey(key);
+    });
 
     await reconcilerQueue.add(
       jobName,

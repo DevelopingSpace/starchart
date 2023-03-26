@@ -39,20 +39,20 @@ const createChangeSet = async (): Promise<Change[]> => {
  *
  * Execute the complete changeSet at once
  */
-const pushChangesBulk = (changeSet: Change[]): boolean => {
+const pushChangesBulk = async (changeSet: Change[]): Promise<boolean> => {
+  const recordSetsToPush = Math.min(CHANGE_SET_MAX_SIZE, changeSet.length);
+
   logger.debug(
-    `NORMAL MODE - Reconciler intends to push the following ${Math.min(
-      1000,
-      changeSet.length
-    )} changes`,
+    `Reconciler NORMAL MODE - Reconciler intends to push the following ${recordSetsToPush} changes`,
     {
       changeSet,
     }
   );
-  executeChangeSet(changeSet.slice(0, CHANGE_SET_MAX_SIZE));
+
+  await executeChangeSet(changeSet.slice(0, CHANGE_SET_MAX_SIZE));
 
   // Return boolean => Is additional reconciliation needed
-  return changeSet.length > 1000;
+  return changeSet.length > CHANGE_SET_MAX_SIZE;
 };
 
 /**
@@ -60,16 +60,16 @@ const pushChangesBulk = (changeSet: Change[]): boolean => {
  *
  * Try each change in the set one by one, isolate the offending one
  */
-const pushChangesLimp = async (changeSet: Change[]) => {
+const pushChangesIndividually = async (changeSet: Change[]) => {
   for (const change of changeSet) {
     try {
-      logger.debug(`LIMP MODE - Reconciler intends to push the following change`, {
+      logger.debug(`Reconciler LIMP MODE - Reconciler intends to push the following change`, {
         change,
       });
 
       await executeChangeSet([change]);
     } catch (error) {
-      logger.error(`LIMP MODE - the following single change failed`, {
+      logger.error(`Reconciler LIMP MODE - the following single change failed`, {
         change,
         error,
       });
@@ -90,9 +90,9 @@ const reconcilerWorker = new Worker(
       return;
     }
 
-    // Only run worker if needed
+    // Only run if reconciler was explicitly requested
     if (!(await getIsReconciliationNeeded())) {
-      logger.debug('Reconciler - Run not requested');
+      logger.debug('Reconciler - skipping current job, reconciler not needed.');
       return;
     }
 
@@ -114,16 +114,17 @@ const reconcilerWorker = new Worker(
       // This way we can pinpoint the offending change in the set
       logger.error('Reconciler - Change set failed, switching to limp mode', { error });
 
-      await pushChangesLimp(changeSet);
+      await pushChangesIndividually(changeSet);
     }
 
     /**
      * Update system state
      *
-     * If changeSet is < 1000 elements, then dns data that has been altered
+     * If changeSet is < CHANGE_SET_MAX_SIZE elements, then dns data that has been altered
      * have now been reconciled
      */
     await setIsReconciliationNeeded(isAdditionalReconciliationNeeded);
+    logger.debug('Reconciler - job complete', { isAdditionalReconciliationNeeded });
   },
   { connection: redis }
 );
