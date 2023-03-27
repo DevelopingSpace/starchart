@@ -5,9 +5,10 @@ import {
   ListResourceRecordSetsCommand,
   GetChangeCommand,
 } from '@aws-sdk/client-route-53';
+import Filter from 'bad-words';
 import isFQDN from 'validator/lib/isFQDN';
 import isIP from 'validator/lib/isIP';
-import Filter from 'bad-words';
+import isIPRange from 'validator/lib/isIPRange';
 
 import logger from '~/lib/logger.server';
 import secrets from '~/lib/secrets.server';
@@ -228,8 +229,21 @@ export const isValueValid = (type: DnsRecordType, value: string) => {
     return isIP(value, 6);
   }
 
-  // CNAME can be any non-empty string. Let AWS validate it.
-  return value.length >= 1;
+  // CNAME rule
+  // 1. CNAME can be any non-empty string
+  // 2. CNAME should not be IP address
+  // 3. CNAME should be a proper domain name
+  // 4. CNAME cannot contain _
+  if (type === 'CNAME') {
+    return !isIPRange(value) && isFQDN(value);
+  }
+
+  if (type === 'TXT') {
+    // TXT records must be less than 4000, and we won't bother with empty
+    return value.length > 0 && value.length <= 4000;
+  }
+
+  return false;
 };
 
 export const DnsRecordSchema = z
