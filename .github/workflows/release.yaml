@@ -1,0 +1,66 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  actions: write
+  contents: write
+
+jobs:
+  Release:
+    runs-on: ubuntu-latest
+    steps:
+      # get the version of the current git tag
+      - name: Get tag version
+        id: vars
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: Generate release
+        uses: 'marvinpinto/action-automatic-releases@v1.2.1'
+        with:
+          repo_token:
+            '${{ secrets.GITHUB_TOKEN }}'
+            # generate release name with the tag name that was just pushed
+          automatic_release_tag: ${{ steps.vars.outputs.tag }}
+          prerelease: false
+  Docker-Build:
+    # We'll only build and push when landing on main, not for PRs
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Extract Docker metadata from git info
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/DevelopingSpace/starchart
+          flavor: latest=true
+          tags: |
+            type=semver,value=${{ steps.vars.outputs.tag }}
+      - name: Log in to the GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
