@@ -17,6 +17,18 @@ export function getDnsRecordsByUsername(username: DnsRecord['username']) {
   });
 }
 
+export function getDnsRecordCountByUsername(username: DnsRecord['username']) {
+  return prisma.dnsRecord.count({
+    where: {
+      username,
+      NOT: {
+        type: DnsRecordType.TXT,
+        subdomain: '_acme-challenge',
+      },
+    },
+  });
+}
+
 export function getDnsRecordById(id: DnsRecord['id']) {
   return prisma.dnsRecord.findUnique({ where: { id }, include: { user: true } });
 }
@@ -139,4 +151,8 @@ export function getReconciliationData() {
   return prisma.dnsRecord.findMany({
     select: { username: true, subdomain: true, type: true, value: true },
   });
+}
+
+export function getTotalDnsRecordCount(): Promise<number> {
+  return prisma.dnsRecord.count();
 }
