@@ -1,6 +1,6 @@
 import { get, set } from 'lodash';
 import { getReconciliationData } from '~/models/dns-record.server';
-import { buildDomain } from '../utils';
+import { buildDomain } from '../../utils';
 
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
 

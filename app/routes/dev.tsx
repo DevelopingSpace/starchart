@@ -18,7 +18,7 @@ import {
   addDeleteDnsRequest,
 } from '~/queues/dns/index.server';
 import { DnsRecordType } from '@prisma/client';
-import { reconcile } from '~/reconciler';
+import { setIsReconciliationNeeded } from '~/models/system-state.server';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
@@ -42,7 +42,7 @@ export const action = async ({ request }: ActionArgs) => {
         message: 'Certificate requested',
       });
     case 'dns-reconciliation':
-      await reconcile();
+      await setIsReconciliationNeeded(true);
       return json({
         result: 'ok',
         message: 'Reconciliation requested',

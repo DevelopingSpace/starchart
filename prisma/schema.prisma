@@ -59,6 +59,18 @@ model Challenge {
   certificate   Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
 }
 
+model SystemState {
+  // As the following type is unique, enum, required and only one option
+  // it enforces that there is only one row in the table
+  unique               StateEnumType @unique @default(unique)
+  reconciliationNeeded Boolean       @default(false)
+}
+
+// This is to force only a single row to exist in the SystemState table
+enum StateEnumType {
+  unique
+}
+
 enum DnsRecordType {
   A
   AAAA
