@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 
 import logger from '~/lib/logger.server';
+import { addReconcilerJob } from './app/queues/reconciler/reconciler-queue.server';
 
 import type { Request, Response } from 'express';
 
@@ -81,6 +82,10 @@ const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
   // require the built app so we're ready when the first request comes in
   require(BUILD_DIR);
+
+  // start the DNS reconciler
+  addReconcilerJob();
+
   logger.info(`✅ app ready: http://localhost:${port}`);
 });
 
