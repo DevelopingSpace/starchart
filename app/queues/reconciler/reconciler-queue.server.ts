@@ -5,6 +5,11 @@ declare global {
   var __reconciler_queue_init__: boolean;
 }
 
+const { JOB_REMOVAL_FREQUENCY_S } = process.env;
+
+// constant  for removing job on completion/failure (in seconds)
+const JOB_REMOVAL_INTERVAL_S = 7 * 24 * 60 * 60; // 7 days
+
 reconcilerQueue.on('error', (err) => {
   logger.error('Reconciler encountered an error', err);
 });
@@ -35,6 +40,8 @@ export const addReconcilerJob = async () => {
       {
         repeatJobKey: jobName,
         repeat: { every: 2 * 60 * 1000 },
+        removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
+        removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
       }
     );
   } catch (err) {

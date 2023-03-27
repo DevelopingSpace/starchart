@@ -28,6 +28,11 @@ interface AddCertRequest {
   username: string;
 }
 
+const { JOB_REMOVAL_FREQUENCY_S } = process.env;
+
+// constant  for removing job on completion/failure (in seconds)
+const JOB_REMOVAL_INTERVAL_S = 7 * 24 * 60 * 60; // 7 days
+
 const flowProducer = new FlowProducer({ connection: redis });
 
 export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) => {
@@ -67,6 +72,8 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
         type: 'exponential',
         delay: 60_000, // start with 1 minute, double each time
       },
+      removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
+      removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
     },
   };
 
@@ -83,6 +90,8 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
         type: 'exponential',
         delay: 10_000, // start with 10 seconds, double each time
       },
+      removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
+      removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
     },
   };
 
@@ -99,6 +108,8 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
         type: 'exponential',
         delay: 60_000, // start with 1 minute, double each time
       },
+      removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
+      removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
     },
   };
 
@@ -115,6 +126,8 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
         type: 'exponential',
         delay: 60_000, // start with 1 minute, double each time
       },
+      removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
+      removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
     },
   };
 
@@ -131,6 +144,8 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
         type: 'exponential',
         delay: 60_000, // start with 1 minute, double each time
       },
+      removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
+      removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
     },
   };
 
