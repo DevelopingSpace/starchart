@@ -41,9 +41,9 @@ model Certificate {
   username     String
   domain       String
   orderUrl     String?           @unique @db.VarChar(255)
-  privateKey   String?
-  certificate  String?
-  validFrom    DateTime?
+  privateKey   String?           @db.Text
+  certificate  String?           @db.Text
+  validFrom    DateTime?          
   validTo      DateTime?
   lastNotified DateTime?
   status       CertificateStatus @default(pending)
