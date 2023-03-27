@@ -84,3 +84,17 @@ export async function isDeactivated(username: PrismaUser['username']) {
 
   return user.deactivated;
 }
+
+export function searchUsers(search: string): Promise<PrismaUser[]> {
+  return prisma.user.findMany({
+    where: {
+      email: {
+        contains: search,
+      },
+    },
+  });
+}
+
+export function getTotalUserCount(): Promise<number> {
+  return prisma.user.count();
+}

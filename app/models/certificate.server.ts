@@ -9,13 +9,10 @@ export async function getCertificateByUsername(username: Certificate['username']
    * There might be multiple certificates in the db for the same user, let's get
    * the most recent one that has been successfully issued
    */
-
   return prisma.certificate
     .findMany({
-      where: {
-        username,
-      },
-      orderBy: { id: 'desc' },
+      where: { username, status: 'issued' },
+      orderBy: { validFrom: 'desc' },
       take: 1,
     })
     .then(([certificate]) => certificate);
@@ -46,4 +43,8 @@ export function updateCertificateById(
 
 export function deleteCertificateById(id: Certificate['id']) {
   return prisma.certificate.delete({ where: { id } });
+}
+
+export function getTotalCertificateCount() {
+  return prisma.certificate.count();
 }
