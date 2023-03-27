@@ -58,7 +58,7 @@ export function createDnsRecord(
   data: Pick<DnsRecord, 'username' | 'type' | 'subdomain' | 'value'>
 ) {
   // Set expiration date 6 months from now
-  const expiresAt = dayjs().set('month', 6).toDate();
+  const expiresAt = dayjs().add(6, 'month').toDate();
   const status = DnsRecordStatus.pending;
 
   return prisma.dnsRecord.create({ data: { ...data, expiresAt, status } });
@@ -78,7 +78,7 @@ export function updateDnsRecordById(
       ...data,
       // If the record is changing to the `active` status, update expiry too
       expiresAt:
-        data.status === DnsRecordStatus.active ? dayjs().set('month', 6).toDate() : undefined,
+        data.status === DnsRecordStatus.active ? dayjs().add(6, 'month').toDate() : undefined,
     },
   });
 }
@@ -89,7 +89,8 @@ export function renewDnsRecordById(id: DnsRecord['id']) {
       id,
     },
     data: {
-      expiresAt: dayjs().set('month', 6).toDate(),
+      // Set expiration date 6 months from now
+      expiresAt: dayjs().add(6, 'month').toDate(),
     },
   });
 }
