@@ -80,7 +80,29 @@ const pushChangesIndividually = async (changeSet: Change[]) => {
 const reconcilerWorker = new Worker(
   reconcilerQueueName,
   async () => {
-    // When BullMQ is running on multiple nodes (Docker swarm), we need to make sure our concurrency is 1
+    /**
+     * When a BullMQ worker is added, it will behave as single
+     * threaded ... will only execute one job at a time.
+     * But, if we use multiple instances, i.e. our docker swarm,
+     * we have one worker per instance, taking jobs from the queue.
+     *
+     * When you add a repeat job to a queue, it is a special thing,
+     * not a regular job. It causes the queue system to keep adding
+     * delayed `regular` jobs when the repeat pattern/integer
+     * dictates it.
+     *
+     * In theory, it would be possible, that a job is running long
+     * (more than our job repeat time), so the second swarm
+     * node would pick up the next scheduled job, causing the system
+     * to run two reconcilers in parallel.
+     *
+     * For this reason, I'm asking the BullMQ system ... tell me
+     * how many active jobs are there (this includes the current
+     * job too, that we are in right now). If the answer is > 1,
+     * it means that there was a pre-existing job already running,
+     * when we were started ==> we must exit to inhibit concurrency
+     */
+
     const activeJobs = (await reconcilerQueue.getJobs('active'))
       // BullMQ bug, sometimes I get an array element with `undefined`, that should not be possible
       .filter((v) => !!v);

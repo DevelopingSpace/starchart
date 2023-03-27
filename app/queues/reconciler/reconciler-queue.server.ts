@@ -27,9 +27,7 @@ export const addReconcilerJob = async () => {
     // This is important because multiple repeatable jobs can exist and they persist
     // within redis (even with the same key)
     const repeatableJobs = await reconcilerQueue.getRepeatableJobs();
-    repeatableJobs.forEach(async ({ key }) => {
-      await reconcilerQueue.removeRepeatableByKey(key);
-    });
+    await Promise.all(repeatableJobs.map(({ key }) => reconcilerQueue.removeRepeatableByKey(key)));
 
     await reconcilerQueue.add(
       jobName,
