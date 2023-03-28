@@ -8,6 +8,7 @@ export interface User extends PrismaUser {
   // the base domain to use for all DNS records created by this user
   // (e.g., jsmith.starchart.com with records using *.jsmith.starchart.com)
   baseDomain: string;
+  isAdmin: boolean;
 }
 
 export async function getUserByUsername(username: PrismaUser['username']) {
@@ -17,7 +18,11 @@ export async function getUserByUsername(username: PrismaUser['username']) {
   }
 
   // Decorate with the user's base domain as well
-  return { ...user, baseDomain: buildUserBaseDomain(username) };
+  return {
+    ...user,
+    baseDomain: buildUserBaseDomain(username),
+    isAdmin: await isAdmin(username),
+  };
 }
 
 /**

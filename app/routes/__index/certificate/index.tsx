@@ -10,7 +10,7 @@ import pendingSvg from '~/assets/undraw_processing_re_tbdu.svg';
 import Loading from '~/components/display-page';
 import CertificateAvailable from '~/components/certificate/certificate-available';
 import CertificateRequestView from '~/components/certificate/certificate-request';
-import { useUser } from '~/utils';
+import { useEffectiveUser } from '~/utils';
 import { getCertificateByUsername } from '~/models/certificate.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
@@ -64,7 +64,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export default function CertificateIndexRoute() {
-  const user = useUser();
+  const user = useEffectiveUser();
   const revalidator = useRevalidator();
   const { certificate } = useTypedLoaderData<typeof loader>();
 

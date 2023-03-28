@@ -7,7 +7,7 @@ import { Form, useActionData } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import invariant from 'tiny-invariant';
 
-import { useUser } from '~/utils';
+import { useEffectiveUser } from '~/utils';
 import logger from '~/lib/logger.server';
 import { requireUser, requireUsername } from '~/session.server';
 import { addNotification } from '~/queues/notifications/notifications.server';
@@ -118,7 +118,7 @@ export const action = async ({ request }: ActionArgs) => {
 export const loader = async ({ request }: LoaderArgs) => requireUsername(request);
 
 export default function Index() {
-  const user = useUser();
+  const user = useEffectiveUser();
   const data = useActionData<typeof action>();
 
   return (

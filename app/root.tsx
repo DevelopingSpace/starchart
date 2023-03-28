@@ -10,7 +10,8 @@ import {
   useLoaderData,
 } from '@remix-run/react';
 
-import { getUser } from './session.server';
+import { getUser, getEffectiveUser } from './session.server';
+
 import theme from './theme';
 
 import type { MetaFunction, LoaderArgs, LinksFunction } from '@remix-run/node';
@@ -32,6 +33,14 @@ export const links: LinksFunction = () => [
 export async function loader({ request, context }: LoaderArgs) {
   return json({
     user: await getUser(request),
+    /**
+     * the effectiveUsername, this is for admin impersonating users. Regular
+     * users will have an effectiveUsername that is always the same as their
+     * username, admins (identified by group) will start with an empty string
+     * that can be changed to another users username on the admin portal for
+     * them to impersonate
+     **/
+    effectiveUser: await getEffectiveUser(request),
     nonce: context.nonce as string,
   });
 }
