@@ -1,10 +1,11 @@
 import { set } from 'lodash';
 import { getDnsRecordSetPage } from '~/lib/dns.server';
+import { fromRoute53RecordValue } from './route53Utils.server';
 
 // Using this in JS code later, cannot `import type`
 import { DnsRecordType } from '@prisma/client';
-import type { ReconcilerCompareStructure } from './ReconcilerTypes';
 import type { ResourceRecordSet, ListResourceRecordSetsResponse } from '@aws-sdk/client-route-53';
+import type { ReconcilerCompareStructure } from './ReconcilerTypes';
 
 // Validate `[subdomain].[username].starchart.com.`
 // escape `.` characters in ROOT_DOMAIN also
@@ -29,9 +30,12 @@ class Route53CompareStructureGenerator {
         return;
       }
 
-      const value = recordSet.ResourceRecords?.map(({ Value }) => Value).filter(
-        (Value) => !!Value
-      ) as string[];
+      const value = recordSet.ResourceRecords?.map(({ Value }) => Value)
+        .filter((value) => !!value)
+        .map((value) =>
+          // Convert from special Route53 TXT record format. Details in route53Utils.server.ts
+          fromRoute53RecordValue(recordSet.Type as DnsRecordType, value!)
+        ) as string[];
 
       // and set that value on our compare structure
       set(this.#MUTATEDcompareStructure, [recordSet.Name, recordSet.Type], value);
