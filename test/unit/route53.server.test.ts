@@ -35,12 +35,10 @@ describe('Route53 functionality test raw => Route53 format', () => {
         '\\040',
         'Hello',
         '\\040',
-
         '\\"',
         'World',
         '\\"',
         '\\040',
-
         '"',
       ].join('')
     );
@@ -82,12 +80,10 @@ describe('Route53 functionality test Route53 => raw format', () => {
         '\\040',
         'Hello',
         '\\040',
-
         '\\"',
         'World',
         '\\"',
         '\\040',
-
         '"',
       ].join('')
     );
