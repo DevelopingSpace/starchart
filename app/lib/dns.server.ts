@@ -53,10 +53,6 @@ if (NODE_ENV === 'production') {
   process.env.ROOT_DOMAIN = process.env.ROOT_DOMAIN || 'starchart.com';
 }
 
-// Ensure a trailing `.` on a domain to make it fully qualified:
-// a.b.c -> a.b.c. | a.b.c. -> a.b.c.
-const toFQDN = (domain: string) => domain.replace(/\.?$/, '.');
-
 /**
  * In production, we have to have a zone id to do anything, but in
  * dev, we create it on startup if not set.
@@ -125,50 +121,6 @@ export async function createHostedZone(domain: string) {
   }
 }
 
-export const createDnsRecord = (
-  username: string,
-  type: DnsRecordType,
-  fqdn: string,
-  value: string
-) => {
-  try {
-    return upsertDnsRecord(username, type, fqdn, value);
-  } catch (error) {
-    logger.warn('DNS Error in createDnsRecord', { username, type, fqdn, value, error });
-    throw new Error(`Error occurred while creating resource record`);
-  }
-};
-
-async function checkDnsRecordExists(type: DnsRecordType, fqdn: string, value: string) {
-  try {
-    const command = new ListResourceRecordSetsCommand({
-      HostedZoneId: await getHostedZoneId(),
-      StartRecordName: fqdn,
-      StartRecordType: type,
-      MaxItems: 1,
-    });
-    const { ResourceRecordSets }: ListResourceRecordSetsResponse = await route53Client.send(
-      command
-    );
-
-    // If we don't get back a single Resource Record Set, it's not a match
-    if (ResourceRecordSets?.length !== 1) {
-      return false;
-    }
-    // Grab the one and only one and compare values
-    const { Name, Type, ResourceRecords } = ResourceRecordSets[0];
-    return (
-      Name === toFQDN(fqdn) &&
-      Type === type &&
-      ResourceRecords?.length === 1 &&
-      ResourceRecords[0].Value === value
-    );
-  } catch (error) {
-    logger.warn('DNS Error in checkDnsRecordExists', { type, fqdn, value, error });
-    throw new Error(`Error while checking if DNS record exists`);
-  }
-}
-
 /**
  * Get a full page of records from AWS Route53. If fqdn and recordType is specified,
  * load the next page starting with that record
@@ -215,134 +167,6 @@ export const executeChangeSet = async (Changes: Change[]) => {
   } catch (error) {
     logger.error('DNS Error - Failed to execute changeSet', { error });
     throw error;
-  }
-};
-
-export const upsertDnsRecord = async (
-  username: string,
-  type: DnsRecordType,
-  fqdn: string,
-  value: string
-) => {
-  try {
-    if (!isNameValid(fqdn, username)) {
-      logger.error('DNS Error in upsertDnsRecord - invalid record name provided', {
-        fqdn,
-        username,
-        baseDomain: buildUserBaseDomain(username),
-      });
-
-      throw new Error('DNS Error in upsertDnsRecord - invalid record name provided');
-    }
-
-    if (!isValueValid(type, value)) {
-      logger.error('DNS Error in upsertDnsRecord - invalid record value provided', {
-        fqdn,
-        username,
-        type,
-        value,
-      });
-      throw new Error('DNS Error in upsertDnsRecord - invalid record value provided');
-    }
-
-    const command = new ChangeResourceRecordSetsCommand({
-      ChangeBatch: {
-        Changes: [
-          {
-            Action: 'UPSERT',
-            ResourceRecordSet: {
-              Name: fqdn,
-              Type: type,
-              ResourceRecords: [
-                {
-                  Value: value,
-                },
-              ],
-              TTL: 60 * 5,
-            },
-          },
-        ],
-      },
-      HostedZoneId: await getHostedZoneId(),
-    });
-    const response: ChangeResourceRecordSetsResponse = await route53Client.send(command);
-
-    if (!response.ChangeInfo?.Id) {
-      throw new Error(`DNS Error - missing ID in AWS ChangeInfo response`);
-    }
-    return response.ChangeInfo.Id;
-  } catch (error) {
-    logger.warn('DNS Error in upsertDnsRecord', { username, type, fqdn, value, error });
-    throw new Error(`DNS Error occurred while updating resource record: ${error}`);
-  }
-};
-
-export const deleteDnsRecord = async (
-  username: string,
-  type: DnsRecordType,
-  fqdn: string,
-  value: string
-) => {
-  try {
-    if (!isNameValid(fqdn, username)) {
-      logger.error('DNS Error in deleteDnsRecord - invalid record name provided', {
-        fqdn,
-        username,
-        baseDomain: buildUserBaseDomain(username),
-      });
-      throw new Error('DNS Error in deleteDnsRecord - invalid name provided');
-    }
-
-    if (!isValueValid(type, value)) {
-      logger.error('DNS Error in deleteDnsRecord - invalid record value provided', {
-        fqdn,
-        username,
-        type,
-        value,
-      });
-      throw new Error('DNS Error in deleteDnsRecord - invalid value provided');
-    }
-
-    // If no such record exists in Route53, we're done ("delete" state already achieved)
-    if (!(await checkDnsRecordExists(type, fqdn, value))) {
-      logger.debug('DNS deleteDnsRecord - no such record in Route53, skipping', {
-        type,
-        fqdn,
-        value,
-      });
-      return;
-    }
-
-    const command = new ChangeResourceRecordSetsCommand({
-      ChangeBatch: {
-        Changes: [
-          {
-            Action: 'DELETE',
-            ResourceRecordSet: {
-              Name: fqdn,
-              Type: type,
-              ResourceRecords: [
-                {
-                  Value: value,
-                },
-              ],
-              TTL: 60 * 5,
-            },
-          },
-        ],
-      },
-      HostedZoneId: await getHostedZoneId(),
-    });
-
-    const response: ChangeResourceRecordSetsResponse = await route53Client.send(command);
-
-    if (!response.ChangeInfo?.Id) {
-      throw new Error('DNS Error - missing ID in AWS ChangeInfo response');
-    }
-    return response.ChangeInfo.Id;
-  } catch (error) {
-    logger.warn('DNS Error in deleteDnsRecord', { username, type, fqdn, value, error });
-    throw new Error(`DNS Error occurred while deleting resource record`);
   }
 };
 

@@ -12,12 +12,12 @@ import logger from '~/lib/logger.server';
 import { requireUser, requireUsername } from '~/session.server';
 import { addNotification } from '~/queues/notifications/notifications.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
-import {
-  addCreateDnsRequest,
-  addUpdateDnsRequest,
-  addDeleteDnsRequest,
-} from '~/queues/dns/index.server';
 import { DnsRecordType } from '@prisma/client';
+import {
+  createDnsRecord,
+  updateDnsRecordById,
+  deleteDnsRecordById,
+} from '~/models/dns-record.server';
 import { setIsReconciliationNeeded } from '~/models/system-state.server';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
@@ -59,7 +59,7 @@ export const action = async ({ request }: ActionArgs) => {
       });
     case 'dns-record-request':
       try {
-        await addCreateDnsRequest({
+        await createDnsRecord({
           username: user.username,
           type: DnsRecordType.A,
           subdomain: `osd700-a11`,
@@ -78,9 +78,7 @@ export const action = async ({ request }: ActionArgs) => {
 
     case 'update-dns-record-request':
       try {
-        await addUpdateDnsRequest({
-          id: 1,
-          username: user.username,
+        await updateDnsRecordById(1, {
           type: DnsRecordType.A,
           subdomain: `osd700-a2`,
           value: '192.168.0.2',
@@ -99,13 +97,7 @@ export const action = async ({ request }: ActionArgs) => {
       }
     case 'delete-dns-record-request':
       try {
-        await addDeleteDnsRequest({
-          username: user.username,
-          type: 'A',
-          subdomain: 'osd700-a2',
-          value: '192.168.0.2',
-          id: 3,
-        });
+        await deleteDnsRecordById(3);
         return json({
           result: 'ok',
           message: 'DNS record creation requested',
