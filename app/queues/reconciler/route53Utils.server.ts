@@ -1,7 +1,7 @@
 import { DnsRecordType } from '@prisma/client';
 
 /**
- * We need to use some special structures when sencing / receiving recordSets
+ * We need to use some special structures when sending / receiving recordSets
  * from Route53
  *
  * https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/ResourceRecordTypes.html#TXTFormat
