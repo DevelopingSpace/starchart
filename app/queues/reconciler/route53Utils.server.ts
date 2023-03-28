@@ -52,7 +52,7 @@ export const toRoute53RecordValue = (type: DnsRecordType, value: string): string
     .map((segment, index) => value.substring(index * 255, (index + 1) * 255))
     // escape
     .map((segment) => segment.replace(/([^!-~]|[\\"])/g, escapeFn))
-    // add parenthesis around the segments
+    // add quotation marks around the segments
     .map((segment) => `"${segment}"`);
 
   // Finally join the segments together with a white space
