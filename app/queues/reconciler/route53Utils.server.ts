@@ -10,13 +10,10 @@ import { DnsRecordType } from '@prisma/client';
  * Note, TXT records should not include quotation marks
  */
 
-export const toRoute53RecordValue = (type: DnsRecordType, rawValue: string): string => {
+export const toRoute53RecordValue = (type: DnsRecordType, value: string): string => {
   if (type !== DnsRecordType.TXT) {
-    return rawValue;
+    return value;
   }
-
-  // Just to make extra sure, removing any quotation mark characters
-  const value = rawValue.replace(/"/g, '');
 
   // Create an uninitialized array with the length to hold our split up strings (max 255 chars)
   const segments = new Array(Math.ceil(value.length / 255))
@@ -30,6 +27,8 @@ export const toRoute53RecordValue = (type: DnsRecordType, rawValue: string): str
     .map((segment) =>
       segment.replace(/[^!-~]/g, (char) => `\\${char.charCodeAt(0).toString(8).padStart(3, '0')}`)
     )
+    // Escape quotation mark
+    .map((segment) => segment.replace(/"/g, '\\"'))
     // add parenthesis around the segments
     .map((segment) => `"${segment}"`);
 
@@ -50,7 +49,9 @@ export const fromRoute53RecordValue = (type: DnsRecordType, value: string): stri
     // convert back the escaped octal values i.e., '\041' => '!'
     .map((segment) =>
       segment.replace(/\\(\d{3})/g, (match, charCode) => String.fromCharCode(parseInt(charCode, 8)))
-    );
+    )
+    // Unescape quotation mark
+    .map((segment) => segment.replace(/\\"/g, '"'));
 
   return segments.join('');
 };
