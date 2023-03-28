@@ -1,0 +1,56 @@
+import { DnsRecordType } from '@prisma/client';
+
+/**
+ * We need to use some special structures when sencing / receiving recordSets
+ * from Route53
+ *
+ * https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/ResourceRecordTypes.html#TXTFormat
+ *
+ * `"String 1" "String 2" "String 3"` where the original value is cut to 255 char long strings
+ * Note, TXT records should not include quotation marks
+ */
+
+export const toRoute53RecordValue = (type: DnsRecordType, rawValue: string): string => {
+  if (type !== DnsRecordType.TXT) {
+    return rawValue;
+  }
+
+  // Just to make extra sure, removing any quotation mark characters
+  const value = rawValue.replace(/"/g, '');
+
+  // Create an uninitialized array with the length to hold our split up strings (max 255 chars)
+  const segments = new Array(Math.ceil(value.length / 255))
+    // Initialize with undefined
+    .fill(undefined)
+    // Loop through, using the index split out the appropriate parts from the original string
+    .map((segment, index) => value.substring(index * 255, (index + 1) * 255))
+    // in each segment, replace characters that are not between \o040 - \o176
+    // use a replace fn, to generate our 3 digit octal codes, i.e., '!' => '\041'
+    // \o040 = \d33 = ascii `!` and \o176 = \d126 =  '~'
+    .map((segment) =>
+      segment.replace(/[^!-~]/g, (char) => `\\${char.charCodeAt(0).toString(8).padStart(3, '0')}`)
+    )
+    // add parenthesis around the segments
+    .map((segment) => `"${segment}"`);
+
+  // Finally join the segments together with a white space
+  return segments.join(' ');
+};
+
+export const fromRoute53RecordValue = (type: DnsRecordType, value: string): string => {
+  if (type !== DnsRecordType.TXT) {
+    return value;
+  }
+
+  // Since space characters are octally escaped, I can use whitespace to split
+  const segments = value
+    .split(' ')
+    // Strip out the leading and trailing parenthesis
+    .map((segment) => segment.substring(1, segment.length - 1))
+    // convert back the escaped octal values i.e., '\041' => '!'
+    .map((segment) =>
+      segment.replace(/\\(\d{3})/g, (match, charCode) => String.fromCharCode(parseInt(charCode, 8)))
+    );
+
+  return segments.join('');
+};
