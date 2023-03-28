@@ -4,7 +4,7 @@ import { loggedInAsUser } from './utils';
 import {
   getCertificateByUsername,
   createCertificate,
-  deleteAllCertificateByUsername,
+  deleteAllCertificatesByUsername,
   updateCertificateById,
 } from '../../app/models/certificate.server';
 
@@ -14,7 +14,7 @@ test.describe('Certificate Page', () => {
   test.beforeEach(async ({ page }) => {
     test('Request a Certificate Page', async ({ page }) => {
       await page.goto('/certificate');
-      await deleteAllCertificateByUsername('user1');
+      await deleteAllCertificatesByUsername('user1');
     });
 
     const titleHeader = page.getByRole('heading', { name: 'Certificate' });

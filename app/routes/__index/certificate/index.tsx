@@ -5,7 +5,7 @@ import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { useRevalidator } from '@remix-run/react';
 import { useInterval } from 'react-use';
 
-import { requireUser } from '~/session.server';
+import { requireUser, requireUsername } from '~/session.server';
 import pendingSvg from '~/assets/undraw_processing_re_tbdu.svg';
 import Loading from '~/components/display-page';
 import CertificateAvailable from '~/components/certificate/certificate-available';
@@ -15,11 +15,14 @@ import { getCertificateByUsername } from '~/models/certificate.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await requireUser(request);
+  const username = await requireUsername(request);
 
-  const certificate = (await getCertificateByUsername(user.username)) || {};
-
-  return typedjson(certificate);
+  try {
+    const certificate = await getCertificateByUsername(username);
+    return typedjson({ certificate });
+  } catch (error: any) {
+    throw new Error('Error retrieving certificate: ' + error.message);
+  }
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -31,36 +34,45 @@ export const action = async ({ request }: ActionArgs) => {
   }
 
   const user = await requireUser(request);
-  const certificate = await getCertificateByUsername(user.username);
 
-  if (certificate?.status !== 'pending' && certificate?.status !== 'issued') {
+  try {
+    const certificate = await getCertificateByUsername(user.username);
+
+    if (certificate && certificate.status === 'pending') {
+      return json({
+        result: 'ok',
+        message: 'A certificate request is already pending',
+      });
+    }
+  } catch (error: any) {
+    throw new Error('Error retrieving certificate: ' + error.message);
+  }
+
+  try {
     await addCertRequest({
       rootDomain: user.baseDomain,
       username: user.username,
     });
-
-    return json({
-      result: 'ok',
-      message: 'Certificate requested',
-    });
+  } catch (error: any) {
+    throw new Error('Error requesting certificate: ' + error.message);
   }
 
   return json({
     result: 'ok',
-    message: 'A certificate is already being requested',
+    message: 'Certificate Requested',
   });
 };
 
 export default function CertificateIndexRoute() {
   const user = useUser();
   const revalidator = useRevalidator();
-  const certificate = useTypedLoaderData<typeof loader>();
+  const certificate = useTypedLoaderData<typeof loader>().certificate;
 
   useInterval(
     () => {
       revalidator.revalidate();
     },
-    certificate?.status === 'pending' ? 5_000 : null
+    certificate?.status === 'pending' ? 15_000 : null
   );
 
   function formatDate(val: Date): string {

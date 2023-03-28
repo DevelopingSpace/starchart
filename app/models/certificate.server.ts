@@ -5,6 +5,11 @@ import { prisma } from '~/db.server';
 export type { Certificate } from '@prisma/client';
 
 export async function getCertificateByUsername(username: Certificate['username']) {
+  /**
+   * There might be multiple certificates in the db for the same user, let's get
+   * the most recent one that has been successfully issued
+   */
+
   return prisma.certificate
     .findMany({
       where: {
@@ -13,9 +18,7 @@ export async function getCertificateByUsername(username: Certificate['username']
       orderBy: { id: 'desc' },
       take: 1,
     })
-    .then(([certificate]) => {
-      return certificate;
-    });
+    .then(([certificate]) => certificate);
 }
 
 export function getCertificateById(id: Certificate['id']) {
@@ -41,7 +44,7 @@ export function updateCertificateById(
   });
 }
 
-export function deleteAllCertificateByUsername(username: Certificate['username']) {
+export function deleteAllCertificatesByUsername(username: Certificate['username']) {
   return prisma.certificate.deleteMany({ where: { username } });
 }
 
