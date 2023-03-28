@@ -8,6 +8,7 @@ interface CertificateAvailableProps {
   validToFormatted: string;
   publicKey: string;
   privateKey: string;
+  baseDomain: string;
 }
 
 export default function CertificateAvailable({
@@ -15,6 +16,7 @@ export default function CertificateAvailable({
   validToFormatted,
   publicKey,
   privateKey,
+  baseDomain,
 }: CertificateAvailableProps) {
   return (
     <>
@@ -26,12 +28,14 @@ export default function CertificateAvailable({
       />
       <Divider />
       <CertificateDisplay
+        filename={`${baseDomain}.cert.pem`}
         title="Public Key"
         value={publicKey}
         description="Public: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
       />
       <Divider />
       <CertificateDisplay
+        filename={`${baseDomain}.privkey.pem`}
         title="Private Key"
         value={privateKey}
         description="Private: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"

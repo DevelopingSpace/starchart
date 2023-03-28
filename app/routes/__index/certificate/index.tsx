@@ -67,6 +67,7 @@ export default function CertificateIndexRoute() {
       >
         {certificateRequested ? (
           <CertificateAvailable
+            baseDomain={user.baseDomain}
             publicKey={certificate.certificate!}
             privateKey={certificate.privateKey!}
             validFromFormatted={formatDate(certificate.validFrom!)}

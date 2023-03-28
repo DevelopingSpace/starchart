@@ -19,15 +19,43 @@ interface CertificateDisplayProps {
   title: string;
   value: string;
   description: string;
+  filename: string;
 }
 
-export default function CertificateDisplay({ title, description, value }: CertificateDisplayProps) {
+export default function CertificateDisplay({
+  title,
+  description,
+  value,
+  filename,
+}: CertificateDisplayProps) {
   const toast = useToast();
 
   function onCopy() {
     navigator.clipboard.writeText(value);
     toast({
       title: `${title} was copied to the clipboard`,
+      position: 'bottom-right',
+      status: 'success',
+    });
+  }
+
+  function onDownload() {
+    const blob = new Blob([value], { type: 'application/x-pem-file' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+
+    // Start download
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: `Downloaded ${title}`,
       position: 'bottom-right',
       status: 'success',
     });
@@ -55,7 +83,7 @@ export default function CertificateDisplay({ title, description, value }: Certif
             }}
             aria-label={`Copy ${title}`}
             icon={<CopyIcon fontSize="md" />}
-            onClick={() => onCopy()}
+            onClick={onCopy}
           />
         </Tooltip>
         <Tooltip label={`Download ${title}`}>
@@ -68,18 +96,7 @@ export default function CertificateDisplay({ title, description, value }: Certif
               color: 'white',
             }}
             aria-label={`Download ${title}`}
-            icon={
-              <DownloadIcon
-                fontSize="md"
-                onClick={() =>
-                  toast({
-                    title: `${title} is Downloaded`,
-                    position: 'bottom-right',
-                    status: 'success',
-                  })
-                }
-              />
-            }
+            icon={<DownloadIcon fontSize="md" onClick={onDownload} />}
           />
         </Tooltip>
       </HStack>
