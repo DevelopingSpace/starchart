@@ -14,14 +14,21 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { DownloadIcon, CopyIcon } from '@chakra-ui/icons';
+import { Link } from '@remix-run/react';
 
 interface CertificateDisplayProps {
   title: string;
   value: string;
   description: string;
+  pathname: string;
 }
 
-export default function CertificateDisplay({ title, description, value }: CertificateDisplayProps) {
+export default function CertificateDisplay({
+  title,
+  description,
+  value,
+  pathname,
+}: CertificateDisplayProps) {
   const toast = useToast();
 
   function onCopy() {
@@ -59,28 +66,30 @@ export default function CertificateDisplay({ title, description, value }: Certif
           />
         </Tooltip>
         <Tooltip label={`Download ${title}`}>
-          <IconButton
-            backgroundColor="transparent"
-            color="black"
-            size="xs"
-            _hover={{
-              background: 'brand.500',
-              color: 'white',
-            }}
-            aria-label={`Download ${title}`}
-            icon={
-              <DownloadIcon
-                fontSize="md"
-                onClick={() =>
-                  toast({
-                    title: `${title} is Downloaded`,
-                    position: 'bottom-right',
-                    status: 'success',
-                  })
-                }
-              />
-            }
-          />
+          <Link to={pathname} reloadDocument>
+            <IconButton
+              backgroundColor="transparent"
+              color="black"
+              size="xs"
+              _hover={{
+                background: 'brand.500',
+                color: 'white',
+              }}
+              aria-label={`Download ${title}`}
+              icon={
+                <DownloadIcon
+                  fontSize="md"
+                  onClick={() =>
+                    toast({
+                      title: `${title} is Downloaded`,
+                      position: 'bottom-right',
+                      status: 'success',
+                    })
+                  }
+                />
+              }
+            />
+          </Link>
         </Tooltip>
       </HStack>
       <Text>{description}</Text>

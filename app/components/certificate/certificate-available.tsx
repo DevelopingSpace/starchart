@@ -29,12 +29,14 @@ export default function CertificateAvailable({
         title="Public Key"
         value={publicKey}
         description="Public: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+        pathname="cert"
       />
       <Divider />
       <CertificateDisplay
         title="Private Key"
         value={privateKey}
         description="Private: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+        pathname="privkey"
       />
     </>
   );
