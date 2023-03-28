@@ -34,7 +34,6 @@ export const createRemovedChangeSetFromCompareStructures = ({
       toChange.push({
         Action: 'DELETE',
         ResourceRecordSet: {
-          ...(route53Value.length > 1 && { MultiValueAnswer: true }),
           Name: fqdn,
           Type: type,
           ResourceRecords: route53Value.map((Value) => ({ Value })),
@@ -89,7 +88,6 @@ export const createUpsertedChangeSetFromCompareStructures = ({
       toChange.push({
         Action: 'UPSERT',
         ResourceRecordSet: {
-          ...(dbValue.length > 1 && { MultiValueAnswer: true }),
           Name: fqdn,
           Type: type,
           ResourceRecords: dbValue.map((Value) => ({ Value })),
