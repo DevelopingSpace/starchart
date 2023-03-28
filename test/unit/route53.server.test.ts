@@ -18,10 +18,32 @@ describe('Route53 functionality test raw => Route53 format', () => {
     expect(result).toEqual('"!Hello~"');
   });
 
-  test('Handles special characters correctly (space and quotation mark)', () => {
-    const result = toRoute53RecordValue(DnsRecordType.TXT, ' Hello "World" ');
+  test('Handles special characters correctly (space, quotation mark, backslash)', () => {
+    const result = toRoute53RecordValue(
+      DnsRecordType.TXT,
+      // Using a sequence of chars, trying to mislead parsing
+      [' ', '\\', '"', '\\', ' ', 'Hello', ' ', '"', 'World', '"', ' '].join('')
+    );
 
-    expect(result).toEqual('"\\040Hello\\040\\"World\\"\\040"');
+    expect(result).toEqual(
+      [
+        '"',
+        '\\040',
+        '\\\\',
+        '\\"',
+        '\\\\',
+        '\\040',
+        'Hello',
+        '\\040',
+
+        '\\"',
+        'World',
+        '\\"',
+        '\\040',
+
+        '"',
+      ].join('')
+    );
   });
 
   test('Handles long strings (> 255 char)', () => {
@@ -47,10 +69,32 @@ describe('Route53 functionality test Route53 => raw format', () => {
     expect(result).toEqual('!Hello~');
   });
 
-  test('Handles special characters correctly (space and quotation mark)', () => {
-    const result = fromRoute53RecordValue(DnsRecordType.TXT, '"Hello\\040\\"World\\""');
+  test('Handles special characters correctly (space quotation mark and backslash)', () => {
+    const result = fromRoute53RecordValue(
+      DnsRecordType.TXT,
+      // Using a sequence of chars, trying to mislead parsing (do not double unescape escape characters)
+      [
+        '"',
+        '\\040',
+        '\\\\',
+        '\\"',
+        '\\\\',
+        '\\040',
+        'Hello',
+        '\\040',
 
-    expect(result).toEqual('Hello "World"');
+        '\\"',
+        'World',
+        '\\"',
+        '\\040',
+
+        '"',
+      ].join('')
+    );
+
+    expect(result).toEqual(
+      [' ', '\\', '"', '\\', ' ', 'Hello', ' ', '"', 'World', '"', ' '].join('')
+    );
   });
 
   test('Handles long strings (> 255 char)', () => {
