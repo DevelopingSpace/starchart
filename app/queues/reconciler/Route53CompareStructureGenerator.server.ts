@@ -9,7 +9,7 @@ import type { ResourceRecordSet, ListResourceRecordSetsResponse } from '@aws-sdk
 // Validate `[subdomain].[username].starchart.com.`
 // escape `.` characters in ROOT_DOMAIN also
 const formatVerificationRegexp = new RegExp(
-  `[a-z0-9_-]+\\.[a-z0-9]+\\.${(process.env.ROOT_DOMAIN as string).replace(/\./g, '\\.')}\\.$`
+  `[a-z0-9_-]+\\.[a-z0-9-]+\\.${(process.env.ROOT_DOMAIN as string).replace(/\./g, '\\.')}\\.$`
 );
 
 class Route53CompareStructureGenerator {
