@@ -6,13 +6,20 @@ import { DnsRecordType } from '@prisma/client';
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
 import type { ResourceRecordSet, ListResourceRecordSetsResponse } from '@aws-sdk/client-route-53';
 
+// Validate `[subdomain].[username].starchart.com.`
+// escape `.` characters in ROOT_DOMAIN also
+const formatVerificationRegexp = new RegExp(
+  `[a-z0-9_-]+\\.[a-z0-9-]+\\.${(process.env.ROOT_DOMAIN as string).replace(/\./g, '\\.')}\\.$`
+);
+
 class Route53CompareStructureGenerator {
   #MUTATEDcompareStructure: ReconcilerCompareStructure = {};
 
   #processRecordSetPage = (recordSetPage: ResourceRecordSet[]) => {
     recordSetPage.forEach((recordSet) => {
       // Unsure as to how those could be undefined, but according to AWS sdk, they could
-      if (!recordSet.Name || !recordSet.Type) {
+      // Also, ignore records that are not in the format we manage
+      if (!recordSet.Type || !recordSet.Name || !formatVerificationRegexp.test(recordSet.Name)) {
         return;
       }
 
