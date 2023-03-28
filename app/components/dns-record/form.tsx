@@ -74,7 +74,7 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
         </FormField>
 
         <FormField label="Course" error={errors?.fieldErrors.course?.join(' ')}>
-          <Input name="course" />
+          <Input name="course" defaultValue={dnsRecord?.course ?? ''} />
           <Tooltip label="Enter course name (E.g. OSD700)">
             <InfoIcon />
           </Tooltip>

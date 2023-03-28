@@ -31,7 +31,6 @@ model DnsRecord {
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
   expiresAt    DateTime
-  status       DnsRecordStatus
   lastNotified DateTime?
   user         User            @relation(fields: [username], references: [username], onDelete: Cascade)
 }
@@ -76,12 +75,6 @@ enum DnsRecordType {
   AAAA
   CNAME
   TXT
-}
-
-enum DnsRecordStatus {
-  active
-  error
-  pending
 }
 
 enum CertificateStatus {

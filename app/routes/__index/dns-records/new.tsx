@@ -4,7 +4,7 @@ import { redirect } from 'remix-typedjson';
 
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
-import { addCreateDnsRequest } from '~/queues/dns/index.server';
+import { createDnsRecord } from '~/models/dns-record.server';
 
 import type { ActionArgs } from '@remix-run/node';
 import { DnsRecordSchema, isNameValid } from '~/lib/dns.server';
@@ -32,11 +32,14 @@ export const action = async ({ request }: ActionArgs) => {
 
   const { data } = newDnsRecordParams;
 
-  await addCreateDnsRequest({
+  await createDnsRecord({
     username: user.username,
     type: data.type,
     subdomain: data.subdomain,
     value: data.value,
+    ports: data.ports,
+    course: data.course,
+    description: data.description,
   });
 
   return redirect(`/dns-records`);

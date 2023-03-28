@@ -4,7 +4,7 @@ import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 import * as challengeModel from '~/models/challenge.server';
-import { addCreateDnsRequest } from '~/queues/dns/index.server';
+import { createDnsRecord } from '~/models/dns-record.server';
 import { getSubdomainFromFqdn } from '~/utils';
 
 import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
@@ -46,7 +46,7 @@ const handleChallenges = ({
     /**
      * add challenge to DNS
      */
-    await addCreateDnsRequest({
+    await createDnsRecord({
       username,
       type: 'TXT',
       subdomain,

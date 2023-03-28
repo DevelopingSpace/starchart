@@ -1,20 +1,18 @@
-import { useMemo } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import { Button, Center, Container, Flex, Heading, Text } from '@chakra-ui/react';
-import { Link, useRevalidator } from '@remix-run/react';
+import { Link } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { json } from '@remix-run/node';
 import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
-import { useInterval } from 'react-use';
 import DnsRecordsTable from '~/components/dns-records-table';
 import {
   getDnsRecordById,
   getDnsRecordsByUsername,
   renewDnsRecordById,
+  deleteDnsRecordById,
 } from '~/models/dns-record.server';
 import { requireUsername } from '~/session.server';
-import { addDeleteDnsRequest } from '~/queues/dns/index.server';
 import logger from '~/lib/logger.server';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
@@ -28,7 +26,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const username = await requireUsername(request);
+  await requireUsername(request);
 
   const dnsRecordActionParams = await parseFormSafe(
     request,
@@ -57,24 +55,13 @@ export const action = async ({ request }: ActionArgs) => {
 
   switch (intent) {
     case 'renew-dns-record':
-      if (dnsRecord.status !== 'active') {
-        throw new Response('DNS Record is not active, action forbidden', {
-          status: 409,
-        });
-      }
       await renewDnsRecordById(dnsRecord.id);
       return json({
         result: 'ok',
         message: 'DNS record was renewed',
       });
     case 'delete-dns-record':
-      addDeleteDnsRequest({
-        username,
-        type: dnsRecord.type,
-        subdomain: dnsRecord.subdomain,
-        value: dnsRecord.value,
-        id: dnsRecord.id,
-      });
+      await deleteDnsRecordById(dnsRecord.id);
       return json({
         result: 'ok',
         message: 'Deleting DNS record is requested',
@@ -86,20 +73,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export default function DnsRecordsIndexRoute() {
-  const revalidator = useRevalidator();
   const dnsRecords = useTypedLoaderData<typeof loader>();
-  const pending = useMemo(
-    () => dnsRecords.some((dnsRecord) => dnsRecord.status === 'pending'),
-    [dnsRecords]
-  );
-
-  // Check to see if any change is pending, and if so, reload every 5s until finished
-  useInterval(
-    () => {
-      revalidator.revalidate();
-    },
-    pending ? 5_000 : null
-  );
 
   return (
     <Container maxW="container.xl">

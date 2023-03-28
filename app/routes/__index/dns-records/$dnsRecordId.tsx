@@ -4,14 +4,14 @@ import { parseFormSafe } from 'zodix';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
-import { getDnsRecordById } from '~/models/dns-record.server';
+import { getDnsRecordById, updateDnsRecordById } from '~/models/dns-record.server';
 import { isNameValid, UpdateDnsRecordSchema } from '~/lib/dns.server';
 import { useActionData } from '@remix-run/react';
 import { buildDomain } from '~/utils';
-import { addUpdateDnsRequest } from '~/queues/dns/index.server';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   await requireUser(request);
+
   const { dnsRecordId } = params;
   if (!dnsRecordId) {
     throw new Response('dnsRecordId should be string', {
@@ -24,10 +24,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     throw new Response('The DNS record is not found', {
       status: 404,
     });
-  }
-
-  if (dnsRecord.status !== 'active') {
-    return redirect('/dns-records');
   }
 
   return typedjson(dnsRecord);
@@ -57,14 +53,8 @@ export const action = async ({ request }: ActionArgs) => {
   }
 
   const { data } = updatedDnsRecordParams;
-
-  await addUpdateDnsRequest({
-    id: Number(data.id),
-    username: user.username,
-    type: data.type,
-    subdomain: data.subdomain,
-    value: data.value,
-  });
+  const { id, ...rest } = data;
+  await updateDnsRecordById(Number(id), rest);
 
   return redirect(`/dns-records`);
 };

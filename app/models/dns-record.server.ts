@@ -1,29 +1,9 @@
-import { DnsRecordStatus, DnsRecordType } from '@prisma/client';
+import { DnsRecordType } from '@prisma/client';
 import dayjs from 'dayjs';
 import { prisma } from '~/db.server';
+import { setIsReconciliationNeeded } from './system-state.server';
 
 import type { DnsRecord } from '@prisma/client';
-
-export const createUserDnsRecord = async (
-  data: Pick<DnsRecord, 'username' | 'type' | 'subdomain' | 'value'>
-) => {
-  if (process.env.USER_DNS_RECORD_LIMIT) {
-    if ((await getUserDnsRecordCount(data.username)) >= Number(process.env.USER_DNS_RECORD_LIMIT)) {
-      throw new Error('User has reached the maximum number of dns records');
-    }
-  }
-
-  if (await doesDnsRecordExist(data)) {
-    throw new Error('DNS Record already exists');
-  }
-
-  const result = await createDnsRecord(data);
-
-  if (!result) {
-    throw new Error('Could not create a DNS record in DB');
-  }
-  return result.id;
-};
 
 export function getDnsRecordsByUsername(username: DnsRecord['username']) {
   return prisma.dnsRecord.findMany({
@@ -45,7 +25,6 @@ export function getUserDnsRecordCount(username: DnsRecord['username']) {
   return prisma.dnsRecord.count({
     where: {
       username,
-      status: DnsRecordStatus.active,
       NOT: {
         type: DnsRecordType.TXT,
         subdomain: '_acme-challenge',
@@ -54,33 +33,50 @@ export function getUserDnsRecordCount(username: DnsRecord['username']) {
   });
 }
 
-export function createDnsRecord(
-  data: Pick<DnsRecord, 'username' | 'type' | 'subdomain' | 'value'>
+export async function createDnsRecord(
+  data: Required<Pick<DnsRecord, 'username' | 'type' | 'subdomain' | 'value'>> & Partial<DnsRecord>
 ) {
+  if (process.env.USER_DNS_RECORD_LIMIT) {
+    if ((await getUserDnsRecordCount(data.username)) >= Number(process.env.USER_DNS_RECORD_LIMIT)) {
+      throw new Error('User has reached the maximum number of dns records');
+    }
+  }
+
+  if (await doesDnsRecordExist(data)) {
+    throw new Error('DNS Record already exists');
+  }
+
   // Set expiration date 6 months from now
   const expiresAt = dayjs().add(6, 'month').toDate();
-  const status = DnsRecordStatus.pending;
 
-  return prisma.dnsRecord.create({ data: { ...data, expiresAt, status } });
+  return prisma.dnsRecord.create({ data: { ...data, expiresAt } }).then((result) => {
+    // Flag the reconciler that an update will be needed
+    setIsReconciliationNeeded(true);
+    return result;
+  });
 }
 
-// Update an existing DNS Record's data, or status, or both.
+// Update an existing DNS Record's data
 export function updateDnsRecordById(
   id: DnsRecord['id'],
-  data:
-    | Pick<DnsRecord, 'status'>
-    | (Pick<DnsRecord, 'type' | 'subdomain' | 'value'> &
-        Partial<Pick<DnsRecord, 'description' | 'course' | 'ports' | 'status'>>)
+  data: Partial<
+    Pick<DnsRecord, 'type' | 'subdomain' | 'value' | 'ports' | 'course' | 'description'>
+  >
 ) {
-  return prisma.dnsRecord.update({
-    where: { id },
-    data: {
-      ...data,
-      // If the record is changing to the `active` status, update expiry too
-      expiresAt:
-        data.status === DnsRecordStatus.active ? dayjs().add(6, 'month').toDate() : undefined,
-    },
-  });
+  return prisma.dnsRecord
+    .update({
+      where: { id },
+      data: {
+        ...data,
+        // Update expiry too
+        expiresAt: dayjs().add(6, 'month').toDate(),
+      },
+    })
+    .then((result) => {
+      // Flag the reconciler that an update will be needed
+      setIsReconciliationNeeded(true);
+      return result;
+    });
 }
 
 export function renewDnsRecordById(id: DnsRecord['id']) {
@@ -112,7 +108,11 @@ export async function doesDnsRecordExist(
 }
 
 export function deleteDnsRecordById(id: DnsRecord['id']) {
-  return prisma.dnsRecord.delete({ where: { id } });
+  return prisma.dnsRecord.delete({ where: { id } }).then((result) => {
+    // Flag the reconciler that an update will be needed
+    setIsReconciliationNeeded(true);
+    return result;
+  });
 }
 
 export function getExpiredDnsRecords() {
