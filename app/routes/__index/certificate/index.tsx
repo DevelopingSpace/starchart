@@ -66,7 +66,7 @@ export const action = async ({ request }: ActionArgs) => {
 export default function CertificateIndexRoute() {
   const user = useUser();
   const revalidator = useRevalidator();
-  const certificate = useTypedLoaderData<typeof loader>().certificate;
+  const { certificate } = useTypedLoaderData<typeof loader>();
 
   useInterval(
     () => {
