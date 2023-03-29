@@ -9,11 +9,11 @@ export function getChallengesByCertificateId(certificateId: Challenge['certifica
 }
 
 export function createChallenge(
-  data: Pick<Challenge, 'domain' | 'challengeKey' | 'certificateId' | 'dnsRecordId'>
+  data: Pick<Challenge, 'domain' | 'challengeKey' | 'certificateId'>
 ) {
   return prisma.challenge.create({ data });
 }
 
-export function deleteChallengeByCertificateId(certificateId: Challenge['certificateId']) {
+export function deleteChallengesByCertificateId(certificateId: Challenge['certificateId']) {
   return prisma.challenge.deleteMany({ where: { certificateId } });
 }

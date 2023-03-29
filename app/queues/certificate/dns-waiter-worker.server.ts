@@ -22,6 +22,11 @@ export const dnsWaiterWorker = new Worker<CertificateJobData>(
   async (job) => {
     const { rootDomain, certificateId } = job.data;
 
+    if (process.env.NODE_ENV !== 'production') {
+      logger.info('Not checking DNS on development - Mock server is not our recursor');
+      return;
+    }
+
     logger.info('Checking challenges in DNS', {
       rootDomain,
       certificateId,

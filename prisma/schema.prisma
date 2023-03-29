@@ -28,12 +28,14 @@ model DnsRecord {
   description  String?
   course       String?
   ports        String?
+  challengeId  Int?
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
   expiresAt    DateTime
   lastNotified DateTime?
+  challenge    Challenge?      @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   user         User            @relation(fields: [username], references: [username], onDelete: Cascade)
-  challenge    Challenge[]
+
 }
 
 model Certificate {
@@ -56,9 +58,8 @@ model Challenge {
   domain        String      @db.VarChar(255)
   challengeKey  String      @db.VarChar(255)
   certificateId Int
-  dnsRecordId   Int
   certificate   Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
-  dnsRecord     DnsRecord   @relation(fields: [dnsRecordId], references: [id], onDelete: Cascade)
+  dnsRecord     DnsRecord[]
 }
 
 model SystemState {

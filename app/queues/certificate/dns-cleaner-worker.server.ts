@@ -2,7 +2,7 @@ import { Worker } from 'bullmq';
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 import * as challengeModel from '~/models/challenge.server';
-import * as dnsRecordModel from '~/models/dns-record.server';
+import { setIsReconciliationNeeded } from '~/models/system-state.server';
 
 import type { CertificateJobData } from './certificateJobTypes.server';
 
@@ -15,20 +15,20 @@ export const dnsCleanerWorker = new Worker<CertificateJobData>(
 
     logger.info('Removing challenge DNS records', { rootDomain, certificateId });
 
-    const challenges = await challengeModel.getChallengesByCertificateId(certificateId);
-
-    const promises = challenges.map(({ dnsRecordId }) =>
-      dnsRecordModel.deleteDnsRecordById(dnsRecordId)
-    );
-    await Promise.all(promises);
+    await challengeModel.deleteChallengesByCertificateId(certificateId);
 
     /**
-     * No need to manually delete the challenges as
-     * the database relation is set to cascade - dns record delete
-     * will remove the row from the challenge table as well
+     * No need to manually delete the dns records as
+     * the database relation is set to cascade - challenge delete
+     * will remove the row from the dnsRecords table as well
+     *
+     * After those records were cascade deleted, we can trigger
+     * the reconciler as well
      */
 
-    logger.info('Challenge DNS records removed');
+    await setIsReconciliationNeeded(true);
+
+    logger.info('Challenges removed (cascading to records), reconciler triggered');
   },
   { connection: redis }
 );
