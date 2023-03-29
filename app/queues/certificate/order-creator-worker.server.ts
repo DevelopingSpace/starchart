@@ -46,7 +46,7 @@ const handleChallenges = ({
     /**
      * add challenge to DNS
      */
-    await createDnsRecord({
+    const dnsRecord = await createDnsRecord({
       username,
       type: 'TXT',
       subdomain,
@@ -57,6 +57,7 @@ const handleChallenges = ({
       domain,
       challengeKey,
       certificateId,
+      dnsRecordId: dnsRecord.id,
     });
   });
 

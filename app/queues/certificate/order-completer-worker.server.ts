@@ -73,7 +73,7 @@ export const orderCompleterWorker = new Worker<CertificateJobData>(
       throw e;
     }
 
-    certificateModel.updateCertificateById(certificateId, {
+    await certificateModel.updateCertificateById(certificateId, {
       certificate,
       privateKey,
       validFrom,

@@ -33,6 +33,7 @@ model DnsRecord {
   expiresAt    DateTime
   lastNotified DateTime?
   user         User            @relation(fields: [username], references: [username], onDelete: Cascade)
+  challenge    Challenge[]
 }
 
 model Certificate {
@@ -42,7 +43,7 @@ model Certificate {
   orderUrl     String?           @unique @db.VarChar(255)
   privateKey   String?           @db.Text
   certificate  String?           @db.Text
-  validFrom    DateTime?          
+  validFrom    DateTime?
   validTo      DateTime?
   lastNotified DateTime?
   status       CertificateStatus @default(pending)
@@ -55,7 +56,9 @@ model Challenge {
   domain        String      @db.VarChar(255)
   challengeKey  String      @db.VarChar(255)
   certificateId Int
+  dnsRecordId   Int
   certificate   Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+  dnsRecord     DnsRecord   @relation(fields: [dnsRecordId], references: [id], onDelete: Cascade)
 }
 
 model SystemState {
