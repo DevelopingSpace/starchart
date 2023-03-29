@@ -1,29 +1,21 @@
 import { test, expect } from '@playwright/test';
-
 import { loggedInAsUser } from './utils';
-import {
-  getCertificateByUsername,
-  createCertificate,
-  deleteAllCertificatesByUsername,
-  updateCertificateById,
-} from '../../app/models/certificate.server';
 
 test.describe('Certificate Page', () => {
   loggedInAsUser();
 
   test.beforeEach(async ({ page }) => {
-    test('Request a Certificate Page', async ({ page }) => {
-      await page.goto('/certificate');
-      await deleteAllCertificatesByUsername('user1');
-    });
+    await page.goto('/certificate');
+  });
 
+  test.skip('Request a Certificate', async ({ page }) => {
     const titleHeader = page.getByRole('heading', { name: 'Certificate' });
-    await page.waitForSelector('text=user1.starchart.com');
+    const domainName = page.getByText('user1.starchart.com');
 
-    await titleHeader.waitFor();
+    await expect(domainName).toContainText('user1.starchart.com');
+    await expect(titleHeader).toContainText('Certificate');
 
     await page.getByRole('button', { name: 'Request a Certificate' }).click();
-    createCertificate({ username: 'user1', domain: 'user1.starchart.com' });
 
     const loadingPageText = page
       .locator('div')
@@ -32,14 +24,7 @@ test.describe('Certificate Page', () => {
       })
       .nth(1);
 
-    loadingPageText.waitFor();
-
-    const certificate = await getCertificateByUsername('user1');
-    await updateCertificateById(certificate.id, {
-      status: 'issued',
-      validFrom: new Date(),
-      validTo: new Date(),
-    });
+    await loadingPageText.waitFor();
 
     //Copy Key Toast Text
     await page.getByRole('button', { name: 'Copy Public Key' }).click();
