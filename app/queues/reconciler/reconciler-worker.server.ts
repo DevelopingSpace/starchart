@@ -118,35 +118,55 @@ const reconcilerWorker = new Worker(
       return;
     }
 
+    /**
+     * Create a kind of checkpoint, saying
+     * "what is in the db right now, will all be handled"
+     *
+     * If it is not the case, we will set it back to true later!
+     *
+     * This is needed to inhibit a race condition when reconciliation is
+     * not done as a record has been changed after us getting DB data but
+     * before the flag was set to off
+     */
+    await setIsReconciliationNeeded(false);
+
     const changeSet = await createChangeSet();
 
     if (!changeSet.length) {
       logger.debug('Reconciler - found no changes to be pushed');
-      await setIsReconciliationNeeded(false);
       return;
     }
 
-    // We are defaulting to true, if everything fails, the queue will retry in 2 mins
-    let isAdditionalReconciliationNeeded = true;
     try {
       // First, we try to bulk push all the cahnges at once.
-      isAdditionalReconciliationNeeded = await pushChangesBulk(changeSet);
+      const isAdditionalReconciliationNeeded = await pushChangesBulk(changeSet);
+
+      /**
+       * If we got > CHANGE_SET_MAX_SIZE changes, don't keep hammering Route53,
+       * but leave this flag on. It will cause the reconciler to continue
+       * it's work 2 minutes later in the next queue run
+       */
+
+      if (isAdditionalReconciliationNeeded) {
+        logger.debug('Reconciler - Change set too large, setting flag back to true');
+        await setIsReconciliationNeeded(true);
+      }
     } catch (error) {
       // If that fails, we switch to limp mode, that pushes changes one by one
       // This way we can pinpoint the offending change in the set
       logger.error('Reconciler - Change set failed, switching to limp mode', { error });
-
-      await pushChangesIndividually(changeSet);
+      await pushChangesIndividually(changeSet); // This can never throw
     }
 
     /**
      * Update system state
      *
-     * If changeSet is < CHANGE_SET_MAX_SIZE elements, then dns data that has been altered
-     * have now been reconciled
+     * If changeSet is < CHANGE_SET_MAX_SIZE elements, then dns data that has been
+     * altered (before we started) have now been reconciled If change happened since,
+     * those did set the flag to true, causing us to run again in 2 minutes or so.
      */
-    await setIsReconciliationNeeded(isAdditionalReconciliationNeeded);
-    logger.debug('Reconciler - job complete', { isAdditionalReconciliationNeeded });
+
+    logger.debug('Reconciler - job complete');
   },
   { connection: redis }
 );
