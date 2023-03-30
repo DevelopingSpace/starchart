@@ -32,17 +32,17 @@ describe('DNS server lib function test', () => {
   test('isNameValid() returns true when valid URL is passed. Otherwise it returns false', () => {
     expect(isNameValid(`osd700.${username}.${rootDomain}`, username)).toBe(true);
     expect(isNameValid(`osd-700.${username}.${rootDomain}`, username)).toBe(true);
-    expect(isNameValid(`osd_700.${username}.${rootDomain}`, username)).toBe(true);
-    expect(isNameValid(`_osd700.${username}.${rootDomain}`, username)).toBe(true);
-    expect(isNameValid(`invalid__name.${username}.${rootDomain}`, username)).toBe(false);
+
+    expect(isNameValid(`osd__700.${username}.${rootDomain}`, username)).toBe(false);
+    expect(isNameValid(`osd_700.${username}.${rootDomain}`, username)).toBe(false);
+    expect(isNameValid(`osd700_.${username}.${rootDomain}`, username)).toBe(false);
+    expect(isNameValid(`_osd700.${username}.${rootDomain}`, username)).toBe(false);
+    expect(isNameValid(`-osd700.${username}.${rootDomain}`, username)).toBe(false);
+    expect(isNameValid(`osd700-.${username}.${rootDomain}`, username)).toBe(false);
+    expect(isNameValid(`osd--700.${username}.${rootDomain}`, username)).toBe(false);
     expect(isNameValid(`osd700..${username}.${rootDomain}`, username)).toBe(false);
     expect(isNameValid(`osd..700.${username}.${rootDomain}`, username)).toBe(false);
     expect(isNameValid(`osd700.a2.${username}.${rootDomain}`, username)).toBe(false);
-    expect(isNameValid(`-osd700.${username}.${rootDomain}`, username)).toBe(false);
-    expect(isNameValid(`osd700-.${username}.${rootDomain}`, username)).toBe(false);
-    expect(isNameValid(`osd700_.${username}.${rootDomain}`, username)).toBe(false);
-    expect(isNameValid(`osd--700.${username}.${rootDomain}`, username)).toBe(false);
-    expect(isNameValid(`osd__700.${username}.${rootDomain}`, username)).toBe(false);
     expect(isNameValid(`osd@700.${username}.${rootDomain}`, username)).toBe(false);
     expect(isNameValid(`damn.${username}.${rootDomain}`, username)).toBe(false);
     expect(isNameValid(`osd-700.localhost`, username)).toBe(false);

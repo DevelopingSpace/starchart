@@ -190,9 +190,9 @@ export const getChangeStatus = async (changeId: string) => {
 
 /* Domain name rules
 1. Full domain name pattern should be [subdomain].[username].rootDomain.com
-2. Subdomain can contain only alphanumerical characters, '-', and '_'
+2. Subdomain can contain only alphanumerical characters and '-'
 3. Subdomain should not start or end with -
-4. Subdomain cannot contain multiple consecutive '-' or '_'
+4. Subdomain cannot contain multiple consecutive '-'
 5. Subdomain can contain uppercase in UI but it is converted to lowercase before validation */
 export const isNameValid = (fqdn: string, username: string) => {
   const baseDomain = buildUserBaseDomain(username);
@@ -211,9 +211,9 @@ export const isNameValid = (fqdn: string, username: string) => {
     return false;
   }
 
-  //It only validates subdomain name, not username and root domain
+  // It only validates subdomain name, not username and root domain
   return (
-    /^(?!.*[-_]{2,})(?!^[-])[a-z0-9_-]+[a-z0-9]$/.test(subdomain) &&
+    /^(?!.*[-]{2,})(?!^[-])[a-z0-9-]+[a-z0-9]$/.test(subdomain) &&
     isFQDN(fqdn, {
       allow_underscores: true,
     })
