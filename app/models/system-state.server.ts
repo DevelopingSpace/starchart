@@ -11,7 +11,7 @@ import type { SystemState } from '@prisma/client';
  * to our Records table
  */
 
-function initialize() {
+export function initialize() {
   return prisma.systemState.create({
     data: {
       unique: StateEnumType.unique,
