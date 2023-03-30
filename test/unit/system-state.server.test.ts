@@ -69,11 +69,13 @@ describe('setIsReconciliationNeeded()', () => {
     expect(result).toBe(false);
   });
 
-  test('would throw error and initialize when system state does not exist', async () => {
+  test('would initialize when system state does not exist', async () => {
     await prisma.systemState.deleteMany().catch(() => {});
-    await expect(setIsReconciliationNeeded(false)).rejects.toThrow();
-
-    let result = await getIsReconciliationNeeded();
-    expect(result).toBe(true);
+    await setIsReconciliationNeeded(false);
+    let result = await prisma.systemState.findUnique({
+      select: { reconciliationNeeded: true },
+      where: { unique: `unique` },
+    });
+    expect(result?.reconciliationNeeded).toBe(true);
   });
 });

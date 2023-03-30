@@ -29,11 +29,12 @@ export function getIsReconciliationNeeded(): Promise<SystemState['reconciliation
     .then((data) => data?.reconciliationNeeded ?? true);
 }
 
-export function setIsReconciliationNeeded(
+export async function setIsReconciliationNeeded(
   reconciliationNeeded: SystemState['reconciliationNeeded']
 ) {
+  let result;
   try {
-    return prisma.systemState.update({
+    result = await prisma.systemState.update({
       data: { reconciliationNeeded },
       where: { unique: StateEnumType.unique },
     });
@@ -46,4 +47,5 @@ export function setIsReconciliationNeeded(
 
     return initialize();
   }
+  return result;
 }
