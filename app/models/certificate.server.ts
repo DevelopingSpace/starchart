@@ -44,10 +44,6 @@ export function updateCertificateById(
   });
 }
 
-export function deleteAllCertificatesByUsername(username: Certificate['username']) {
-  return prisma.certificate.deleteMany({ where: { username } });
-}
-
 export function deleteCertificateById(id: Certificate['id']) {
   return prisma.certificate.delete({ where: { id } });
 }
