@@ -49,12 +49,13 @@ describe('DNS server lib function test', () => {
     expect(isNameValid(`localhost`, username)).toBe(false);
   });
 
-  test('isValueValue() return true when valid IP address is passed, otherwise returns false', () => {
+  test('isValueValue() return true when valid value is passed according to its type, otherwise returns false', () => {
     expect(isValueValid(DnsRecordType.A, '192.168.0.1')).toBe(true);
     expect(isValueValid(DnsRecordType.A, '0.0.0.0')).toBe(true);
     expect(isValueValid(DnsRecordType.AAAA, '2001:db8:3333:4444:5555:6666:7777:8888')).toBe(true);
     expect(isValueValid(DnsRecordType.AAAA, 'a:b:c:d:e:f:0:1')).toBe(true);
-    expect(isValueValid(DnsRecordType.CNAME, 'test-domain')).toBe(true);
+    expect(isValueValid(DnsRecordType.CNAME, 'proper-domain.com')).toBe(true);
+    expect(isValueValid(DnsRecordType.TXT, 'any text')).toBe(true);
 
     expect(isValueValid(DnsRecordType.A, '192.168.0')).toBe(false);
     expect(isValueValid(DnsRecordType.A, '192.168.0.')).toBe(false);
@@ -64,5 +65,10 @@ describe('DNS server lib function test', () => {
     expect(isValueValid(DnsRecordType.AAAA, 'a:b:c:d:e:f:0:')).toBe(false);
     expect(isValueValid(DnsRecordType.AAAA, 'g:g:g:g:g:g:g:g')).toBe(false);
     expect(isValueValid(DnsRecordType.CNAME, '')).toBe(false);
+    expect(isValueValid(DnsRecordType.CNAME, '192.168.0.0')).toBe(false);
+    expect(isValueValid(DnsRecordType.CNAME, '2001:db8:3333:4444:5555:6666:7777:8888')).toBe(false);
+    expect(isValueValid(DnsRecordType.CNAME, 'improper-domain')).toBe(false);
+    expect(isValueValid(DnsRecordType.CNAME, 'improper_domain.com')).toBe(false);
+    expect(isValueValid(DnsRecordType.TXT, '')).toBe(false);
   });
 });
