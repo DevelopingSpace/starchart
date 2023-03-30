@@ -28,7 +28,7 @@ export const dnsCleanerWorker = new Worker<CertificateJobData>(
 
     await setIsReconciliationNeeded(true);
 
-    logger.info('Challenges removed (cascading to records), reconciler triggered');
+    logger.info('Challenges removed (cascading to dns records), reconciler triggered');
   },
   { connection: redis }
 );
