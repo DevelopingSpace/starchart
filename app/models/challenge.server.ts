@@ -14,6 +14,6 @@ export function createChallenge(
   return prisma.challenge.create({ data });
 }
 
-export function deleteChallengeById(id: Challenge['id']) {
-  return prisma.challenge.delete({ where: { id } });
+export function deleteChallengesByCertificateId(certificateId: Challenge['certificateId']) {
+  return prisma.challenge.deleteMany({ where: { certificateId } });
 }

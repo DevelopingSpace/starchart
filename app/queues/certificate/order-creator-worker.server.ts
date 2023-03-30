@@ -15,7 +15,7 @@ export const orderCreatorQueueName = 'certificate-createOrder';
 /**
  * This async fn handles adding challenges to DB and DNS
  */
-const handleChallenges = ({
+const handleChallenges = async ({
   username,
   certificateId,
   bundles,
@@ -23,44 +23,47 @@ const handleChallenges = ({
   username: CertificateJobData['username'];
   certificateId: CertificateJobData['certificateId'];
   bundles: ChallengeBundle[];
-}) => {
-  const challengeInsertPromises = bundles.map(async ({ domain, value: challengeKey }) => {
-    logger.info(`Adding challenge to DNS`, { domain, challengeKey });
+}): Promise<void> => {
+  const challengeInsertPromises = bundles.map(
+    async ({ domain, value: challengeKey }): Promise<void> => {
+      logger.info(`Adding challenge to DNS`, { domain, challengeKey });
 
-    let subdomain = '';
-    try {
-      subdomain = getSubdomainFromFqdn(username, domain);
-    } catch (e) {
-      // Let's rethrow this as an UnrecoverableError, but preserve the message and stack
+      let subdomain = '';
+      try {
+        subdomain = getSubdomainFromFqdn(username, domain);
+      } catch (e) {
+        // Let's rethrow this as an UnrecoverableError, but preserve the message and stack
 
-      logger.error("Challenge domain is not a subdomain of the user's base domain", {
-        username,
+        logger.error("Challenge domain is not a subdomain of the user's base domain", {
+          username,
+          domain,
+        });
+
+        const newError = new UnrecoverableError((e as Error).message);
+        newError.stack = (e as Error).stack;
+        throw newError;
+      }
+
+      const challengeRecord = await challengeModel.createChallenge({
         domain,
+        challengeKey,
+        certificateId,
       });
 
-      const newError = new UnrecoverableError((e as Error).message);
-      newError.stack = (e as Error).stack;
-      throw newError;
+      /**
+       * add challenge to DNS
+       */
+      await createDnsRecord({
+        username,
+        type: 'TXT',
+        subdomain,
+        value: challengeKey,
+        challengeId: challengeRecord.id,
+      });
     }
+  );
 
-    /**
-     * add challenge to DNS
-     */
-    await createDnsRecord({
-      username,
-      type: 'TXT',
-      subdomain,
-      value: challengeKey,
-    });
-
-    return challengeModel.createChallenge({
-      domain,
-      challengeKey,
-      certificateId,
-    });
-  });
-
-  return Promise.all(challengeInsertPromises);
+  await Promise.all(challengeInsertPromises);
 };
 
 /**

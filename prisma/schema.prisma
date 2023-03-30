@@ -28,10 +28,12 @@ model DnsRecord {
   description  String?
   course       String?
   ports        String?
+  challengeId  Int?
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
   expiresAt    DateTime
   lastNotified DateTime?
+  challenge    Challenge?      @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   user         User            @relation(fields: [username], references: [username], onDelete: Cascade)
 }
 
@@ -42,7 +44,7 @@ model Certificate {
   orderUrl     String?           @unique @db.VarChar(255)
   privateKey   String?           @db.Text
   certificate  String?           @db.Text
-  validFrom    DateTime?          
+  validFrom    DateTime?
   validTo      DateTime?
   lastNotified DateTime?
   status       CertificateStatus @default(pending)
@@ -56,6 +58,7 @@ model Challenge {
   challengeKey  String      @db.VarChar(255)
   certificateId Int
   certificate   Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+  dnsRecord     DnsRecord[]
 }
 
 model SystemState {
