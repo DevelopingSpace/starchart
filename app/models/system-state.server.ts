@@ -32,20 +32,18 @@ export function getIsReconciliationNeeded(): Promise<SystemState['reconciliation
 export async function setIsReconciliationNeeded(
   reconciliationNeeded: SystemState['reconciliationNeeded']
 ) {
-  let result;
-  try {
-    result = await prisma.systemState.update({
+  return prisma.systemState
+    .update({
       data: { reconciliationNeeded },
       where: { unique: StateEnumType.unique },
-    });
-  } catch (error) {
-    /**
-     * This should never happen, as the table should always be seeded.
-     * In case it isn't, let's seed it here Next queue run will set the
-     * correct reconciliationNeeded
-     */
+    })
+    .catch(() => {
+      /**
+       * This should never happen, as the table should always be seeded.
+       * In case it isn't, let's seed it here Next queue run will set the
+       * correct reconciliationNeeded
+       */
 
-    return initialize();
-  }
-  return result;
+      return initialize();
+    });
 }
