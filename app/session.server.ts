@@ -34,6 +34,12 @@ export async function getSession(request: Request) {
 export async function getUsername(request: Request): Promise<User['username'] | undefined> {
   const session = await getSession(request);
   const username = session.get(USER_SESSION_KEY);
+
+  // Logout user if they are deactivated
+  if (await isDeactivated(username)) {
+    throw await logout(request);
+  }
+
   return username;
 }
 
@@ -59,11 +65,6 @@ export async function requireUsername(
   if (!username) {
     const searchParams = new URLSearchParams([['redirectTo', redirectTo]]);
     throw redirect(`/login?${searchParams}`);
-  }
-
-  // Logout user if they are deactivated
-  if (await isDeactivated(username)) {
-    throw await logout(request);
   }
 
   return username;
