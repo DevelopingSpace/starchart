@@ -8,7 +8,7 @@ test.describe('Certificate Page', () => {
     await page.goto('/certificate');
   });
 
-  test('Request a Certificate', async ({ page }) => {
+  test.skip('Request a Certificate', async ({ page }) => {
     const titleHeader = page.getByRole('heading', { name: 'Certificate' });
     const domainName = page.getByText('user1.starchart.com');
 

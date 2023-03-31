@@ -14,7 +14,10 @@ export default function DisplayPage({ img, desc }: DisplayPageProps) {
         textAlign="center"
         gap="5"
       >
-        <Image src={img} />
+        <Flex justifyContent="center">
+          <Image src={img} />
+        </Flex>
+
         <Heading
           as="h2"
           size={{ base: 'md', sm: 'lg', md: 'xl' }}
