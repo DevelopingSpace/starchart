@@ -29,7 +29,7 @@ export function getIsReconciliationNeeded(): Promise<SystemState['reconciliation
     .then((data) => data?.reconciliationNeeded ?? true);
 }
 
-export async function setIsReconciliationNeeded(
+export function setIsReconciliationNeeded(
   reconciliationNeeded: SystemState['reconciliationNeeded']
 ) {
   return prisma.systemState
