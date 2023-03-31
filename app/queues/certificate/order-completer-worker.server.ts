@@ -6,13 +6,19 @@ import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 
 import type { CertificateJobData } from './certificateJobTypes.server';
+import { isDeactivated } from '~/models/user.server';
 
 export const orderCompleterQueueName = 'certificate-completeOrder';
 
 export const orderCompleterWorker = new Worker<CertificateJobData>(
   orderCompleterQueueName,
   async (job) => {
-    const { rootDomain, certificateId } = job.data;
+    const { rootDomain, username, certificateId } = job.data;
+
+    if (await isDeactivated(username)) {
+      logger.error('User is deactivated, skipping order completion');
+      throw new UnrecoverableError('User is deactivated');
+    }
 
     logger.info('Attempting to complete ACME order with the provider', {
       rootDomain,
