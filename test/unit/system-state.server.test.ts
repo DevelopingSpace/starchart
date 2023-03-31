@@ -51,9 +51,6 @@ describe('getIsReconciliationNeeded()', () => {
     await prisma.systemState.deleteMany().catch(() => {});
     let result = await getIsReconciliationNeeded();
     expect(result).toBe(true);
-
-    // Restore state
-    await initialize();
   });
 });
 
