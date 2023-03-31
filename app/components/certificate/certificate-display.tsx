@@ -94,7 +94,14 @@ export default function CertificateDisplay({ title, description, value }: Certif
           </AccordionButton>
           <AccordionPanel>
             <Flex justifyContent="center">
-              <Text maxWidth={{ base: '3xs', xs: 'xs', sm: 'md', md: 'full' }}>{value}</Text>
+              <Text
+                fontFamily="mono"
+                maxWidth={{ base: '2xs', xs: 'xs', sm: 'md', md: 'full' }}
+                fontSize={{ base: '3xs', sm: 'xs', md: 'md' }}
+                css={{ whiteSpace: 'pre-line' }}
+              >
+                {value}
+              </Text>
             </Flex>
           </AccordionPanel>
         </AccordionItem>
