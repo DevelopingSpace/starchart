@@ -13,7 +13,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function IndexRoute() {
   return (
-    <VStack alignSelf="center" height="94vh">
+    <VStack alignSelf="center">
       <Flex
         flexDirection="column"
         alignItems="center"
