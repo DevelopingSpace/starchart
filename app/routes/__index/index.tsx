@@ -1,4 +1,4 @@
-import { Flex, Text, VStack } from '@chakra-ui/react';
+import { Flex, Text, VStack, Link } from '@chakra-ui/react';
 import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 
@@ -13,7 +13,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function IndexRoute() {
   return (
-    <VStack alignSelf="center" height="full">
+    <VStack alignSelf="center">
       <Flex
         flexDirection="column"
         alignItems="center"
@@ -48,6 +48,13 @@ export default function IndexRoute() {
           cardName="Certificate"
           cardDescription="Certificate: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. "
         />
+      </Flex>
+      <Flex paddingTop={{ sm: '20' }}>
+        <Link href="https://www.senecacollege.ca/about/policies/information-technology-acceptable-use-policy.html">
+          <Text fontSize={{ base: 'xs', sm: 'sm', md: 'md' }} color="brand.500">
+            Seneca's IT Acceptable Use Policy
+          </Text>
+        </Link>
       </Flex>
     </VStack>
   );
