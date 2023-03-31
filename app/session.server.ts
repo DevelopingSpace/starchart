@@ -36,7 +36,7 @@ export async function getUsername(request: Request): Promise<User['username'] | 
   const username = session.get(USER_SESSION_KEY);
 
   // Logout user if they are deactivated
-  if (await isUserDeactivated(username)) {
+  if (username && (await isUserDeactivated(username))) {
     throw await logout(request);
   }
 
