@@ -56,10 +56,16 @@ export async function requireUsername(
   redirectTo: string = new URL(request.url).pathname
 ) {
   const username = await getUsername(request);
-  if (!username || (await isDeactivated(username))) {
+  if (!username) {
     const searchParams = new URLSearchParams([['redirectTo', redirectTo]]);
     throw redirect(`/login?${searchParams}`);
   }
+
+  // Logout user if they are deactivated
+  if (await isDeactivated(username)) {
+    throw await logout(request);
+  }
+
   return username;
 }
 
