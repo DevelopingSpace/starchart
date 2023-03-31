@@ -3,7 +3,7 @@ import {
   checkUsernameExists,
   deactivateUserByUsername,
   deleteUserByUsername,
-  isDeactivated,
+  isUserDeactivated,
   getUserByUsername,
   isStudent,
   isAdmin,
@@ -85,7 +85,7 @@ describe('deleteUserByUsername()', () => {
   });
 });
 
-describe('isDeactivated()', () => {
+describe('isUserDeactivated()', () => {
   let activeUser: User;
   let deactivatedUser: User;
 
@@ -100,17 +100,17 @@ describe('isDeactivated()', () => {
   });
 
   test('returns true for deactivated user', async () => {
-    const result = await isDeactivated(deactivatedUser.username);
+    const result = await isUserDeactivated(deactivatedUser.username);
     expect(result).toBe(true);
   });
 
   test('returns false for active user', async () => {
-    const result = await isDeactivated(activeUser.username);
+    const result = await isUserDeactivated(activeUser.username);
     expect(result).toBe(false);
   });
 
   test('returns undefined when no user is found', async () => {
-    const result = await isDeactivated('invalid username');
+    const result = await isUserDeactivated('invalid username');
     expect(result).toBe(undefined);
   });
 });

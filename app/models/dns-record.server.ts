@@ -4,7 +4,7 @@ import { prisma } from '~/db.server';
 import { setIsReconciliationNeeded } from './system-state.server';
 
 import type { DnsRecord } from '@prisma/client';
-import { isDeactivated } from './user.server';
+import { isUserDeactivated } from './user.server';
 
 export function getDnsRecordsByUsername(username: DnsRecord['username']) {
   return prisma.dnsRecord.findMany({
@@ -37,7 +37,7 @@ export function getUserDnsRecordCount(username: DnsRecord['username']) {
 export async function createDnsRecord(
   data: Required<Pick<DnsRecord, 'username' | 'type' | 'subdomain' | 'value'>> & Partial<DnsRecord>
 ) {
-  if (await isDeactivated(data.username)) {
+  if (await isUserDeactivated(data.username)) {
     throw new Error('User is deactivated');
   }
 

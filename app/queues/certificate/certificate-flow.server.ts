@@ -13,7 +13,7 @@ import { redis } from '~/lib/redis.server';
 
 import type { FlowJob } from 'bullmq';
 import type { CertificateJobData } from './certificateJobTypes.server';
-import { isDeactivated } from '~/models/user.server';
+import { isUserDeactivated } from '~/models/user.server';
 
 // Exporting these to allow for graceful shutdown
 export {
@@ -33,7 +33,7 @@ const flowProducer = new FlowProducer({ connection: redis });
 
 export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) => {
   // Don't do anything is user is deactivated
-  if (await isDeactivated(username)) {
+  if (await isUserDeactivated(username)) {
     return;
   }
 
