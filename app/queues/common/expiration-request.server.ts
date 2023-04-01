@@ -6,10 +6,10 @@ import logger from '~/lib/logger.server';
 import { getExpiredDnsRecords, deleteDnsRecordById } from '~/models/dns-record.server';
 import { addNotification } from '../notifications/notifications.server';
 
-const { EXPIRATION_REPEAT_FREQUENCY_MS, JOB_REMOVAL_FREQUENCY_MS } = process.env;
+const { EXPIRATION_REPEAT_FREQUENCY_S, JOB_REMOVAL_FREQUENCY_S } = process.env;
 
-// constant  for removing job on completion/failure (in milliseconds)
-const JOB_REMOVAL_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+// constant  for removing job on completion/failure (in seconds)
+const JOB_REMOVAL_INTERVAL_S = 7 * 24 * 60 * 60; // 7 days
 declare global {
   var __expiration_request_init__: boolean;
 }
@@ -23,9 +23,9 @@ const expirationRequestQueue = new Queue(expirationRequestQueueName, {
 
 export function addExpirationRequest() {
   return expirationRequestQueue.add(expirationRequestQueueName, {
-    repeat: { every: Number(EXPIRATION_REPEAT_FREQUENCY_MS) || 24 * 60 * 60 * 1000 },
-    removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_MS) || JOB_REMOVAL_INTERVAL_MS },
-    removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_MS) || JOB_REMOVAL_INTERVAL_MS },
+    repeat: { every: Number(EXPIRATION_REPEAT_FREQUENCY_S) * 1000 || 24 * 60 * 60 * 1000 },
+    removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
+    removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
   });
 }
 

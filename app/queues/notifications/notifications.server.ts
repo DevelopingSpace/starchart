@@ -11,12 +11,17 @@ export type NotificationData = {
   message: string;
 };
 
+const { JOB_REMOVAL_FREQUENCY_S } = process.env;
+
+// constant  for removing job on completion/failure (in seconds)
+const JOB_REMOVAL_INTERVAL_S = 7 * 24 * 60 * 60; // 7 days
+
 async function init() {
   try {
-    logger.debug('Expiration Requests init: adding jobs for certificate/record expiration');
+    logger.debug('Expiration Requests init: adding jobs for certificate/DNS record expiration');
     await addExpirationRequest();
   } catch (err) {
-    logger.error(`Unable to start expiration notification workers: ${err}`);
+    logger.error(`Unable to start expiration notification worker: ${err}`);
   }
 }
 if (process.env.NODE_ENV === 'production') {
@@ -49,6 +54,8 @@ export const notificationsQueue = new Queue<NotificationData>('notifications', {
       type: 'exponential',
       delay: 60 * 1000 /* 1 minute */,
     },
+    removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S || JOB_REMOVAL_INTERVAL_S) },
+    removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S || JOB_REMOVAL_INTERVAL_S) },
   },
 });
 
