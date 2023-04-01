@@ -1,6 +1,7 @@
 import { createCookie, createCookieSessionStorage, redirect } from '@remix-run/node';
 
 import type { User } from '~/models/user.server';
+import { isUserDeactivated } from '~/models/user.server';
 import { getUserByUsername } from '~/models/user.server';
 import secrets from '~/lib/secrets.server';
 
@@ -33,6 +34,12 @@ export async function getSession(request: Request) {
 export async function getUsername(request: Request): Promise<User['username'] | undefined> {
   const session = await getSession(request);
   const username = session.get(USER_SESSION_KEY);
+
+  // Logout user if they are deactivated
+  if (username && (await isUserDeactivated(username))) {
+    throw await logout(request);
+  }
+
   return username;
 }
 
@@ -59,6 +66,7 @@ export async function requireUsername(
     const searchParams = new URLSearchParams([['redirectTo', redirectTo]]);
     throw redirect(`/login?${searchParams}`);
   }
+
   return username;
 }
 

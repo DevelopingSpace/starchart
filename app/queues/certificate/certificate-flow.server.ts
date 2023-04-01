@@ -13,6 +13,7 @@ import { redis } from '~/lib/redis.server';
 
 import type { FlowJob } from 'bullmq';
 import type { CertificateJobData } from './certificateJobTypes.server';
+import { isUserDeactivated } from '~/models/user.server';
 
 // Exporting these to allow for graceful shutdown
 export {
@@ -36,6 +37,11 @@ const JOB_REMOVAL_INTERVAL_S = 7 * 24 * 60 * 60; // 7 days
 const flowProducer = new FlowProducer({ connection: redis });
 
 export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) => {
+  // Don't do anything is user is deactivated
+  if (await isUserDeactivated(username)) {
+    return;
+  }
+
   /**
    * We are adding 5 jobs, to separate queues, each
    * parent depending on the child to complete

@@ -9,6 +9,7 @@ import { getSubdomainFromFqdn } from '~/utils';
 
 import type { ChallengeBundle } from '~/lib/lets-encrypt.server';
 import type { CertificateJobData } from './certificateJobTypes.server';
+import { isUserDeactivated } from '~/models/user.server';
 
 export const orderCreatorQueueName = 'certificate-createOrder';
 
@@ -78,6 +79,11 @@ export const orderCreatorWorker = new Worker<CertificateJobData>(
   orderCreatorQueueName,
   async (job) => {
     const { rootDomain, username, certificateId } = job.data;
+
+    if (await isUserDeactivated(username)) {
+      logger.error('User is deactivated, skipping order creation');
+      throw new UnrecoverableError('User is deactivated');
+    }
 
     logger.info(`Creating certificate order for ${rootDomain}`);
 
