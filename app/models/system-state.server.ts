@@ -11,7 +11,7 @@ import type { SystemState } from '@prisma/client';
  * to our Records table
  */
 
-function initialize() {
+export function initialize() {
   return prisma.systemState.create({
     data: {
       unique: StateEnumType.unique,
@@ -32,18 +32,18 @@ export function getIsReconciliationNeeded(): Promise<SystemState['reconciliation
 export function setIsReconciliationNeeded(
   reconciliationNeeded: SystemState['reconciliationNeeded']
 ) {
-  try {
-    return prisma.systemState.update({
+  return prisma.systemState
+    .update({
       data: { reconciliationNeeded },
       where: { unique: StateEnumType.unique },
-    });
-  } catch (error) {
-    /**
-     * This should never happen, as the table should always be seeded.
-     * In case it isn't, let's seed it here Next queue run will set the
-     * correct reconciliationNeeded
-     */
+    })
+    .catch(() => {
+      /**
+       * This should never happen, as the table should always be seeded.
+       * In case it isn't, let's seed it here Next queue run will set the
+       * correct reconciliationNeeded
+       */
 
-    return initialize();
-  }
+      return initialize();
+    });
 }
