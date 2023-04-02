@@ -22,7 +22,7 @@ import DnsRecordDeleteAlertDialog from './dns-record-delete-alert-dialog';
 
 import { Form, useNavigate, useTransition } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
-import { useUser } from '~/utils';
+import { useEffectiveUser } from '~/utils';
 import dayjs from 'dayjs';
 
 interface DnsRecordsTableProps {
@@ -32,7 +32,7 @@ interface DnsRecordsTableProps {
 export default function DnsRecordsTable(props: DnsRecordsTableProps) {
   const { dnsRecords } = props;
 
-  const { baseDomain } = useUser();
+  const { baseDomain } = useEffectiveUser();
 
   const toast = useToast();
   const navigate = useNavigate();

@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import type { DnsRecord } from '@prisma/client';
-import { useUser } from '~/utils';
+import { useEffectiveUser } from '~/utils';
 import FormField from './form-field';
 import { useMemo } from 'react';
 import type { z } from 'zod';
@@ -25,7 +25,7 @@ interface dnsRecordFormProps {
 }
 
 export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordFormProps) {
-  const user = useUser();
+  const user = useEffectiveUser();
 
   const submitButtonText = useMemo(() => (mode === 'CREATE' ? 'Create' : 'Update'), [mode]);
   const SubmitButtonIcon = useMemo(() => (mode === 'CREATE' ? AddIcon : EditIcon), [mode]);

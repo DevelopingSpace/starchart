@@ -95,6 +95,14 @@ export function useOptionalUser(): User | undefined {
   return data.user;
 }
 
+export function useOptionalEffectiveUser(): User | undefined {
+  const data = useMatchesData('root');
+  if (!data || !isUser(data.effectiveUser)) {
+    return undefined;
+  }
+  return data.effectiveUser;
+}
+
 export function useUser(): User {
   const maybeUser = useOptionalUser();
   if (!maybeUser) {
@@ -103,6 +111,17 @@ export function useUser(): User {
     );
   }
   return maybeUser;
+}
+
+export function useEffectiveUser(): User {
+  const maybeEffectiveUser = useOptionalEffectiveUser();
+  if (!maybeEffectiveUser) {
+    throw new Error(
+      'No effective user found in root loader, but user is required by useEffectiveUser. If user is optional, try useOptionalUser instead.'
+    );
+  }
+
+  return maybeEffectiveUser;
 }
 
 /**
