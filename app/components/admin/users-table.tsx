@@ -17,9 +17,12 @@ import {
 } from '@chakra-ui/react';
 import { CopyIcon, DeleteIcon } from '@chakra-ui/icons';
 import { FaTheaterMasks } from 'react-icons/fa';
+import { useNavigation } from '@remix-run/react';
+
 import type { UserWithMetrics } from '~/routes/__index/admin';
 import { MIN_USERS_SEARCH_TEXT } from '~/routes/__index/admin';
-import { useNavigation } from '@remix-run/react';
+
+import CertificateStatusIcon from '~/components/admin/certificate-status-icon';
 
 interface UsersTableProps {
   users: UserWithMetrics[];
@@ -56,7 +59,6 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
               <Th>Name</Th>
               <Th>DNS Records</Th>
               <Th>Certificate status</Th>
-              <Th>Role</Th>
               <Th />
             </Tr>
           </Thead>
@@ -95,8 +97,9 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                     </Td>
                     <Td>{user.displayName}</Td>
                     <Td>{user.dnsRecordCount}</Td>
-                    <Td>{user.certificate ? user.certificate.status : 'Not issued'}</Td>
-                    <Td>{user.group}</Td>
+                    <Td>
+                      <CertificateStatusIcon status={user.certificate?.status} />
+                    </Td>
                     <Td>
                       <HStack>
                         <Tooltip label="Impersonate user">
