@@ -82,10 +82,10 @@ export async function getEffectiveUser(request: Request) {
 
 export async function setEffectiveUsername(
   username: string,
-  name: string | undefined
+  effectiveUsername?: string
 ): Promise<string> {
   if (await isAdmin(username)) {
-    return await effectiveUsernameCookie.serialize(name);
+    return await effectiveUsernameCookie.serialize(effectiveUsername);
   }
 
   return await effectiveUsernameCookie.serialize(username);
