@@ -82,9 +82,9 @@ export async function getEffectiveUser(request: Request) {
 
 export async function setEffectiveUsername(
   username: string,
-  effectiveUsername?: string
+  effectiveUsername: string | null
 ): Promise<string> {
-  if (await isAdmin(username)) {
+  if ((await isAdmin(username)) && effectiveUsername) {
     return await effectiveUsernameCookie.serialize(effectiveUsername);
   }
 
@@ -161,7 +161,7 @@ export async function createUserSession({
 
   const headers = new Headers();
 
-  headers.append('Set-Cookie', await setEffectiveUsername(username, undefined));
+  headers.append('Set-Cookie', await setEffectiveUsername(username, null));
 
   headers.append(
     'Set-Cookie',
