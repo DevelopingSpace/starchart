@@ -9,5 +9,6 @@
   "eslint.workingDirectories": [{ "mode": "auto" }],
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
-  "editor.detectIndentation": false
+  "editor.detectIndentation": false,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
