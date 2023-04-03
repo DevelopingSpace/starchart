@@ -100,7 +100,7 @@ export default function Header() {
         <Menu>
           <MenuButton
             as={IconButton}
-            icon={<Avatar size="sm" />}
+            icon={<Avatar bg="brand.500" showBorder={true} borderColor="white" size="sm" />}
             style={{ backgroundColor: 'transparent' }}
           />
           <MenuList color="black">
