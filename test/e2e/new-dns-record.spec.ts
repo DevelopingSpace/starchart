@@ -17,7 +17,7 @@ test.describe('authenticated as user', () => {
   });
 
   test('redirects to edit DNS record page when required fields are filled', async ({ page }) => {
-    await page.getByLabel('DNS Record Name*').fill('test');
+    await page.getByLabel('Name*').fill('test');
     await page.getByRole('combobox', { name: 'Type' }).selectOption('A');
     await page.getByLabel('Value*').fill('test');
     await page.getByRole('button', { name: 'Create' }).click();
@@ -25,7 +25,7 @@ test.describe('authenticated as user', () => {
   });
 
   test('redirects to edit DNS record page when all fields are filled', async ({ page }) => {
-    await page.getByLabel('DNS Record Name*').fill('test');
+    await page.getByLabel('Name*').fill('test');
     await page.getByRole('combobox', { name: 'Type' }).selectOption('A');
     await page.getByLabel('Value*').fill('test');
     await page.getByLabel('Ports').fill('port1, port2');

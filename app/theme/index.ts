@@ -6,17 +6,6 @@ const theme = extendTheme(
   {
     colors,
     breakpoints,
-    styles: {
-      global: {
-        '.dns-record-form': {
-          // InfoIcon
-          '.chakra-icon': {
-            color: colors.brand_gray[300],
-            fontSize: 'xl',
-          },
-        },
-      },
-    },
   },
   withDefaultColorScheme({ colorScheme: 'brand' })
 );
