@@ -9,10 +9,10 @@ test('Login with User 1', async ({ page }) => {
   await page.waitForURL('/');
 
   const locator = page.locator('#header-user');
-  const starchartHeading = page.getByRole('heading', { name: 'My.Custom.Domain' });
+  const starchartHeading = page.getByRole('heading', { name: 'Welcome to My.Custom.Domain!' });
 
   await expect(locator).toContainText('user1');
-  await expect(starchartHeading).toContainText('My.Custom.Domain');
+  await expect(starchartHeading).toContainText('Welcome to My.Custom.Domain!');
 });
 
 test('Login with User 1 dev redirect', async ({ page }) => {

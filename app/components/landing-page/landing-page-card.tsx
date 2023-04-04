@@ -28,6 +28,7 @@ export default function LandingPageCard({
       <Flex width={{ md: 'xs' }} height={{ sm: 'xl' }} flexDirection="column">
         <Text fontSize={{ base: 'xs', md: 'md' }}>
           {cardDescription}
+          <br />
           <Text as={Link} to={`${path}/instructions`} color="brand.500" textDecor="underline">
             To learn more, see these instructions...
           </Text>

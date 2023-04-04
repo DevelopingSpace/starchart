@@ -19,7 +19,7 @@ export default function CertificateAvailable({
   return (
     <>
       <Description
-        description="Certificate: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+        description="With this certificate, you will have an HTTPS certificate for all of your projects connected to your DNS records."
         certRequested={true}
         validFromFormatted={validFromFormatted}
         validToFormatted={validToFormatted}
@@ -28,14 +28,14 @@ export default function CertificateAvailable({
       <CertificateDisplay
         title="Public Key"
         value={publicKey}
-        description="Public: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+        description="Public key is intended to be shared widely and is used for encrypting data. The encrypted data can then only be decrypted by the corresponding private key. In other words, anyone can use the public key to encrypt data, but only the private key can be used to decrypt it."
         pathname="cert"
       />
       <Divider />
       <CertificateDisplay
         title="Private Key"
         value={privateKey}
-        description="Private: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+        description="Private key is a secret and is used for decrypting data that has been encrypted using the corresponding public key."
         pathname="privkey"
       />
     </>

@@ -26,7 +26,8 @@ test.describe('Landing Page', () => {
     await page
       .getByRole('paragraph')
       .filter({
-        hasText: 'DNS Record: Lorem Ipsum is simply dummy text of the printing and typesetting ind',
+        hasText:
+          'DNS Record is a data stored in Domain Name System (DNS) servers, which maps a value to a domain name',
       })
       .getByRole('link', { name: 'to learn more, see these instructions...' })
       .click();
@@ -44,8 +45,7 @@ test.describe('Landing Page', () => {
     await page
       .getByRole('paragraph')
       .filter({
-        hasText:
-          'Certificate: Lorem Ipsum is simply dummy text of the printing and typesetting ind',
+        hasText: 'When a client visits your website that has an HTTPS (Hypertext Transfer ',
       })
       .getByRole('link', { name: 'to learn more, see these instructions...' })
       .click();
