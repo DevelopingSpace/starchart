@@ -1,5 +1,15 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Button, Center, Container, Flex, Heading, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Center,
+  Container,
+  Flex,
+  Heading,
+  Stat,
+  StatLabel,
+  StatNumber,
+  Text,
+} from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { json } from '@remix-run/node';
@@ -11,6 +21,7 @@ import {
   getDnsRecordsByUsername,
   renewDnsRecordById,
   deleteDnsRecordById,
+  getDnsRecordCountByUsername,
 } from '~/models/dns-record.server';
 import { requireUsername } from '~/session.server';
 import logger from '~/lib/logger.server';
@@ -22,7 +33,11 @@ export type DnsRecordActionIntent = 'renew-dns-record' | 'delete-dns-record';
 export const loader = async ({ request }: LoaderArgs) => {
   const username = await requireUsername(request);
 
-  return typedjson(await getDnsRecordsByUsername(username));
+  return typedjson({
+    dnsRecords: await getDnsRecordsByUsername(username),
+    userDnsRecordCount: await getDnsRecordCountByUsername(username),
+    userDnsRecordLimit: process.env.USER_DNS_RECORD_LIMIT ?? 'unlimited',
+  });
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -73,7 +88,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export default function DnsRecordsIndexRoute() {
-  const dnsRecords = useTypedLoaderData<typeof loader>();
+  const data = useTypedLoaderData<typeof loader>();
 
   return (
     <Container maxW="container.xl">
@@ -86,14 +101,26 @@ export default function DnsRecordsIndexRoute() {
           been the industry's standard dummy text ever since the 1500s, when an unknown printer took
           a galley of type and scrambled it to make a type specimen book.
         </Text>
-        {dnsRecords.length ? (
+        {data.dnsRecords.length ? (
           <>
-            <Flex justifyContent="flex-end" maxW="container.xl">
+            <Flex
+              justifyContent="space-between"
+              maxW="container.xl"
+              alignItems="center"
+              px={4}
+              py={2}
+            >
+              <Stat>
+                <StatLabel>Total User DNS Records</StatLabel>
+                <StatNumber>
+                  {data.userDnsRecordCount} / {data.userDnsRecordLimit}
+                </StatNumber>
+              </Stat>
               <Link to="/dns-records/new">
                 <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
               </Link>
             </Flex>
-            <DnsRecordsTable dnsRecords={dnsRecords} />
+            <DnsRecordsTable dnsRecords={data.dnsRecords} />
           </>
         ) : (
           <Center mt="16">
