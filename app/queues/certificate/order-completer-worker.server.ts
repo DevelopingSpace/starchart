@@ -75,15 +75,7 @@ export const orderCompleterWorker = new Worker<CertificateJobData>(
       ({ privateKey, certificate, validFrom, validTo } = await letsEncrypt.completeOrder());
     } catch (e) {
       logger.error('failed to finalize certificate', e);
-      // send error email notification:
-      logger.debug(
-        `Sending failed notification email for certificate with id=${certificateEntry.id}, username=${certificateEntry.username}, domain=${certificateEntry.domain}`
-      );
-      await addNotification({
-        emailAddress: certificateEntry.user.email,
-        subject: 'Attention: Certificate creation failed',
-        message: `${certificateEntry.username}, your certificate with domain: ${certificateEntry.domain} encountered an error. Please try again.`,
-      });
+
       // rethrow
       throw e;
     }
@@ -103,8 +95,8 @@ export const orderCompleterWorker = new Worker<CertificateJobData>(
     );
     await addNotification({
       emailAddress: certificateEntry.user.email,
-      subject: 'Attention: Certificate creation completed',
-      message: `${certificateEntry.username}, your certificate with domain: ${certificateEntry.domain} is ready. Log in to view/manage certificates.`,
+      subject: 'My.Custom.Domain certificate ready',
+      message: `${certificateEntry.username}, your certificate with domain: ${certificateEntry.domain} is ready. Log in to My.Custom Domain to view/manage it.`,
     });
   },
   { connection: redis }
