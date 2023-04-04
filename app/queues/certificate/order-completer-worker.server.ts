@@ -4,6 +4,7 @@ import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
+import { addNotification } from '../notifications/notifications.server';
 
 import type { CertificateJobData } from './certificateJobTypes.server';
 import { isUserDeactivated } from '~/models/user.server';
@@ -74,7 +75,15 @@ export const orderCompleterWorker = new Worker<CertificateJobData>(
       ({ privateKey, certificate, validFrom, validTo } = await letsEncrypt.completeOrder());
     } catch (e) {
       logger.error('failed to finalize certificate', e);
-
+      // send error email notification:
+      logger.debug(
+        `Sending failed notification email for certificate with id=${certificateEntry.id}, username=${certificateEntry.username}, domain=${certificateEntry.domain}`
+      );
+      await addNotification({
+        emailAddress: certificateEntry.user.email,
+        subject: 'Attention: Certificate creation failed',
+        message: `${certificateEntry.username}, your certificate with domain: ${certificateEntry.domain} encountered an error. Please try again.`,
+      });
       // rethrow
       throw e;
     }
@@ -88,6 +97,15 @@ export const orderCompleterWorker = new Worker<CertificateJobData>(
     });
 
     logger.info(`Certificate ${certificateId} successfully issued and stored`);
+    // send success email notification
+    logger.debug(
+      `Sending success notification email for certificate with id=${certificateEntry.id}, username=${certificateEntry.username}, domain=${certificateEntry.domain}`
+    );
+    await addNotification({
+      emailAddress: certificateEntry.user.email,
+      subject: 'Attention: Certificate creation completed',
+      message: `${certificateEntry.username}, your certificate with domain: ${certificateEntry.domain} is ready. Log in to view/manage certificates.`,
+    });
   },
   { connection: redis }
 );
