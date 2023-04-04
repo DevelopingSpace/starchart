@@ -1,4 +1,4 @@
-import { Flex, Text, VStack, Link } from '@chakra-ui/react';
+import { Flex, Text, VStack, Link, Heading } from '@chakra-ui/react';
 import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 
@@ -21,16 +21,24 @@ export default function IndexRoute() {
         paddingY={{ base: '2', md: '7' }}
         gap={{ md: '16' }}
       >
-        <Text fontSize={{ base: 'sm', md: 'lg' }} textAlign="center" padding="5">
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-          been the industry's standard dummy text ever since the 1500s, when an unknown printer took
-          a galley of type and scrambled it to make a type specimen book.
-        </Text>
+        <Flex
+          width={{ base: '100%', md: '75%' }}
+          textAlign="center"
+          padding="5"
+          flexDirection="column"
+        >
+          <Heading size="lg">Welcome to My.Custom.Domain!</Heading>
+          <Text fontSize={{ base: 'sm', md: 'lg' }} mt={4}>
+            My.Custom.Domain allows you to create unique domain names for your projects that can be
+            accessed on the internet and secure them with an HTTPS certificate, providing a secure
+            connection between clients and your domain.
+          </Text>
+        </Flex>
       </Flex>
       <Flex
         flexDirection={{ base: 'column', md: 'row' }}
         justifyContent="center"
-        paddingY="10"
+        paddingY="5"
         paddingX={{ base: '10', md: '5' }}
         gap={{ base: '5', lg: '10' }}
         width={{ base: 'full', sm: 'md' }}
@@ -39,13 +47,13 @@ export default function IndexRoute() {
           path="/dns-records"
           pathName="Manage DNS Records"
           cardName="DNS Records"
-          cardDescription="DNS Record: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. "
+          cardDescription="DNS Record is a data stored in Domain Name System (DNS) servers, which maps a value to a domain name.  You can create a unique custom domain for each of your projects by submitting a simple form."
         />
         <LandingPageCard
           path="/certificate"
           pathName="Manage Certificate"
           cardName="Certificate"
-          cardDescription="Certificate: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. "
+          cardDescription="When a client visits your website that has an HTTPS (Hypertext Transfer Protocol Secure) certificate, the client's browser verifies the authenticity of the certificate and establishes a secure connection with your website. Any data between the client and your website will be encrypted and cannot be intercepted."
         />
       </Flex>
       <Flex paddingTop={{ sm: '20' }}>

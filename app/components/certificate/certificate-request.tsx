@@ -19,7 +19,7 @@ export default function CertificateRequestView({ domain }: CertificateRequestVie
       paddingX="1"
     >
       <Description
-        description="Initial: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+        description="By clicking the Request a Certificate button, you will initiate a request for an HTTPS certificate that you can use with any project connected to your DNS records."
         certRequested={false}
       />
       <Flex
@@ -32,7 +32,7 @@ export default function CertificateRequestView({ domain }: CertificateRequestVie
         <Heading as="h3" size={{ base: 'sm', md: 'md' }}>
           Domain Name
         </Heading>
-        <Text>Lorem Ipsum is simply dummy text of the printing and typesetting industry</Text>
+        <Text>All of your subdomains can be secured by your certificate</Text>
         <Flex
           flexDirection={{ base: 'column', md: 'row' }}
           alignItems={{ base: 'center', md: 'flex-start' }}

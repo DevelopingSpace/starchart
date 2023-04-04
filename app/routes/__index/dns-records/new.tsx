@@ -54,8 +54,9 @@ export default function NewDnsRecordRoute() {
         Create new DNS Record
       </Heading>
       <Text maxW="lg" mb="3" mt="2">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-        been the industry's standard dummy text ever since the 1500s
+        Choose a subdomain Name. This will be used to build your domain.
+        <br /> (i.e. [subdomain].[username].mystudentproject.ca). <br />
+        Then enter a Type and Value that will be mapped with your domain.
       </Text>
       <DnsRecordForm errors={actionData} mode="CREATE" />
     </Container>
