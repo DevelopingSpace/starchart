@@ -20,7 +20,7 @@ services:
       MYSQL_ROOT_PASSWORD: root_password
 
   redis:
-    image: redis:7.0.8-alpine3.17
+    image: redis:7.0.10-alpine3.17@sha256:221f7fa5b4c563971358755893263d64b0b52e9798f6320f2898be499fb3b6b6
     container_name: redis
     command: ['redis-server']
     ports:

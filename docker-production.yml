@@ -2,13 +2,19 @@
 services:
   # Redis is used to back our worker queues. It is not exposed.
   redis:
-    image: redis:7.0.9-alpine3.17@sha256:8201775852e31262823ac8da9d76d0c8f36583f1a028b4800c35fc319c75289f
+    image: redis:7.0.10-alpine3.17@sha256:221f7fa5b4c563971358755893263d64b0b52e9798f6320f2898be499fb3b6b6
     volumes:
       - redis-data:/data
     deploy:
       placement:
         # We run the redis instance on the manager node only
         constraints: [node.role == manager]
+    logging:
+      # Use journald log driver, see:
+      # https://docs.docker.com/config/containers/logging/journald/
+      driver: journald
+      options:
+        tag: redis
 
   mycustomdomain:
     # Production runs the most recent release
@@ -44,6 +50,12 @@ services:
         parallelism: 1
         # If the update fails, rollback to last-known-good
         failure_action: rollback
+    logging:
+      # Use journald log driver, see:
+      # https://docs.docker.com/config/containers/logging/journald/
+      driver: journald
+      options:
+        tag: mycustomdomain
 
 secrets:
   AWS_ACCESS_KEY_ID:
