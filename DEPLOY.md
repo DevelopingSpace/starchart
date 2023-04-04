@@ -117,10 +117,19 @@ To stop and remove the serivce:
 docker stack rm starchart
 ```
 
-You can then view logs for any of the services by name (e.g., `mycustomdomain`):
+You can then view logs for any of the services by name (e.g., `mycustomdomain` container inside the `starchart` service):
 
 ```sh
 docker service logs --follow starchart_mycustomdomain
+```
+
+The logs are handled by the [journald](https://docs.docker.com/config/containers/logging/journald/) log driver. They can also be accessed via `journalctl`:
+
+```sh
+# See logs for mycustomdomain container(s)
+sudo journalctl -b CONTAINER_TAG=mycustomdomain
+# See logs for redis container
+sudo journalctl -b CONTAINER_TAG=redis
 ```
 
 To see the status of a service across all nodes in the swarm:
