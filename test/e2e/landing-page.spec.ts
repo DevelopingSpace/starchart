@@ -25,11 +25,8 @@ test.describe('Landing Page', () => {
   test('DNS Records Instructions Link', async ({ page }) => {
     await page
       .getByRole('paragraph')
-      .filter({
-        hasText:
-          'DNS Record is a data stored in Domain Name System (DNS) servers, which maps a value to a domain name',
-      })
-      .getByRole('link', { name: 'to learn more, see these instructions...' })
+      .getByRole('link', { name: 'these instructions' })
+      .first()
       .click();
 
     await expect(page).toHaveURL('/dns-records/instructions');
@@ -44,10 +41,8 @@ test.describe('Landing Page', () => {
   test('Certificate Instructions Link', async ({ page }) => {
     await page
       .getByRole('paragraph')
-      .filter({
-        hasText: 'When a client visits your website that has an HTTPS (Hypertext Transfer ',
-      })
-      .getByRole('link', { name: 'to learn more, see these instructions...' })
+      .getByRole('link', { name: 'these instructions' })
+      .nth(1)
       .click();
 
     await expect(page).toHaveURL('/certificate/instructions');
