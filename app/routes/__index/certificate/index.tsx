@@ -110,7 +110,10 @@ export default function CertificateIndexRoute() {
             validToFormatted={formatDate(certificate.validTo!)}
           />
         ) : (
-          <CertificateRequestView domain={user.baseDomain} />
+          <CertificateRequestView
+            domain={user.baseDomain}
+            isFailed={certificate?.status === 'failed'}
+          />
         )}
       </Flex>
     </Center>
