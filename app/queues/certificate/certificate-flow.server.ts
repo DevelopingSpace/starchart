@@ -14,6 +14,7 @@ import { redis } from '~/lib/redis.server';
 import type { FlowJob } from 'bullmq';
 import type { CertificateJobData } from './certificateJobTypes.server';
 import { isUserDeactivated } from '~/models/user.server';
+import { initCertificateErrorHandler } from './certificate-error-handler.server';
 
 // Exporting these to allow for graceful shutdown
 export {
@@ -35,6 +36,9 @@ const { JOB_REMOVAL_FREQUENCY_S } = process.env;
 const JOB_REMOVAL_INTERVAL_S = 7 * 24 * 60 * 60; // 7 days
 
 const flowProducer = new FlowProducer({ connection: redis });
+
+// Initialize error handling before any flows are dispatched
+initCertificateErrorHandler();
 
 export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) => {
   // Don't do anything is user is deactivated
@@ -126,8 +130,8 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
     data: jobData,
     children: [challengeCompleter],
     opts: {
-      failParentOnFailure: false, // Important, don't wait the cleanup step
-      attempts: 3,
+      failParentOnFailure: true,
+      attempts: 5,
       backoff: {
         type: 'exponential',
         delay: 60_000, // start with 1 minute, double each time

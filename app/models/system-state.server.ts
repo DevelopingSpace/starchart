@@ -12,8 +12,13 @@ import type { SystemState } from '@prisma/client';
  */
 
 export function initialize() {
-  return prisma.systemState.create({
-    data: {
+  // Using an upsert here to make sure we only initialize if the unique row is missing
+  return prisma.systemState.upsert({
+    where: {
+      unique: StateEnumType.unique,
+    },
+    update: {},
+    create: {
       unique: StateEnumType.unique,
       reconciliationNeeded: true,
     },
