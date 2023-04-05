@@ -17,11 +17,11 @@ export default function IndexRoute() {
       <Flex
         flexDirection="column"
         alignItems="center"
-        width="100%"
+        width={{ base: 'full', sm: '80%' }}
         paddingY={{ base: '2', md: '7' }}
         gap={{ md: '16' }}
       >
-        <Flex width={{ base: '100%', md: '50%' }} textAlign="center" padding="5">
+        <Flex textAlign="center" padding="5">
           <Text fontSize={{ base: 'sm', md: 'lg' }}>
             Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
             has been the industry's standard dummy text ever since the 1500s, when an unknown
@@ -30,11 +30,12 @@ export default function IndexRoute() {
         </Flex>
       </Flex>
       <Flex
-        flexDirection={{ base: 'column', sm: 'row' }}
+        flexDirection={{ base: 'column', md: 'row' }}
         justifyContent="center"
         paddingY="10"
         paddingX={{ base: '10', md: '5' }}
         gap={{ base: '5', lg: '10' }}
+        width={{ base: 'full', sm: '75%' }}
       >
         <LandingPageCard
           path="/dns-records"
