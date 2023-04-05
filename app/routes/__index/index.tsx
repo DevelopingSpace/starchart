@@ -37,11 +37,12 @@ export default function IndexRoute() {
       </Flex>
       <Flex
         flexDirection={{ base: 'column', md: 'row' }}
+        flexWrap="wrap"
         justifyContent="center"
         paddingY="5"
         paddingX={{ base: '10', md: '5' }}
         gap={{ base: '5', lg: '10' }}
-        width={{ base: 'full', sm: 'md' }}
+        width={{ base: 'full', sm: 'md', md: 'full' }}
       >
         {user.isAdmin && (
           <LandingPageCard
