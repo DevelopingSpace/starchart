@@ -22,13 +22,13 @@ describe('initialize()', () => {
     expect(state.reconciliationNeeded).toBe(true);
   });
 
-  test('only one system state can exist', async () => {
+  test('only one system state can exist, but initialize should not fail if it does', async () => {
     await expect(
       prisma.systemState.create({
         data: {},
       })
     ).rejects.toThrow();
-    await expect(initialize()).rejects.toThrow();
+    await expect(initialize()).resolves.not.toThrow();
   });
 });
 
