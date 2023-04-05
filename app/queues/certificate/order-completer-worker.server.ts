@@ -96,7 +96,7 @@ export const orderCompleterWorker = new Worker<CertificateJobData>(
     await addNotification({
       emailAddress: certificateEntry.user.email,
       subject: 'My.Custom.Domain certificate ready',
-      message: `${certificateEntry.username}, your certificate with domain: ${certificateEntry.domain} is ready. Log in to My.Custom.Domain to view/manage it.`,
+      message: `${certificateEntry.user.displayName}, your certificate with domain: ${certificateEntry.domain} is ready. Log in to My.Custom.Domain to view/manage it.`,
     });
   },
   { connection: redis }

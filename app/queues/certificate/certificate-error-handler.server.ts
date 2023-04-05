@@ -17,7 +17,7 @@ declare global {
 }
 
 /**
- * When one step in teh queue fails, it fails all subsequent steps as well.
+ * When one step in the queue fails, it fails all subsequent steps as well.
  * Because of this, we can attach a listener of type `failed` to the last one
  * to do the cleanup
  *
@@ -78,7 +78,7 @@ export const initCertificateErrorHandler = () => {
       await addNotification({
         emailAddress: certificateEntry.user.email,
         subject: 'My.Custom.Domain certificate request failed',
-        message: `${certificateEntry.username}, your certificate request with domain: ${certificateEntry.domain} has failed. Log in to My.Custom.Domain to try again.`,
+        message: `${certificateEntry.user.displayName}, your certificate request with domain: ${certificateEntry.domain} has failed. Log in to My.Custom.Domain to try again.`,
       });
 
       logger.info('Cleanup completed on failed certificate flow', { rootDomain, certificateId });
