@@ -63,6 +63,16 @@ export const action = async ({ request }: ActionArgs) => {
   });
 };
 
+function formatDate(val: Date): string {
+  let date = val.toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+  });
+
+  return date;
+}
+
 export default function CertificateIndexRoute() {
   const user = useEffectiveUser();
   const revalidator = useRevalidator();
@@ -74,16 +84,6 @@ export default function CertificateIndexRoute() {
     },
     certificate?.status === 'pending' ? 15_000 : null
   );
-
-  function formatDate(val: Date): string {
-    let date = val.toLocaleDateString('en-US', {
-      month: 'short',
-      day: '2-digit',
-      year: 'numeric',
-    });
-
-    return date;
-  }
 
   if (certificate?.status === 'pending') {
     return (
