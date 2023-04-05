@@ -19,12 +19,7 @@ export default function IndexRoute() {
         paddingY={{ base: '2', md: '7' }}
         gap={{ md: '16' }}
       >
-        <Flex
-          width={{ base: '100%', md: '3xl' }}
-          maxWidth="42em"
-          padding="5"
-          flexDirection="column"
-        >
+        <Flex width={{ base: '100%', md: '3xl' }} padding="5" flexDirection="column">
           <Heading size="lg" textAlign="center">
             Welcome to My.Custom.Domain!
           </Heading>
