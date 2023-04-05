@@ -34,10 +34,12 @@ declare global {
  */
 
 export const initCertificateErrorHandler = () => {
-  if (process.env.NODE_ENV !== 'production' && global.__reconciler_queue_init__) {
+  if (process.env.NODE_ENV !== 'production' && global.__cert_flow_error_handlers_init__) {
     // Only do this setup once if in dev
     return;
   }
+
+  global.__cert_flow_error_handlers_init__ = true;
 
   const dnsCleanerQueue = new Queue<CertificateJobData>(dnsCleanerQueueName, { connection: redis });
   const dnsCleanerQueueEvents = new QueueEvents(dnsCleanerQueueName, { connection: redis });
