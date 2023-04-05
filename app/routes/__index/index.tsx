@@ -35,7 +35,7 @@ export default function IndexRoute() {
         paddingY="10"
         paddingX={{ base: '10', md: '5' }}
         gap={{ base: '5', lg: '10' }}
-        width={{ base: 'full', sm: '75%' }}
+        width={{ base: 'full', sm: 'lg' }}
       >
         <LandingPageCard
           path="/dns-records"
