@@ -1,4 +1,13 @@
-import { Flex, Heading, Text, Button } from '@chakra-ui/react';
+import {
+  Flex,
+  Heading,
+  Text,
+  Button,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import { useState } from 'react';
 
@@ -6,9 +15,10 @@ import Description from './description';
 
 interface CertificateRequestViewProps {
   domain: string;
+  isFailed: boolean;
 }
 
-export default function CertificateRequestView({ domain }: CertificateRequestViewProps) {
+export default function CertificateRequestView({ domain, isFailed }: CertificateRequestViewProps) {
   const [isDisabled, setIsDisabled] = useState(false);
 
   return (
@@ -51,6 +61,15 @@ export default function CertificateRequestView({ domain }: CertificateRequestVie
           Request a Certificate
         </Button>
       </Form>
+      {isFailed && (
+        <Alert status="error">
+          <AlertIcon />
+          <AlertTitle mr={2}>Request Unsuccessful: </AlertTitle>
+          <AlertDescription>
+            Unfortunately, your previous request was not successful.
+          </AlertDescription>
+        </Alert>
+      )}
     </Flex>
   );
 }
