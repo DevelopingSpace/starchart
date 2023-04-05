@@ -20,7 +20,7 @@ export default function IndexRoute() {
         gap={{ md: '16' }}
       >
         <Flex
-          width={{ base: '100%', md: '75%' }}
+          width={{ base: '100%', md: '3xl' }}
           maxWidth="42em"
           padding="5"
           flexDirection="column"
