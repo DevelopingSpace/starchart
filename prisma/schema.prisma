@@ -44,6 +44,8 @@ model Certificate {
   orderUrl     String?           @unique @db.VarChar(255)
   privateKey   String?           @db.Text
   certificate  String?           @db.Text
+  chain        String?           @db.Text
+  fullChain    String?           @db.Text
   validFrom    DateTime?
   validTo      DateTime?
   lastNotified DateTime?
