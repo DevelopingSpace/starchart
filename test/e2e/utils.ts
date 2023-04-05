@@ -7,3 +7,7 @@ import { test } from '@playwright/test';
 export function loggedInAsUser() {
   return test.use({ storageState: 'test/e2e/.auth/user.json' });
 }
+
+export function loggedInAsAdmin() {
+  return test.use({ storageState: 'test/e2e/.auth/admin.json' });
+}
