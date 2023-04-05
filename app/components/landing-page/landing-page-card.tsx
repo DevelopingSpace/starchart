@@ -6,6 +6,7 @@ interface LandingPageCardProps {
   pathName: string;
   cardName: string;
   cardDescription: string;
+  instructionsPath?: string;
 }
 
 export default function LandingPageCard({
@@ -13,6 +14,7 @@ export default function LandingPageCard({
   pathName,
   cardName,
   cardDescription,
+  instructionsPath,
 }: LandingPageCardProps) {
   return (
     <VStack
@@ -25,14 +27,17 @@ export default function LandingPageCard({
         {cardName}
       </Heading>
 
-      <Flex width={{ md: 'xs' }} height={{ sm: 'xl' }} flexDirection="column">
-        <Text fontSize={{ base: 'xs', md: 'md' }}>
-          {cardDescription}
-          <br />
-          <Text as={Link} to={`${path}/instructions`} color="brand.500" textDecor="underline">
-            To learn more, see these instructions...
+      <Flex width={{ md: 'xs' }} height={{ sm: 'xl' }} flexDirection="column" gap="4">
+        <Text fontSize={{ base: 'xs', md: 'md' }}>{cardDescription}</Text>
+        {instructionsPath && (
+          <Text>
+            To learn more, see{' '}
+            <Text as={Link} to={instructionsPath} color="brand.500" textDecor="underline">
+              these instructions
+            </Text>
+            .
           </Text>
-        </Text>
+        )}
       </Flex>
 
       <Flex width="100%" justifyContent="center" height="100%" alignItems="flex-end">
