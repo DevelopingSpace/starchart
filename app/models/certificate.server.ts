@@ -12,7 +12,7 @@ export async function getCertificateByUsername(username: Certificate['username']
   return prisma.certificate
     .findMany({
       where: { username },
-      orderBy: { validFrom: 'desc' },
+      orderBy: { id: 'desc' },
       take: 1,
     })
     .then(([certificate]) => certificate);

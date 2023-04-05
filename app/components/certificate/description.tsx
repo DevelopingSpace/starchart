@@ -1,10 +1,13 @@
-import { Flex, Heading, Text, HStack, VStack } from '@chakra-ui/react';
+import { RepeatIcon } from '@chakra-ui/icons';
+import { Flex, Heading, Text, HStack, VStack, IconButton } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
 
 interface DescriptionSectionProps {
   certRequested: boolean;
   validFromFormatted?: string;
   validToFormatted?: string;
   description: string;
+  isRenewable?: boolean;
 }
 
 export default function DescriptionSection({
@@ -12,6 +15,7 @@ export default function DescriptionSection({
   validFromFormatted,
   validToFormatted,
   description,
+  isRenewable,
 }: DescriptionSectionProps) {
   return (
     <Flex
@@ -22,9 +26,12 @@ export default function DescriptionSection({
       alignItems={{ base: 'center', md: 'flex-start' }}
       textAlign={{ base: 'center', md: 'left' }}
     >
-      <Heading as="h1" size={{ base: 'lg', md: 'xl' }}>
-        Certificate
-      </Heading>
+      <Flex width="100%">
+        <Heading as="h1" size={{ base: 'lg', md: 'xl' }}>
+          Certificate
+        </Heading>
+      </Flex>
+
       <Text>{description}</Text>
       {certRequested && (
         <HStack gap="6" marginTop="2">
@@ -38,6 +45,20 @@ export default function DescriptionSection({
                 <Text fontWeight="bold">Expires On</Text>
                 <Text>{validToFormatted}</Text>
               </VStack>
+
+              <Flex justifyContent="flex-end">
+                <Form method="post">
+                  <IconButton
+                    type="submit"
+                    aria-label="renew-certificate"
+                    icon={<RepeatIcon />}
+                    backgroundColor="transparent"
+                    color="black"
+                    _hover={{ backgroundColor: 'brand.500', color: 'white' }}
+                    isDisabled={isRenewable ? false : true}
+                  />
+                </Form>
+              </Flex>
             </>
           )}
         </HStack>

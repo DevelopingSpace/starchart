@@ -20,6 +20,7 @@ interface CertificateAvailableProps {
   validToFormatted: string;
   publicKey: string;
   privateKey: string;
+  isRenewable: boolean;
 }
 
 export default function CertificateAvailable({
@@ -27,6 +28,7 @@ export default function CertificateAvailable({
   validToFormatted,
   publicKey,
   privateKey,
+  isRenewable,
 }: CertificateAvailableProps) {
   return (
     <>
@@ -35,6 +37,7 @@ export default function CertificateAvailable({
         certRequested={true}
         validFromFormatted={validFromFormatted}
         validToFormatted={validToFormatted}
+        isRenewable={isRenewable}
       />
 
       <Heading as="h2" size="lg" marginTop={4}>
