@@ -13,6 +13,7 @@ import Description from './description';
 import GeneralPanel from './panels/general';
 import NodePanel from './panels/node';
 import AwsPanel from './panels/aws';
+import NginxPanel from './panels/nginx';
 
 interface CertificateAvailableProps {
   validFromFormatted: string;
@@ -72,12 +73,15 @@ export default function CertificateAvailable({
           <Tab>General</Tab>
           <Tab>Node.js</Tab>
           <Tab>AWS</Tab>
+          <Tab>NGINX</Tab>
         </TabList>
 
         <TabPanels>
           <GeneralPanel publicKey={publicKey} privateKey={privateKey} />
           <NodePanel publicKey={publicKey} privateKey={privateKey} />
           <AwsPanel publicKey={publicKey} privateKey={privateKey} />
+          {/* TODO: needs to be updated with full chain... */}
+          <NginxPanel fullChain={publicKey} privateKey={privateKey} />
         </TabPanels>
       </Tabs>
     </>
