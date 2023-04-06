@@ -1,7 +1,6 @@
-import { AddIcon, ExternalLinkIcon } from '@chakra-ui/icons';
+import { AddIcon } from '@chakra-ui/icons';
 import {
   Button,
-  IconButton,
   Center,
   Container,
   Flex,
@@ -10,8 +9,6 @@ import {
   StatLabel,
   StatNumber,
   Text,
-  Tooltip,
-  Link as ExternalLink,
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
@@ -124,16 +121,6 @@ export default function DnsRecordsIndexRoute() {
               <Link to="/dns-records/new">
                 <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
               </Link>
-              <ExternalLink href="https://dnschecker.org" isExternal>
-                <Tooltip label="DNS checker">
-                  <IconButton
-                    ml={3}
-                    icon={<ExternalLinkIcon boxSize={5} />}
-                    aria-label="DNS checker"
-                    variant="ghost"
-                  />
-                </Tooltip>
-              </ExternalLink>
             </Flex>
             <DnsRecordsTable dnsRecords={data.dnsRecords} />
           </>
