@@ -416,11 +416,18 @@ class LetsEncrypt {
     });
 
     this.#order = await this.#client.finalizeOrder(this.#order, csr);
-    const certificate = await this.#client.getCertificate(this.#order);
+
+    // fullChain is the publicCertificate + the intermediate certificate(s) for Let's Encrypt
+    const fullChain = await this.#client.getCertificate(this.#order);
+
+    // certificate is the public certificate, chain is the intermediate certificate(s) for Let's Encrypt
+    const [certificate, ...chain] = acme.crypto.splitPemChain(fullChain);
 
     return {
       privateKey: key.toString(),
       certificate,
+      chain,
+      fullChain,
       validFrom: new Date(),
       validTo: new Date(this.#order.expires!),
     };
