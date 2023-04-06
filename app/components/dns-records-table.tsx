@@ -3,6 +3,7 @@ import {
   Table,
   Tr,
   Th,
+  Text,
   Thead,
   Tbody,
   TableContainer,
@@ -139,7 +140,13 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                       </Flex>
                     </Td>
                     <Td>{dnsRecord.type}</Td>
-                    <Td>{dnsRecord.value}</Td>
+                    <Td>
+                      <Tooltip label={dnsRecord.value}>
+                        <Text isTruncated maxWidth="20ch">
+                          {dnsRecord.value}
+                        </Text>
+                      </Tooltip>
+                    </Td>
                     <Td>
                       <Flex alignItems="center">
                         {dnsRecord.expiresAt.toLocaleDateString('en-US')}
