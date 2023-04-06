@@ -115,7 +115,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                             isExternal
                             target="_blank"
                           >
-                            <Tooltip label="Check DNS Record">
+                            <Tooltip label="Check DNS record">
                               <IconButton
                                 icon={<InfoOutlineIcon color="black" boxSize="5" />}
                                 aria-label="Check DNS record"
@@ -124,7 +124,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                               />
                             </Tooltip>
                           </Link>
-                          <Tooltip label="Copy subdomain to clipboard">
+                          <Tooltip label="Copy DNS record to clipboard">
                             <IconButton
                               icon={<CopyIcon color="black" boxSize="5" />}
                               aria-label="Refresh DNS record"
