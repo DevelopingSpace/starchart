@@ -422,13 +422,12 @@ class LetsEncrypt {
 
     // certificate is the public certificate, chain is the intermediate certificate(s) for Let's Encrypt
     const [certificate, ...chainArray] = acme.crypto.splitPemChain(fullChain);
-    const chain = chainArray.join('');
+    const chain = chainArray.join('\r\n');
 
     return {
       privateKey: key.toString(),
       certificate,
       chain,
-      fullChain,
       validFrom: new Date(),
       validTo: new Date(this.#order.expires!),
     };

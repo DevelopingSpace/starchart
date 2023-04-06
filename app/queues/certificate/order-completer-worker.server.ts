@@ -68,14 +68,12 @@ export const orderCompleterWorker = new Worker<CertificateJobData>(
     let certificate: string;
     let privateKey: string;
     let chain: string;
-    let fullChain: string;
     let validFrom: Date;
     let validTo: Date;
     try {
       await letsEncrypt.recallOrder(certificateEntry.orderUrl!);
 
-      ({ privateKey, certificate, chain, fullChain, validFrom, validTo } =
-        await letsEncrypt.completeOrder());
+      ({ privateKey, certificate, chain, validFrom, validTo } = await letsEncrypt.completeOrder());
     } catch (e) {
       logger.error('failed to finalize certificate', e);
 
@@ -86,7 +84,6 @@ export const orderCompleterWorker = new Worker<CertificateJobData>(
     await certificateModel.updateCertificateById(certificateId, {
       certificate,
       chain,
-      fullChain,
       privateKey,
       validFrom,
       validTo,
