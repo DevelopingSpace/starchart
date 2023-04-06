@@ -15,9 +15,11 @@ import {
   useDisclosure,
   Spinner,
   HStack,
+  Link,
+  ButtonGroup,
 } from '@chakra-ui/react';
 import type { DnsRecord } from '@prisma/client';
-import { EditIcon, DeleteIcon, RepeatIcon, CopyIcon } from '@chakra-ui/icons';
+import { EditIcon, DeleteIcon, RepeatIcon, CopyIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 import DnsRecordDeleteAlertDialog from './dns-record-delete-alert-dialog';
 
 import { Form, useNavigate, useTransition } from '@remix-run/react';
@@ -107,17 +109,33 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                     <Td>
                       <Flex justifyContent="space-between" alignItems="center">
                         <DnsRecordName dnsRecord={dnsRecord} baseDomain={baseDomain} />
-                        <Tooltip label="Copy subdomain to clipboard">
-                          <IconButton
-                            icon={<CopyIcon color="black" boxSize="5" />}
-                            aria-label="Refresh DNS record"
-                            variant="ghost"
-                            ml="2"
-                            onClick={() =>
-                              onCopyNameToClipboard(`${dnsRecord.subdomain}.${baseDomain}`)
-                            }
-                          />
-                        </Tooltip>
+                        <ButtonGroup>
+                          <Link
+                            href={`https://dnschecker.org/#${dnsRecord.type}/${dnsRecord.subdomain}.${baseDomain}`}
+                            isExternal
+                            target="_blank"
+                          >
+                            <Tooltip label="Check DNS record">
+                              <IconButton
+                                icon={<InfoOutlineIcon color="black" boxSize="5" />}
+                                aria-label="Check DNS record"
+                                variant="ghost"
+                                ml="2"
+                              />
+                            </Tooltip>
+                          </Link>
+                          <Tooltip label="Copy DNS record to clipboard">
+                            <IconButton
+                              icon={<CopyIcon color="black" boxSize="5" />}
+                              aria-label="Refresh DNS record"
+                              variant="ghost"
+                              ml="2"
+                              onClick={() =>
+                                onCopyNameToClipboard(`${dnsRecord.subdomain}.${baseDomain}`)
+                              }
+                            />
+                          </Tooltip>
+                        </ButtonGroup>
                       </Flex>
                     </Td>
                     <Td>{dnsRecord.type}</Td>
