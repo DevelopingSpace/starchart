@@ -67,6 +67,8 @@ export const orderCompleterWorker = new Worker<CertificateJobData>(
      */
     let certificate: string;
     let privateKey: string;
+    let chain: string;
+    let fullChain: string;
     let validFrom: Date;
     let validTo: Date;
     try {
