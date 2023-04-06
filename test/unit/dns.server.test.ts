@@ -1,4 +1,4 @@
-import { createHostedZone } from 'reconciler/route53-client.server';
+import { createHostedZone } from 'services/reconciler/route53-client.server';
 import { isNameValid, isValueValid } from '~/lib/dns.server';
 import { DnsRecordType } from '@prisma/client';
 

@@ -2,7 +2,7 @@ import {
   createHostedZone,
   executeChangeSet,
   getDnsRecordSetPage,
-} from 'reconciler/route53-client.server';
+} from 'services/reconciler/route53-client.server';
 
 describe('Route53 Client functions test', () => {
   let hostedZoneId: string;

@@ -8,7 +8,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 
 import logger from '~/lib/logger.server';
-import { addReconcilerJob } from './reconciler/reconciler-queue.server';
+import * as services from 'services';
 
 import type { Request, Response } from 'express';
 
@@ -83,10 +83,10 @@ const server = app.listen(port, () => {
   // require the built app so we're ready when the first request comes in
   require(BUILD_DIR);
 
-  // start the DNS reconciler
-  addReconcilerJob();
-
-  logger.info(`✅ app ready: http://localhost:${port}`);
+  // start the various background jobs we run (reconciler, expire records, etc)
+  services.init().then(() => {
+    logger.info(`✅ app ready: http://localhost:${port}`);
+  });
 });
 
 gracefulShutdown(server, {
