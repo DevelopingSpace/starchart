@@ -8,7 +8,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 
 import logger from '~/lib/logger.server';
-import { addReconcilerJob } from './app/queues/reconciler/reconciler-queue.server';
+import { addReconcilerJob } from './reconciler/reconciler-queue.server';
 
 import type { Request, Response } from 'express';
 

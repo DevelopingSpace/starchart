@@ -31,7 +31,7 @@ const escapeFn = (char: string): string => {
  * convert back the escaped octal values i.e., '\041' => '!'
  * also unescape \ and " characters
  */
-const unescapeFn = (match: string, selection: string): string => {
+const unescapeFn = (_: string, selection: string): string => {
   if (selection === '\\' || selection === '"') {
     return selection;
   }
@@ -49,7 +49,7 @@ export const toRoute53RecordValue = (type: DnsRecordType, value: string): string
     // Initialize with undefined
     .fill(undefined)
     // Loop through, using the index split out the appropriate parts from the original string
-    .map((segment, index) => value.substring(index * 255, (index + 1) * 255))
+    .map((_, index) => value.substring(index * 255, (index + 1) * 255))
     // escape
     .map((segment) => segment.replace(/([^!-~]|[\\"])/g, escapeFn))
     // add quotation marks around the segments

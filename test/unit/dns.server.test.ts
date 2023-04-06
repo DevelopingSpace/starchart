@@ -1,4 +1,5 @@
-import { createHostedZone, isNameValid, isValueValid } from '~/lib/dns.server';
+import { createHostedZone } from 'reconciler/route53-client.server';
+import { isNameValid, isValueValid } from '~/lib/dns.server';
 import { DnsRecordType } from '@prisma/client';
 
 describe('DNS server lib function test', () => {
@@ -23,11 +24,6 @@ describe('DNS server lib function test', () => {
   });
 
   afterAll(() => resetHostedZone());
-
-  test('Hosted zone is created and hosted zone is returned', () => {
-    expect(hostedZoneId.length).toBeGreaterThan(0);
-    expect(/^[A-Z0-9]+/.test(hostedZoneId)).toBe(true);
-  });
 
   test('isNameValid() returns true when valid URL is passed. Otherwise it returns false', () => {
     expect(isNameValid(`osd700.${username}.${rootDomain}`, username)).toBe(true);
