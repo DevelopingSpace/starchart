@@ -417,7 +417,7 @@ class LetsEncrypt {
 
     this.#order = await this.#client.finalizeOrder(this.#order, csr);
 
-    // fullChain is the publicCertificate + the intermediate certificate(s) for Let's Encrypt
+    // fullChain is the public certificate + the intermediate certificate(s) for Let's Encrypt
     const fullChain = await this.#client.getCertificate(this.#order);
 
     // certificate is the public certificate, chain is the intermediate certificate(s) for Let's Encrypt
