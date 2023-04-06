@@ -124,7 +124,7 @@ export default function DnsRecordsIndexRoute() {
               <Link to="/dns-records/new">
                 <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
               </Link>
-              <ExternalLink href="https://dnschecker.org">
+              <ExternalLink href="https://dnschecker.org" isExternal>
                 <Tooltip label="DNS checker">
                   <IconButton
                     ml={3}
