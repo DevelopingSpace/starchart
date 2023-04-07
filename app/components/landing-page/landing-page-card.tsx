@@ -9,7 +9,7 @@ import {
   Link,
   Text,
 } from '@chakra-ui/react';
-import { Link as ReactLink } from '@remix-run/react';
+import { Link as RemixLink } from '@remix-run/react';
 
 interface LandingPageCardProps {
   path: string;
@@ -39,7 +39,7 @@ export default function LandingPageCard({
           {instructionsPath && (
             <Text>
               To learn more, see{' '}
-              <Link as={ReactLink} to={instructionsPath}>
+              <Link as={RemixLink} to={instructionsPath}>
                 these instructions
               </Link>
               .
@@ -48,7 +48,7 @@ export default function LandingPageCard({
         </Flex>
       </CardBody>
       <CardFooter>
-        <Button as={ReactLink} to={{ pathname: path }} size={{ base: 'xs', xs: 'sm', md: 'md' }}>
+        <Button as={RemixLink} to={{ pathname: path }} size={{ base: 'xs', xs: 'sm', md: 'md' }}>
           {pathName}
         </Button>
       </CardFooter>
