@@ -16,7 +16,7 @@ export default function AwsPanel({ publicKey, privateKey }: AwsPanelProps) {
           isExternal
         >
           import your certificate
-        </Link>
+        </Link>{' '}
         into{' '}
         <Link href="https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html" isExternal>
           AWS Certificate Manager
