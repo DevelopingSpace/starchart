@@ -31,7 +31,7 @@ export function updateCertificateById(
   data: Partial<
     Pick<
       Certificate,
-      'orderUrl' | 'certificate' | 'privateKey' | 'validFrom' | 'validTo' | 'status'
+      'orderUrl' | 'certificate' | 'chain' | 'privateKey' | 'validFrom' | 'validTo' | 'status'
     >
   >
 ) {
