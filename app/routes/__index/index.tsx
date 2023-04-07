@@ -63,10 +63,11 @@ export default function IndexRoute() {
         />
       </Flex>
       <Flex paddingTop={{ sm: '20' }}>
-        <Link href="https://www.senecacollege.ca/about/policies/information-technology-acceptable-use-policy.html">
-          <Text fontSize={{ base: 'xs', sm: 'sm', md: 'md' }} color="brand.500">
-            Seneca's IT Acceptable Use Policy
-          </Text>
+        <Link
+          href="https://www.senecacollege.ca/about/policies/information-technology-acceptable-use-policy.html"
+          fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
+        >
+          Seneca's IT Acceptable Use Policy
         </Link>
       </Flex>
     </VStack>
