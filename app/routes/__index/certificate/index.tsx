@@ -1,4 +1,4 @@
-import { Flex, Center } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
@@ -106,28 +106,24 @@ export default function CertificateIndexRoute() {
   }
 
   return (
-    <Center>
-      <Flex
-        flexDirection="column"
-        gap="5"
-        width={{ base: 'md', sm: 'lg', md: '2xl', lg: '4xl' }}
-        marginTop={{ base: '16', md: '5' }}
-      >
-        {certificate?.status === 'issued' ? (
-          <CertificateAvailable
-            publicKey={certificate.certificate!}
-            privateKey={certificate.privateKey!}
-            validFromFormatted={formatDate(certificate.validFrom!)}
-            validToFormatted={formatDate(certificate.validTo!)}
-            isRenewable={isRenewable}
-          />
-        ) : (
-          <CertificateRequestView
-            domain={user.baseDomain}
-            isFailed={certificate?.status === 'failed'}
-          />
-        )}
-      </Flex>
-    </Center>
+    <Flex flexDirection="column" gap="5">
+      <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
+        Certificate
+      </Heading>
+      {certificate?.status === 'issued' ? (
+        <CertificateAvailable
+          publicKey={certificate.certificate!}
+          privateKey={certificate.privateKey!}
+          validFromFormatted={formatDate(certificate.validFrom!)}
+          validToFormatted={formatDate(certificate.validTo!)}
+          isRenewable={isRenewable}
+        />
+      ) : (
+        <CertificateRequestView
+          domain={user.baseDomain}
+          isFailed={certificate?.status === 'failed'}
+        />
+      )}
+    </Flex>
   );
 }

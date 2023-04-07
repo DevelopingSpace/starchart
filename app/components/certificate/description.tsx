@@ -1,6 +1,6 @@
 import { RepeatIcon } from '@chakra-ui/icons';
-import { Flex, Heading, Text, HStack, VStack, IconButton } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
+import { Flex, Text, HStack, IconButton, Stat, StatLabel, StatNumber } from '@chakra-ui/react';
 
 interface DescriptionSectionProps {
   certRequested: boolean;
@@ -18,33 +18,20 @@ export default function DescriptionSection({
   isRenewable,
 }: DescriptionSectionProps) {
   return (
-    <Flex
-      flexDirection="column"
-      gap="3"
-      marginTop="5"
-      fontSize={{ base: 'sm', md: 'md' }}
-      alignItems={{ base: 'center', md: 'flex-start' }}
-      textAlign={{ base: 'center', md: 'left' }}
-    >
-      <Flex width="100%">
-        <Heading as="h1" size={{ base: 'lg', md: 'xl' }}>
-          Certificate
-        </Heading>
-      </Flex>
-
-      <Text>{description}</Text>
+    <Flex flexDirection="column" gap="3" marginTop={{ base: 1, md: 5 }} fontSize="md">
+      <Text maxW={600}>{description}</Text>
       {certRequested && (
         <HStack gap="6" marginTop="2">
           {!!validFromFormatted && !!validToFormatted && (
             <>
-              <VStack>
-                <Text fontWeight="bold">Created On</Text>
-                <Text>{validFromFormatted}</Text>
-              </VStack>
-              <VStack>
-                <Text fontWeight="bold">Expires On</Text>
-                <Text>{validToFormatted}</Text>
-              </VStack>
+              <Stat backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>
+                <StatLabel>Created On</StatLabel>
+                <StatNumber>{validFromFormatted}</StatNumber>
+              </Stat>
+              <Stat backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>
+                <StatLabel>Expires On</StatLabel>
+                <StatNumber>{validToFormatted}</StatNumber>
+              </Stat>
 
               <Flex justifyContent="flex-end">
                 <Form method="post">

@@ -43,12 +43,12 @@ export default function CertificateAvailable({
       <Heading as="h2" size="lg" marginTop={4}>
         Using Your Certificate
       </Heading>
-      <Text>
+      <Text maxW={750}>
         Your <em>certificate</em> is made-up of a number of separate parts, and different services
         will require you to use them in various combinations. These parts include:
       </Text>
 
-      <OrderedList>
+      <OrderedList maxW={750}>
         <ListItem>
           <strong>Public Certificate</strong>: public (not secret) certificate that verifies domain
           ownership
@@ -66,12 +66,12 @@ export default function CertificateAvailable({
         </ListItem>
       </OrderedList>
 
-      <Text>
+      <Text maxW={750}>
         You can select from the list of pre-defined services below to help guide you, or see a
         General view for all of the certificate's parts.
       </Text>
 
-      <Tabs>
+      <Tabs maxW={750}>
         <TabList>
           <Tab>General</Tab>
           <Tab>Node.js</Tab>

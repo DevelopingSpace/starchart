@@ -42,7 +42,7 @@ export default function CertificateRequestView({ domain, isFailed }: Certificate
         <Heading as="h3" size={{ base: 'sm', md: 'md' }}>
           Domain Name
         </Heading>
-        <Text>All of your subdomains can be secured by your certificate</Text>
+        <Text maxW={600}>All of your subdomains can be secured by your certificate</Text>
         <Flex
           flexDirection={{ base: 'column', md: 'row' }}
           alignItems={{ base: 'center', md: 'flex-start' }}

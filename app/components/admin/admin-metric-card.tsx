@@ -16,7 +16,7 @@ export default function AdminMetricCard({
   tooltipText,
 }: AdminMetricCardProps) {
   return (
-    <Card w={{ sm: '100%', md: 300 }} mr={{ sm: '0', md: '4' }} mt="4">
+    <Card w={{ sm: '100%', md: 300 }} minW={270} maxW={400} mr={{ sm: '0', md: '4' }} mt="4">
       <CardBody flexDirection="row" display="flex" justifyContent="space-between">
         <Flex alignItems="center">
           <Flex

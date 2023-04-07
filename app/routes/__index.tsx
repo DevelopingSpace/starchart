@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Container } from '@chakra-ui/react';
 import { Outlet } from '@remix-run/react';
 import Header from '~/components/header';
 
@@ -7,7 +7,9 @@ export default function Index() {
     <Box>
       <Header />
       <main>
-        <Outlet />
+        <Container maxW="container.xl" px={{ base: 4, md: 45 }}>
+          <Outlet />
+        </Container>
       </main>
     </Box>
   );
