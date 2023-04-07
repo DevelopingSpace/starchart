@@ -4,6 +4,11 @@ import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 
 import { getExpiredDnsRecords, deleteDnsRecordById } from '~/models/dns-record.server';
+import {
+  deleteCertificateById,
+  getExpiredCertificates,
+  getCertificateByUsername,
+} from '~/models/certificate.server';
 import { addNotification } from '../notifications/notifications.server';
 
 const { EXPIRATION_REPEAT_FREQUENCY_S, JOB_REMOVAL_FREQUENCY_S } = process.env;
@@ -37,15 +42,15 @@ const expirationRequestWorker = new Worker(
       logger.info('process DNS record expiration');
       let dnsRecords = await getExpiredDnsRecords();
       await Promise.all(
-        dnsRecords.map(async ({ id, user }) =>
+        dnsRecords.map(async ({ id, subdomain, user }) =>
           Promise.all([
-            // delete records from Route53 and DB
+            // delete DNS records from DB
             deleteDnsRecordById(id),
-            // add notification jobs (assuming deletion went successfully)
+            // add notification jobs
             addNotification({
               emailAddress: user.email,
-              subject: 'DNS record expiration subject',
-              message: 'DNS record expiration message',
+              subject: 'My.Custom.Domain DNS record expired',
+              message: `${user.displayName}, your DNS record with subdomain: ${subdomain} has expired.`,
             }),
           ])
         )
@@ -53,7 +58,25 @@ const expirationRequestWorker = new Worker(
     } catch (err) {
       throw new UnrecoverableError(`Unable to process DNS record expiration: ${err}`);
     }
-    logger.info('TODO: process certificate expiration');
+    try {
+      logger.info('process certificate expiration');
+      let certificates = await getExpiredCertificates();
+      certificates.map(async ({ id, username, domain, user }) => {
+        let mostRecentCertificate = await getCertificateByUsername(username);
+        // add notification jobs
+        if (mostRecentCertificate.id === id) {
+          await addNotification({
+            emailAddress: user.email,
+            subject: 'My.Custom.Domain certificate expired',
+            message: `${user.displayName}, your certificate with domain: ${domain} has expired.`,
+          });
+          // delete certificate from DB
+          await deleteCertificateById(id);
+        }
+      });
+    } catch (err) {
+      throw new UnrecoverableError(`Unable to process certificate expiration: ${err}`);
+    }
   },
   { connection: redis }
 );
