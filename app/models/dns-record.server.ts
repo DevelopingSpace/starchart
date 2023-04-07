@@ -112,14 +112,25 @@ export async function doesDnsRecordExist(
   data: Pick<DnsRecord, 'username' | 'type' | 'subdomain' | 'value'>
 ) {
   const { username, type, subdomain, value } = data;
-  const count = await prisma.dnsRecord.count({
-    where: {
-      username,
-      type,
-      subdomain,
-      value,
-    },
-  });
+  let count = 0;
+  if (type === 'CNAME') {
+    count = await prisma.dnsRecord.count({
+      where: {
+        username,
+        type,
+        subdomain,
+      },
+    });
+  } else {
+    count = await prisma.dnsRecord.count({
+      where: {
+        username,
+        type,
+        subdomain,
+        value,
+      },
+    });
+  }
 
   return count > 0;
 }
