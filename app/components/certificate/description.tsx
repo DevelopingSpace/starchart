@@ -1,6 +1,16 @@
 import { RepeatIcon } from '@chakra-ui/icons';
-import { Form } from '@remix-run/react';
-import { Flex, Text, Button, Stat, StatLabel, StatNumber, Wrap, WrapItem } from '@chakra-ui/react';
+import { Form, Link as RemixLink } from '@remix-run/react';
+import {
+  Flex,
+  Text,
+  Button,
+  Stat,
+  StatLabel,
+  StatNumber,
+  Wrap,
+  WrapItem,
+  Link,
+} from '@chakra-ui/react';
 
 interface DescriptionSectionProps {
   certRequested: boolean;
@@ -8,6 +18,7 @@ interface DescriptionSectionProps {
   validToFormatted?: string;
   description: string;
   isRenewable?: boolean;
+  link?: string;
 }
 
 export default function DescriptionSection({
@@ -16,10 +27,21 @@ export default function DescriptionSection({
   validToFormatted,
   description,
   isRenewable,
+  link,
 }: DescriptionSectionProps) {
   return (
-    <Flex flexDirection="column" gap="3" marginTop={{ base: 1, md: 5 }} fontSize="md">
-      <Text maxW={600}>{description}</Text>
+    <Flex flexDirection="column" gap="3" fontSize="md">
+      <Text maxW={600}>
+        {description}
+        {link && (
+          <>
+            &nbsp;To learn more, refer to our&nbsp;
+            <Link as={RemixLink} to={link}>
+              information page
+            </Link>
+          </>
+        )}
+      </Text>
       {certRequested && !!validFromFormatted && !!validToFormatted && (
         <Wrap align="center">
           <Stat backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>

@@ -23,11 +23,7 @@ test.describe('Landing Page', () => {
   });
 
   test('DNS Records Instructions Link', async ({ page }) => {
-    await page
-      .getByRole('paragraph')
-      .getByRole('link', { name: 'these instructions' })
-      .first()
-      .click();
+    await page.getByRole('link', { name: 'our instruction page' }).click();
 
     await expect(page).toHaveURL('/dns-records/instructions');
   });
@@ -39,12 +35,8 @@ test.describe('Landing Page', () => {
   });
 
   test('Certificate Instructions Link', async ({ page }) => {
-    await page
-      .getByRole('paragraph')
-      .getByRole('link', { name: 'these instructions' })
-      .nth(1)
-      .click();
+    await page.getByRole('link', { name: 'our information page' }).click();
 
-    await expect(page).toHaveURL('/certificate/instructions');
+    await expect(page).toHaveURL('/certificate/information');
   });
 });

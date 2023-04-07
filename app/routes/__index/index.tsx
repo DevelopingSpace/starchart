@@ -59,7 +59,7 @@ export default function IndexRoute() {
           pathName="Manage Certificate"
           cardName="Certificate"
           cardDescription="An HTTPS Certificate allows a browser to establish a secure connection with your website. Any data between the client and your website will be encrypted and cannot be intercepted."
-          instructionsPath="/certificate/instructions"
+          instructionsPath="/certificate/information"
         />
       </Flex>
       <Flex paddingTop={{ sm: '20' }}>
