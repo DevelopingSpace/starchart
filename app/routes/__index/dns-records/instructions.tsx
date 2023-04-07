@@ -10,27 +10,14 @@ import {
   OrderedList,
   Link as ChakraLink,
   Accordion,
-  Box,
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-import type { FaqItem } from '~/components/instructions/faq-accordion';
 import FaqAccordion from '~/components/instructions/faq-accordion';
-
-const dnsRecordsFaqs: FaqItem[] = [
-  {
-    title: 'How long does it take for DNS changes to propagate and become accessible?',
-    body: 'DNS propagation time can vary depending on factors such as the specific DNS servers involved, and the geographical location of users accessing the records. Typically, DNS changes can take anywhere from a few minutes to 48 hours to propagate fully across the internet. \n To help you monitor the propagation status of your DNS records, Starchart provides an information icon (usually represented as an "i" or "?" symbol) next to each record. Clicking on this icon will take you to a DNS record propagation map, where you can track the progress of your DNS changes in real-time. This map shows you which DNS servers around the world have updated their cache with your new record information, allowing you to gauge when your changes will become accessible globally.',
-  },
-  {
-    title: 'Are there any limitations or restrictions on the number of DNS records I can create?',
-    body: 'Yes, there is a limitation on the number of DNS records you can create. Each user is allowed to create up to 20 DNS records for their projects. This limit helps manage resources efficiently and ensures fair usage of the platform for all students.',
-  },
-];
 
 export default function CertificateInstructionsRoute() {
   return (
-    <Container maxW="container.md" pb="16">
-      <Heading as="h1" size="xl" mt="20" mb="4">
+    <Container maxW="container.md" py="8">
+      <Heading as="h1" size="xl" mb="4">
         Dns Record Instructions
       </Heading>
       <Grid templateColumns="repeat(1, 1fr)" gap="4">
@@ -92,17 +79,16 @@ export default function CertificateInstructionsRoute() {
         </VStack>
         <VStack alignItems="flex-start">
           <Heading as="h3" size="md">
-            How to Create a DNS Record with Starchart?
+            How to Create the first DNS Record?
           </Heading>
           <OrderedList>
             <ListItem>
               Go to the{' '}
               <Link to={{ pathname: '/dns-records' }}>
                 <Text as="span" textDecoration="underline">
-                  DNS records page
+                  DNS records page.
                 </Text>
               </Link>
-              : After logging into Starchart, navigate to the DNS records page on the dashboard.
             </ListItem>
             <ListItem>
               Hit the "Create your first DNS Record!" button: On the DNS records page, click the
@@ -110,8 +96,8 @@ export default function CertificateInstructionsRoute() {
             </ListItem>
             <ListItem>
               Put appropriate values in fields: Fill in the required information for the selected
-              record type. (Refer to the previous sections in this conversation to learn about DNS
-              record types and their corresponding values.)
+              record type. (Refer to the previous section to learn about DNS record types and their
+              corresponding values.)
             </ListItem>
             <ListItem>
               Hit the "Create" button: After entering the required information, click the "Create"

@@ -6,11 +6,6 @@ import {
   AccordionIcon,
 } from '@chakra-ui/react';
 
-export interface FaqItem {
-  title: string;
-  body: string;
-}
-
 interface FaqAccordionProps {
   title: string;
   children: string | JSX.Element | JSX.Element[];
