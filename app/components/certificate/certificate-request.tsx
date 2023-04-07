@@ -31,6 +31,7 @@ export default function CertificateRequestView({ domain, isFailed }: Certificate
       <Description
         description="By clicking the Request a Certificate button, you will initiate a request for an HTTPS certificate that you can use with any project connected to your DNS records."
         certRequested={false}
+        link="information"
       />
       <Flex
         flexDirection="column"
