@@ -101,7 +101,13 @@ export default function DnsRecordsIndexRoute() {
           record, you will immediately see that new record in the table. However, it will take some
           time to go into effect as your new domain needs to be spread in DNS servers around the
           globe. The expiration date is initially set to 6 months after the creation date and you
-          can renew the DNS record using the renew button next to the expiry date.
+          can renew the DNS record using the renew button next to the expiry date. For more info
+          refer to our{' '}
+          <Link to={{ pathname: '/dns-records/instructions' }}>
+            <Text as="span" textDecoration="underline">
+              instructions page.
+            </Text>
+          </Link>
         </Text>
         {data.dnsRecords.length ? (
           <>
