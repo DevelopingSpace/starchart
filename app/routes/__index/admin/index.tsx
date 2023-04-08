@@ -9,7 +9,7 @@ import {
   InputLeftAddon,
 } from '@chakra-ui/react';
 import type { Certificate, User } from '@prisma/client';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import { Form, useSubmit } from '@remix-run/react';
 import { useState } from 'react';
 import { FaUsers, FaSearch, FaStickyNote } from 'react-icons/fa';
@@ -21,8 +21,10 @@ import AdminMetricCard from '~/components/admin/admin-metric-card';
 import UsersTable from '~/components/admin/users-table';
 import { getTotalCertificateCount, getCertificateByUsername } from '~/models/certificate.server';
 import { getDnsRecordCountByUsername, getTotalDnsRecordCount } from '~/models/dns-record.server';
-import { getTotalUserCount, searchUsers } from '~/models/user.server';
-import { requireUser } from '~/session.server';
+import { getTotalUserCount, isUserDeactivated, searchUsers } from '~/models/user.server';
+import { requireAdmin, setEffectiveUsername } from '~/session.server';
+
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 
 export interface UserWithMetrics extends User {
   dnsRecordCount: number;
@@ -32,15 +34,26 @@ export interface UserWithMetrics extends User {
 export const MIN_USERS_SEARCH_TEXT = 3;
 
 export const action = async ({ request }: ActionArgs) => {
-  await requireUser(request);
+  const admin = await requireAdmin(request);
+  const formData = await request.formData();
+  const newEffectiveUsername = formData.get('newEffectiveUsername');
+  if (typeof newEffectiveUsername === 'string') {
+    if (await isUserDeactivated(newEffectiveUsername)) {
+      return redirect('/');
+    }
+    return redirect('/', {
+      headers: {
+        'Set-Cookie': await setEffectiveUsername(admin.username, newEffectiveUsername),
+      },
+    });
+  }
 
   const actionParams = await parseFormSafe(
-    request,
+    formData,
     z.object({
       searchText: z.string().min(MIN_USERS_SEARCH_TEXT),
     })
   );
-
   if (actionParams.success === false) {
     return [];
   }
@@ -48,7 +61,6 @@ export const action = async ({ request }: ActionArgs) => {
   const { searchText } = actionParams.data;
 
   const users = await searchUsers(searchText);
-
   const userStats = await Promise.all(
     users.map((user) =>
       Promise.all([
@@ -68,7 +80,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  await requireUser(request);
+  await requireAdmin(request);
   return {
     userCount: await getTotalUserCount(),
     dnsRecordCount: await getTotalDnsRecordCount(),
@@ -80,7 +92,7 @@ export default function AdminRoute() {
   const submit = useSubmit();
 
   const { userCount, dnsRecordCount, certificateCount } = useTypedLoaderData<typeof loader>();
-  const users = useTypedActionData<typeof action>();
+  const users = useTypedActionData<UserWithMetrics[] | null>();
 
   const [searchText, setSearchText] = useState('');
 
