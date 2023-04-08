@@ -87,7 +87,7 @@ export default function CertificateIndexRoute() {
     certificate?.status === 'pending' ? 15_000 : null
   );
 
-  const canRenew = useMemo((): boolean => {
+  const isRenewable = useMemo((): boolean => {
     if (certificate?.validTo) {
       const validTo = dayjs(certificate.validTo!);
       const thirtyDays = dayjs().add(30, 'day');
@@ -119,7 +119,7 @@ export default function CertificateIndexRoute() {
             privateKey={certificate.privateKey!}
             validFromFormatted={formatDate(certificate.validFrom!)}
             validToFormatted={formatDate(certificate.validTo!)}
-            isRenewable={canRenew}
+            isRenewable={isRenewable}
           />
         ) : (
           <CertificateRequestView

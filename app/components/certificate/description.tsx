@@ -55,7 +55,7 @@ export default function DescriptionSection({
                     backgroundColor="transparent"
                     color="black"
                     _hover={{ backgroundColor: 'brand.500', color: 'white' }}
-                    isDisabled={isRenewable ? false : true}
+                    isDisabled={!isRenewable}
                   />
                 </Form>
               </Flex>
