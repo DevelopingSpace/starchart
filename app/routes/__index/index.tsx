@@ -3,12 +3,12 @@ import type { LoaderArgs } from '@remix-run/node';
 
 import { requireUsername } from '~/session.server';
 import LandingPageCard from '~/components/landing-page/landing-page-card';
-import { useUser } from '~/utils';
+import { useEffectiveUser } from '~/utils';
 
 export const loader = async ({ request }: LoaderArgs) => requireUsername(request);
 
 export default function IndexRoute() {
-  const user = useUser();
+  const user = useEffectiveUser();
 
   return (
     <VStack alignSelf="center">

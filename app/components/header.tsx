@@ -12,14 +12,19 @@ import {
   Show,
   Hide,
   Button,
+  Tooltip,
 } from '@chakra-ui/react';
 import { TriangleUpIcon, LockIcon, HamburgerIcon } from '@chakra-ui/icons';
-import { Link, useFetcher } from '@remix-run/react';
+import { Form, Link, useFetcher } from '@remix-run/react';
 
-import { useEffectiveUser } from '~/utils';
+import { useEffectiveUser, useUser } from '~/utils';
+import { TbMasksTheaterOff } from 'react-icons/tb';
 
 export default function Header() {
+  // Fetch both effective and original to compare and
+  // display additional conditional text in the header
   const user = useEffectiveUser();
+  const originalUser = useUser();
 
   const fetcher = useFetcher();
   return (
@@ -94,8 +99,25 @@ export default function Header() {
 
       <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5" width="100%">
         <Hide below="lg">
-          <Text id="header-user">{user?.username}</Text>
+          <Text id="header-user">
+            {user.username === originalUser.username
+              ? user?.username
+              : `Mocking: ${user?.username}`}
+          </Text>
         </Hide>
+        {user.username !== originalUser.username && (
+          <Tooltip label="Revert to original user">
+            <Form method="post">
+              <input type="hidden" name="originalName" value={originalUser.username} />
+              <IconButton
+                type="submit"
+                aria-label="Revert to original user"
+                icon={<TbMasksTheaterOff color="white" size={24} />}
+                variant="ghost"
+              />
+            </Form>
+          </Tooltip>
+        )}
 
         <Menu>
           <MenuButton
