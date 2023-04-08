@@ -25,9 +25,9 @@ test('Login with User 1 dev redirect', async ({ page }) => {
 
   const locator1 = page.locator('#header-user');
   const userInNav = page.getByRole('heading', { name: 'My.Custom.Domain' });
-  const dnsRecordsHeading = page.getByRole('heading', { name: 'DNS Records' });
+  const dnsRecordsHeading = page.getByRole('heading', { name: 'DNS Record' });
 
   await expect(locator1).toContainText('user1');
   await expect(userInNav).toContainText('My.Custom.Domain');
-  await expect(dnsRecordsHeading).toContainText('DNS Records');
+  await expect(dnsRecordsHeading).toContainText('DNS Record');
 });

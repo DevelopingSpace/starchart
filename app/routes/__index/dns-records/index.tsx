@@ -1,15 +1,5 @@
 import { AddIcon } from '@chakra-ui/icons';
-import {
-  Button,
-  Center,
-  Container,
-  Flex,
-  Heading,
-  Stat,
-  StatLabel,
-  StatNumber,
-  Text,
-} from '@chakra-ui/react';
+import { Button, Center, Flex, Heading, Stat, StatLabel, StatNumber, Text } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { json } from '@remix-run/node';
@@ -91,47 +81,45 @@ export default function DnsRecordsIndexRoute() {
   const data = useTypedLoaderData<typeof loader>();
 
   return (
-    <Container maxW="container.xl">
-      <Flex flexDirection="column">
-        <Heading as="h1" size="xl" mt="20">
-          DNS Records
-        </Heading>
-        <Text mb="4" mt="2">
-          This table shows all of the DNS records that you have created. Once you create a new
-          record, you will immediately see that new record in the table. However, it will take some
-          time to go into effect as your new domain needs to be spread in DNS servers around the
-          globe. The expiration date is initially set to 6 months after the creation date and you
-          can renew the DNS record using the renew button next to the expiry date.
-        </Text>
-        {data.dnsRecords.length ? (
-          <>
-            <Flex
-              justifyContent="space-between"
-              maxW="container.xl"
-              alignItems="center"
-              px={4}
-              py={2}
-            >
-              <Stat>
-                <StatLabel>Total User DNS Records</StatLabel>
-                <StatNumber>
-                  {data.userDnsRecordCount} / {data.userDnsRecordLimit}
-                </StatNumber>
-              </Stat>
-              <Link to="/dns-records/new">
-                <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
-              </Link>
-            </Flex>
-            <DnsRecordsTable dnsRecords={data.dnsRecords} />
-          </>
-        ) : (
-          <Center mt="16">
+    <Flex flexDirection="column">
+      <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
+        DNS Record
+      </Heading>
+      <Text mb="4" mt="2" maxW={600}>
+        This table shows all of the DNS records that you have created. Once you create a new record,
+        you will immediately see that new record in the table. However, it will take some time to go
+        into effect as your new domain needs to be spread in DNS servers around the globe. The
+        expiration date is initially set to 6 months after the creation date and you can renew the
+        DNS record using the renew button next to the expiry date.
+      </Text>
+      {data.dnsRecords.length ? (
+        <>
+          <Flex
+            justifyContent="space-between"
+            maxW="container.xl"
+            alignItems="center"
+            px={4}
+            py={2}
+          >
+            <Stat>
+              <StatLabel>Total User DNS Records</StatLabel>
+              <StatNumber>
+                {data.userDnsRecordCount} / {data.userDnsRecordLimit}
+              </StatNumber>
+            </Stat>
             <Link to="/dns-records/new">
-              <Button rightIcon={<AddIcon boxSize={3} />}>Create your first DNS Record!</Button>
+              <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
             </Link>
-          </Center>
-        )}
-      </Flex>
-    </Container>
+          </Flex>
+          <DnsRecordsTable dnsRecords={data.dnsRecords} />
+        </>
+      ) : (
+        <Center mt="16">
+          <Link to="/dns-records/new">
+            <Button rightIcon={<AddIcon boxSize={3} />}>Create your first DNS Record!</Button>
+          </Link>
+        </Center>
+      )}
+    </Flex>
   );
 }

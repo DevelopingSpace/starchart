@@ -1,5 +1,4 @@
 import {
-  Container,
   Flex,
   FormControl,
   FormHelperText,
@@ -103,8 +102,8 @@ export default function AdminRoute() {
   }
 
   return (
-    <Container maxW="container.xl">
-      <Heading as="h1" size="xl" mt="8">
+    <>
+      <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
         Admin Dashboard
       </Heading>
       <Flex flexWrap="wrap">
@@ -127,7 +126,7 @@ export default function AdminRoute() {
           IconComponent={FaStickyNote}
         />
       </Flex>
-      <Heading as="h2" size="xl" mt="8" mb="4">
+      <Heading as="h2" size={{ base: 'lg', md: 'xl' }} mt="8" mb="4">
         Users
       </Heading>
       <Form method="post" onChange={onFormChange}>
@@ -145,6 +144,6 @@ export default function AdminRoute() {
         </FormControl>
       </Form>
       <UsersTable users={users ?? []} searchText={searchText} />
-    </Container>
+    </>
   );
 }
