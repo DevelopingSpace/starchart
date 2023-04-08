@@ -48,3 +48,16 @@ export function deleteCertificateById(id: Certificate['id']) {
 export function getTotalCertificateCount() {
   return prisma.certificate.count();
 }
+
+export function getExpiredCertificates() {
+  return prisma.certificate.findMany({
+    where: {
+      validTo: {
+        lt: new Date(),
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+}
