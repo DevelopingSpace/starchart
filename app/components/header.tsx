@@ -17,6 +17,7 @@ import { TriangleUpIcon, LockIcon, HamburgerIcon } from '@chakra-ui/icons';
 import { Form, Link, useFetcher } from '@remix-run/react';
 
 import { useEffectiveUser, useUser } from '~/utils';
+import { FaTheaterMasks } from 'react-icons/fa';
 
 export default function Header() {
   // Fetch both effective and original to compare and
@@ -107,7 +108,13 @@ export default function Header() {
         <Menu>
           <MenuButton
             as={IconButton}
-            icon={<Avatar bg="brand.500" showBorder={true} borderColor="white" size="sm" />}
+            icon={
+              user.username !== originalUser.username ? (
+                <FaTheaterMasks size="35" />
+              ) : (
+                <Avatar bg="brand.500" showBorder={true} borderColor="white" size="sm" />
+              )
+            }
             style={{ backgroundColor: 'transparent' }}
           />
           <MenuList color="black">
