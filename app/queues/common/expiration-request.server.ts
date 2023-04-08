@@ -62,16 +62,18 @@ const expirationRequestWorker = new Worker(
       logger.info('process certificate expiration');
       let certificates = await getExpiredCertificates();
       certificates.map(async ({ id, username, domain, user }) => {
+        // get the most recent and successfully issued certificate from the DB
         let mostRecentCertificate = await getCertificateByUsername(username);
-        // add notification jobs
+        // check if the most recent certificate matches the id of expired certificate
         if (mostRecentCertificate.id === id) {
+          // add notification jobs
           await addNotification({
             emailAddress: user.email,
             subject: 'My.Custom.Domain certificate expired',
             message: `${user.displayName}, your certificate with domain: ${domain} has expired.`,
           });
         }
-        // delete certificate from DB
+        // delete all expired certificates from DB
         await deleteCertificateById(id);
       });
     } catch (err) {
