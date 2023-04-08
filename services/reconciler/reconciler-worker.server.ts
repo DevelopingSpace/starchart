@@ -1,6 +1,7 @@
 import { Worker, Queue } from 'bullmq';
+
 import { redis } from '~/lib/redis.server';
-import { executeChangeSet } from '~/lib/dns.server';
+import { executeChangeSet } from './route53-client.server';
 import logger from '~/lib/logger.server';
 import DnsDbCompareStructureGenerator from './DnsDbCompareStructureGenerator.server';
 import Route53CompareStructureGenerator from './Route53CompareStructureGenerator.server';
@@ -9,6 +10,7 @@ import {
   createUpsertedChangeSetFromCompareStructures,
 } from './createChangeSetFromCompareStructures.server';
 import { getIsReconciliationNeeded, setIsReconciliationNeeded } from '~/models/system-state.server';
+
 import type { Change } from '@aws-sdk/client-route-53';
 
 // S3 limit for a ChangeSet
