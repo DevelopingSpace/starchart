@@ -12,13 +12,11 @@ import {
   Show,
   Hide,
   Button,
-  Tooltip,
 } from '@chakra-ui/react';
 import { TriangleUpIcon, LockIcon, HamburgerIcon } from '@chakra-ui/icons';
 import { Form, Link, useFetcher } from '@remix-run/react';
 
 import { useEffectiveUser, useUser } from '~/utils';
-import { TbMasksTheaterOff } from 'react-icons/tb';
 
 export default function Header() {
   // Fetch both effective and original to compare and
@@ -102,22 +100,9 @@ export default function Header() {
           <Text id="header-user">
             {user.username === originalUser.username
               ? user?.username
-              : `Mocking: ${user?.username}`}
+              : `Impersonating: ${user?.username}`}
           </Text>
         </Hide>
-        {user.username !== originalUser.username && (
-          <Tooltip label="Revert to original user">
-            <Form method="post">
-              <input type="hidden" name="originalName" value={originalUser.username} />
-              <IconButton
-                type="submit"
-                aria-label="Revert to original user"
-                icon={<TbMasksTheaterOff color="white" size={24} />}
-                variant="ghost"
-              />
-            </Form>
-          </Tooltip>
-        )}
 
         <Menu>
           <MenuButton
@@ -126,6 +111,16 @@ export default function Header() {
             style={{ backgroundColor: 'transparent' }}
           />
           <MenuList color="black">
+            {user.username !== originalUser.username && (
+              <Form method="post">
+                <input type="hidden" name="originalName" value={originalUser.username} />
+                <MenuItem type="submit" aria-label="Revert to original user">
+                  <Text fontSize="sm" color="brand.500">
+                    Stop Impersonating
+                  </Text>
+                </MenuItem>
+              </Form>
+            )}
             <MenuItem onClick={() => fetcher.submit({}, { method: 'post', action: '/logout' })}>
               <Text fontSize="sm" color="brand.500">
                 Sign Out
