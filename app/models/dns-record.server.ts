@@ -117,6 +117,9 @@ export async function doesDnsRecordExist(
       username,
       type,
       subdomain,
+      /* For CNAME records, we would consider it a duplicate if username and subdomain are the same. 
+      Value doesn't matter, so "undefine" lets Prisma knows we are not looking for it in WHERE clause.
+      */
       value: type === 'CNAME' ? undefined : value,
     },
   });
