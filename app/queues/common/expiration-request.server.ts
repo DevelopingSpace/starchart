@@ -70,9 +70,9 @@ const expirationRequestWorker = new Worker(
             subject: 'My.Custom.Domain certificate expired',
             message: `${user.displayName}, your certificate with domain: ${domain} has expired.`,
           });
-          // delete certificate from DB
-          await deleteCertificateById(id);
         }
+        // delete certificate from DB
+        await deleteCertificateById(id);
       });
     } catch (err) {
       throw new UnrecoverableError(`Unable to process certificate expiration: ${err}`);
