@@ -5,11 +5,15 @@ import {
   Container,
   Grid,
   VStack,
-  UnorderedList,
   ListItem,
   OrderedList,
   Link as ChakraLink,
   Accordion,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import FaqAccordion from '~/components/instructions/faq-accordion';
@@ -18,7 +22,7 @@ export default function CertificateInstructionsRoute() {
   return (
     <Container maxW="container.md" py="8">
       <Heading as="h1" size="xl" mb="4">
-        Dns Record Instructions
+        DNS Record Instructions
       </Heading>
       <Grid templateColumns="repeat(1, 1fr)" gap="4">
         <VStack alignItems="flex-start">
@@ -27,55 +31,107 @@ export default function CertificateInstructionsRoute() {
           </Heading>
           <Text>
             A DNS record is a type of data stored in a domain name system (DNS) server that maps a
-            domain name to an IP address or other information about the domain. DNS records enable
-            users to access websites using domain names instead of IP addresses, making it easier to
-            remember and navigate the internet.
+            domain name to an IP address or other information about the domain. DNS records can
+            store a variety of data beyond just IP addresses, including information about mail
+            servers, subdomains, and more. In th next section, we'll explore some of the most common
+            types of DNS records and how they're used.
           </Text>
         </VStack>
         <VStack alignItems="flex-start">
           <Heading as="h3" size="md">
-            Dns Record Types
+            DNS Record Types
           </Heading>
-          <UnorderedList listStylePosition="inside" listStyleType="none">
-            <ListItem mb="3">
-              <Text fontWeight="medium">A Record</Text>
-              <Text>Purpose: Maps a domain name to an IPv4 address.</Text>
-              <Text>
-                Example: Your project's domain name is "my-project.user.mystudentproject.ca" and its
-                IPv4 address is "192.168.0.1". Create an A record to associate these two.
-              </Text>
-            </ListItem>
-            <ListItem mb="3">
-              <Text fontWeight="medium">AAAA Record</Text>
-              <Text>Purpose: Maps a domain name to an IPv6 address.</Text>
-              <Text>
-                Example: Your project's domain name is "my-ipv6-project.user.mystudentproject.ca"
-                and its IPv6 address is "2001:0db8:85a3:0000:0000:8a2e:0370:7334". Create an AAAA
-                record to associate these two.
-              </Text>
-            </ListItem>
-            <ListItem mb="3">
-              <Text fontWeight="medium">CNAME Record</Text>
-              <Text>Purpose: Maps a domain name to another domain name.</Text>
-              <Text>
-                Example: Your project's domain name is "my-project.user.mystudentproject.ca", and
-                you also have a custom domain called "my-custom-domain.com". Create a CNAME record
-                to map "my-custom-domain.com" to "my-project.user.mystudentproject.ca".
-              </Text>
-            </ListItem>
-            <ListItem mb="3">
-              <Text fontWeight="medium">TXT Record</Text>
-              <Text>
-                Purpose: Allows the domain owner to add arbitrary text to the DNS record, often used
-                for verification purposes.
-              </Text>
-              <Text>
-                Example: You need to verify your domain ownership for a third-party service. They
-                provide a unique code "12345abcde". Create a TXT record with the value "12345abcde"
-                for your domain.
-              </Text>
-            </ListItem>
-          </UnorderedList>
+          <Tabs>
+            <TabList>
+              <Tab>
+                <Text fontWeight="medium">A Record</Text>
+              </Tab>
+              <Tab>
+                <Text fontWeight="medium">AAAA Record</Text>
+              </Tab>
+              <Tab>
+                <Text fontWeight="medium">CNAME Record</Text>
+              </Tab>
+              <Tab>
+                <Text fontWeight="medium">TXT Record</Text>
+              </Tab>
+            </TabList>
+
+            <TabPanels>
+              <TabPanel>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Purpose:{' '}
+                  </Text>
+                  Maps a domain name to an IPv4 address.
+                </Text>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Example:{' '}
+                  </Text>
+                  Your project's domain name is "my-project.user.mystudentproject.ca" and its IPv4
+                  address is "192.168.0.1". Create an A record to associate these two.
+                </Text>
+              </TabPanel>
+              <TabPanel>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Purpose:{' '}
+                  </Text>
+                  Maps a domain name to an IPv6 address.
+                </Text>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Example:{' '}
+                  </Text>
+                  Your project's domain name is "my-ipv6-project.user.mystudentproject.ca" and its
+                  IPv6 address is "2001:0db8:85a3:0000:0000:8a2e:0370:7334". Create an AAAA record
+                  to associate these two.
+                </Text>
+              </TabPanel>
+              <TabPanel>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Purpose:{' '}
+                  </Text>
+                  Maps a domain name to another domain name.
+                </Text>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Example:{' '}
+                  </Text>
+                  Your project's domain name is "my-project.user.mystudentproject.ca", and you also
+                  have a custom domain called "my-custom-domain.com". Create a CNAME record to map
+                  "my-custom-domain.com" to "my-project.user.mystudentproject.ca".
+                </Text>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Note:{' '}
+                  </Text>
+                  When creating a CNAME record, remember to only include the domain name in the
+                  alias field. Including other parts of a URL, such as "https://" or a trailing "/",
+                  can cause the CNAME record to fail to resolve correctly.
+                </Text>
+              </TabPanel>
+              <TabPanel>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Purpose:{' '}
+                  </Text>
+                  Allows the domain owner to add arbitrary text to the DNS record, often used for
+                  verification purposes.
+                </Text>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Example:{' '}
+                  </Text>
+                  You need to verify your domain ownership for a third-party service. They provide a
+                  unique code "12345abcde". Create a TXT record with the value "12345abcde" for your
+                  domain.
+                </Text>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </VStack>
         <VStack alignItems="flex-start">
           <Heading as="h3" size="md">
@@ -97,7 +153,8 @@ export default function CertificateInstructionsRoute() {
             <ListItem>
               Put appropriate values in fields: Fill in the required information for the selected
               record type. (Refer to the previous section to learn about DNS record types and their
-              corresponding values.)
+              corresponding values.) Some fields are optional and they are used mainly for the data
+              collection purposes, feel free to leave them blank.
             </ListItem>
             <ListItem>
               Hit the "Create" button: After entering the required information, click the "Create"
@@ -141,9 +198,18 @@ export default function CertificateInstructionsRoute() {
               </Text>
             </FaqAccordion>
             <FaqAccordion title="Are there any limitations or restrictions on the number of DNS records I can create?">
-              Yes, there is a limitation on the number of DNS records you can create. Each user is
-              allowed to create up to 20 DNS records for their projects. This limit helps manage
-              resources efficiently and ensures fair usage of the platform for all students
+              <Text>
+                Yes, there is a limitation on the number of DNS records you can create. Each user is
+                allowed to create up to certain number DNS records for their projects. You could see
+                your current limit at{' '}
+                <Link to={{ pathname: '/dns-records' }}>
+                  <Text as="span" textDecoration="underline">
+                    DNS records page.
+                  </Text>
+                </Link>
+                This limit helps manage resources efficiently and ensures fair usage of the platform
+                for all students
+              </Text>
             </FaqAccordion>
           </Accordion>
         </VStack>
