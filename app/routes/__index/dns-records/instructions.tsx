@@ -109,7 +109,7 @@ export default function CertificateInstructionsRoute() {
                     Note:{' '}
                   </Text>
                   When creating a CNAME record, remember to only include the domain name in the
-                  alias field. Including other parts of a URL, such as "https://" or a trailing "/",
+                  value field. Including other parts of a URL, such as "https://" or a trailing "/",
                   can cause the CNAME record to fail to resolve correctly.
                 </Text>
               </TabPanel>
@@ -153,7 +153,7 @@ export default function CertificateInstructionsRoute() {
             <ListItem>
               Put appropriate values in fields: Fill in the required information for the selected
               record type. (Refer to the previous section to learn about DNS record types and their
-              corresponding values.) Some fields are optional and they are used mainly for the data
+              corresponding values.) Some fields are optional and they are used mainly for data
               collection purposes, feel free to leave them blank.
             </ListItem>
             <ListItem>
