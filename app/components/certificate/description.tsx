@@ -1,6 +1,6 @@
 import { RepeatIcon } from '@chakra-ui/icons';
 import { Form } from '@remix-run/react';
-import { Flex, Text, HStack, IconButton, Stat, StatLabel, StatNumber } from '@chakra-ui/react';
+import { Flex, Text, HStack, Button, Stat, StatLabel, StatNumber } from '@chakra-ui/react';
 
 interface DescriptionSectionProps {
   certRequested: boolean;
@@ -35,15 +35,9 @@ export default function DescriptionSection({
 
               <Flex justifyContent="flex-end">
                 <Form method="post">
-                  <IconButton
-                    type="submit"
-                    aria-label="renew-certificate"
-                    icon={<RepeatIcon />}
-                    backgroundColor="transparent"
-                    color="black"
-                    _hover={{ backgroundColor: 'brand.500', color: 'white' }}
-                    isDisabled={!isRenewable}
-                  />
+                  <Button type="submit" rightIcon={<RepeatIcon />} isDisabled={!isRenewable}>
+                    Renew Certificate
+                  </Button>
                 </Form>
               </Flex>
             </>
