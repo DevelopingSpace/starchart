@@ -2,7 +2,7 @@
 services:
   # Redis is used to back our worker queues. It is not exposed.
   redis:
-    image: redis:7.0.10-alpine3.17@sha256:221f7fa5b4c563971358755893263d64b0b52e9798f6320f2898be499fb3b6b6
+    image: redis:7.0.10-alpine3.17@sha256:0859ed47321d2d26a3f53bca47b76fb7970ea2512ca3a379926dc965880e442e
     volumes:
       - redis-data:/data
     deploy:
