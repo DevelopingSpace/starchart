@@ -1,7 +1,7 @@
 import {
   toRoute53RecordValue,
   fromRoute53RecordValue,
-} from '~/queues/reconciler/route53Utils.server';
+} from 'services/reconciler/route53Utils.server';
 import { DnsRecordType } from '@prisma/client';
 
 describe('Route53 functionality test raw => Route53 format', () => {

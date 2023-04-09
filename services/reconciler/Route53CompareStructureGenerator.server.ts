@@ -1,5 +1,6 @@
 import { set } from 'lodash';
-import { getDnsRecordSetPage } from '~/lib/dns.server';
+
+import { getDnsRecordSetPage } from './route53-client.server';
 import { fromRoute53RecordValue } from './route53Utils.server';
 
 // Using this in JS code later, cannot `import type`

@@ -12,7 +12,7 @@ export async function getCertificateByUsername(username: Certificate['username']
   return prisma.certificate
     .findMany({
       where: { username },
-      orderBy: { validFrom: 'desc' },
+      orderBy: { id: 'desc' },
       take: 1,
     })
     .then(([certificate]) => certificate);
@@ -47,4 +47,17 @@ export function deleteCertificateById(id: Certificate['id']) {
 
 export function getTotalCertificateCount() {
   return prisma.certificate.count();
+}
+
+export function getExpiredCertificates() {
+  return prisma.certificate.findMany({
+    where: {
+      validTo: {
+        lt: new Date(),
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
 }

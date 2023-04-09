@@ -1,9 +1,11 @@
-import { Flex, Center } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { useRevalidator } from '@remix-run/react';
 import { useInterval } from 'react-use';
+import { useMemo } from 'react';
+import dayjs from 'dayjs';
 
 import { requireUser, requireUsername } from '~/session.server';
 import pendingSvg from '~/assets/undraw_processing_re_tbdu.svg';
@@ -85,6 +87,15 @@ export default function CertificateIndexRoute() {
     certificate?.status === 'pending' ? 15_000 : null
   );
 
+  const isRenewable = useMemo((): boolean => {
+    if (certificate?.validTo) {
+      const validTo = dayjs(certificate.validTo!);
+      const thirtyDays = dayjs().add(30, 'day');
+      return validTo.isBefore(thirtyDays);
+    }
+    return false;
+  }, [certificate]);
+
   if (certificate?.status === 'pending') {
     return (
       <Loading
@@ -95,27 +106,24 @@ export default function CertificateIndexRoute() {
   }
 
   return (
-    <Center>
-      <Flex
-        flexDirection="column"
-        gap="5"
-        width={{ base: 'md', sm: 'lg', md: '2xl', lg: '4xl' }}
-        marginTop={{ base: '16', md: '5' }}
-      >
-        {certificate?.status === 'issued' ? (
-          <CertificateAvailable
-            publicKey={certificate.certificate!}
-            privateKey={certificate.privateKey!}
-            validFromFormatted={formatDate(certificate.validFrom!)}
-            validToFormatted={formatDate(certificate.validTo!)}
-          />
-        ) : (
-          <CertificateRequestView
-            domain={user.baseDomain}
-            isFailed={certificate?.status === 'failed'}
-          />
-        )}
-      </Flex>
-    </Center>
+    <Flex flexDirection="column" gap="5">
+      <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
+        Certificate
+      </Heading>
+      {certificate?.status === 'issued' ? (
+        <CertificateAvailable
+          publicKey={certificate.certificate!}
+          privateKey={certificate.privateKey!}
+          validFromFormatted={formatDate(certificate.validFrom!)}
+          validToFormatted={formatDate(certificate.validTo!)}
+          isRenewable={isRenewable}
+        />
+      ) : (
+        <CertificateRequestView
+          domain={user.baseDomain}
+          isFailed={certificate?.status === 'failed'}
+        />
+      )}
+    </Flex>
   );
 }

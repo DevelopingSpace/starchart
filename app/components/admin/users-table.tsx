@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { CopyIcon, DeleteIcon } from '@chakra-ui/icons';
 import { FaTheaterMasks } from 'react-icons/fa';
-import { useNavigation } from '@remix-run/react';
+import { Form, useNavigation } from '@remix-run/react';
 
 import type { UserWithMetrics } from '~/routes/__index/admin';
 import { MIN_USERS_SEARCH_TEXT } from '~/routes/__index/admin';
@@ -103,11 +103,19 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                     <Td>
                       <HStack>
                         <Tooltip label="Impersonate user">
-                          <IconButton
-                            aria-label="Impersonate user"
-                            icon={<FaTheaterMasks color="black" size={24} />}
-                            variant="ghost"
-                          />
+                          <Form method="post">
+                            <input
+                              type="hidden"
+                              name="newEffectiveUsername"
+                              value={user.username}
+                            />
+                            <IconButton
+                              type="submit"
+                              aria-label="Impersonate user"
+                              icon={<FaTheaterMasks color="black" size={24} />}
+                              variant="ghost"
+                            />
+                          </Form>
                         </Tooltip>
                         <Tooltip label="Deactivate user">
                           <IconButton

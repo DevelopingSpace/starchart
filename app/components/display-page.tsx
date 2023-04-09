@@ -18,15 +18,18 @@ export default function DisplayPage({ img, desc }: DisplayPageProps) {
           <Image src={img} />
         </Flex>
 
-        <Heading
-          as="h2"
-          size={{ base: 'md', sm: 'lg', md: 'xl' }}
-          fontFamily="heading"
-          fontWeight="light"
-          color="brand.500"
-        >
-          {desc}
-        </Heading>
+        <Center>
+          <Heading
+            as="h2"
+            size={{ base: 'md', sm: 'lg', md: 'xl' }}
+            fontFamily="heading"
+            fontWeight="light"
+            color="brand.500"
+            maxWidth="30ch"
+          >
+            {desc}
+          </Heading>
+        </Center>
       </Flex>
     </Center>
   );

@@ -14,12 +14,16 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { TriangleUpIcon, LockIcon, HamburgerIcon } from '@chakra-ui/icons';
-import { Link, useFetcher } from '@remix-run/react';
+import { Form, Link, useFetcher } from '@remix-run/react';
 
-import { useEffectiveUser } from '~/utils';
+import { useEffectiveUser, useUser } from '~/utils';
+import { FaTheaterMasks } from 'react-icons/fa';
 
 export default function Header() {
+  // Fetch both effective and original to compare and
+  // display additional conditional text in the header
   const user = useEffectiveUser();
+  const originalUser = useUser();
 
   const fetcher = useFetcher();
   return (
@@ -94,16 +98,36 @@ export default function Header() {
 
       <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5" width="100%">
         <Hide below="lg">
-          <Text id="header-user">{user?.username}</Text>
+          <Text id="header-user">
+            {user.username === originalUser.username
+              ? user?.username
+              : `Impersonating: ${user?.username}`}
+          </Text>
         </Hide>
 
         <Menu>
           <MenuButton
             as={IconButton}
-            icon={<Avatar bg="brand.500" showBorder={true} borderColor="white" size="sm" />}
+            icon={
+              user.username !== originalUser.username ? (
+                <FaTheaterMasks size="35" />
+              ) : (
+                <Avatar bg="brand.500" showBorder={true} borderColor="white" size="sm" />
+              )
+            }
             style={{ backgroundColor: 'transparent' }}
           />
           <MenuList color="black">
+            {user.username !== originalUser.username && (
+              <Form method="post">
+                <input type="hidden" name="originalName" value={originalUser.username} />
+                <MenuItem type="submit" aria-label="Revert to original user">
+                  <Text fontSize="sm" color="brand.500">
+                    Stop Impersonating
+                  </Text>
+                </MenuItem>
+              </Form>
+            )}
             <MenuItem onClick={() => fetcher.submit({}, { method: 'post', action: '/logout' })}>
               <Text fontSize="sm" color="brand.500">
                 Sign Out

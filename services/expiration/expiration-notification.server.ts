@@ -5,11 +5,11 @@ import dayjs from 'dayjs';
 // Internal modules
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
-import { addNotification } from './notifications.server';
+import { addNotification } from '~/queues/notifications/notifications.server';
 import { prisma } from '~/db.server';
 
 // Types
-import type { NotificationData } from './notifications.server';
+import type { NotificationData } from '~/queues/notifications/notifications.server';
 
 declare global {
   var __expiration_init__: boolean;
@@ -23,18 +23,83 @@ export interface ExpirationStatusPayload {
 }
 // constant for notification frequency in days
 const NOTIFICATION_FREQUENCY = 7;
+
 // name for the queue
 const expirationNotificationQueueName = 'expiration-notification';
 
-function init() {
+// Queue initialization
+let expirationNotificationQueue: Queue<ExpirationStatusPayload>;
+
+// Worker
+let expirationNotificationWorker: Worker<ExpirationStatusPayload>;
+
+export function init() {
   logger.debug(
     'Expiration Notifications init: adding jobs for certificate/DNS record expiration notices'
   );
-  Promise.all([
+
+  // Queue initialization
+  expirationNotificationQueue = new Queue<ExpirationStatusPayload>(
+    expirationNotificationQueueName,
+    {
+      connection: redis,
+    }
+  );
+
+  expirationNotificationQueue.on('error', (err) => {
+    logger.warn(
+      'Notifications: Error running check for DNS Records/Certificates about to expire',
+      err
+    );
+  });
+
+  // worker instance to process DNS Record/Certificates expiration notification jobs
+  expirationNotificationWorker = new Worker<ExpirationStatusPayload>(
+    expirationNotificationQueueName,
+    async (job) => {
+      const { type } = job.data;
+      try {
+        logger.debug(`Notifications: processing job ${job.name}`);
+        let records = await getRecordsByExpiration(RecordType.DnsRecord);
+        await Promise.all(
+          records.map(async (record) => {
+            if (!record.lastNotified || record.lastNotified < dayjs().subtract(30, 'd').toDate()) {
+              await updateStatusAndNotify(type, record.id, {
+                emailAddress: record.user.email,
+                subject: `Sample ${type} expiration notice`,
+                message: `Sample ${type} expiration notice message`,
+              });
+            }
+          })
+        );
+        logger.debug(`Notifications: job ${job.name} completed`);
+      } catch (err) {
+        // fail job from repeating  - encountered error:
+        logger.error(
+          `Notifications: job ${job.name} failed, rethrowing error as Unrecoverable`,
+          err
+        );
+
+        const newError = new UnrecoverableError((err as Error).message);
+        newError.stack = (err as Error).stack;
+        throw newError;
+      }
+    },
+    { connection: redis }
+  );
+
+  //logic to execute if worker failed to process job
+  expirationNotificationWorker.on('failed', (job, err) => {
+    logger.warn(`Notifications: job ${job?.name} failed with error: `, err);
+  });
+
+  process.on('SIGINT', () => expirationNotificationWorker.close());
+
+  return Promise.all([
     addExpirationNotifications(RecordType.Certificate),
     addExpirationNotifications(RecordType.DnsRecord),
   ]).catch((err) =>
-    logger.error(`Unable to start expiration notification workers: ${err.message}`)
+    logger.error(`Unable to start expiration notification workers: ${err.message}`, err)
   );
 }
 
@@ -47,9 +112,6 @@ if (process.env.NODE_ENV === 'production') {
     global.__expiration_init__ = true;
   }
 }
-
-/**
- */
 
 const updateNotificationStatus = (type: RecordType, id: number) => {
   switch (type) {
@@ -125,20 +187,6 @@ const getRecordsByExpiration = (type: RecordType) => {
       });
   }
 };
-// Queue initialization
-const expirationNotificationQueue = new Queue<ExpirationStatusPayload>(
-  expirationNotificationQueueName,
-  {
-    connection: redis,
-  }
-);
-
-expirationNotificationQueue.on('error', (err) => {
-  logger.warn(
-    'Notifications: Error running check for DNS Records/Certificates about to expire',
-    err
-  );
-});
 
 // function to add jobs
 async function addExpirationNotifications(type: RecordType) {
@@ -162,41 +210,3 @@ const updateStatusAndNotify = async (type: RecordType, id: number, data: Notific
     message,
   });
 };
-// worker instance to process DNS Record/Certificates expiration notification jobs
-const expirationNotificationWorker = new Worker<ExpirationStatusPayload>(
-  expirationNotificationQueueName,
-  async (job) => {
-    const { type } = job.data;
-    try {
-      logger.debug(`Notifications: processing job ${job.name}`);
-      let records = await getRecordsByExpiration(RecordType.DnsRecord);
-      await Promise.all(
-        records.map(async (record) => {
-          if (!record.lastNotified || record.lastNotified < dayjs().subtract(30, 'd').toDate()) {
-            await updateStatusAndNotify(type, record.id, {
-              emailAddress: record.user.email,
-              subject: `Sample ${type} expiration notice`,
-              message: `Sample ${type} expiration notice message`,
-            });
-          }
-        })
-      );
-      logger.debug(`Notifications: job ${job.name} completed`);
-    } catch (err) {
-      // fail job from repeating  - encountered error:
-      logger.error(`Notifications: job ${job.name} failed, rethrowing error as Unrecoverable`, err);
-
-      const newError = new UnrecoverableError((err as Error).message);
-      newError.stack = (err as Error).stack;
-      throw newError;
-    }
-  },
-  { connection: redis }
-);
-
-//logic to execute if worker failed to process job
-expirationNotificationWorker.on('failed', (job, err) => {
-  logger.warn(`Notifications: job ${job?.name} failed with error: `, err);
-});
-
-process.on('SIGINT', () => expirationNotificationWorker.close());

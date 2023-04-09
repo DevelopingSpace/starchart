@@ -3,12 +3,12 @@ import type { LoaderArgs } from '@remix-run/node';
 
 import { requireUsername } from '~/session.server';
 import LandingPageCard from '~/components/landing-page/landing-page-card';
-import { useUser } from '~/utils';
+import { useEffectiveUser } from '~/utils';
 
 export const loader = async ({ request }: LoaderArgs) => requireUsername(request);
 
 export default function IndexRoute() {
-  const user = useUser();
+  const user = useEffectiveUser();
 
   return (
     <VStack alignSelf="center">
@@ -63,10 +63,11 @@ export default function IndexRoute() {
         />
       </Flex>
       <Flex paddingTop={{ sm: '20' }}>
-        <Link href="https://www.senecacollege.ca/about/policies/information-technology-acceptable-use-policy.html">
-          <Text fontSize={{ base: 'xs', sm: 'sm', md: 'md' }} color="brand.500">
-            Seneca's IT Acceptable Use Policy
-          </Text>
+        <Link
+          href="https://www.senecacollege.ca/about/policies/information-technology-acceptable-use-policy.html"
+          fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
+        >
+          Seneca's IT Acceptable Use Policy
         </Link>
       </Flex>
     </VStack>
