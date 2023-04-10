@@ -8,6 +8,8 @@ import {
   OrderedList,
   ListItem,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import dayjs from 'dayjs';
 
 import Description from './description';
 import GeneralPanel from './panels/general';
@@ -15,21 +17,28 @@ import NodePanel from './panels/node';
 import AwsPanel from './panels/aws';
 import NginxPanel from './panels/nginx';
 
+import type { CertificateWithFullChain } from '~/models/certificate.server';
+
 interface CertificateAvailableProps {
+  certificate: CertificateWithFullChain;
   validFromFormatted: string;
   validToFormatted: string;
-  publicKey: string;
-  privateKey: string;
-  isRenewable: boolean;
 }
 
 export default function CertificateAvailable({
+  certificate,
   validFromFormatted,
   validToFormatted,
-  publicKey,
-  privateKey,
-  isRenewable,
 }: CertificateAvailableProps) {
+  const isRenewable = useMemo((): boolean => {
+    if (certificate.validTo) {
+      const validTo = dayjs(certificate.validTo!);
+      const thirtyDays = dayjs().add(30, 'day');
+      return validTo.isBefore(thirtyDays);
+    }
+    return false;
+  }, [certificate]);
+
   return (
     <>
       <Description
@@ -80,11 +89,23 @@ export default function CertificateAvailable({
         </TabList>
 
         <TabPanels>
-          <GeneralPanel publicKey={publicKey} privateKey={privateKey} />
-          <NodePanel publicKey={publicKey} privateKey={privateKey} />
-          <AwsPanel publicKey={publicKey} privateKey={privateKey} />
-          {/* TODO: needs to be updated with full chain... */}
-          <NginxPanel fullChain={publicKey} privateKey={privateKey} />
+          <GeneralPanel
+            certificate={certificate.certificate!}
+            privateKey={certificate.privateKey!}
+            chain={certificate.chain!}
+            fullChain={certificate.fullChain!}
+          />
+          <NodePanel
+            certificate={certificate.certificate!}
+            privateKey={certificate.privateKey!}
+            chain={certificate.chain!}
+          />
+          <AwsPanel
+            certificate={certificate.certificate!}
+            privateKey={certificate.privateKey!}
+            chain={certificate.chain!}
+          />
+          <NginxPanel privateKey={certificate.privateKey!} fullChain={certificate.fullChain!} />
         </TabPanels>
       </Tabs>
     </>
