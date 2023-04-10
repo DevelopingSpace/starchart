@@ -149,3 +149,24 @@ export async function getChildrenValuesOfQueueName<CT>({
 
   return filteredChildrenValues;
 }
+
+export function getErrorMessageFromStatusCode(statusCode: number): string {
+  switch (statusCode) {
+    case 400:
+      return 'Bad Request: The server cannot process the request because it is malformed or invalid.';
+    case 401:
+      return 'Unauthorized: The request requires authentication, and the user is not authenticated.';
+    case 403:
+      return 'Forbidden: The server understands the request but refuses to authorize it.';
+    case 404:
+      return 'Not Found: The server cannot find the requested resource.';
+    case 500:
+      return 'Internal Server Error: The server encountered an unexpected condition that prevented it from fulfilling the request.';
+    case 502:
+      return 'Bad Gateway: The server received an invalid response from the upstream server.';
+    case 503:
+      return 'Service Unavailable: The server is currently unable to handle the request due to a temporary overload or maintenance.';
+    default:
+      return 'An error has occurred.';
+  }
+}

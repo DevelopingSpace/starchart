@@ -6,15 +6,18 @@ import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById, updateDnsRecordById } from '~/models/dns-record.server';
 import { isNameValid, UpdateDnsRecordSchema } from '~/lib/dns.server';
-import { useActionData } from '@remix-run/react';
-import { buildDomain } from '~/utils';
+import { useActionData, useCatch, useParams } from '@remix-run/react';
+import { buildDomain, getErrorMessageFromStatusCode } from '~/utils';
+import SeenErrorLayout from '~/components/errors/seen-error-layout';
+import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   await requireUser(request);
 
   const { dnsRecordId } = params;
-  if (!dnsRecordId) {
-    throw new Response('dnsRecordId should be string', {
+
+  if (!dnsRecordId || !parseInt(dnsRecordId)) {
+    throw new Response('Dns Record Id is not valid', {
       status: 400,
     });
   }
@@ -58,6 +61,31 @@ export const action = async ({ request }: ActionArgs) => {
 
   return redirect(`/dns-records`);
 };
+
+function mapStatusToErrorText(statusCode: number): string {
+  switch (statusCode) {
+    case 400:
+      return 'Provided record id is not valid';
+    default:
+      return getErrorMessageFromStatusCode(statusCode);
+  }
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+
+  return <SeenErrorLayout result={caught} mapStatusToErrorText={mapStatusToErrorText} />;
+}
+
+export function ErrorBoundary() {
+  const { dnsRecordId } = useParams();
+
+  return (
+    <UnseenErrorLayout
+      errorText={`We got an unexpected error working with your dns record with id ${dnsRecordId}, but don't worry our team is already on it's way to fix it`}
+    />
+  );
+}
 
 export default function DnsRecordRoute() {
   const dnsRecord = useTypedLoaderData<typeof loader>();
