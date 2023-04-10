@@ -65,7 +65,7 @@ export const action = async ({ request }: ActionArgs) => {
 function mapStatusToErrorText(statusCode: number): string {
   switch (statusCode) {
     case 400:
-      return 'Provided record id is not valid';
+      return 'Provided Record ID is not valid';
     default:
       return getErrorMessageFromStatusCode(statusCode);
   }
