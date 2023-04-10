@@ -82,7 +82,7 @@ function mapStatusToErrorText(statusCode: number): string {
     case 404:
       return 'Sorry we could not find you certificate';
     case 409:
-      return 'Sorry we could not find you certificate key';
+      return 'Sorry, your certificate is not issued yet. Please try again later.';
     default:
       return getErrorMessageFromStatusCode(statusCode);
   }

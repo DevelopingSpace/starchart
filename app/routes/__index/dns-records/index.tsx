@@ -83,7 +83,7 @@ export const action = async ({ request }: ActionArgs) => {
 function mapStatusToErrorText(statusCode: number): string {
   switch (statusCode) {
     case 404:
-      return 'Sorry we could not find your dns record';
+      return 'Sorry we could not find your DNS Record';
     case 400:
       return 'We got an error processing requested action on your dns record';
     default:
@@ -99,7 +99,7 @@ export function CatchBoundary() {
 
 export function ErrorBoundary() {
   return (
-    <UnseenErrorLayout errorText="We got an unexpected error working with your dns records, but don't worry our team is already on it's way to fix it" />
+    <UnseenErrorLayout errorText="We got an unexpected error working with your DNS Records, but don't worry our team is already on it's way to fix it" />
   );
 }
 

@@ -17,7 +17,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { dnsRecordId } = params;
 
   if (!dnsRecordId || !parseInt(dnsRecordId)) {
-    throw new Response('Dns Record Id is not valid', {
+    throw new Response('DNS Record ID is not valid', {
       status: 400,
     });
   }
