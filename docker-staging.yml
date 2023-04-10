@@ -47,10 +47,13 @@ services:
     deploy:
       mode: replicated
       replicas: 2
+      rollback_config:
+        # Rollback all containers at once if a deploy fails
+        parallelism: 0
+        failure_action: rollback
       update_config:
-        # Only update 1 instance at a time, not all at once (rolling-update)
-        parallelism: 1
-        # If the update fails, rollback to last-known-good
+        # Update both containers at once, rollback on failure
+        parallelism: 2
         failure_action: rollback
     logging:
       # Use journald log driver, see:
