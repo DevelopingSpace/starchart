@@ -48,7 +48,7 @@ export default function CertificateRequestView({ domain, isFailed }: Certificate
           alignItems={{ base: 'center', md: 'flex-start' }}
         >
           <Text fontWeight="bold">Domain Name:&nbsp;</Text>
-          <Text>{domain}</Text>
+          <Text>*.{domain}</Text>
         </Flex>
       </Flex>
       <Form method="post" onSubmit={() => setIsDisabled(true)}>
