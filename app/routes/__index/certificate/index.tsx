@@ -80,7 +80,7 @@ function formatDate(val: Date): string {
 function mapStatusToErrorText(statusCode: number): string {
   switch (statusCode) {
     case 404:
-      return 'Sorry we could not find you certificate';
+      return 'Sorry we could not find your certificate';
     case 409:
       return 'Sorry, your certificate is not issued yet. Please try again later.';
     default:
