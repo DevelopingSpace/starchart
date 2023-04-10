@@ -1,16 +1,6 @@
 import { RepeatIcon } from '@chakra-ui/icons';
 import { Form } from '@remix-run/react';
-import {
-  Flex,
-  Text,
-  HStack,
-  Button,
-  Stat,
-  StatLabel,
-  StatNumber,
-  Wrap,
-  WrapItem,
-} from '@chakra-ui/react';
+import { Flex, Text, Button, Stat, StatLabel, StatNumber, Wrap, WrapItem } from '@chakra-ui/react';
 
 interface DescriptionSectionProps {
   certRequested: boolean;
