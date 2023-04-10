@@ -85,7 +85,7 @@ function mapStatusToErrorText(statusCode: number): string {
     case 404:
       return 'Sorry we could not find your DNS Record';
     case 400:
-      return 'We got an error processing requested action on your dns record';
+      return 'We got an error processing requested action on your DNS Record';
     default:
       return getErrorMessageFromStatusCode(statusCode);
   }
