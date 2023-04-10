@@ -137,7 +137,7 @@ export default function CertificateInstructionsRoute() {
           <Heading as="h3" size="md">
             How to Create the first DNS Record?
           </Heading>
-          <OrderedList>
+          <OrderedList listStylePos="inside">
             <ListItem>
               Go to the{' '}
               <Link to={{ pathname: '/dns-records' }}>
