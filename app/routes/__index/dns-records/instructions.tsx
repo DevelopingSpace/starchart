@@ -14,14 +14,15 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  Flex,
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import FaqAccordion from '~/components/instructions/faq-accordion';
 
 export default function CertificateInstructionsRoute() {
   return (
-    <Container maxW="container.md" py="8">
-      <Heading as="h1" size="xl" mb="4">
+    <Flex flexDirection="column">
+      <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }} mb="4">
         DNS Record Instructions
       </Heading>
       <Grid templateColumns="repeat(1, 1fr)" gap="4">
@@ -137,7 +138,7 @@ export default function CertificateInstructionsRoute() {
           <Heading as="h3" size="md">
             How to Create the first DNS Record?
           </Heading>
-          <OrderedList listStylePos="inside">
+          <OrderedList listStylePos="inside" spacing="2">
             <ListItem>
               Go to the{' '}
               <Link to={{ pathname: '/dns-records' }}>
@@ -214,6 +215,6 @@ export default function CertificateInstructionsRoute() {
           </Accordion>
         </VStack>
       </Grid>
-    </Container>
+    </Flex>
   );
 }

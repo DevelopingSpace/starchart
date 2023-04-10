@@ -4,6 +4,7 @@ import {
   Box,
   AccordionPanel,
   AccordionIcon,
+  Text,
 } from '@chakra-ui/react';
 
 interface FaqAccordionProps {
@@ -16,7 +17,7 @@ export default function FaqAccordion({ title, children }: FaqAccordionProps) {
     <AccordionItem>
       <AccordionButton>
         <Box flex="1" textAlign="left">
-          {title}
+          <Text fontWeight="medium">{title}</Text>
         </Box>
         <AccordionIcon />
       </AccordionButton>
