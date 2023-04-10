@@ -2,11 +2,12 @@ import { Divider, TabPanel, Text, Link } from '@chakra-ui/react';
 import CertificateDisplay from '../certificate-display';
 
 interface AwsPanelProps {
-  publicKey: string;
+  certificate: string;
   privateKey: string;
+  chain: string;
 }
 
-export default function AwsPanel({ publicKey, privateKey }: AwsPanelProps) {
+export default function AwsPanel({ certificate, privateKey, chain }: AwsPanelProps) {
   return (
     <TabPanel>
       <Text marginBottom={4}>
@@ -30,23 +31,23 @@ export default function AwsPanel({ publicKey, privateKey }: AwsPanelProps) {
 
       <CertificateDisplay
         title="Certificate body"
-        value={publicKey}
+        value={certificate}
         description="Public certificate body."
-        pathname="cert"
+        downloadPart="certificate"
       />
       <Divider />
       <CertificateDisplay
         title="Certificate private key"
         value={privateKey}
         description="Private certificate key is a secret, do not share it."
-        pathname="privkey"
+        downloadPart="privateKey"
       />
       <Divider />
       <CertificateDisplay
         title="Certificate chain - optional"
-        value={publicKey}
+        value={chain}
         description="Certificate chain includes intermediate certificates used to verify and validate your public certificate."
-        pathname="privkey"
+        downloadPart="chain"
       />
     </TabPanel>
   );

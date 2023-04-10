@@ -2,11 +2,12 @@ import { Divider, TabPanel, Text, Link } from '@chakra-ui/react';
 import CertificateDisplay from '../certificate-display';
 
 interface NodePanelProps {
-  publicKey: string;
+  certificate: string;
   privateKey: string;
+  chain: string;
 }
 
-export default function NodePanel({ publicKey, privateKey }: NodePanelProps) {
+export default function NodePanel({ certificate, privateKey, chain }: NodePanelProps) {
   return (
     <TabPanel>
       <Text marginBottom={4}>
@@ -22,23 +23,23 @@ export default function NodePanel({ publicKey, privateKey }: NodePanelProps) {
 
       <CertificateDisplay
         title="Cert"
-        value={publicKey}
+        value={certificate}
         description="Public certificate."
-        pathname="cert"
+        downloadPart="certificate"
       />
       <Divider />
       <CertificateDisplay
         title="Key"
         value={privateKey}
         description="Private certificate key, do not share it."
-        pathname="privkey"
+        downloadPart="privateKey"
       />
       <Divider />
       <CertificateDisplay
         title="CA - optional"
-        value={publicKey}
+        value={chain}
         description="The CA Bundle."
-        pathname="cert"
+        downloadPart="chain"
       />
     </TabPanel>
   );

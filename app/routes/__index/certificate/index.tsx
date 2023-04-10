@@ -4,8 +4,6 @@ import { json } from '@remix-run/node';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { useRevalidator } from '@remix-run/react';
 import { useInterval } from 'react-use';
-import { useMemo } from 'react';
-import dayjs from 'dayjs';
 
 import { requireUser, requireUsername } from '~/session.server';
 import pendingSvg from '~/assets/undraw_processing_re_tbdu.svg';
@@ -87,15 +85,6 @@ export default function CertificateIndexRoute() {
     certificate?.status === 'pending' ? 15_000 : null
   );
 
-  const isRenewable = useMemo((): boolean => {
-    if (certificate?.validTo) {
-      const validTo = dayjs(certificate.validTo!);
-      const thirtyDays = dayjs().add(30, 'day');
-      return validTo.isBefore(thirtyDays);
-    }
-    return false;
-  }, [certificate]);
-
   if (certificate?.status === 'pending') {
     return (
       <Loading
@@ -112,11 +101,9 @@ export default function CertificateIndexRoute() {
       </Heading>
       {certificate?.status === 'issued' ? (
         <CertificateAvailable
-          publicKey={certificate.certificate!}
-          privateKey={certificate.privateKey!}
+          certificate={certificate}
           validFromFormatted={formatDate(certificate.validFrom!)}
           validToFormatted={formatDate(certificate.validTo!)}
-          isRenewable={isRenewable}
         />
       ) : (
         <CertificateRequestView
