@@ -1,0 +1,368 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: 'Release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 'marvinpinto/action-automatic-releases@latest'
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          prerelease: false
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Restore node_modules cache
+        id: node_modules-cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          # path to node_modules to cache
+          path: ./node_modules
+          # cache module with hash of package-lock.json
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install node_modules
+        # install node modules manually only if cache was not restored
+        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Run build
+        run: npm run build
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path:
+            ./node_modules
+            # cache node modules using the same key as restore.
+          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+
+  Prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check prettier
+        uses: creyD/prettier_action@v4.3
+        with:
+          prettier_options: --check .
+
+  Unit-Tests:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: starchart_test
+          MYSQL_USER: starchart
+          MYSQL_PASSWORD: starchart_password
+          MYSQL_ROOT_PASSWORD: root_password
+      redis:
+        image: redis:7.0.8-alpine3.17
+        ports:
+          - 6379:6379
+      dns:
+        image: motoserver/moto:4.1.1
+        ports:
+          - '5053:5000'
+      mailhog:
+        image: jcalonso/mailhog:latest
+        ports:
+          - 8025:8025
+          - 1025:1025
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Restore node_modules cache
+        id: node_modules-cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          # path to node_modules to cache
+          path: ./node_modules
+          # cache module with hash of package-lock.json
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install node_modules
+        # install node modules manually only if cache was not restored
+        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Seed database
+        run: |
+          cp .env.example .env
+          npm run setup:test
+
+      - name: Run tests
+        run: npm test
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path:
+            ./node_modules
+            # cache node modules using the same key as restore.
+          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+
+  E2E-Tests:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: starchart_test
+          MYSQL_USER: starchart
+          MYSQL_PASSWORD: starchart_password
+          MYSQL_ROOT_PASSWORD: root_password
+      redis:
+        image: redis:7.0.8-alpine3.17
+        ports:
+          - 6379:6379
+      dns:
+        image: motoserver/moto:4.1.1
+        ports:
+          - 5053:5000
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Restore node_modules cache
+        id: node_modules-cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          # path to node_modules to cache
+          path: ./node_modules
+          # cache module with hash of package-lock.json
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install node_modules
+        # install node modules manually only if cache was not restored
+        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Run Login container
+        run: docker compose up -d login
+
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: |
+          echo "PLAYWRIGHT_VERSION=$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')" >> $GITHUB_ENV
+
+      - name: Restore Playwright browser cache
+        id: playwright-cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          # path to playwright browser
+          path: ~/.cache/ms-playwright
+          # cache browser with playwright version
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Install Playwright's dependencies only
+        # only do this if browser is restored from cache
+        if: steps.playwright-cache-restore.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
+
+      - name: Install Playwright Browsers and dependencies
+        # only do this if browser was not found in cache
+        if: steps.playwright-cache-restore.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+
+      - name: Seed database
+        run: |
+          cp .env.example .env
+          npm run setup:test
+
+      - name: Run Playwright tests
+        run: npm run test:e2e:run
+
+      - name: Create HTML Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path:
+            ./node_modules
+            # cache node modules using the same key as restore.
+          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ steps.playwright-cache-restore.outputs.cache-primary-key }}
+
+  Dockerfile-Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Run Hadolint on Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+  ESLint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Restore node_modules cache
+        id: node_modules-cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          # path to node_modules to cache
+          path: ./node_modules
+          # cache module with hash of package-lock.json
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install node_modules
+        # install node modules manually only if cache was not restored
+        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: eslint check
+        run: npm run lint
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path:
+            ./node_modules
+            # cache node modules using the same key as restore.
+          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+
+  Type-Check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Restore node_modules cache
+        id: node_modules-cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          # path to node_modules to cache
+          path: ./node_modules
+          # cache module with hash of package-lock.json
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install node_modules
+        # install node modules manually only if cache was not restored
+        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Generate prisma client types
+        run: npm run db:generate
+
+      - name: Run typecheck
+        run: npm run typecheck
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path:
+            ./node_modules
+            # cache node modules using the same key as restore.
+          key: ${{ steps.node_modules-cache-restore.outputs.cache-primary-key }}
+
+  Docker-Build-Deploy:
+    # We'll only build and push when landing on main, not for PRs
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    # Don't bother unless everything else passes
+    needs: [Build, Prettier, Unit-Tests, E2E-Tests, Dockerfile-Lint, ESLint, Type-Check]
+    env:
+      IMAGE: ghcr.io/developingspace/starchart
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Define GITHUB_SHORT_SHA
+        run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to the GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Starchart Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          build-args: |
+            SAML_IDP_METADATA_PATH=./config/idp-metadata-staging.xml
+          push: true
+          tags: ${{ env.IMAGE }}:sha-${{ env.GITHUB_SHA_SHORT }}, ${{ env.IMAGE }}:main, ${{ env.IMAGE }}:latest
+
+      - name: Deploy to Staging via Webhook
+        uses: navied/secure-actions-webhook@0.2.1
+        env:
+          HMAC_SECRET: ${{ secrets.WEBHOOK_STAGING_SECRET }}
+        with:
+          url: https://mycustomdomain-dev.senecacollege.ca/hooks/deploy
+          hmacSecret: ${{ env.HMAC_SECRET }}
+          data: '{"tag": "sha-${{ env.GITHUB_SHA_SHORT }}"}'
