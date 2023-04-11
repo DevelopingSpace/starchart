@@ -2,6 +2,8 @@ name: Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
 
@@ -20,7 +22,6 @@ jobs:
           prerelease: false
 
   Docker-Build-Deploy:
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     env:
       IMAGE: ghcr.io/developingspace/starchart
