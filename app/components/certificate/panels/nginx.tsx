@@ -24,14 +24,14 @@ export default function NginxPanel({ fullChain, privateKey }: NginxPanelProps) {
         title="Full Chain"
         value={fullChain}
         description="Your Public Certificate combined with the Let's Encrypt intermediate certificate chain into a single certificate."
-        pathname="cert"
+        downloadPart="certificate"
       />
       <Divider />
       <CertificateDisplay
         title="Private Key"
         value={privateKey}
         description="Private certificate key, do not share it."
-        pathname="privkey"
+        downloadPart="privateKey"
       />
     </TabPanel>
   );

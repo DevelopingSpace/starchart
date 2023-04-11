@@ -70,7 +70,7 @@ const expirationRequestWorker = new Worker(
           await addNotification({
             emailAddress: user.email,
             subject: 'My.Custom.Domain certificate expired',
-            message: `${user.displayName}, your certificate with domain: ${domain} has expired.`,
+            message: `${user.displayName}, your certificate with domain: *.${domain} has expired.`,
           });
         }
         // delete all expired certificates from DB

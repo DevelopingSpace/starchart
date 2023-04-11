@@ -78,7 +78,7 @@ export const initCertificateErrorHandler = () => {
       await addNotification({
         emailAddress: certificateEntry.user.email,
         subject: 'My.Custom.Domain certificate request failed',
-        message: `${certificateEntry.user.displayName}, your certificate request with domain: ${certificateEntry.domain} has failed. Log in to My.Custom.Domain to try again.`,
+        message: `${certificateEntry.user.displayName}, your certificate request with domain: *.${certificateEntry.domain} has failed. Log in to My.Custom.Domain to try again.`,
       });
 
       logger.info('Cleanup completed on failed certificate flow', { rootDomain, certificateId });

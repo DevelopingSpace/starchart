@@ -20,14 +20,14 @@ interface CertificateDisplayProps {
   title: string;
   value: string;
   description: string;
-  pathname: string;
+  downloadPart: 'certificate' | 'privateKey' | 'chain' | 'fullChain';
 }
 
 export default function CertificateDisplay({
   title,
   description,
   value,
-  pathname,
+  downloadPart,
 }: CertificateDisplayProps) {
   const toast = useToast();
 
@@ -66,7 +66,7 @@ export default function CertificateDisplay({
           />
         </Tooltip>
         <Tooltip label={`Download ${title}`}>
-          <Link to={pathname} reloadDocument>
+          <Link to={`/certificate/download/${downloadPart}`} reloadDocument>
             <IconButton
               backgroundColor="transparent"
               color="black"

@@ -1,6 +1,6 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Button, Center, Flex, Heading, Stat, StatLabel, StatNumber, Text } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
+import { Link, useCatch } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { json } from '@remix-run/node';
 import { z } from 'zod';
@@ -17,6 +17,9 @@ import { requireUsername } from '~/session.server';
 import logger from '~/lib/logger.server';
 
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+import SeenErrorLayout from '~/components/errors/seen-error-layout';
+import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
+import { getErrorMessageFromStatusCode } from '~/utils';
 
 export type DnsRecordActionIntent = 'renew-dns-record' | 'delete-dns-record';
 
@@ -76,6 +79,29 @@ export const action = async ({ request }: ActionArgs) => {
       return json({ result: 'error', message: 'Unknown intent' });
   }
 };
+
+function mapStatusToErrorText(statusCode: number): string {
+  switch (statusCode) {
+    case 404:
+      return 'Sorry we could not find your DNS Record';
+    case 400:
+      return 'We got an error processing requested action on your DNS Record';
+    default:
+      return getErrorMessageFromStatusCode(statusCode);
+  }
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+
+  return <SeenErrorLayout result={caught} mapStatusToErrorText={mapStatusToErrorText} />;
+}
+
+export function ErrorBoundary() {
+  return (
+    <UnseenErrorLayout errorText="We got an unexpected error working with your DNS Records, but don't worry our team is already on it's way to fix it" />
+  );
+}
 
 export default function DnsRecordsIndexRoute() {
   const data = useTypedLoaderData<typeof loader>();
