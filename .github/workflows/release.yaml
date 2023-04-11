@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  Release:
+    name: 'Release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 'marvinpinto/action-automatic-releases@latest'
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          prerelease: false
+
+  Docker-Build-Deploy:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ghcr.io/developingspace/starchart
+      VERSION_TAG: ${{ github.ref }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Define GITHUB_SHORT_SHA
+        run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to the GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Starchart Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          build-args: |
+            SAML_IDP_METADATA_PATH=./config/idp-metadata-production.xml
+          push: true
+          tags: ${{ env.IMAGE}}:${{ env.VERSION_TAG }}, ${{ env.IMAGE }}:sha-${{ env.GITHUB_SHA_SHORT }}, ${{ env.IMAGE }}:release, ${{ env.IMAGE }}:latest
+
+      - name: Deploy to Staging via Webhook
+        uses: navied/secure-actions-webhook@0.2.1
+        env:
+          HMAC_SECRET: ${{ secrets.WEBHOOK_PRODUCTION_SECRET }}
+        with:
+          url: https://mycustomdomain.senecacollege.ca/hooks/deploy
+          hmacSecret: ${{ env.HMAC_SECRET }}
+          data: '{"tag": "${{ env.VERSION_TAG }}"}'
