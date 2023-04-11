@@ -2,7 +2,7 @@ import { Flex, Heading } from '@chakra-ui/react';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
-import { useRevalidator } from '@remix-run/react';
+import { useCatch, useRevalidator } from '@remix-run/react';
 import { useInterval } from 'react-use';
 
 import { requireUser, requireUsername } from '~/session.server';
@@ -10,9 +10,11 @@ import pendingSvg from '~/assets/undraw_processing_re_tbdu.svg';
 import Loading from '~/components/display-page';
 import CertificateAvailable from '~/components/certificate/certificate-available';
 import CertificateRequestView from '~/components/certificate/certificate-request';
-import { useEffectiveUser } from '~/utils';
+import { getErrorMessageFromStatusCode, useEffectiveUser } from '~/utils';
 import { getCertificateByUsername } from '~/models/certificate.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
+import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
+import SeenErrorLayout from '~/components/errors/seen-error-layout';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const username = await requireUsername(request);
@@ -71,6 +73,29 @@ function formatDate(val: Date): string {
   });
 
   return date;
+}
+
+function mapStatusToErrorText(statusCode: number): string {
+  switch (statusCode) {
+    case 404:
+      return 'Sorry we could not find your certificate';
+    case 409:
+      return 'Sorry, your certificate is not issued yet. Please try again later.';
+    default:
+      return getErrorMessageFromStatusCode(statusCode);
+  }
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+
+  return <SeenErrorLayout result={caught} mapStatusToErrorText={mapStatusToErrorText} />;
+}
+
+export function ErrorBoundary() {
+  return (
+    <UnseenErrorLayout errorText="We got an unexpected error working with your certificate, but don't worry our team is already on it's way to fix it" />
+  );
 }
 
 export default function CertificateIndexRoute() {
