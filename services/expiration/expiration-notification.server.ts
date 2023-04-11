@@ -14,11 +14,11 @@ import type { NotificationData } from '~/queues/notifications/notifications.serv
 declare global {
   var __expiration_init__: boolean;
 }
-export enum RecordType {
+enum RecordType {
   Certificate = 'certificate',
-  DnsRecord = 'record',
+  DnsRecord = 'dns-record',
 }
-export interface ExpirationStatusPayload {
+interface ExpirationStatusPayload {
   type: RecordType;
 }
 // constant for notification frequency in days
@@ -60,18 +60,40 @@ export function init() {
       const { type } = job.data;
       try {
         logger.debug(`Notifications: processing job ${job.name}`);
-        let records = await getRecordsByExpiration(RecordType.DnsRecord);
+        let dnsRecords = await getExpiringDnsRecords();
         await Promise.all(
-          records.map(async (record) => {
-            if (!record.lastNotified || record.lastNotified < dayjs().subtract(30, 'd').toDate()) {
-              await updateStatusAndNotify(type, record.id, {
-                emailAddress: record.user.email,
-                subject: `Sample ${type} expiration notice`,
-                message: `Sample ${type} expiration notice message`,
+          dnsRecords.map(async ({ id, subdomain, expiresAt, lastNotified, user }) => {
+            if (!lastNotified || lastNotified < dayjs().subtract(30, 'd').toDate()) {
+              await updateStatusAndNotify(type, id, {
+                emailAddress: user.email,
+                subject: 'My.Custom.Domain DNS record approaching expiration',
+                message: `${
+                  user.displayName
+                }, this is a friendly reminder that your DNS record with subdomain: ${subdomain} will expire on: ${expiresAt.toLocaleDateString()} Log in to My.Custom.Domain to renew.`,
               });
             }
           })
         );
+        let certificates = await getExpiringCertificates();
+        await Promise.all(
+          certificates.map(async ({ id, status, domain, validTo, lastNotified, user }) => {
+            if (
+              (!lastNotified || lastNotified < dayjs().subtract(30, 'd').toDate()) &&
+              status === 'issued'
+            ) {
+              await updateStatusAndNotify(type, id, {
+                emailAddress: user.email,
+                subject: 'My.Custom.Domain Certificate approaching expiration',
+                message: `${
+                  user.displayName
+                }, this is a friendly reminder that your certificate with domain: ${domain} will expire ${
+                  validTo ? `on: ${validTo.toLocaleTimeString()}` : `in less than 30 days.`
+                }. Log in to My.Custom.Domain to renew. `,
+              });
+            }
+          })
+        );
+
         logger.debug(`Notifications: job ${job.name} completed`);
       } catch (err) {
         // fail job from repeating  - encountered error:
@@ -137,57 +159,48 @@ const updateNotificationStatus = (type: RecordType, id: number) => {
 };
 
 // fetch records by status based on type
-const getRecordsByExpiration = (type: RecordType) => {
-  switch (type) {
-    case RecordType.Certificate:
-      return prisma.certificate.findMany({
-        where: {
-          validTo: {
-            lte: dayjs().add(1, 'M').toDate(),
-          },
-          OR: [
-            {
-              lastNotified: null,
-            },
-            {
-              lastNotified: dayjs()
-                .subtract(NOTIFICATION_FREQUENCY * 4, 'd')
-                .toDate(),
-            },
-          ],
+const getExpiringCertificates = () => {
+  return prisma.certificate.findMany({
+    where: {
+      validTo: {
+        lte: dayjs().add(30, 'd').toDate(),
+      },
+
+      OR: [
+        {
+          lastNotified: null,
         },
-        select: {
-          user: true,
-          id: true,
-          lastNotified: true,
+        {
+          lastNotified: dayjs()
+            .subtract(NOTIFICATION_FREQUENCY * 4, 'd')
+            .toDate(),
         },
-      });
-    case RecordType.DnsRecord:
-      return prisma.dnsRecord.findMany({
-        where: {
-          expiresAt: {
-            lte: dayjs().add(1, 'M').toDate(),
-          },
-          OR: [
-            {
-              lastNotified: null,
-            },
-            {
-              lastNotified: dayjs()
-                .subtract(NOTIFICATION_FREQUENCY * 4, 'd')
-                .toDate(),
-            },
-          ],
-        },
-        select: {
-          user: true,
-          id: true,
-          lastNotified: true,
-        },
-      });
-  }
+      ],
+    },
+    include: { user: true },
+  });
 };
 
+const getExpiringDnsRecords = () => {
+  return prisma.dnsRecord.findMany({
+    where: {
+      expiresAt: {
+        lte: dayjs().add(30, 'd').toDate(),
+      },
+      OR: [
+        {
+          lastNotified: null,
+        },
+        {
+          lastNotified: dayjs()
+            .subtract(NOTIFICATION_FREQUENCY * 4, 'd')
+            .toDate(),
+        },
+      ],
+    },
+    include: { user: true },
+  });
+};
 // function to add jobs
 async function addExpirationNotifications(type: RecordType) {
   let jobName = `${expirationNotificationQueueName}-${type}`;
