@@ -15,6 +15,17 @@ export function getDnsRecordsByUsername(username: DnsRecord['username']) {
         subdomain: '_acme-challenge',
       },
     },
+    orderBy: [
+      {
+        subdomain: 'asc',
+      },
+      {
+        type: 'asc',
+      },
+      {
+        value: 'asc',
+      },
+    ],
   });
 }
 
