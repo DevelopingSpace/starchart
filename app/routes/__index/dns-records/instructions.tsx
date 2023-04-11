@@ -2,7 +2,6 @@ import { InfoOutlineIcon } from '@chakra-ui/icons';
 import {
   Heading,
   Text,
-  Container,
   Grid,
   VStack,
   ListItem,
