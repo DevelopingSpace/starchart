@@ -6,7 +6,7 @@ import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById, updateDnsRecordById } from '~/models/dns-record.server';
 import { isNameValid, UpdateDnsRecordSchema } from '~/lib/dns.server';
-import { useActionData, useCatch, useParams } from '@remix-run/react';
+import { useActionData, useCatch, useParams, Link } from '@remix-run/react';
 import { buildDomain, getErrorMessageFromStatusCode } from '~/utils';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
@@ -99,7 +99,12 @@ export default function DnsRecordRoute() {
       <Text maxW="lg" mb="3" mt="2">
         Choose a subdomain Name. This will be used to build your domain.
         <br /> (i.e. [subdomain].[username].mystudentproject.ca). <br />
-        Then enter a Type and Value that will be mapped with your domain.
+        Then enter a Type and Value that will be mapped with your domain. For more info refer to our{' '}
+        <Link to={{ pathname: '/dns-records/instructions' }}>
+          <Text as="span" textDecoration="underline">
+            instructions page.
+          </Text>
+        </Link>
       </Text>
       <DnsRecordForm errors={actionData} dnsRecord={dnsRecord} mode="EDIT" />
     </Container>
