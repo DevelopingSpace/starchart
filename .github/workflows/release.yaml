@@ -25,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE: ghcr.io/developingspace/starchart
+      VERSION_TAG: ${{ github.ref }}
     permissions:
       contents: read
       packages: write
@@ -52,7 +53,7 @@ jobs:
           build-args: |
             SAML_IDP_METADATA_PATH=./config/idp-metadata-production.xml
           push: true
-          tags: ${{ env.IMAGE }}:sha-${{ env.GITHUB_SHA_SHORT }}, ${{ env.IMAGE }}:release, ${{ env.IMAGE }}:latest
+          tags: ${{ env.IMAGE}}:${{ env.VERSION_TAG }}, ${{ env.IMAGE }}:sha-${{ env.GITHUB_SHA_SHORT }}, ${{ env.IMAGE }}:release, ${{ env.IMAGE }}:latest
 
       - name: Deploy to Staging via Webhook
         uses: navied/secure-actions-webhook@0.2.1
@@ -61,4 +62,4 @@ jobs:
         with:
           url: https://mycustomdomain.senecacollege.ca/hooks/deploy
           hmacSecret: ${{ env.HMAC_SECRET }}
-          data: '{"tag": "sha-${{ env.GITHUB_SHA_SHORT }}"}'
+          data: '{"tag": "${{ env.VERSION_TAG }}"}'
