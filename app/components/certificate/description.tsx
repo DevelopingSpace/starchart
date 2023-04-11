@@ -39,6 +39,7 @@ export default function DescriptionSection({
             <Link as={RemixLink} to={link}>
               information page
             </Link>
+            .
           </>
         )}
       </Text>

@@ -22,21 +22,40 @@ export default function CertificateInstructionsRoute() {
   return (
     <Flex flexDirection="column" paddingBottom="20" maxWidth={750}>
       <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }} mb="4">
-        What is an SSL Certificate?
+        SSL Certificates
       </Heading>
       <Box>
-        <Text>
-          An SSL Certificate is like a digital lock that keeps information exchanged between your
-          computer and a website private and secure. It helps protect your sensitive information
-          like credit card numbers, login credentials, and other personal information from being
-          intercepted by hackers or cybercriminals.
-          <br />
-          <br />
+        <Heading as="h2" size="md" marginTop="5">
+          What is an SSL Certificate?
+        </Heading>
+        <Text marginY={4}>
+          When browsing the internet, you may have noticed a padlock (
+          <LockIcon boxSize="3" marginBottom="1" />) symbol next to the website's URL. This padlock
+          indicates whether the website has a valid SSL/TLS certificate or not. These certificates
+          are used to secure websites, encrypting and decrypting data exchanged between clients and
+          servers.
+        </Text>
+        <Text marginY={4}>
+          An SSL/TLS Certificate is like a digital lock that keeps information exchanged between
+          your computer and a website private and secure. It helps protect your private or sensitive
+          information (e.g., credit card numbers, login credentials, etc.) from being intercepted by
+          hackers or cybercriminals.
+        </Text>
+        <Text marginY={4}>
+          Unfortunately, there are malicious websites that do not provide any security and cannot
+          prove their identity to your web browser. To ensure your safety while browsing the
+          internet, modern browsers automatically block access to such sites that could harm your
+          computer, as illustrated&nbsp;
+          <Link color="brand.500" href="https://expired-rsa-dv.ssl.com">
+            here.
+          </Link>
+        </Text>
+        <Text marginY={4}>
           When a website has an SSL certificate, you'll see a padlock icon and the web address
           changes from "http" to "https" in your browser's address bar. This means that the
           connection between your computer and the website is encrypted and secure.
-          <br />
-          <br />
+        </Text>
+        <Text marginY={4}>
           SSL certificates are essential for websites that collect sensitive information from users,
           like online stores, banks, or any site that requires you to enter personal information.
           They help build trust between websites and their users and ensure that your data is kept
@@ -44,67 +63,39 @@ export default function CertificateInstructionsRoute() {
         </Text>
 
         <Heading as="h3" size="md" marginTop="5">
-          Browser Security Warnings
-        </Heading>
-
-        <Text marginTop="3">
-          When browsing the internet, you may have noticed a padlock (
-          <LockIcon boxSize="3" marginBottom="1" />) symbol next to the website's URL. This padlock
-          indicates whether the website has a valid SSL/TLS certificate, which is used to secure the
-          website and encrypt any data exchanged between the website and your browser.
-          <br />
-          <br />
-          Unfortunately, there are malicious websites that do not provide any sense of security and
-          may not be able to prove their identity to your web browser, potentially leading to safety
-          issues when trying to access them. To ensure your safety while browsing the internet,
-          user-friendly browsers like Chrome automatically block access to such sites that could
-          harm your computer, as illustrated&nbsp;
-          <Link color="brand.500" href="https://expired-rsa-dv.ssl.com">
-            here.
-          </Link>
-          &nbsp;For more examples of website certificate status, visit&nbsp;
-          <Link
-            color="brand.500"
-            href="https://www.ssl.com/sample-valid-revoked-and-expired-ssl-tls-certificates/"
-          >
-            this page.
-          </Link>
-          &nbsp;Lastly, you can check if your dns-record has a valid certificate by visiting&nbsp;
-          <Link color="brand.500" href="https://www.sslshopper.com/ssl-checker.html">
-            SSL Shopper.
-          </Link>
-        </Text>
-
-        <Heading as="h3" size="md" marginTop="5">
-          Types of Certificate
-        </Heading>
-        <Text marginTop="3">
-          Once you have obtained a certificate, you are granted the authority to use it for specific
-          services. The certificate consists of four main components
-        </Text>
-
-        <Heading as="h3" size="md" marginTop="5">
-          Request Certificate
+          How to Request a Certificate
         </Heading>
         <OrderedList listStylePos="inside" spacing="2" marginTop="3">
           <ListItem>
-            Go to&nbsp;
+            Go to the&nbsp;
             <Link as={RemixLink} to="/certificate">
               Certificate Page
             </Link>
           </ListItem>
           <ListItem>
-            Click on <strong>Request a Certificate</strong> button
+            Click the <strong>Request a Certificate</strong> button
           </ListItem>
           <ListItem>
             You will be greeted with a loading page, and will receive an email once your certificate
-            has been processed
+            has been issued or fails to be issued.
           </ListItem>
           <Text>
-            Do remember that if your certificate fails to be issued, you will be notified via email,
-            and you can request a new certificate.
+            You can check if your DNS Records have a valid certificate by using an&nbsp;
+            <Link color="brand.500" href="https://www.sslshopper.com/ssl-checker.html">
+              SSL Checker Tool
+            </Link>
+            .
           </Text>
         </OrderedList>
+
+        <Heading as="h3" size="md" marginTop="5">
+          Types of Certificates
+        </Heading>
+        <Text marginTop="3">
+          Once you have obtained a certificate, you are granted the authority to use it for specific
+          services. The certificate consists of four <code>.pem</code> files, and not every service
+          requires the same ones:
+        </Text>
 
         <Tabs marginY="3" isFitted>
           <TabList>
@@ -127,6 +118,7 @@ export default function CertificateInstructionsRoute() {
                 >
                   click here
                 </Link>
+                .
               </Text>
             </TabPanel>
             <TabPanel>
@@ -175,13 +167,13 @@ export default function CertificateInstructionsRoute() {
               </Link>
             </Text>
           </FaqAccordion>
-          <FaqAccordion title="Can I use a single SSL Certificate for multiple dns-records?">
+          <FaqAccordion title="Can I use a single SSL Certificate for multiple DNS Records?">
             <Text>
               The certificate that has been issued covers all&nbsp;
               <Link as={RemixLink} to="/dns-records/instructions">
-                dns-records
+                DNS Records
               </Link>
-              &nbsp;that you have in&nbsp;
+              &nbsp;that you have in the&nbsp;
               <Link as={RemixLink} to="/dns-records">
                 DNS record table
               </Link>

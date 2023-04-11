@@ -22,7 +22,7 @@ export default function CertificateInstructionsRoute() {
   return (
     <Flex flexDirection="column" maxWidth={750}>
       <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }} mb="4">
-        DNS Record Instructions
+        DNS Records
       </Heading>
       <Grid templateColumns="repeat(1, 1fr)" gap="4">
         <VStack alignItems="flex-start">
