@@ -50,4 +50,4 @@ jobs:
         with:
           url: https://mycustomdomain.senecacollege.ca/hooks/deploy
           hmacSecret: ${{ env.HMAC_SECRET }}
-          data: '{"tag": "${{ env.GITHUB_SHA_SHORT }}"}'
+          data: '{"tag": "sha-${{ env.GITHUB_SHA_SHORT }}"}'
