@@ -70,8 +70,8 @@ export async function createDnsRecord(
     }
   }
 
-  if (await doesDnsRecordExist(data)) {
-    throw new Error('DNS Record already exists');
+  if (await isDuplicateCname(data)) {
+    throw new Error('Duplicate domain is not allowed  for CNAME records');
   }
 
   // Set expiration date 6 months from now
@@ -119,27 +119,26 @@ export function renewDnsRecordById(id: DnsRecord['id']) {
   });
 }
 
-export async function doesDnsRecordExist(
+export async function isDuplicateCname(
   data: Pick<DnsRecord, 'username' | 'type' | 'subdomain' | 'value'>
 ) {
-  const { username, type, subdomain, value } = data;
-  const count = await prisma.dnsRecord.count({
-    where: {
-      username,
-      type,
-      subdomain,
-      /**
-       * For CNAME records, we would consider it a duplicate if username
-       * and subdomain are the same.
-       *
-       * Value doesn't matter in that case, so "undefined" lets Prisma
-       * knows we are not looking for it in WHERE clause.
-       */
-      value: type === 'CNAME' ? undefined : value,
-    },
-  });
+  const { username, type, subdomain } = data;
 
-  return count > 0;
+  /**
+   * For CNAME records, we would consider it a duplicate if username
+   * and subdomain are the same.
+   */
+  if (type === 'CNAME') {
+    const count = await prisma.dnsRecord.count({
+      where: {
+        username,
+        type,
+        subdomain,
+      },
+    });
+    return count > 0;
+  }
+  return false;
 }
 
 export function deleteDnsRecordById(id: DnsRecord['id']) {
