@@ -53,34 +53,30 @@ export function init() {
         logger.debug(`Notifications: processing job ${job.name}`);
         let dnsRecords = await getExpiringDnsRecords();
         await Promise.all(
-          dnsRecords.map(async ({ id, subdomain, expiresAt, lastNotified, user }) => {
-            if (!lastNotified || lastNotified < dayjs().subtract(30, 'd').toDate()) {
-              await updateStatusAndNotify(type, id, {
-                emailAddress: user.email,
-                subject: 'My.Custom.Domain DNS record approaching expiration',
-                message: `${
-                  user.displayName
-                }, this is a friendly reminder that your DNS record with subdomain: ${subdomain} will expire on: ${expiresAt.toLocaleDateString(
-                  'en-CA'
-                )}. Log in to My.Custom.Domain to renew.`,
-              });
-            }
+          dnsRecords.map(async ({ id, subdomain, expiresAt, user }) => {
+            await updateStatusAndNotify(type, id, {
+              emailAddress: user.email,
+              subject: 'My.Custom.Domain DNS record approaching expiration',
+              message: `${
+                user.displayName
+              }, this is a friendly reminder that your DNS record with subdomain: ${subdomain} will expire on: ${expiresAt.toLocaleDateString(
+                'en-CA'
+              )}. Log in to My.Custom.Domain to renew.`,
+            });
           })
         );
         let certificates = await getExpiringCertificates();
         await Promise.all(
-          certificates.map(async ({ id, domain, validTo, lastNotified, user }) => {
-            if (!lastNotified || lastNotified < dayjs().subtract(30, 'd').toDate()) {
-              await updateStatusAndNotify(type, id, {
-                emailAddress: user.email,
-                subject: 'My.Custom.Domain certificate approaching expiration',
-                message: `${
-                  user.displayName
-                }, this is a friendly reminder that your certificate with domain: ${domain} will expire ${
-                  validTo ? `on: ${validTo.toLocaleDateString('en-CA')}` : `in less than 30 days.`
-                }. Log in to My.Custom.Domain to renew. `,
-              });
-            }
+          certificates.map(async ({ id, domain, validTo, user }) => {
+            await updateStatusAndNotify(type, id, {
+              emailAddress: user.email,
+              subject: 'My.Custom.Domain certificate approaching expiration',
+              message: `${
+                user.displayName
+              }, this is a friendly reminder that your certificate with domain: ${domain} will expire ${
+                validTo ? `on: ${validTo.toLocaleDateString('en-CA')}` : `in less than 30 days.`
+              }. Log in to My.Custom.Domain to renew. `,
+            });
           })
         );
 
