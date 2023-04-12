@@ -8,18 +8,11 @@ async function seed() {
   const displayName = 'Starchart Developer';
   const email = 'dev@starchart.invalid';
   const group = 'mycustomdomain-admins';
-  let dnsRecordExpDate = new Date();
-  dnsRecordExpDate.setMonth(dnsRecordExpDate.getMonth() + 6); // a dns record expires after 6 months
-  let certExpDate = new Date();
-  certExpDate.setDate(certExpDate.getDate() + 90); // certificate expires after 90 days
   let temporaryExpDate = new Date();
   temporaryExpDate.setDate(temporaryExpDate.getDate() + 7); // expiration for notifications
 
   // cleanup the existing database; no worries if it doesn't exist yet
   await prisma.systemState.deleteMany().catch(() => {});
-  await prisma.dnsRecord.deleteMany().catch(() => {});
-  await prisma.challenge.deleteMany().catch(() => {});
-  await prisma.certificate.deleteMany().catch(() => {});
   await prisma.user.deleteMany().catch(() => {});
 
   await prisma.systemState.create({
@@ -70,11 +63,13 @@ async function seed() {
       id: 1,
       username,
       domain: `*.${username}.example.com`,
-      certificate:
-        '-----BEGIN CERTIFICATE-----ApfFCv0O65TYkp5jEWSlU8PhKYD43nXA=-----END CERTIFICATE-----',
       orderUrl: `orderUrl.example.com`,
       privateKey:
         '-----BEGIN CERTIFICATE-----ApfFCv0O65TYkp5jEWSlU8PhKYD43nXA=-----END CERTIFICATE-----',
+      certificate:
+        '-----BEGIN CERTIFICATE-----BpfFCv0OuF8AujEWv0Okp5jEWSlAuD43=-----END CERTIFICATE-----',
+      chain:
+        '-----BEGIN CERTIFICATE-----CjEWSlU8PhKYTYWSlU8hKYTYkp5jewDW=-----END CERTIFICATE-----',
       validFrom: new Date(),
       validTo: temporaryExpDate,
       status: 'pending',
