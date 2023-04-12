@@ -6,14 +6,15 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
+  useToast,
 } from '@chakra-ui/react';
 import type { Certificate, User } from '@prisma/client';
 import { redirect } from '@remix-run/node';
 import { Form, useSubmit } from '@remix-run/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaUsers, FaSearch, FaStickyNote } from 'react-icons/fa';
 import { TbFileCertificate } from 'react-icons/tb';
-import { useTypedActionData, useTypedLoaderData } from 'remix-typedjson';
+import { typedjson, useTypedActionData, useTypedLoaderData } from 'remix-typedjson';
 import { z } from 'zod';
 import { parseFormSafe } from 'zodix';
 import AdminMetricCard from '~/components/admin/admin-metric-card';
@@ -24,6 +25,9 @@ import { getTotalUserCount, isUserDeactivated, searchUsers } from '~/models/user
 import { requireAdmin, setEffectiveUsername } from '~/session.server';
 
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import { deleteUser } from '~/lib/user.server';
+
+export type AdminActionIntent = 'search-users' | 'impersonate-user' | 'deactivate-user';
 
 export interface UserWithMetrics extends User {
   dnsRecordCount: number;
@@ -34,48 +38,80 @@ export const MIN_USERS_SEARCH_TEXT = 3;
 
 export const action = async ({ request }: ActionArgs) => {
   const admin = await requireAdmin(request);
-  const formData = await request.formData();
-  const newEffectiveUsername = formData.get('newEffectiveUsername');
-  if (typeof newEffectiveUsername === 'string') {
-    if (await isUserDeactivated(newEffectiveUsername)) {
-      return redirect('/');
-    }
-    return redirect('/', {
-      headers: {
-        'Set-Cookie': await setEffectiveUsername(admin.username, newEffectiveUsername),
-      },
-    });
-  }
 
   const actionParams = await parseFormSafe(
-    formData,
-    z.object({
-      searchText: z.string().min(MIN_USERS_SEARCH_TEXT),
-    })
+    request,
+    z
+      .object({
+        intent: z.enum(['search-users', 'impersonate-user', 'deactivate-user']),
+        searchText: z.string().min(MIN_USERS_SEARCH_TEXT).optional(),
+        newEffectiveUsername: z.string().optional(),
+        username: z.string().optional(),
+      })
+      .refine(
+        (data) => {
+          if (data.intent === 'search-users') {
+            return !!data.searchText;
+          }
+          if (data.intent === 'impersonate-user') {
+            return !!data.newEffectiveUsername;
+          }
+          if (data.intent === 'deactivate-user') {
+            return !!data.username;
+          }
+          return false;
+        },
+        {
+          message: 'A required field based on the intent is missing or empty.',
+          path: [],
+        }
+      )
   );
+
   if (actionParams.success === false) {
-    return [];
+    return { users: [] };
   }
 
-  const { searchText } = actionParams.data;
+  const { intent } = actionParams.data;
+  switch (intent) {
+    case 'search-users':
+      const { searchText } = actionParams.data;
 
-  const users = await searchUsers(searchText);
-  const userStats = await Promise.all(
-    users.map((user) =>
-      Promise.all([
-        getDnsRecordCountByUsername(user.username),
-        getCertificateByUsername(user.username),
-      ])
-    )
-  );
+      const users = await searchUsers(searchText ?? '');
+      const userStats = await Promise.all(
+        users.map((user) =>
+          Promise.all([
+            getDnsRecordCountByUsername(user.username),
+            getCertificateByUsername(user.username),
+          ])
+        )
+      );
 
-  const usersWithStats = users.map((user, index): UserWithMetrics => {
-    const [dnsRecordCount, certificate] = userStats[index];
+      const usersWithStats = users.map((user, index): UserWithMetrics => {
+        const [dnsRecordCount, certificate] = userStats[index];
 
-    return { ...user, dnsRecordCount, certificate };
-  });
+        return { ...user, dnsRecordCount, certificate };
+      });
 
-  return usersWithStats;
+      return typedjson({ users: usersWithStats });
+    case 'impersonate-user':
+      const { newEffectiveUsername } = actionParams.data;
+      if (await isUserDeactivated(newEffectiveUsername ?? '')) {
+        return redirect('/');
+      }
+      return redirect('/', {
+        headers: {
+          'Set-Cookie': await setEffectiveUsername(admin.username, newEffectiveUsername ?? ''),
+        },
+      });
+    case 'deactivate-user':
+      const { username } = actionParams.data;
+      await deleteUser(username ?? '');
+
+      return typedjson({ isUserDeleted: true });
+    default:
+      return typedjson({ result: 'error', message: 'Unknown intent' });
+  }
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -91,7 +127,9 @@ export default function AdminRoute() {
   const submit = useSubmit();
 
   const { userCount, dnsRecordCount, certificateCount } = useTypedLoaderData<typeof loader>();
-  const users = useTypedActionData<UserWithMetrics[] | null>();
+  const actionResult = useTypedActionData<{ users?: UserWithMetrics[]; isUserDeleted?: boolean }>();
+
+  const toast = useToast();
 
   const [searchText, setSearchText] = useState('');
 
@@ -100,6 +138,16 @@ export default function AdminRoute() {
       submit(event.currentTarget);
     }
   }
+
+  useEffect(() => {
+    if (actionResult?.isUserDeleted) {
+      toast({
+        title: 'User was deleted',
+        position: 'bottom-right',
+        status: 'success',
+      });
+    }
+  }, [actionResult, toast]);
 
   return (
     <>
@@ -130,6 +178,7 @@ export default function AdminRoute() {
         Users
       </Heading>
       <Form method="post" onChange={onFormChange}>
+        <input type="hidden" name="intent" value="search-users" />
         <FormControl>
           <InputGroup width={{ sm: '100%', md: 300 }}>
             <InputLeftAddon children={<FaSearch />} />
@@ -143,7 +192,7 @@ export default function AdminRoute() {
           <FormHelperText>Please enter at least 3 characters to search.</FormHelperText>
         </FormControl>
       </Form>
-      <UsersTable users={users ?? []} searchText={searchText} />
+      <UsersTable users={actionResult?.users ?? []} searchText={searchText} />
     </>
   );
 }

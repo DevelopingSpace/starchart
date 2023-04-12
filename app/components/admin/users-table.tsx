@@ -85,6 +85,7 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                               name="newEffectiveUsername"
                               value={user.username}
                             />
+                            <input type="hidden" name="intent" value="impersonate-user" />
                             <IconButton
                               type="submit"
                               aria-label="Impersonate user"
@@ -93,13 +94,18 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                             />
                           </Form>
                         </Tooltip>
-                        <Tooltip label="Deactivate user">
-                          <IconButton
-                            aria-label="Deactivate user"
-                            icon={<DeleteIcon color="black" boxSize={5} />}
-                            variant="ghost"
-                          />
-                        </Tooltip>
+                        <Form method="post" reloadDocument>
+                          <Tooltip label="Deactivate user">
+                            <IconButton
+                              aria-label="Deactivate user"
+                              icon={<DeleteIcon color="black" boxSize={5} />}
+                              variant="ghost"
+                              type="submit"
+                            />
+                          </Tooltip>
+                          <input type="hidden" name="username" value={user.username} />
+                          <input type="hidden" name="intent" value="deactivate-user" />
+                        </Form>
                       </HStack>
                     </Td>
                   </Tr>
