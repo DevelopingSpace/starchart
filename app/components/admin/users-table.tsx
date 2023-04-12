@@ -34,7 +34,7 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
   const isInputValid = searchText.length >= MIN_USERS_SEARCH_TEXT;
   const isLoading = navigation.state === 'submitting';
 
-  const shouldShowInstruction = users.length === 0 && !isInputValid && !isLoading;
+  const shouldShowInstruction = !isInputValid && !isLoading;
   const shouldShowNoUsersMessage = users.length === 0 && isInputValid && !isLoading;
   const shouldShowUsers = !(isLoading || shouldShowInstruction || shouldShowNoUsersMessage);
 
@@ -94,7 +94,7 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                             />
                           </Form>
                         </Tooltip>
-                        <Form method="post" reloadDocument>
+                        <Form method="post">
                           <Tooltip label="Deactivate user">
                             <IconButton
                               aria-label="Deactivate user"

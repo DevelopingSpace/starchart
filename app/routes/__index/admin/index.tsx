@@ -11,7 +11,7 @@ import {
 import type { Certificate, User } from '@prisma/client';
 import { redirect } from '@remix-run/node';
 import { Form, useSubmit } from '@remix-run/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FaUsers, FaSearch, FaStickyNote } from 'react-icons/fa';
 import { TbFileCertificate } from 'react-icons/tb';
 import { typedjson, useTypedActionData, useTypedLoaderData } from 'remix-typedjson';
@@ -133,11 +133,15 @@ export default function AdminRoute() {
 
   const [searchText, setSearchText] = useState('');
 
-  function onFormChange(event: any) {
+  const reloadUsers = useCallback(() => {
     if (searchText.length >= MIN_USERS_SEARCH_TEXT) {
-      submit(event.currentTarget);
+      const formData = new FormData();
+      formData.append('searchText', searchText);
+      formData.append('intent', 'search-users');
+
+      submit(formData, { method: 'post' });
     }
-  }
+  }, [searchText, submit]);
 
   useEffect(() => {
     if (actionResult?.isUserDeleted) {
@@ -146,8 +150,14 @@ export default function AdminRoute() {
         position: 'bottom-right',
         status: 'success',
       });
+      reloadUsers();
     }
-  }, [actionResult, toast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actionResult?.isUserDeleted]);
+
+  useEffect(() => {
+    reloadUsers();
+  }, [reloadUsers, searchText]);
 
   return (
     <>
@@ -177,21 +187,20 @@ export default function AdminRoute() {
       <Heading as="h2" size={{ base: 'lg', md: 'xl' }} mt="8" mb="4">
         Users
       </Heading>
-      <Form method="post" onChange={onFormChange}>
-        <input type="hidden" name="intent" value="search-users" />
-        <FormControl>
-          <InputGroup width={{ sm: '100%', md: 300 }}>
-            <InputLeftAddon children={<FaSearch />} />
-            <Input
-              placeholder="Search..."
-              name="searchText"
-              value={searchText}
-              onChange={(event) => setSearchText(event.currentTarget.value)}
-            />
-          </InputGroup>
-          <FormHelperText>Please enter at least 3 characters to search.</FormHelperText>
-        </FormControl>
-      </Form>
+
+      <FormControl>
+        <InputGroup width={{ sm: '100%', md: 300 }}>
+          <InputLeftAddon children={<FaSearch />} />
+          <Input
+            placeholder="Search..."
+            name="searchText"
+            value={searchText}
+            onChange={(event) => setSearchText(event.currentTarget.value)}
+          />
+        </InputGroup>
+        <FormHelperText>Please enter at least 3 characters to search.</FormHelperText>
+      </FormControl>
+
       <UsersTable users={actionResult?.users ?? []} searchText={searchText} />
     </>
   );
