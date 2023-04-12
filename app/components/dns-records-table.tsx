@@ -3,44 +3,30 @@ import {
   Table,
   Tr,
   Th,
-  Text,
   Thead,
   Tbody,
   TableContainer,
   Td,
-  IconButton,
   Flex,
-  Tooltip,
   Card,
   useToast,
   useDisclosure,
   Spinner,
-  HStack,
-  Link,
-  ButtonGroup,
 } from '@chakra-ui/react';
-import type { DnsRecord } from '@prisma/client';
-import { EditIcon, DeleteIcon, RepeatIcon, CopyIcon, InfoOutlineIcon } from '@chakra-ui/icons';
-import DnsRecordDeleteAlertDialog from './dns-record-delete-alert-dialog';
+import { useNavigation } from '@remix-run/react';
 
-import { Form, useNavigate, useTransition } from '@remix-run/react';
-import DnsRecordName from './dns-record/dns-record-name';
-import { useEffectiveUser } from '~/utils';
-import dayjs from 'dayjs';
+import DnsRecordDeleteAlertDialog from './dns-record-delete-alert-dialog';
+import DnsRecordsTableRow from './dns-record-table-row';
+
+import type { DnsRecord } from '@prisma/client';
 
 interface DnsRecordsTableProps {
   dnsRecords: DnsRecord[];
 }
 
-export default function DnsRecordsTable(props: DnsRecordsTableProps) {
-  const { dnsRecords } = props;
-
-  const { baseDomain } = useEffectiveUser();
-
+export default function DnsRecordsTable({ dnsRecords }: DnsRecordsTableProps) {
   const toast = useToast();
-  const navigate = useNavigate();
-  const transition = useTransition();
-
+  const navigation = useNavigation();
   const {
     isOpen: isDeleteAlertDialogOpen,
     onOpen: onDeleteAlertDialogOpen,
@@ -48,8 +34,7 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
   } = useDisclosure();
   const [dnsRecordToDelete, setDnsRecordToDelete] = useState<DnsRecord | undefined>();
 
-  function onCopyNameToClipboard(domain: string) {
-    navigator.clipboard.writeText(domain);
+  function onCopied() {
     toast({
       title: 'DNS Record was copied to clipboard',
       position: 'bottom-right',
@@ -72,10 +57,6 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
     setDnsRecordToDelete(undefined);
   }
 
-  function onDnsRecordEdit(dnsRecord: DnsRecord) {
-    navigate(dnsRecord.id.toString());
-  }
-
   return (
     <>
       <Card p="2" mt="4">
@@ -93,9 +74,8 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
             <Tbody>
               {dnsRecords.map((dnsRecord) => {
                 const isLoading =
-                  transition.state === 'submitting' &&
-                  Number(transition.submission.formData.get('id')) === dnsRecord.id;
-                const isRenewable = dayjs(dnsRecord.expiresAt).isBefore(dayjs().add(6, 'month'));
+                  navigation.state === 'submitting' &&
+                  Number(navigation.formData.get('id')) === dnsRecord.id;
 
                 return isLoading ? (
                   <Tr key={dnsRecord.id}>
@@ -106,88 +86,12 @@ export default function DnsRecordsTable(props: DnsRecordsTableProps) {
                     </Td>
                   </Tr>
                 ) : (
-                  <Tr key={dnsRecord.id}>
-                    <Td>
-                      <Flex justifyContent="space-between" alignItems="center">
-                        <DnsRecordName dnsRecord={dnsRecord} baseDomain={baseDomain} />
-                        <ButtonGroup>
-                          <Link
-                            href={`https://dnschecker.org/#${dnsRecord.type}/${dnsRecord.subdomain}.${baseDomain}`}
-                            isExternal
-                            target="_blank"
-                          >
-                            <Tooltip label="Check DNS record">
-                              <IconButton
-                                icon={<InfoOutlineIcon color="black" boxSize="5" />}
-                                aria-label="Check DNS record"
-                                variant="ghost"
-                                ml="2"
-                              />
-                            </Tooltip>
-                          </Link>
-                          <Tooltip label="Copy DNS record to clipboard">
-                            <IconButton
-                              icon={<CopyIcon color="black" boxSize="5" />}
-                              aria-label="Refresh DNS record"
-                              variant="ghost"
-                              ml="2"
-                              onClick={() =>
-                                onCopyNameToClipboard(`${dnsRecord.subdomain}.${baseDomain}`)
-                              }
-                            />
-                          </Tooltip>
-                        </ButtonGroup>
-                      </Flex>
-                    </Td>
-                    <Td>{dnsRecord.type}</Td>
-                    <Td>
-                      <Tooltip label={dnsRecord.value}>
-                        <Text isTruncated maxWidth="20ch">
-                          {dnsRecord.value}
-                        </Text>
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Flex alignItems="center">
-                        {dnsRecord.expiresAt.toLocaleDateString('en-US')}
-                        <Form method="patch" style={{ margin: 0 }}>
-                          <input type="hidden" name="id" value={dnsRecord.id} />
-                          <input type="hidden" name="intent" value="renew-dns-record" />
-                          <Tooltip label="Renew DNS record">
-                            <IconButton
-                              icon={<RepeatIcon color="black" boxSize="5" />}
-                              aria-label="Refresh DNS record"
-                              variant="ghost"
-                              type="submit"
-                              isDisabled={!isRenewable}
-                            />
-                          </Tooltip>
-                        </Form>
-                      </Flex>
-                    </Td>
-                    <Td>
-                      <HStack>
-                        <Tooltip label="Edit DNS record">
-                          <IconButton
-                            onClick={() => onDnsRecordEdit(dnsRecord)}
-                            icon={<EditIcon color="black" boxSize={5} />}
-                            aria-label="Edit DNS record"
-                            variant="ghost"
-                            mr="1"
-                          />
-                        </Tooltip>
-                        <Tooltip label="Delete DNS record">
-                          <IconButton
-                            onClick={() => onDeleteDnsRecordOpen(dnsRecord)}
-                            icon={<DeleteIcon color="black" boxSize={5} />}
-                            aria-label="Delete DNS record"
-                            variant="ghost"
-                            type="submit"
-                          />
-                        </Tooltip>
-                      </HStack>
-                    </Td>
-                  </Tr>
+                  <DnsRecordsTableRow
+                    key={dnsRecord.id}
+                    dnsRecord={dnsRecord}
+                    onDelete={onDeleteDnsRecordOpen}
+                    onCopied={onCopied}
+                  />
                 );
               })}
             </Tbody>
