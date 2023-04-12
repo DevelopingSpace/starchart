@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branch:
+    branches:
       - release
 
 concurrency:
@@ -10,6 +10,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  Release:
+    name: 'Release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 'marvinpinto/action-automatic-releases@latest'
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: 'release'
+          title: 'Change Log'
+          prerelease: false
+
   Docker-Build-Deploy:
     runs-on: ubuntu-latest
     env:
