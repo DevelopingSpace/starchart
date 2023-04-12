@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   Flex,
   Box,
@@ -12,6 +13,7 @@ import {
   AccordionIcon,
   AccordionPanel,
   useToast,
+  useClipboard,
 } from '@chakra-ui/react';
 import { DownloadIcon, CopyIcon } from '@chakra-ui/icons';
 import { Link } from '@remix-run/react';
@@ -30,15 +32,17 @@ export default function CertificateDisplay({
   downloadPart,
 }: CertificateDisplayProps) {
   const toast = useToast();
+  const { onCopy, hasCopied } = useClipboard(value);
 
-  function onCopy() {
-    navigator.clipboard.writeText(value);
-    toast({
-      title: `${title} was copied to the clipboard`,
-      position: 'bottom-right',
-      status: 'success',
-    });
-  }
+  useEffect(() => {
+    if (hasCopied) {
+      toast({
+        title: `${title} was copied to the clipboard`,
+        position: 'bottom-right',
+        status: 'success',
+      });
+    }
+  }, [title, toast, hasCopied]);
 
   return (
     <Flex
@@ -62,7 +66,7 @@ export default function CertificateDisplay({
             }}
             aria-label={`Copy ${title}`}
             icon={<CopyIcon fontSize="md" />}
-            onClick={() => onCopy()}
+            onClick={onCopy}
           />
         </Tooltip>
         <Tooltip label={`Download ${title}`}>

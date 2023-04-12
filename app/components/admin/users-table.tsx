@@ -9,13 +9,12 @@ import {
   Card,
   IconButton,
   Tooltip,
-  useToast,
   Flex,
   HStack,
   Spinner,
   Text,
 } from '@chakra-ui/react';
-import { CopyIcon, DeleteIcon } from '@chakra-ui/icons';
+import { DeleteIcon } from '@chakra-ui/icons';
 import { FaTheaterMasks } from 'react-icons/fa';
 import { Form, useNavigation } from '@remix-run/react';
 
@@ -30,17 +29,7 @@ interface UsersTableProps {
 }
 
 export default function UsersTable({ users, searchText }: UsersTableProps) {
-  const toast = useToast();
   const navigation = useNavigation();
-
-  function onCopyNameToClipboard(subdomain: string) {
-    navigator.clipboard.writeText(subdomain);
-    toast({
-      title: 'Email was copied to clipboard',
-      position: 'bottom-right',
-      status: 'success',
-    });
-  }
 
   const isInputValid = searchText.length >= MIN_USERS_SEARCH_TEXT;
   const isLoading = navigation.state === 'submitting';
@@ -81,20 +70,7 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
               users.map((user) => {
                 return (
                   <Tr key={user.email}>
-                    <Td>
-                      <Flex justifyContent="space-between" alignItems="center">
-                        {user.email}
-                        <Tooltip label="Copy email to clipboard">
-                          <IconButton
-                            icon={<CopyIcon color="black" boxSize="5" />}
-                            variant="ghost"
-                            ml="2"
-                            onClick={() => onCopyNameToClipboard(user.email)}
-                            aria-label="copy email"
-                          />
-                        </Tooltip>
-                      </Flex>
-                    </Td>
+                    <Td>{user.email}</Td>
                     <Td>{user.displayName}</Td>
                     <Td>{user.dnsRecordCount}</Td>
                     <Td>
