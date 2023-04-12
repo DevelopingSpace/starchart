@@ -92,7 +92,7 @@
     "@vitejs/plugin-react": "^3.1.0",
     "@vitest/coverage-istanbul": "^0.30.1",
     "dotenv": "^16.0.3",
-    "esbuild": "^0.17.15",
+    "esbuild": "^0.17.16",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-playwright": "^0.12.0",
