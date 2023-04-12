@@ -102,6 +102,12 @@ To do this, run the `starchart` container as a service, with the additional envi
 
 Modify the `docker-compose.yml` you are using (e.g., `docker-staging.yml` or `docker-production.yml`) and add `DATABASE_SETUP=1` in the `environment` section of the `mycustomdomain` service. You can (and should!) remove this after you get the database set up, especially on production, so that re-deploying doesn't wipe the database.
 
+### New Changes to Schema
+
+Because staging and production use Prisma migration, changes in schema need to become migration files for Prisma migration to run the files to apply changes.
+
+To make a new migration file with the new changes, run `npm run db:migration`. You will be prompted to give the file a name.
+
 ### Deploying
 
 To deploy or update the app:

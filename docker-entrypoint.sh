@@ -17,6 +17,19 @@ database_setup() {
   echo "Database setup complete"
 }
 
+database_migration() {
+  echo "Running database migration..."
+  DATABASE_URL=$(</run/secrets/DATABASE_URL)
+  export DATABASE_URL
+
+  # Deploy migration files
+  npx prisma migrate deploy
+
+  # Clear the DATABASE_URL from the env. The app uses it via secrets
+  unset DATABASE_URL
+  echo "Database migration complete"
+}
+
 # Clear all keys from Redis, which will clean out
 # any old worker queues that reference rows in
 # the database.
@@ -35,6 +48,10 @@ if [[ $DATABASE_SETUP == "1" ]]; then
   database_setup
   # Clear Redis keys
   clear_redis
+
+# Otherwise, just run our database migration
+else
+  database_migration
 fi
 
 # Run the app normally, switching to the node process as PID 1
