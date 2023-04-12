@@ -69,7 +69,9 @@ export function init() {
                 subject: 'My.Custom.Domain DNS record approaching expiration',
                 message: `${
                   user.displayName
-                }, this is a friendly reminder that your DNS record with subdomain: ${subdomain} will expire on: ${expiresAt.toLocaleDateString()} Log in to My.Custom.Domain to renew.`,
+                }, this is a friendly reminder that your DNS record with subdomain: ${subdomain} will expire on: ${expiresAt.toLocaleDateString(
+                  'en-CA'
+                )}. Log in to My.Custom.Domain to renew.`,
               });
             }
           })
@@ -87,7 +89,7 @@ export function init() {
                 message: `${
                   user.displayName
                 }, this is a friendly reminder that your certificate with domain: ${domain} will expire ${
-                  validTo ? `on: ${validTo.toLocaleTimeString()}` : `in less than 30 days.`
+                  validTo ? `on: ${validTo.toLocaleDateString('en-CA')}` : `in less than 30 days.`
                 }. Log in to My.Custom.Domain to renew. `,
               });
             }
