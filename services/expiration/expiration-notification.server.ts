@@ -85,7 +85,7 @@ export function init() {
             ) {
               await updateStatusAndNotify(type, id, {
                 emailAddress: user.email,
-                subject: 'My.Custom.Domain Certificate approaching expiration',
+                subject: 'My.Custom.Domain certificate approaching expiration',
                 message: `${
                   user.displayName
                 }, this is a friendly reminder that your certificate with domain: ${domain} will expire ${
