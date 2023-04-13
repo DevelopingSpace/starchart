@@ -13,6 +13,8 @@ jobs:
   Release:
     name: 'Release'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: 'marvinpinto/action-automatic-releases@latest'
         with:
