@@ -50,7 +50,8 @@ services:
         parallelism: 0
         failure_action: rollback
       update_config:
-        # Update one containers at once, rollback on failure
+        # Stop all existing containers, then update one container at a time,
+        # waiting 20s between each. If something fails, rollback to last-known-good.
         parallelism: 1
         delay: 20s
         failure_action: rollback

@@ -52,9 +52,12 @@ services:
         parallelism: 0
         failure_action: rollback
       update_config:
-        # Update both containers at once, rollback on failure
-        parallelism: 2
+        # Stop all existing containers, then update one container at a time,
+        # waiting 20s between each. If something fails, rollback to last-known-good.
+        parallelism: 1
+        delay: 20s
         failure_action: rollback
+        order: stop-first
     logging:
       # Use journald log driver, see:
       # https://docs.docker.com/config/containers/logging/journald/

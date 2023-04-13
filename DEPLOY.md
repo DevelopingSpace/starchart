@@ -108,8 +108,10 @@ Because staging and production use Prisma migration, changes in the schema need 
 
 After any changes are made to the `prisma/schema.prisma` file, a new migration file needs to be created (i.e., so it can be applied to the production databases). To make a new migration file, run `npm run db:migration`, while running the project's MySQL database container in Docker locally. You will be prompted to give the file a name.
 
-WARNING: Outside of special circumstances, please DO NOT change the schema without using Prisma migration on staging and production. It will very likely cause issues with database migration. It will then require manual fixing to get the migration history sorted out.
-Think of Prsima migarion as git tracking your commits, and manually fixing git history can be complicated. See [official documentation](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate/troubleshooting-development) for how to do it.
+**WARNING:**
+Outside of special circumstances, please **DO NOT** change the schema without using Prisma migration on staging and production. It will very likely cause issues with database migration. It will then require manual fixing to get the migration history sorted out.
+
+Think of Prisma migarion as git tracking your commits, and manually fixing git history can be complicated. See [official documentation](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate/troubleshooting-development) for how to do it.
 
 ### Deploying
 
