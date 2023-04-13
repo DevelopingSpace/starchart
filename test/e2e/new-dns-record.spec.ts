@@ -22,20 +22,9 @@ test.describe('authenticated as user', () => {
     await page.goto('/dns-records/new');
   });
 
-  /**
-   * Clean up after all tests are run
-   * For some weird reason using afterEach to delete the one record doesn't work
-   * The test is run before the records are deleted
-   * Thus, we are using different values for the fields for the tests
-   */
-  test.afterAll(async () => {
-    await prisma.dnsRecord.deleteMany();
-  });
-
   const fillDnsRecordFormStep = (
-    dnsRecord: Required<
-      Pick<DnsRecord, 'type' | 'subdomain' | 'value' | 'ports' | 'course' | 'description'>
-    >,
+    dnsRecord: Required<Pick<DnsRecord, 'type' | 'subdomain' | 'value'>> &
+      Partial<Pick<DnsRecord, 'ports' | 'course' | 'description'>>,
     page: Page
   ) => {
     return test.step('fill DNS Record form', async () => {
@@ -49,62 +38,94 @@ test.describe('authenticated as user', () => {
   };
 
   const checkDnsRecordStep = (
-    dnsRecord: Required<
-      Pick<DnsRecord, 'type' | 'subdomain' | 'value' | 'ports' | 'course' | 'description'>
-    >,
+    dnsRecord: Required<Pick<DnsRecord, 'type' | 'subdomain' | 'value'>> &
+      Partial<Pick<DnsRecord, 'ports' | 'course' | 'description'>>,
     page: Page
   ) => {
     return test.step('validate DNS Record data', async () => {
       await expect(page.getByLabel('Name*')).toHaveValue(dnsRecord.subdomain);
       await expect(page.getByRole('combobox', { name: 'Type' })).toHaveValue(dnsRecord.type);
       await expect(page.getByLabel('Value*')).toHaveValue(dnsRecord.value);
+      await expect(page.getByLabel('Ports')).toHaveValue(dnsRecord.ports || '');
+      await expect(page.getByLabel('Course')).toHaveValue(dnsRecord.course || '');
+      await expect(page.getByLabel('Description')).toHaveValue(dnsRecord.description || '');
     });
   };
 
-  test('when only required fields are filled', async ({ page }) => {
-    const dnsRecord = {
-      subdomain: 'test1-required',
-      type: DnsRecordType.A,
-      value: '192.168.1.1',
-      ports: '',
-      course: '',
-      description: '',
-    };
+  test.describe('accepts valid values based on type', () => {
+    test.afterEach(async () => {
+      await prisma.dnsRecord.deleteMany();
+    });
 
-    await fillDnsRecordFormStep(dnsRecord, page);
-    // Submit form
-    await page.getByRole('button', { name: 'Create' }).click();
+    test.beforeEach(async ({ page }) => {
+      await page.goto('/dns-records/new');
+    });
 
-    // Check if we get redirected to the dns records table
-    await expect(page).toHaveURL('/dns-records');
+    test('when only required fields are filled', async ({ page }) => {
+      const dnsRecord = {
+        subdomain: 'test1-required',
+        type: DnsRecordType.A,
+        value: '192.168.1.1',
+      };
 
-    // Check if the dns record was created correctly
-    const dnsRecordRow = page.locator('table tr').nth(1); // First row is the header
-    await dnsRecordRow.getByRole('button', { name: 'Edit DNS record' }).click();
-    await checkDnsRecordStep(dnsRecord, page);
+      await fillDnsRecordFormStep(dnsRecord, page);
+      // Submit form
+      await page.getByRole('button', { name: 'Create' }).click();
+
+      // Check if we get redirected to the dns records table
+      await expect(page).toHaveURL('/dns-records');
+
+      // Check if the dns record was created correctly
+      const dnsRecordRow = page.locator('table tr').last();
+      await dnsRecordRow.getByRole('button', { name: 'Edit DNS record' }).click();
+      await checkDnsRecordStep(dnsRecord, page);
+    });
+
+    test('when all fields are filled', async ({ page }) => {
+      const dnsRecord = {
+        subdomain: 'test2-all',
+        type: DnsRecordType.A,
+        value: '192.168.1.1',
+        ports: 'port1, port2',
+        course: 'test course',
+        description: 'test description',
+      };
+
+      await fillDnsRecordFormStep(dnsRecord, page);
+      // Submit form
+      await page.getByRole('button', { name: 'Create' }).click();
+
+      // Check if we get redirected to the dns records table
+      await expect(page).toHaveURL('/dns-records');
+
+      // Check if the dns record was created correctly
+      const dnsRecordRow = page.locator('table tr').last();
+      await dnsRecordRow.getByRole('button', { name: 'Edit DNS record' }).click();
+      await checkDnsRecordStep(dnsRecord, page);
+    });
   });
 
-  test('when all fields are filled', async ({ page }) => {
-    const dnsRecord = {
-      subdomain: 'test2-all',
-      type: DnsRecordType.A,
-      value: '192.168.1.1',
-      ports: 'port1, port2',
-      course: 'test course',
-      description: 'test description',
-    };
-
-    await fillDnsRecordFormStep(dnsRecord, page);
-    // Submit form
-    await page.getByRole('button', { name: 'Create' }).click();
-
-    // Check if we get redirected to the dns records table
-    await expect(page).toHaveURL('/dns-records');
-
-    // Check if the dns record was created correctly
-    const dnsRecordRow = page.locator('table tr').last();
-    await dnsRecordRow.getByRole('button', { name: 'Edit DNS record' }).click();
-    await checkDnsRecordStep(dnsRecord, page);
+  test.describe('rejects invalid values based on type', () => {
+    const invalidValueTypeMappings = [
+      { type: DnsRecordType.A, value: 'invalid' },
+      { type: DnsRecordType.AAAA, value: 'invalid' },
+      { type: DnsRecordType.CNAME, value: '192.168.1.1' },
+      { type: DnsRecordType.TXT, value: '' },
+    ];
+    for (let index = 0; index < invalidValueTypeMappings.length; index++) {
+      const mapping = invalidValueTypeMappings[index];
+      test(`when type is ${mapping.type} Record`, async ({ page }) => {
+        const dnsRecord = {
+          subdomain: 'test',
+          type: mapping.type,
+          value: mapping.value,
+        };
+        await fillDnsRecordFormStep(dnsRecord, page);
+        await page.getByRole('button', { name: 'Create' }).click();
+        // We expect to remain on the same page
+        await expect(page).toHaveURL('/dns-records/new');
+      });
+    }
   });
 
   test('when required fields are empty', async ({ page }) => {
