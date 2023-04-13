@@ -25,7 +25,13 @@ const config: PlaywrightTestConfig = {
    * allowing easier debugging without pushing to a branch or modifying this manually
    */
   retries: process.env.CI ? 2 : 1,
-  /* Opt out of parallel tests on CI. */
+  /**
+   * Opt out of parallel tests
+   * This is needed as we want to delete records between tests
+   * When running in parallel, the tests start running before the deletion is complete
+   * The alternative would be to make tests depend on each other, i.e., use different test values
+   * for each test
+   */
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
