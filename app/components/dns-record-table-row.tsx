@@ -9,9 +9,9 @@ import {
   Link,
   ButtonGroup,
   useClipboard,
+  useToast,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon, RepeatIcon, CopyIcon, InfoOutlineIcon } from '@chakra-ui/icons';
-import dayjs from 'dayjs';
 
 import { Form, useNavigate } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
@@ -32,8 +32,8 @@ export default function DnsRecordsTableRow({
 }: DnsRecordsTableRowProps) {
   const { baseDomain } = useEffectiveUser();
   const { onCopy } = useClipboard(`${dnsRecord.subdomain}.${baseDomain}`);
-  const isRenewable = dayjs(dnsRecord.expiresAt).isBefore(dayjs().add(6, 'month'));
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleOnCopy = () => {
     onCopy();
@@ -92,7 +92,13 @@ export default function DnsRecordsTableRow({
                 aria-label="Refresh DNS record"
                 variant="ghost"
                 type="submit"
-                isDisabled={!isRenewable}
+                onClick={() =>
+                  toast({
+                    title: `DNS Record "${dnsRecord.subdomain}" has been successfully renewed`,
+                    position: 'bottom-right',
+                    status: 'success',
+                  })
+                }
               />
             </Tooltip>
           </Form>
