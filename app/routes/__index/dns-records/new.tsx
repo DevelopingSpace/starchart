@@ -1,4 +1,4 @@
-import { Container, Heading, Text } from '@chakra-ui/react';
+import { Container, Heading, Text, Link } from '@chakra-ui/react';
 import { parseFormSafe } from 'zodix';
 import { redirect } from 'remix-typedjson';
 
@@ -8,7 +8,7 @@ import { createDnsRecord } from '~/models/dns-record.server';
 
 import type { ActionArgs } from '@remix-run/node';
 import { DnsRecordSchema, isNameValid } from '~/lib/dns.server';
-import { useActionData, Link } from '@remix-run/react';
+import { useActionData, Link as RemixLink } from '@remix-run/react';
 import { buildDomain } from '~/utils';
 
 export const action = async ({ request }: ActionArgs) => {
@@ -57,10 +57,8 @@ export default function NewDnsRecordRoute() {
         Choose a subdomain Name. This will be used to build your domain.
         <br /> (i.e. [subdomain].[username].mystudentproject.ca). <br />
         Then enter a Type and Value that will be mapped with your domain. For more info refer to our{' '}
-        <Link to={{ pathname: '/dns-records/instructions' }}>
-          <Text as="span" textDecoration="underline">
-            instructions page.
-          </Text>
+        <Link as={RemixLink} to={{ pathname: '/dns-records/instructions' }}>
+          instructions page.
         </Link>
       </Text>
       <DnsRecordForm errors={actionData} mode="CREATE" />
