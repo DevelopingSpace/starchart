@@ -109,9 +109,10 @@ export default function CertificateDisplay({
             <Flex justifyContent="center">
               <Text
                 fontFamily="mono"
+                minWidth="max-content"
                 maxWidth={{ base: '2xs', xs: 'sm', sm: 'md', md: 'full' }}
                 fontSize={{ base: '3xs', xs: '2xs', sm: 'xs', md: 'md' }}
-                css={{ whiteSpace: 'pre-line' }}
+                css={{ whiteSpace: 'pre-line', wordWrap: 'normal' }}
               >
                 {value}
               </Text>
