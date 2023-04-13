@@ -1,11 +1,9 @@
 import { test, expect } from '@playwright/test';
-
-import type { Page } from '@playwright/test';
-import type { DnsRecord } from '@prisma/client';
+import { DnsRecordType } from '@prisma/client';
 
 import { loggedInAsUser } from './utils';
 import { prisma } from '../../app/db.server';
-import { DnsRecordType } from '@prisma/client';
+import { fillDnsRecordFormStep, checkDnsRecordStep } from './dns-record.common';
 
 test.describe('not authenticated', () => {
   test('redirects to login page', async ({ page }) => {
@@ -20,40 +18,6 @@ test.describe('authenticated as user', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/dns-records/new');
   });
-
-  const fillDnsRecordFormStep = (
-    dnsRecord: Required<Pick<DnsRecord, 'type' | 'subdomain' | 'value'>> &
-      Partial<Pick<DnsRecord, 'ports' | 'course' | 'description'>>,
-    page: Page
-  ) => {
-    return test.step('fill DNS Record form', async () => {
-      await page.getByLabel('Name*').fill(dnsRecord.subdomain);
-      await page.getByRole('combobox', { name: 'Type' }).selectOption(dnsRecord.type);
-      await page.getByLabel('Value*').fill(dnsRecord.value);
-      await page.getByLabel('Ports').fill(dnsRecord.ports || '');
-      await page.getByLabel('Course').fill(dnsRecord.course || '');
-      await page.getByLabel('Description').fill(dnsRecord.description || '');
-    });
-  };
-
-  const checkDnsRecordStep = (
-    dnsRecord: Required<Pick<DnsRecord, 'type' | 'subdomain' | 'value'>> &
-      Partial<Pick<DnsRecord, 'ports' | 'course' | 'description'>>,
-    page: Page
-  ) => {
-    return test.step('validate DNS Record data', async () => {
-      // Navigate to edit page to check for values
-      const dnsRecordRow = page.locator('table tr').last();
-      await dnsRecordRow.getByRole('button', { name: 'Edit DNS record' }).click();
-
-      await expect(page.getByLabel('Name*')).toHaveValue(dnsRecord.subdomain);
-      await expect(page.getByRole('combobox', { name: 'Type' })).toHaveValue(dnsRecord.type);
-      await expect(page.getByLabel('Value*')).toHaveValue(dnsRecord.value);
-      await expect(page.getByLabel('Ports')).toHaveValue(dnsRecord.ports || '');
-      await expect(page.getByLabel('Course')).toHaveValue(dnsRecord.course || '');
-      await expect(page.getByLabel('Description')).toHaveValue(dnsRecord.description || '');
-    });
-  };
 
   test.describe('accepts valid values based on type', () => {
     const validValueTypeMappings = [
@@ -77,13 +41,9 @@ test.describe('authenticated as user', () => {
           };
 
           await fillDnsRecordFormStep(dnsRecord, page);
-
-          // Submit form
           await page.getByRole('button', { name: 'Create' }).click();
-
           // Check if we get redirected to the dns records table
           await expect(page).toHaveURL('/dns-records');
-
           // Check if the dns record was created correctly
           await checkDnsRecordStep(dnsRecord, page);
         });
@@ -99,13 +59,9 @@ test.describe('authenticated as user', () => {
           };
 
           await fillDnsRecordFormStep(dnsRecord, page);
-
-          // Submit form
           await page.getByRole('button', { name: 'Create' }).click();
-
           // Check if we get redirected to the dns records table
           await expect(page).toHaveURL('/dns-records');
-
           // Check if the dns record was created correctly
           await checkDnsRecordStep(dnsRecord, page);
         });
@@ -127,6 +83,7 @@ test.describe('authenticated as user', () => {
           type: mapping.type,
           value: mapping.value,
         };
+
         await fillDnsRecordFormStep(dnsRecord, page);
         await page.getByRole('button', { name: 'Create' }).click();
         // We expect to remain on the same page
