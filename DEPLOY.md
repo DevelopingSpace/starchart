@@ -102,13 +102,13 @@ To do this, run the `starchart` container as a service, with the additional envi
 
 Modify the `docker-compose.yml` you are using (e.g., `docker-staging.yml` or `docker-production.yml`) and add `DATABASE_SETUP=1` in the `environment` section of the `mycustomdomain` service. You can (and should!) remove this after you get the database set up, especially on production, so that re-deploying doesn't wipe the database.
 
-### New Changes to Schema
+### New Changes to the Database Schema
 
-Because staging and production use Prisma migration, changes in schema need to become migration files for Prisma migration to run the files to apply changes. A migration file is essentially a set of SQL queries Prisma generates that would get a database to a desired state, by comparing your current schema and the latest migration file.
+Because staging and production use Prisma migration, changes in the schema need to become migration files for Prisma migration to run the files to apply changes. A migration file is essentially a set of SQL queries Prisma generates that would get a database to a desired state, by comparing your current schema and the latest migration file.
 
-To make a new migration file with the new changes, run `npm run db:migration`. You will be prompted to give the file a name.
+After any changes are made to the `prisma/schema.prisma` file, a new migration file needs to be created (i.e., so it can be applied to the production databases). To make a new migration file, run `npm run db:migration`, while running the project's MySQL database container in Docker locally. You will be prompted to give the file a name.
 
-WARNING: Outside of special circumstances, please DO NOT change schema without using Prisma migration on staging and production. It will very likely cause issues with database migration. It will then require manual fixing to get the migration history sorted out.
+WARNING: Outside of special circumstances, please DO NOT change the schema without using Prisma migration on staging and production. It will very likely cause issues with database migration. It will then require manual fixing to get the migration history sorted out.
 Think of Prsima migarion as git tracking your commits, and manually fixing git history can be complicated. See [official documentation](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate/troubleshooting-development) for how to do it.
 
 ### Deploying
