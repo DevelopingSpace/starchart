@@ -5,6 +5,8 @@ import type { Page } from '@playwright/test';
 
 import { loggedInAsUser } from './utils';
 import { prisma } from '../../app/db.server';
+import type { DnsRecord } from '@prisma/client';
+import { DnsRecordType } from '@prisma/client';
 
 test.describe('not authenticated', () => {
   test('redirects to login page', async ({ page }) => {
@@ -30,38 +32,39 @@ test.describe('authenticated as user', () => {
     await prisma.dnsRecord.deleteMany();
   });
 
-  interface DnsRecordData {
-    name: string;
-    type: string;
-    value: string;
-    ports: string;
-    course: string;
-    description: string;
-  }
-
-  const fillDnsRecordFormStep = (dnsRecord: DnsRecordData, page: Page) => {
+  const fillDnsRecordFormStep = (
+    dnsRecord: Required<
+      Pick<DnsRecord, 'type' | 'subdomain' | 'value' | 'ports' | 'course' | 'description'>
+    >,
+    page: Page
+  ) => {
     return test.step('fill DNS Record form', async () => {
-      await page.getByLabel('Name*').fill(dnsRecord.name);
+      await page.getByLabel('Name*').fill(dnsRecord.subdomain);
       await page.getByRole('combobox', { name: 'Type' }).selectOption(dnsRecord.type);
       await page.getByLabel('Value*').fill(dnsRecord.value);
-      await page.getByLabel('Ports').fill(dnsRecord.ports);
-      await page.getByLabel('Course').fill(dnsRecord.course);
-      await page.getByLabel('Description').fill(dnsRecord.description);
+      await page.getByLabel('Ports').fill(dnsRecord.ports || '');
+      await page.getByLabel('Course').fill(dnsRecord.course || '');
+      await page.getByLabel('Description').fill(dnsRecord.description || '');
     });
   };
 
-  const checkDnsRecordStep = (dnsRecord: DnsRecordData, page: Page) => {
+  const checkDnsRecordStep = (
+    dnsRecord: Required<
+      Pick<DnsRecord, 'type' | 'subdomain' | 'value' | 'ports' | 'course' | 'description'>
+    >,
+    page: Page
+  ) => {
     return test.step('validate DNS Record data', async () => {
-      await expect(page.getByLabel('Name*')).toHaveValue(dnsRecord.name);
+      await expect(page.getByLabel('Name*')).toHaveValue(dnsRecord.subdomain);
       await expect(page.getByRole('combobox', { name: 'Type' })).toHaveValue(dnsRecord.type);
       await expect(page.getByLabel('Value*')).toHaveValue(dnsRecord.value);
     });
   };
 
   test('when only required fields are filled', async ({ page }) => {
-    const dnsRecord: DnsRecordData = {
-      name: 'test1-required',
-      type: 'A',
+    const dnsRecord = {
+      subdomain: 'test1-required',
+      type: DnsRecordType.A,
       value: '192.168.1.1',
       ports: '',
       course: '',
@@ -82,9 +85,9 @@ test.describe('authenticated as user', () => {
   });
 
   test('when all fields are filled', async ({ page }) => {
-    const dnsRecord: DnsRecordData = {
-      name: 'test2-all',
-      type: 'A',
+    const dnsRecord = {
+      subdomain: 'test2-all',
+      type: DnsRecordType.A,
       value: '192.168.1.1',
       ports: 'port1, port2',
       course: 'test course',
