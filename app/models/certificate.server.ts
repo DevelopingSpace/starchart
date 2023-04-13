@@ -71,3 +71,7 @@ export function getExpiredCertificates() {
     },
   });
 }
+
+export function deleteAllCertificates() {
+  return prisma.certificate.deleteMany({});
+}
