@@ -95,16 +95,16 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                           </Form>
                         </Tooltip>
                         <Form method="post">
-                          <Tooltip label="Deactivate user">
+                          <Tooltip label="Delete user">
                             <IconButton
-                              aria-label="Deactivate user"
+                              aria-label="Delete user"
                               icon={<DeleteIcon color="black" boxSize={5} />}
                               variant="ghost"
                               type="submit"
                             />
                           </Tooltip>
                           <input type="hidden" name="username" value={user.username} />
-                          <input type="hidden" name="intent" value="deactivate-user" />
+                          <input type="hidden" name="intent" value="delete-user" />
                         </Form>
                       </HStack>
                     </Td>

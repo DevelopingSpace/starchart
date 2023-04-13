@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import type { Certificate, User } from '@prisma/client';
 import { redirect } from '@remix-run/node';
-import { Form, useSubmit } from '@remix-run/react';
+import { useSubmit } from '@remix-run/react';
 import { useCallback, useEffect, useState } from 'react';
 import { FaUsers, FaSearch, FaStickyNote } from 'react-icons/fa';
 import { TbFileCertificate } from 'react-icons/tb';
@@ -27,7 +27,7 @@ import { requireAdmin, setEffectiveUsername } from '~/session.server';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { deleteUser } from '~/lib/user.server';
 
-export type AdminActionIntent = 'search-users' | 'impersonate-user' | 'deactivate-user';
+export type AdminActionIntent = 'search-users' | 'impersonate-user' | 'delete-user';
 
 export interface UserWithMetrics extends User {
   dnsRecordCount: number;
@@ -43,7 +43,7 @@ export const action = async ({ request }: ActionArgs) => {
     request,
     z
       .object({
-        intent: z.enum(['search-users', 'impersonate-user', 'deactivate-user']),
+        intent: z.enum(['search-users', 'impersonate-user', 'delete-user']),
         searchText: z.string().min(MIN_USERS_SEARCH_TEXT).optional(),
         newEffectiveUsername: z.string().optional(),
         username: z.string().optional(),
@@ -56,7 +56,7 @@ export const action = async ({ request }: ActionArgs) => {
           if (data.intent === 'impersonate-user') {
             return !!data.newEffectiveUsername;
           }
-          if (data.intent === 'deactivate-user') {
+          if (data.intent === 'delete-user') {
             return !!data.username;
           }
           return false;
@@ -104,7 +104,7 @@ export const action = async ({ request }: ActionArgs) => {
           'Set-Cookie': await setEffectiveUsername(admin.username, newEffectiveUsername ?? ''),
         },
       });
-    case 'deactivate-user':
+    case 'delete-user':
       const { username } = actionParams.data;
       await deleteUser(username ?? '');
 
