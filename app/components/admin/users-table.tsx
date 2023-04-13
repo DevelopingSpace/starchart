@@ -18,8 +18,8 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { FaTheaterMasks } from 'react-icons/fa';
 import { Form, useNavigation } from '@remix-run/react';
 
-import type { UserWithMetrics } from '~/routes/_loggedIn.admin._index';
-import { MIN_USERS_SEARCH_TEXT } from '~/routes/_loggedIn.admin._index';
+import type { UserWithMetrics } from '~/routes/_auth.admin._index';
+import { MIN_USERS_SEARCH_TEXT } from '~/routes/_auth.admin._index';
 
 import CertificateStatusIcon from '~/components/admin/certificate-status-icon';
 
