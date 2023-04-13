@@ -9,8 +9,9 @@ database_setup() {
   DATABASE_URL=$(</run/secrets/DATABASE_URL)
   export DATABASE_URL
 
-  # Wipes existing data as well!
-  npx prisma db push --force-reset
+  # Wipes existing database and apply migration files
+  # See:https://www.prisma.io/docs/concepts/components/prisma-migrate/mental-model
+  npx prisma migrate reset --force --skip-seed
 
   # Clear the DATABASE_URL from the env. The app uses it via secrets
   unset DATABASE_URL
@@ -22,7 +23,8 @@ database_migration() {
   DATABASE_URL=$(</run/secrets/DATABASE_URL)
   export DATABASE_URL
 
-  # Deploy migration files
+  # Deploy migration files to change schema without deleting the data
+  # See:https://www.prisma.io/docs/concepts/components/prisma-migrate/mental-model
   npx prisma migrate deploy
 
   # Clear the DATABASE_URL from the env. The app uses it via secrets

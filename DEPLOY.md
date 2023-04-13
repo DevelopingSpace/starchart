@@ -104,7 +104,7 @@ Modify the `docker-compose.yml` you are using (e.g., `docker-staging.yml` or `do
 
 ### New Changes to Schema
 
-Because staging and production use Prisma migration, changes in schema need to become migration files for Prisma migration to run the files to apply changes.
+Because staging and production use Prisma migration, changes in schema need to become migration files for Prisma migration to run the files to apply changes. A migration file is essentially a set of SQL queries Prisma generates that would get a database to a desired state, by comparing your current schema and the latest migration file.
 
 To make a new migration file with the new changes, run `npm run db:migration`. You will be prompted to give the file a name.
 
