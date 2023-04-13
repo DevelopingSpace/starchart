@@ -181,3 +181,44 @@ sudo run-parts /etc/cron.daily
 ```
 
 Repeat this process on all nodes in the swarm.
+
+## GitHub Automated Release Flow for Staging and Production
+
+Once setup on staging and production, updates can be automatically released via GitHub. Automatic releases are managed via our [GitHub Actions Workflows](./.github/workflows/) and triggered as follows:
+
+- Merging code to `main` automatically deploys to **staging**
+- Merging code to `release` automatically deploys to **production**
+
+### Production Release Workflow
+
+We deploy to production from the `release` branch. When `main` is in the desired state, and has been tested on staging, promoting the code to production works as follows:
+
+1. A maintainer creates a new **Pull Request** from the GitHub UI:
+
+![Create Pull Request](img/prod-deploy-01.png)
+
+2. Merge all changes in the `main` branch _into_ the `release` branch by selecting the `release` branch as the **base ref**:
+
+![Select release base ref](img/prod-deploy-02.png)
+
+3. Confirm that you are merging `main` _into_ `release` and click **Create pull request**:
+
+![Confirm and create pull request](img/prod-deploy-03.png)
+
+4. Update the title and description if desired, or leave as is. Read through all changes that are about to get added to `release`, making sure there's nothing in it that will cause data loss (e.g., database changes), require changes on the production infrastructure (e.g., changes to Docker setup), etc. and click **Create pull request**:
+
+![Update info and create pull request](img/prod-deploy-04.png)
+
+5. Get a review. NOTE: all changes have already been fully reviewed and tested before being merged in `main`, so this process is about making sure that we can ship these changes to production as-is. For example: does this need any special database or system updates outside the scope of the code changes?
+
+6. Merge the pull request with a **merge commit** (i.e., _not_ a **squash** or `**rebase**). We use a **merge commit** in order to keep the commits the same in both branches, making it easier to revert a single commit later on:
+
+![Merge pull request](img/prod-deploy-05.png)
+
+7. Confirm that the pull request has triggered a GitHub Actions run on `release`, and that it succeeds:
+
+![Release GitHub Action](img/prod-deploy-06.png)
+
+8. Confirm that a new **Release** has been created:
+
+![New Release](img/prod-deploy-07.png)
