@@ -1,16 +1,19 @@
 #!/bin/bash
 set -eo pipefail
 
+# For reset or first database setup ONLY!!!
 # Run the necessary commands to sync the Prisma schema
-# with the database. We pull the database URL out of
-# secrets, since Prisma requires it as an env var.
+# with the database by wiping existing database and 
+# applying migration files.
+# See:https://www.prisma.io/docs/concepts/components/prisma-migrate/mental-model
 database_setup() {
+  # We pull the database URL out of secrets, since Prisma requires 
+  # it as an env var.
   echo "Running database reset and setup..."
   DATABASE_URL=$(</run/secrets/DATABASE_URL)
   export DATABASE_URL
 
   # Wipes existing database and apply migration files
-  # See:https://www.prisma.io/docs/concepts/components/prisma-migrate/mental-model
   npx prisma migrate reset --force --skip-seed
 
   # Clear the DATABASE_URL from the env. The app uses it via secrets
@@ -18,13 +21,19 @@ database_setup() {
   echo "Database setup complete"
 }
 
+# For updating database schema, assuming no changes to schema 
+# is done without Prisma migration.
+# Run the necessary commands to sync the Prisma schema with
+# the database by applying migration files.
+# See:https://www.prisma.io/docs/concepts/components/prisma-migrate/mental-model
 database_migration() {
+  # We pull the database URL out of secrets, since Prisma requires 
+  # it as an env var.
   echo "Running database migration..."
   DATABASE_URL=$(</run/secrets/DATABASE_URL)
   export DATABASE_URL
 
   # Deploy migration files to change schema without deleting the data
-  # See:https://www.prisma.io/docs/concepts/components/prisma-migrate/mental-model
   npx prisma migrate deploy
 
   # Clear the DATABASE_URL from the env. The app uses it via secrets

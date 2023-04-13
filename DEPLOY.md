@@ -108,6 +108,9 @@ Because staging and production use Prisma migration, changes in schema need to b
 
 To make a new migration file with the new changes, run `npm run db:migration`. You will be prompted to give the file a name.
 
+WARNING: Outside of special circumstances, please DO NOT change schema without using Prisma migration on staging and production. It will very likely cause issues with database migration. It will then require manual fixing to get the migration history sorted out.
+Think of Prsima migarion as git tracking your commits, and manually fixing git history can be complicated. See [official documentation](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate/troubleshooting-development) for how to do it.
+
 ### Deploying
 
 To deploy or update the app:
