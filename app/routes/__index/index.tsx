@@ -78,6 +78,7 @@ export default function IndexRoute() {
         <Link
           href="https://www.senecacollege.ca/about/policies/information-technology-acceptable-use-policy.html"
           fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
+          target="_blank"
         >
           Seneca's IT Acceptable Use Policy
         </Link>
