@@ -53,7 +53,10 @@ test.describe('authenticated as user', () => {
     const dnsRecordRow = page.locator('table tr').last();
     await dnsRecordRow.getByRole('button', { name: 'Delete DNS record' }).click();
     // Click on delete button in modal
-    await page.getByRole('button', { name: 'Delete' }).click();
+    const deleteModal = page
+      .locator('section')
+      .filter({ hasText: "Are you sure? You can't undo this action afterwards." });
+    await deleteModal.getByRole('button', { name: 'Delete' }).click();
     // Since there should be no DNS Records at this point, the table shouldn't exist
     await expect(page.locator('table')).toBeHidden();
   });
