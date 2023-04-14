@@ -61,7 +61,7 @@ export default function IndexRoute() {
         )}
         <LandingPageCard
           path="/dns-records"
-          pathName={dnsRecordCount > 0 ? 'Manage DNS Record' : 'Create DNS Record'}
+          pathName={dnsRecordCount > 0 ? 'Manage DNS Records' : 'Create DNS Records'}
           cardName="DNS Records"
           cardDescription="DNS Records are stored in Domain Name System (DNS) servers, which map a value to a domain name.  You can create a unique custom domain for each of your projects."
           instructionsPath="/dns-records/instructions"
