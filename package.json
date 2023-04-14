@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@authenio/samlify-node-xmllint": "^2.0.0",
-    "@aws-sdk/client-route-53": "^3.309.0",
+    "@aws-sdk/client-route-53": "^3.312.0",
     "@chakra-ui/icons": "^2.0.18",
     "@chakra-ui/react": "^2.5.5",
     "@emotion/react": "^11.10.6",
@@ -59,7 +59,7 @@
     "docker-secret": "^2.0.6",
     "express": "^4.18.2",
     "framer-motion": "^10.11.5",
-    "helmet": "^6.1.1",
+    "helmet": "^6.1.5",
     "http-graceful-shutdown": "^3.1.13",
     "ioredis": "^5.3.1",
     "isbot": "^3.6.8",
@@ -76,7 +76,7 @@
     "zodix": "^0.4.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.32.2",
+    "@playwright/test": "^1.32.3",
     "@remix-run/dev": "^1.15.0",
     "@remix-run/eslint-config": "^1.15.0",
     "@types/bad-words": "^3.0.1",
@@ -88,7 +88,7 @@
     "@types/nodemailer": "^6.4.7",
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
-    "@types/validator": "^13.7.14",
+    "@types/validator": "^13.7.15",
     "@vitejs/plugin-react": "^3.1.0",
     "@vitest/coverage-istanbul": "^0.30.1",
     "dotenv": "^16.0.3",
@@ -105,8 +105,8 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4",
-    "vite-tsconfig-paths": "^4.0.8",
-    "vitest": "^0.30.0"
+    "vite-tsconfig-paths": "^4.2.0",
+    "vitest": "^0.30.1"
   },
   "engines": {
     "node": ">=16"
