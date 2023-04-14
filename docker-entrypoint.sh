@@ -7,7 +7,7 @@ set -eo pipefail
 # with the database by wiping the existing database and 
 # applying migration files.
 # See: https://www.prisma.io/docs/concepts/components/prisma-migrate/mental-model
-database_setup() {
+danger_database_wipe_reinitialize() {
   # We pull the database URL out of secrets, since Prisma requires 
   # it as an env var.
   echo "Running database reset and setup..."
@@ -54,10 +54,10 @@ clear_redis() {
   echo "Redis cleanup complete"
 }
 
-# See if we need to do database setup before starting.
-if [[ $DATABASE_SETUP == "1" ]]; then
-  # Run our database setup
-  database_setup
+# See if we need to do database wipe and reinitialize before starting.
+if [[ $DANGER_DATABASE_WIPE_REINITIALIZE == "1" ]]; then
+  # Run database wipe and reinitialize
+  DANGER_DATABASE_WIPE_REINITIALIZE
   # Clear Redis keys
   clear_redis
 
