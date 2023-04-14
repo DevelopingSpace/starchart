@@ -120,8 +120,10 @@ export default function DnsRecordsTableRow({
               />
             </Tooltip>
           </HStack>
-          <Text>Expiration Date</Text>
-          <DnsRecordExpiryDate dnsRecord={dnsRecord} />
+          <Hide above="sm">
+            <Text>Expiration Date</Text>
+            <DnsRecordExpiryDate dnsRecord={dnsRecord} />
+          </Hide>
         </VStack>
       </Td>
     </Tr>
