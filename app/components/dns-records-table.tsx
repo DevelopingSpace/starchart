@@ -12,6 +12,7 @@ import {
   useToast,
   useDisclosure,
   Spinner,
+  Hide,
 } from '@chakra-ui/react';
 import { useNavigation } from '@remix-run/react';
 
@@ -65,9 +66,11 @@ export default function DnsRecordsTable({ dnsRecords }: DnsRecordsTableProps) {
             <Thead>
               <Tr>
                 <Th>DNS Record</Th>
-                <Th>Type</Th>
-                <Th>Value</Th>
-                <Th>Expiration date</Th>
+                <Hide below="sm">
+                  <Th>Type</Th>
+                  <Th>Value</Th>
+                  <Th>Expiration date</Th>
+                </Hide>
                 <Th />
               </Tr>
             </Thead>
