@@ -16,8 +16,8 @@ test.describe('Landing Page', () => {
     await expect(certCard).toContainText('Certificate');
   });
 
-  test('Manage DNS Records Button', async ({ page }) => {
-    await page.getByRole('link', { name: 'Manage DNS Records' }).click();
+  test('Create DNS Records Button', async ({ page }) => {
+    await page.getByRole('link', { name: 'Create DNS Records' }).click();
 
     await expect(page).toHaveURL('/dns-records');
   });
@@ -28,8 +28,8 @@ test.describe('Landing Page', () => {
     await expect(page).toHaveURL('/dns-records/instructions');
   });
 
-  test('Manage Certificate Button', async ({ page }) => {
-    await page.getByRole('link', { name: 'Manage Certificate' }).click();
+  test('Create Certificate Button', async ({ page }) => {
+    await page.getByRole('link', { name: 'Create Certificate' }).click();
 
     await expect(page).toHaveURL('/certificate');
   });
