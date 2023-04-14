@@ -36,6 +36,7 @@ services:
       - PORT=8080
       - REDIS_URL=redis://redis:6379
       - ROOT_DOMAIN=stage.mystudentproject.ca
+      - USER_DNS_RECORD_LIMIT=10
     secrets:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
