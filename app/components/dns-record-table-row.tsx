@@ -53,7 +53,7 @@ export default function DnsRecordsTableRow({
         >
           <DnsRecordName dnsRecord={dnsRecord} baseDomain={baseDomain} />
           <Show below="sm">
-            <Text fontSize={{ base: 'sm', xs: 'md' }}>
+            <Text mt="2" fontSize={{ base: 'sm', xs: 'md' }}>
               <Text as="span" fontWeight="medium">
                 Type:
               </Text>{' '}
@@ -69,14 +69,14 @@ export default function DnsRecordsTableRow({
                 </Text>
               </Text>
             </Tooltip>
-            <Text fontSize={{ base: 'sm', xs: 'md' }}>
+            <Text mb="1.5" fontSize={{ base: 'sm', xs: 'md' }}>
               <Text as="span" fontWeight="medium">
                 Expiration Date:
               </Text>{' '}
               {dnsRecord.expiresAt.toLocaleDateString('en-US')}
             </Text>
           </Show>
-          <ButtonGroup spacing={{ base: '0', xs: '0.5' }}>
+          <ButtonGroup spacing={{ base: 'auto', sm: '0.5' }} width="full">
             <Link
               href={`https://www.nslookup.io/domains/${dnsRecord.subdomain}.${baseDomain}/dns-propagation/${dnsRecord.type}/`}
               isExternal
@@ -100,7 +100,7 @@ export default function DnsRecordsTableRow({
               />
             </Tooltip>
             <Show below="sm">
-              <Form method="patch" style={{ margin: 0 }}>
+              <Form method="patch">
                 <input type="hidden" name="id" value={dnsRecord.id} />
                 <input type="hidden" name="intent" value="renew-dns-record" />
                 <Tooltip label="Renew DNS record">
