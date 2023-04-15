@@ -6,5 +6,6 @@ module.exports = {
   ignoredRouteFiles: ['**/.*', '**/*.css', '**/*.test.{js,jsx,ts,tsx}'],
   future: {
     v2_routeConvention: true,
+    v2_normalizeFormMethod: true,
   },
 };
