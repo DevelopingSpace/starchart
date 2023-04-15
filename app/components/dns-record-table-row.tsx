@@ -9,17 +9,17 @@ import {
   Link,
   ButtonGroup,
   useClipboard,
+  useToast,
   Hide,
   VStack,
 } from '@chakra-ui/react';
-import { EditIcon, DeleteIcon, CopyIcon, InfoOutlineIcon } from '@chakra-ui/icons';
+import { EditIcon, DeleteIcon, RepeatIcon, CopyIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 
-import { useNavigate } from '@remix-run/react';
+import { Form, useNavigate } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
 import { useEffectiveUser } from '~/utils';
 
 import type { DnsRecord } from '@prisma/client';
-import DnsRecordExpiryDate from './dns-record/dns-record-expiry-date';
 
 interface DnsRecordsTableRowProps {
   dnsRecord: DnsRecord;
@@ -35,6 +35,7 @@ export default function DnsRecordsTableRow({
   const { baseDomain } = useEffectiveUser();
   const { onCopy } = useClipboard(`${dnsRecord.subdomain}.${baseDomain}`);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleOnCopy = () => {
     onCopy();
@@ -57,6 +58,9 @@ export default function DnsRecordsTableRow({
                 Value: {dnsRecord.value}
               </Text>
             </Tooltip>
+            <Text fontSize="sm">
+              Expiration Date: {dnsRecord.expiresAt.toLocaleDateString('en-US')}
+            </Text>
           </Hide>
           <ButtonGroup>
             <Link
@@ -95,7 +99,28 @@ export default function DnsRecordsTableRow({
           </Tooltip>
         </Td>
         <Td>
-          <DnsRecordExpiryDate dnsRecord={dnsRecord} />
+          <Flex alignItems="center">
+            <Text>{dnsRecord.expiresAt.toLocaleDateString('en-US')}</Text>
+            <Form method="patch" style={{ margin: 0 }}>
+              <input type="hidden" name="id" value={dnsRecord.id} />
+              <input type="hidden" name="intent" value="renew-dns-record" />
+              <Tooltip label="Renew DNS record">
+                <IconButton
+                  icon={<RepeatIcon color="black" boxSize="5" />}
+                  aria-label="Refresh DNS record"
+                  variant="ghost"
+                  type="submit"
+                  onClick={() =>
+                    toast({
+                      title: `DNS Record "${dnsRecord.subdomain}" has been successfully renewed`,
+                      position: 'bottom-right',
+                      status: 'success',
+                    })
+                  }
+                />
+              </Tooltip>
+            </Form>
+          </Flex>
         </Td>
       </Hide>
       <Td paddingInline={{ xs: '2', sm: '6' }}>
@@ -120,10 +145,6 @@ export default function DnsRecordsTableRow({
               />
             </Tooltip>
           </HStack>
-          <Hide above="sm">
-            <Text>Expiration Date</Text>
-            <DnsRecordExpiryDate dnsRecord={dnsRecord} />
-          </Hide>
         </VStack>
       </Td>
     </Tr>

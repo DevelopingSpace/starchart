@@ -70,8 +70,8 @@ export default function DnsRecordsTable({ dnsRecords }: DnsRecordsTableProps) {
                   <Th>Type</Th>
                   <Th>Value</Th>
                   <Th>Expiration date</Th>
+                  <Th />
                 </Hide>
-                <Th />
               </Tr>
             </Thead>
             <Tbody>
