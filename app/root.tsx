@@ -14,14 +14,14 @@ import { getUser, getEffectiveUser, setEffectiveUsername } from './session.serve
 
 import theme from './theme';
 
-import type { MetaFunction, LoaderArgs, LinksFunction, ActionArgs } from '@remix-run/node';
+import type { LoaderArgs, LinksFunction, ActionArgs, V2_MetaFunction } from '@remix-run/node';
 
-export const meta: MetaFunction = () => ({
-  charset: 'utf-8',
-  title: 'My.Custom.Domain',
-  description: 'Simple, Secure DNS Records and SSL Certificates for Seneca',
-  viewport: 'width=device-width,initial-scale=1',
-});
+export const meta: V2_MetaFunction = () => [
+  { charset: 'utf-8' },
+  { title: 'My.Custom.Domain' },
+  { name: 'description', content: 'Simple, Secure DNS Records and SSL Certificates for Seneca' },
+  { name: 'viewport', content: 'width=device-width,initial-scale=1' },
+];
 
 export const links: LinksFunction = () => [
   // We want html and body to occupy the full window height for vertical centering

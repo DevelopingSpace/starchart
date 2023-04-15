@@ -6,7 +6,13 @@ import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById, updateDnsRecordById } from '~/models/dns-record.server';
 import { isNameValid, UpdateDnsRecordSchema } from '~/lib/dns.server';
-import { useActionData, useCatch, useParams, Link as RemixLink } from '@remix-run/react';
+import {
+  useActionData,
+  useParams,
+  Link as RemixLink,
+  useRouteError,
+  isRouteErrorResponse,
+} from '@remix-run/react';
 import { buildDomain, getErrorMessageFromStatusCode } from '~/utils';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
@@ -71,14 +77,13 @@ function mapStatusToErrorText(statusCode: number): string {
   }
 }
 
-export function CatchBoundary() {
-  const caught = useCatch();
-
-  return <SeenErrorLayout result={caught} mapStatusToErrorText={mapStatusToErrorText} />;
-}
-
 export function ErrorBoundary() {
+  const error = useRouteError();
   const { dnsRecordId } = useParams();
+
+  if (isRouteErrorResponse(error)) {
+    return <SeenErrorLayout result={error} mapStatusToErrorText={mapStatusToErrorText} />;
+  }
 
   return (
     <UnseenErrorLayout

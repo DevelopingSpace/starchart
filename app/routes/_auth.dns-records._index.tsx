@@ -10,7 +10,7 @@ import {
   Text,
   Link,
 } from '@chakra-ui/react';
-import { Link as RemixLink, useCatch } from '@remix-run/react';
+import { Link as RemixLink, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { json } from '@remix-run/node';
 import { z } from 'zod';
@@ -101,13 +101,13 @@ function mapStatusToErrorText(statusCode: number): string {
   }
 }
 
-export function CatchBoundary() {
-  const caught = useCatch();
-
-  return <SeenErrorLayout result={caught} mapStatusToErrorText={mapStatusToErrorText} />;
-}
-
 export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return <SeenErrorLayout result={error} mapStatusToErrorText={mapStatusToErrorText} />;
+  }
+
   return (
     <UnseenErrorLayout errorText="We got an unexpected error working with your DNS Records, but don't worry our team is already on it's way to fix it" />
   );
