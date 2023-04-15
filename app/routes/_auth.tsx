@@ -1,5 +1,5 @@
 import { Box, Container } from '@chakra-ui/react';
-import { Outlet, useCatch } from '@remix-run/react';
+import { Outlet, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
 import Header from '~/components/header';
@@ -17,12 +17,16 @@ export default function Index() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  return <UnseenErrorLayout errorText={`Unexpected error: ${error.message}`} />;
-}
+export function ErrorBoundary() {
+  const error = useRouteError();
 
-export function CatchBoundary() {
-  const caught = useCatch();
+  if (isRouteErrorResponse(error)) {
+    return <SeenErrorLayout result={error} />;
+  }
 
-  return <SeenErrorLayout result={caught} />;
+  if (error instanceof Error) {
+    return <UnseenErrorLayout errorText={`Unexpected error: ${error.message}`} />;
+  }
+
+  return <UnseenErrorLayout errorText={'Unexpected error'} />;
 }
