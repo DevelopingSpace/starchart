@@ -76,7 +76,7 @@ export default function DnsRecordsTableRow({
               {dnsRecord.expiresAt.toLocaleDateString('en-US')}
             </Text>
           </Show>
-          <ButtonGroup>
+          <ButtonGroup spacing={{ base: '0', xs: '0.5' }}>
             <Link
               href={`https://www.nslookup.io/domains/${dnsRecord.subdomain}.${baseDomain}/dns-propagation/${dnsRecord.type}/`}
               isExternal
@@ -96,10 +96,47 @@ export default function DnsRecordsTableRow({
                 icon={<CopyIcon color="black" boxSize="5" />}
                 aria-label="Refresh DNS record"
                 variant="ghost"
-                ml="2"
                 onClick={handleOnCopy}
               />
             </Tooltip>
+            <Show below="sm">
+              <Form method="patch" style={{ margin: 0 }}>
+                <input type="hidden" name="id" value={dnsRecord.id} />
+                <input type="hidden" name="intent" value="renew-dns-record" />
+                <Tooltip label="Renew DNS record">
+                  <IconButton
+                    icon={<RepeatIcon color="black" boxSize="5" />}
+                    aria-label="Refresh DNS record"
+                    variant="ghost"
+                    type="submit"
+                    onClick={() =>
+                      toast({
+                        title: `DNS Record "${dnsRecord.subdomain}" has been successfully renewed`,
+                        position: 'bottom-right',
+                        status: 'success',
+                      })
+                    }
+                  />
+                </Tooltip>
+              </Form>
+              <Tooltip label="Edit DNS record" marginInlineStart="0">
+                <IconButton
+                  onClick={() => navigate(dnsRecord.id.toString())}
+                  icon={<EditIcon color="black" boxSize={5} />}
+                  aria-label="Edit DNS record"
+                  variant="ghost"
+                />
+              </Tooltip>
+              <Tooltip label="Delete DNS record">
+                <IconButton
+                  onClick={() => onDelete(dnsRecord)}
+                  icon={<DeleteIcon color="black" boxSize={5} />}
+                  aria-label="Delete DNS record"
+                  variant="ghost"
+                  type="submit"
+                />
+              </Tooltip>
+            </Show>
           </ButtonGroup>
         </Flex>
       </Td>
@@ -136,7 +173,7 @@ export default function DnsRecordsTableRow({
             </Form>
           </Flex>
         </Td>
-        <Td paddingInline={{ xs: '2', sm: '6' }}>
+        <Td>
           <VStack align="flex-start">
             <HStack>
               <Tooltip label="Edit DNS record">
