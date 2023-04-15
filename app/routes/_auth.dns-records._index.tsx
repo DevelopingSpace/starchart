@@ -9,6 +9,8 @@ import {
   StatNumber,
   Text,
   Link,
+  Hide,
+  Show,
 } from '@chakra-ui/react';
 import { Link as RemixLink, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
@@ -147,7 +149,12 @@ export default function DnsRecordsIndexRoute() {
               </StatNumber>
             </Stat>
             <RemixLink to="/dns-records/new">
-              <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
+              <Show below="sm">
+                <Button rightIcon={<AddIcon boxSize={3} />}>New</Button>
+              </Show>
+              <Hide below="sm">
+                <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
+              </Hide>
             </RemixLink>
           </Flex>
           <DnsRecordsTable dnsRecords={data.dnsRecords} />
