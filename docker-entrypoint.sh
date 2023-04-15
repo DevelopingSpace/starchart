@@ -57,7 +57,7 @@ clear_redis() {
 # See if we need to do database wipe and reinitialize before starting.
 if [[ $DANGER_DATABASE_WIPE_REINITIALIZE == "1" ]]; then
   # Run database wipe and reinitialize
-  DANGER_DATABASE_WIPE_REINITIALIZE
+  danger_database_wipe_reinitialize
   # Clear Redis keys
   clear_redis
 
