@@ -12,6 +12,7 @@ import {
   useToast,
   Hide,
   VStack,
+  Show,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon, RepeatIcon, CopyIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 
@@ -44,24 +45,37 @@ export default function DnsRecordsTableRow({
 
   return (
     <Tr>
-      <Td paddingInlineEnd={{ xs: '0', sm: '6' }}>
+      <Td paddingInline={{ base: '2', xs: '4', sm: '6' }}>
         <Flex
           justifyContent="space-between"
           alignItems={{ xs: 'flex-start', sm: 'center' }}
-          flexDirection={{ xs: 'column', sm: 'row' }}
+          flexDirection={{ base: 'column', sm: 'row' }}
         >
           <DnsRecordName dnsRecord={dnsRecord} baseDomain={baseDomain} />
-          <Hide above="sm">
-            <Text fontSize="sm">Type: {dnsRecord.type}</Text>
+          <Show below="sm">
+            <Text fontSize={{ base: 'sm', xs: 'md' }}>
+              <Text as="span" fontWeight="medium">
+                Type:
+              </Text>{' '}
+              {dnsRecord.type}
+            </Text>
             <Tooltip label={dnsRecord.value}>
-              <Text fontSize="sm" isTruncated maxWidth="20ch">
-                Value: {dnsRecord.value}
+              <Text fontSize={{ base: 'sm', xs: 'md' }}>
+                <Text as="span" fontWeight="medium">
+                  Value:
+                </Text>{' '}
+                <Text as="span" isTruncated maxWidth="20ch">
+                  {dnsRecord.value}
+                </Text>
               </Text>
             </Tooltip>
-            <Text fontSize="sm">
-              Expiration Date: {dnsRecord.expiresAt.toLocaleDateString('en-US')}
+            <Text fontSize={{ base: 'sm', xs: 'md' }}>
+              <Text as="span" fontWeight="medium">
+                Expiration Date:
+              </Text>{' '}
+              {dnsRecord.expiresAt.toLocaleDateString('en-US')}
             </Text>
-          </Hide>
+          </Show>
           <ButtonGroup>
             <Link
               href={`https://www.nslookup.io/domains/${dnsRecord.subdomain}.${baseDomain}/dns-propagation/${dnsRecord.type}/`}
@@ -122,31 +136,31 @@ export default function DnsRecordsTableRow({
             </Form>
           </Flex>
         </Td>
+        <Td paddingInline={{ xs: '2', sm: '6' }}>
+          <VStack align="flex-start">
+            <HStack>
+              <Tooltip label="Edit DNS record">
+                <IconButton
+                  onClick={() => navigate(dnsRecord.id.toString())}
+                  icon={<EditIcon color="black" boxSize={5} />}
+                  aria-label="Edit DNS record"
+                  variant="ghost"
+                  mr="1"
+                />
+              </Tooltip>
+              <Tooltip label="Delete DNS record">
+                <IconButton
+                  onClick={() => onDelete(dnsRecord)}
+                  icon={<DeleteIcon color="black" boxSize={5} />}
+                  aria-label="Delete DNS record"
+                  variant="ghost"
+                  type="submit"
+                />
+              </Tooltip>
+            </HStack>
+          </VStack>
+        </Td>
       </Hide>
-      <Td paddingInline={{ xs: '2', sm: '6' }}>
-        <VStack align="flex-start">
-          <HStack>
-            <Tooltip label="Edit DNS record">
-              <IconButton
-                onClick={() => navigate(dnsRecord.id.toString())}
-                icon={<EditIcon color="black" boxSize={5} />}
-                aria-label="Edit DNS record"
-                variant="ghost"
-                mr="1"
-              />
-            </Tooltip>
-            <Tooltip label="Delete DNS record">
-              <IconButton
-                onClick={() => onDelete(dnsRecord)}
-                icon={<DeleteIcon color="black" boxSize={5} />}
-                aria-label="Delete DNS record"
-                variant="ghost"
-                type="submit"
-              />
-            </Tooltip>
-          </HStack>
-        </VStack>
-      </Td>
     </Tr>
   );
 }

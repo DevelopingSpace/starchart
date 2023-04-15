@@ -65,7 +65,7 @@ export default function DnsRecordsTable({ dnsRecords }: DnsRecordsTableProps) {
           <Table variant="striped" colorScheme="gray">
             <Thead>
               <Tr>
-                <Th>DNS Record</Th>
+                <Th paddingInline={{ base: '2', xs: '4', sm: '6' }}>DNS Record</Th>
                 <Hide below="sm">
                   <Th>Type</Th>
                   <Th>Value</Th>
