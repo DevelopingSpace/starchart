@@ -119,7 +119,7 @@ export default function Header() {
           />
           <MenuList color="black">
             {user.username !== originalUser.username && (
-              <Form method="post">
+              <Form action="/" method="post">
                 <input type="hidden" name="originalName" value={originalUser.username} />
                 <MenuItem type="submit" aria-label="Revert to original user">
                   <Text fontSize="sm" color="brand.500">
