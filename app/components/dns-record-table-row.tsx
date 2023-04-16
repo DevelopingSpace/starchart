@@ -15,7 +15,7 @@ import { EditIcon, DeleteIcon, RepeatIcon, CopyIcon, InfoOutlineIcon } from '@ch
 
 import { Form, useNavigate } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
-import { buildUserBaseDomain, useEffectiveUser } from '~/utils';
+import { useEffectiveUser } from '~/utils';
 
 import type { DnsRecord } from '@prisma/client';
 
