@@ -15,7 +15,7 @@ import { EditIcon, DeleteIcon, RepeatIcon, CopyIcon, InfoOutlineIcon } from '@ch
 
 import { Form, useNavigate } from '@remix-run/react';
 import DnsRecordName from './dns-record/dns-record-name';
-import { useEffectiveUser } from '~/utils';
+import { buildUserBaseDomain, useEffectiveUser } from '~/utils';
 
 import type { DnsRecord } from '@prisma/client';
 
@@ -47,14 +47,14 @@ export default function DnsRecordsTableRow({
           <DnsRecordName dnsRecord={dnsRecord} baseDomain={baseDomain} />
           <ButtonGroup>
             <Link
-              href={`https://dnschecker.org/#${dnsRecord.type}/${dnsRecord.subdomain}.${baseDomain}`}
+              href={`https://www.nslookup.io/domains/${dnsRecord.subdomain}.${baseDomain}/dns-propagation/${dnsRecord.type}/`}
               isExternal
               target="_blank"
             >
-              <Tooltip label="Check DNS record">
+              <Tooltip label="Lookup DNS record">
                 <IconButton
                   icon={<InfoOutlineIcon color="black" boxSize="5" />}
-                  aria-label="Check DNS record"
+                  aria-label="Lookup DNS record"
                   variant="ghost"
                   ml="2"
                 />
