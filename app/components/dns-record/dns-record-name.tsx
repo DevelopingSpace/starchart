@@ -31,8 +31,8 @@ const DnsRecordName = ({ dnsRecord, baseDomain }: DnsRecordNameProps) => {
   const tooltip = buildInfoTooltip(dnsRecord);
   const children = (
     <Flex alignItems="flex-end" flexDirection="row">
-      <Text>
-        <Text as="span" sx={{ fontWeight: 'medium' }}>
+      <Text fontSize={{ base: 'md', xs: 'lg', sm: 'md' }}>
+        <Text as="span" fontWeight="medium">
           {dnsRecord.subdomain}
         </Text>
         <Text as="span" color="gray.500">
