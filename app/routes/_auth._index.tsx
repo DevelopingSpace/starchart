@@ -1,4 +1,4 @@
-import { Flex, Text, VStack, Link, Heading } from '@chakra-ui/react';
+import { Flex, Text, VStack, Heading } from '@chakra-ui/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import type { LoaderArgs } from '@remix-run/node';
 
@@ -73,15 +73,6 @@ export default function IndexRoute() {
           cardDescription="An HTTPS Certificate allows a browser to establish a secure connection with your website. Any data between the client and your website will be encrypted and cannot be intercepted."
           instructionsPath="/certificate/information"
         />
-      </Flex>
-      <Flex paddingTop={{ sm: '20' }}>
-        <Link
-          href="https://www.senecacollege.ca/about/policies/information-technology-acceptable-use-policy.html"
-          fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
-          target="_blank"
-        >
-          Seneca's IT Acceptable Use Policy
-        </Link>
       </Flex>
     </VStack>
   );
