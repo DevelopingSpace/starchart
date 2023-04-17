@@ -19,6 +19,7 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:reset": "prisma migrate reset",
+    "db:migration": "cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart' prisma migrate dev --create-only --skip-seed",
     "db:format": "prisma format",
     "db:studio": "prisma studio",
     "db:studio:test": "cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' prisma studio",

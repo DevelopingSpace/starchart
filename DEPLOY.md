@@ -18,22 +18,22 @@ A number of environment variables and Docker secrets are required at runtime.
 
 The following configuration values must be set via environment variables.
 
-| Variable Name                   | Description                                                                                                                                                                                                                                          |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `APP_URL`                       | The URL of the server (e.g., `https://mycustomdomain.senecacollege.ca`). NOTE: when running in development, use `http://host.docker.internal:8080` vs. `http://localhost`, so that Docker DNS resolution works between the login container and host. |
-| `PORT`                          | The server runs on port `8080` by default                                                                                                                                                                                                            |
-| `LOG_LEVEL`                     | The log level to use for log messages. One of `error`, `debug`, `info`, etc. See [Winston docs](https://github.com/winstonjs/winston#logging-levels). Defaults to `info`                                                                             |
-| `ROOT_DOMAIN`                   | The DNS root domain for the hosted zone (e.g., `starchart.com`)                                                                                                                                                                                      |
-| `AWS_ROUTE53_HOSTED_ZONE_ID`    | The existing Amazon Route53 Hosted Zone ID to use (e.g., `Z23ABC4XYZL05B`)                                                                                                                                                                           |
-| `NOTIFICATIONS_EMAIL_USER`      | The email address from which notifications are sent                                                                                                                                                                                                  |
-| `SMTP_PORT`                     | The port to use for the SMTP server. Defaults to `587` in production (using `smtp.office365.com`) and `1025` in development (using ([MailHog](https://github.com/mailhog/MailHog))                                                                   |
-| `LETS_ENCRYPT_ACCOUNT_EMAIL`    | The email address to use for the app's [single Let's Encrypt account](https://letsencrypt.org/docs/integration-guide/#one-account-or-many)                                                                                                           |
-| `REDIS_URL`                     | The Redis server to use for the worker queues. Defaults to `redis://redis:6379` in production and `localhost:6379` in development.                                                                                                                   |
-| `SAML_IDP_METADATA_PATH`        | The file path of the SAML Identify Provider (IdP)'s metadata XML. We store various XML files in `config/` and use `config/idp-metadata-dev.xml` by default.                                                                                          |
-| `SECRETS_OVERRIDE`              | In development, to override the Docker secrets                                                                                                                                                                                                       |
-| `DATABASE_SETUP`                | In staging and production, use `DATABASE_SETUP=1` to run extra scripts on startup to create or sync the database with the Prisma schema. NOTE: this **wipes all data** in MySQl and Redis, so be careful!                                            |
-| `EXPIRATION_REPEAT_FREQUENCY_S` | The value in seconds used to specify how often to repeat BullMQ jobs to process expired DNS records/certificate expiration                                                                                                                           |
-| `JOB_REMOVAL_FREQUENCY_S`       | The value in seconds used to specify how often to automatically remove BullMQ jobs on completion or failure                                                                                                                                          |
+| Variable Name                       | Description                                                                                                                                                                                                                                          |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `APP_URL`                           | The URL of the server (e.g., `https://mycustomdomain.senecacollege.ca`). NOTE: when running in development, use `http://host.docker.internal:8080` vs. `http://localhost`, so that Docker DNS resolution works between the login container and host. |
+| `PORT`                              | The server runs on port `8080` by default                                                                                                                                                                                                            |
+| `LOG_LEVEL`                         | The log level to use for log messages. One of `error`, `debug`, `info`, etc. See [Winston docs](https://github.com/winstonjs/winston#logging-levels). Defaults to `info`                                                                             |
+| `ROOT_DOMAIN`                       | The DNS root domain for the hosted zone (e.g., `starchart.com`)                                                                                                                                                                                      |
+| `AWS_ROUTE53_HOSTED_ZONE_ID`        | The existing Amazon Route53 Hosted Zone ID to use (e.g., `Z23ABC4XYZL05B`)                                                                                                                                                                           |
+| `NOTIFICATIONS_EMAIL_USER`          | The email address from which notifications are sent                                                                                                                                                                                                  |
+| `SMTP_PORT`                         | The port to use for the SMTP server. Defaults to `587` in production (using `smtp.office365.com`) and `1025` in development (using ([MailHog](https://github.com/mailhog/MailHog))                                                                   |
+| `LETS_ENCRYPT_ACCOUNT_EMAIL`        | The email address to use for the app's [single Let's Encrypt account](https://letsencrypt.org/docs/integration-guide/#one-account-or-many)                                                                                                           |
+| `REDIS_URL`                         | The Redis server to use for the worker queues. Defaults to `redis://redis:6379` in production and `localhost:6379` in development.                                                                                                                   |
+| `SAML_IDP_METADATA_PATH`            | The file path of the SAML Identify Provider (IdP)'s metadata XML. We store various XML files in `config/` and use `config/idp-metadata-dev.xml` by default.                                                                                          |
+| `SECRETS_OVERRIDE`                  | In development, to override the Docker secrets                                                                                                                                                                                                       |
+| `DANGER_DATABASE_WIPE_REINITIALIZE` | In staging and production, use `DANGER_DATABASE_WIPE_REINITIALIZE=1` to run extra scripts on startup to create or sync the database with the Prisma schema. NOTE: this **wipes all data** in MySQl and Redis, so be careful!                         |
+| `EXPIRATION_REPEAT_FREQUENCY_S`     | The value in seconds used to specify how often to repeat BullMQ jobs to process expired DNS records/certificate expiration                                                                                                                           |
+| `JOB_REMOVAL_FREQUENCY_S`           | The value in seconds used to specify how often to automatically remove BullMQ jobs on completion or failure                                                                                                                                          |
 
 ### Secrets
 
@@ -98,9 +98,20 @@ All secrets listed above need to be created.
 
 The first time the app is run, or whenever the database schema is altered, the database needs to be set up using Prisma.
 
-To do this, run the `starchart` container as a service, with the additional environment variable `DATABASE_SETUP=1` (NOTE: this will **wipe** all data in MySQL and Redis, so be careful!).
+To do this, run the `starchart` container as a service, with the additional environment variable `DANGER_DATABASE_WIPE_REINITIALIZE=1` (NOTE: this will **wipe** all data in MySQL and Redis, so be careful!).
 
-Modify the `docker-compose.yml` you are using (e.g., `docker-staging.yml` or `docker-production.yml`) and add `DATABASE_SETUP=1` in the `environment` section of the `mycustomdomain` service. You can (and should!) remove this after you get the database set up, especially on production, so that re-deploying doesn't wipe the database.
+Modify the `docker-compose.yml` you are using (e.g., `docker-staging.yml` or `docker-production.yml`) and add `DANGER_DATABASE_WIPE_REINITIALIZE=1` in the `environment` section of the `mycustomdomain` service. You can (and should!) remove this after you get the database set up, especially on production, so that re-deploying doesn't wipe the database.
+
+### New Changes to the Database Schema
+
+Because staging and production use Prisma migration, changes in the schema need to become migration files for Prisma migration to run the files to apply changes. A migration file is essentially a set of SQL queries Prisma generates that would get a database to a desired state, by comparing your current schema and the latest migration file.
+
+After any changes are made to the `prisma/schema.prisma` file, a new migration file needs to be created (i.e., so it can be applied to the production databases). To make a new migration file, run `npm run db:migration`, while running the project's MySQL database container in Docker locally. You will be prompted to give the file a name.
+
+**WARNING:**
+Outside of special circumstances, please **DO NOT** change the schema without using Prisma migration on staging and production. It will very likely cause issues with database migration. It will then require manual fixing to get the migration history sorted out.
+
+Think of Prisma migarion as git tracking your commits, and manually fixing git history can be complicated. See [official documentation](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate/troubleshooting-development) for how to do it.
 
 ### Deploying
 
