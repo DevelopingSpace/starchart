@@ -1,5 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { json, redirect } from '@remix-run/node';
+import { json } from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -10,7 +10,7 @@ import {
   useLoaderData,
 } from '@remix-run/react';
 
-import { getUser, getEffectiveUser, setEffectiveUsername } from './session.server';
+import { getUser, getEffectiveUser, stopImpersonation } from './session.server';
 
 import theme from './theme';
 
@@ -47,13 +47,9 @@ export async function loader({ request, context }: LoaderArgs) {
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
-  const originalName = formData.get('originalName');
-  if (typeof originalName === 'string') {
-    return redirect('/', {
-      headers: {
-        'Set-Cookie': await setEffectiveUsername(originalName, null),
-      },
-    });
+  const intent = formData.get('intent');
+  if (intent === 'stop-impersonation') {
+    return stopImpersonation(request);
   }
 };
 

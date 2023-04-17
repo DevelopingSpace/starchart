@@ -5,6 +5,7 @@ import { getUserByUsername } from '~/models/user.server';
 import secrets from '~/lib/secrets.server';
 
 import type { User } from '~/models/user.server';
+import logger from './lib/logger.server';
 
 if (!secrets.SESSION_SECRET?.length) {
   throw new Error('SESSION_SECRET must be set');
@@ -74,15 +75,40 @@ export async function getEffectiveUser(request: Request) {
   throw await logout(request);
 }
 
+/**
+ * @param username the user's actual username
+ * @param effectiveUsername [optional] when a `string`, this is a different
+ * username that an admin is impersonating. If `null`, we are explicitly
+ * clearing a previous impersonation session. If `undefined`, the user is
+ * logging in (new session) and there is no effectiveUsername (yet).
+ * @returns Promise<string>
+ */
 export async function setEffectiveUsername(
   username: string,
-  effectiveUsername: string | null
+  effectiveUsername?: string | null
 ): Promise<string> {
-  if ((await isAdmin(username)) && effectiveUsername) {
-    return await effectiveUsernameCookie.serialize(effectiveUsername);
+  // Only admins can impersonate. Regular users can only be themselves
+  if (!(await isAdmin(username))) {
+    return await effectiveUsernameCookie.serialize(username);
   }
 
-  return await effectiveUsernameCookie.serialize(username);
+  // This is an admin user, figure out what to do based on effectiveUsername.
+  switch (effectiveUsername) {
+    /* Existing session, so we're ending impersonation */
+    case null:
+      logger.info(`Admin (${username}) ending impersonation`);
+    // falls through
+
+    /* New or Lost Session  */
+    case undefined:
+      // (re)set the effectiveUsername to null
+      return await effectiveUsernameCookie.serialize(null);
+
+    /* Starting impersonation of specified user */
+    default:
+      logger.info(`Admin (${username}) started impersonating user: ${effectiveUsername}`);
+      return await effectiveUsernameCookie.serialize(effectiveUsername);
+  }
 }
 
 export async function getUser(request: Request) {
@@ -130,7 +156,6 @@ export async function requireUser(request: Request) {
 
 export async function requireAdmin(request: Request) {
   const username = await requireUsername(request);
-
   const user = await getUserByUsername(username);
 
   if (user?.isAdmin) {
@@ -155,7 +180,7 @@ export async function createUserSession({
 
   const headers = new Headers();
 
-  headers.append('Set-Cookie', await setEffectiveUsername(username, null));
+  headers.append('Set-Cookie', await setEffectiveUsername(username));
 
   headers.append(
     'Set-Cookie',
@@ -173,15 +198,46 @@ export async function createUserSession({
 
 export async function logout(request: Request, redirectTo?: string) {
   const session = await getSession(request);
+  const username = await getUsername(request);
+  const effectiveUsername = await getEffectiveUsername(request);
 
   const headers = new Headers();
   headers.append('Set-Cookie', await sloUsernameCookie.serialize(session.get(USER_SESSION_KEY)));
   headers.append('Set-Cookie', await sessionStorage.destroySession(session));
-  headers.append('Set-Cookie', await effectiveUsernameCookie.serialize(null));
+
+  // If we're impersonating another user, finish that first and log it
+  if (username && effectiveUsername) {
+    headers.append('Set-Cookie', await setEffectiveUsername(username, null));
+  } else {
+    headers.append('Set-Cookie', await effectiveUsernameCookie.serialize(null));
+  }
 
   return redirect(redirectTo ? redirectTo : '/', {
     headers,
   });
+}
+
+export async function startImpersonation(request: Request, newUsername: string) {
+  const { username } = await requireAdmin(request);
+
+  return redirect('/', {
+    headers: {
+      'Set-Cookie': await setEffectiveUsername(username, newUsername),
+    },
+  });
+}
+
+export async function stopImpersonation(request: Request) {
+  const username = await getUsername(request);
+  if (username) {
+    return redirect('/', {
+      headers: {
+        'Set-Cookie': await setEffectiveUsername(username, null),
+      },
+    });
+  }
+
+  return redirect('/');
 }
 
 export const sloUsernameCookie = createCookie('sloUsername', {

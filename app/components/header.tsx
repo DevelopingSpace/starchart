@@ -121,7 +121,7 @@ export default function Header() {
           <MenuList color="black">
             {user.username !== originalUser.username && (
               <Form action="/" method="post">
-                <input type="hidden" name="originalName" value={originalUser.username} />
+                <input type="hidden" name="intent" value="stop-impersonation" />
                 <MenuItem type="submit" aria-label="Revert to original user">
                   <Text fontSize="sm" color="brand.500">
                     Stop Impersonating
