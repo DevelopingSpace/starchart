@@ -7,19 +7,13 @@ import * as certificateModel from '~/models/certificate.server';
 import { addNotification } from '../notifications/notifications.server';
 
 import type { CertificateJobData } from './certificateJobTypes.server';
-import { isUserDeactivated } from '~/models/user.server';
 
 export const orderCompleterQueueName = 'certificate-completeOrder';
 
 export const orderCompleterWorker = new Worker<CertificateJobData>(
   orderCompleterQueueName,
   async (job) => {
-    const { rootDomain, username, certificateId } = job.data;
-
-    if (await isUserDeactivated(username)) {
-      logger.error('User is deactivated, skipping order completion');
-      throw new UnrecoverableError('User is deactivated');
-    }
+    const { rootDomain, certificateId } = job.data;
 
     logger.info('Attempting to complete ACME order with the provider', {
       rootDomain,

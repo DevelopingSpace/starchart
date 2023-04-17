@@ -5,19 +5,13 @@ import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as certificateModel from '~/models/certificate.server';
 
 import type { CertificateJobData } from './certificateJobTypes.server';
-import { isUserDeactivated } from '~/models/user.server';
 
 export const challengeCompleterQueueName = 'certificate-completeChallenges';
 
 export const challengeCompleterWorker = new Worker<CertificateJobData>(
   challengeCompleterQueueName,
   async (job) => {
-    const { rootDomain, username, certificateId } = job.data;
-
-    if (await isUserDeactivated(username)) {
-      logger.error('User is deactivated, skipping challenge completion');
-      throw new UnrecoverableError('User is deactivated');
-    }
+    const { rootDomain, certificateId } = job.data;
 
     logger.info('Attempting to complete ACME challenges with the provider', {
       rootDomain,

@@ -5,7 +5,6 @@ import LetsEncrypt from '~/lib/lets-encrypt.server';
 import * as challengeModel from '~/models/challenge.server';
 
 import type { CertificateJobData } from './certificateJobTypes.server';
-import { isUserDeactivated } from '~/models/user.server';
 
 export const dnsWaiterQueueName = 'certificate-waitDns';
 
@@ -21,16 +20,11 @@ export const dnsWaiterQueueName = 'certificate-waitDns';
 export const dnsWaiterWorker = new Worker<CertificateJobData>(
   dnsWaiterQueueName,
   async (job) => {
-    const { rootDomain, username, certificateId } = job.data;
+    const { rootDomain, certificateId } = job.data;
 
     if (process.env.NODE_ENV !== 'production') {
       logger.info('Not checking DNS on development - Mock server is not our recursor');
       return;
-    }
-
-    if (await isUserDeactivated(username)) {
-      logger.error('User is deactivated, skipping checking challenges');
-      throw new UnrecoverableError('User is deactivated');
     }
 
     logger.info('Checking challenges in DNS', {
