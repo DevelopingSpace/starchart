@@ -14,7 +14,6 @@ model User {
   group       String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  deactivated Boolean       @default(false)
   dnsRecord   DnsRecord[]
   certificate Certificate[]
 }

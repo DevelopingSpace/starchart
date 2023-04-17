@@ -21,7 +21,7 @@ import AdminMetricCard from '~/components/admin/admin-metric-card';
 import UsersTable from '~/components/admin/users-table';
 import { getTotalCertificateCount, getCertificateByUsername } from '~/models/certificate.server';
 import { getDnsRecordCountByUsername, getTotalDnsRecordCount } from '~/models/dns-record.server';
-import { getTotalUserCount, isUserDeactivated, searchUsers } from '~/models/user.server';
+import { getTotalUserCount, searchUsers } from '~/models/user.server';
 import { requireAdmin, setEffectiveUsername } from '~/session.server';
 
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
@@ -96,9 +96,6 @@ export const action = async ({ request }: ActionArgs) => {
       return typedjson({ users: usersWithStats });
     case 'impersonate-user':
       const { newEffectiveUsername } = actionParams.data;
-      if (await isUserDeactivated(newEffectiveUsername ?? '')) {
-        return redirect('/');
-      }
       return redirect('/', {
         headers: {
           'Set-Cookie': await setEffectiveUsername(admin.username, newEffectiveUsername ?? ''),

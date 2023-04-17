@@ -1,9 +1,7 @@
 import {
   createUser,
   checkUsernameExists,
-  deactivateUserByUsername,
   deleteUserByUsername,
-  isUserDeactivated,
   getUserByUsername,
   isStudent,
   isAdmin,
@@ -38,7 +36,6 @@ describe('createUser()', () => {
     expect(user.group).toEqual('mycustomdomain-students');
     expect(user.createdAt).not.toBe(null);
     expect(user.createdAt).toEqual(user.updatedAt);
-    expect(user.deactivated).toBe(false);
   });
 
   test('creating an User with same username should throw error', async () => {
@@ -54,23 +51,6 @@ describe('createUser()', () => {
   });
 });
 
-describe('deactivateUserByUsername()', () => {
-  let user: User;
-
-  beforeAll(async () => {
-    user = await createUser('test_user_1', 'Test', 'testuser1@domain.com', 'test');
-  });
-
-  afterAll(async () => {
-    await prisma.user.deleteMany().catch(() => {});
-  });
-
-  test('sets deactivated flag to true', async () => {
-    user = await deactivateUserByUsername(user.username);
-    expect(user.deactivated).toBe(true);
-  });
-});
-
 describe('deleteUserByUsername()', () => {
   let user: User;
 
@@ -82,36 +62,6 @@ describe('deleteUserByUsername()', () => {
     await deleteUserByUsername(user.username);
     const userExists = await checkUsernameExists(user.username);
     expect(userExists).toBe(false);
-  });
-});
-
-describe('isUserDeactivated()', () => {
-  let activeUser: User;
-  let deactivatedUser: User;
-
-  beforeAll(async () => {
-    activeUser = await createUser('test_user_1', 'Test', 'testuser2@domain.com', 'test');
-    deactivatedUser = await createUser('test_user_2', 'Test', 'testuser3@domain.com', 'test');
-    deactivatedUser = await deactivateUserByUsername(deactivatedUser.username);
-  });
-
-  afterAll(async () => {
-    await prisma.user.deleteMany().catch(() => {});
-  });
-
-  test('returns true for deactivated user', async () => {
-    const result = await isUserDeactivated(deactivatedUser.username);
-    expect(result).toBe(true);
-  });
-
-  test('returns false for active user', async () => {
-    const result = await isUserDeactivated(activeUser.username);
-    expect(result).toBe(false);
-  });
-
-  test('returns undefined when no user is found', async () => {
-    const result = await isUserDeactivated('invalid username');
-    expect(result).toBe(undefined);
   });
 });
 

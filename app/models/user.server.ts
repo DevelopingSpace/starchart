@@ -52,13 +52,6 @@ export async function createUser(
   });
 }
 
-export async function deactivateUserByUsername(username: PrismaUser['username']) {
-  return prisma.user.update({
-    where: { username },
-    data: { deactivated: true },
-  });
-}
-
 export async function deleteUserByUsername(username: PrismaUser['username']) {
   return prisma.user.delete({ where: { username } });
 }
@@ -79,15 +72,6 @@ export async function isAdmin(username: PrismaUser['username']) {
   const { group } = await prisma.user.findUniqueOrThrow({ where: { username } });
   // The group will have -dev in it on staging but not on prod
   return /mycustomdomain(-dev)?-admins/.test(group);
-}
-
-export async function isUserDeactivated(username: PrismaUser['username']) {
-  const user = await prisma.user.findUnique({ where: { username } });
-  if (!user) {
-    return undefined;
-  }
-
-  return user.deactivated;
 }
 
 export function searchUsers(search: string): Promise<PrismaUser[]> {
