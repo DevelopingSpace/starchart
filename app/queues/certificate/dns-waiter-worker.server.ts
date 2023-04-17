@@ -1,4 +1,4 @@
-import { UnrecoverableError, Worker } from 'bullmq';
+import { Worker } from 'bullmq';
 import { redis } from '~/lib/redis.server';
 import logger from '~/lib/logger.server';
 import LetsEncrypt from '~/lib/lets-encrypt.server';

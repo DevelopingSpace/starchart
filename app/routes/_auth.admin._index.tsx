@@ -9,7 +9,6 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import type { Certificate, User } from '@prisma/client';
-import { redirect } from '@remix-run/node';
 import { useSubmit } from '@remix-run/react';
 import { useCallback, useEffect, useState } from 'react';
 import { FaUsers, FaSearch, FaStickyNote } from 'react-icons/fa';
@@ -22,7 +21,7 @@ import UsersTable from '~/components/admin/users-table';
 import { getTotalCertificateCount, getCertificateByUsername } from '~/models/certificate.server';
 import { getDnsRecordCountByUsername, getTotalDnsRecordCount } from '~/models/dns-record.server';
 import { getTotalUserCount, searchUsers } from '~/models/user.server';
-import { requireAdmin, setEffectiveUsername } from '~/session.server';
+import { requireAdmin, startImpersonation } from '~/session.server';
 
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { deleteUser } from '~/lib/user.server';
@@ -37,7 +36,7 @@ export interface UserWithMetrics extends User {
 export const MIN_USERS_SEARCH_TEXT = 3;
 
 export const action = async ({ request }: ActionArgs) => {
-  const admin = await requireAdmin(request);
+  await requireAdmin(request);
 
   const actionParams = await parseFormSafe(
     request,
@@ -96,11 +95,10 @@ export const action = async ({ request }: ActionArgs) => {
       return typedjson({ users: usersWithStats });
     case 'impersonate-user':
       const { newEffectiveUsername } = actionParams.data;
-      return redirect('/', {
-        headers: {
-          'Set-Cookie': await setEffectiveUsername(admin.username, newEffectiveUsername ?? ''),
-        },
-      });
+      if (!newEffectiveUsername) {
+        throw new Response('Missing username for impersonation', { status: 400 });
+      }
+      return startImpersonation(request, newEffectiveUsername);
     case 'delete-user':
       const { username } = actionParams.data;
       await deleteUser(username ?? '');

@@ -22,6 +22,7 @@ import type { UserWithMetrics } from '~/routes/_auth.admin._index';
 import { MIN_USERS_SEARCH_TEXT } from '~/routes/_auth.admin._index';
 
 import CertificateStatusIcon from '~/components/admin/certificate-status-icon';
+import { useUser } from '~/utils';
 
 interface UsersTableProps {
   users: UserWithMetrics[];
@@ -30,6 +31,7 @@ interface UsersTableProps {
 
 export default function UsersTable({ users, searchText }: UsersTableProps) {
   const navigation = useNavigation();
+  const { username } = useUser();
 
   const isInputValid = searchText.length >= MIN_USERS_SEARCH_TEXT;
   const isLoading = navigation.state === 'submitting';
@@ -91,6 +93,7 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                               aria-label="Impersonate user"
                               icon={<FaTheaterMasks color="black" size={24} />}
                               variant="ghost"
+                              isDisabled={user.username === username}
                             />
                           </Form>
                         </Tooltip>
@@ -100,6 +103,7 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                               aria-label="Delete user"
                               icon={<DeleteIcon color="black" boxSize={5} />}
                               variant="ghost"
+                              isDisabled={user.username === username}
                               type="submit"
                             />
                           </Tooltip>
