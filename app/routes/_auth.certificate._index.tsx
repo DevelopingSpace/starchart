@@ -7,7 +7,7 @@ import { useInterval } from 'react-use';
 
 import { requireUser, requireUsername } from '~/session.server';
 import pendingSvg from '~/assets/undraw_processing_re_tbdu.svg';
-import Loading from '~/components/display-message';
+import Loading from '~/components/image-with-message';
 import CertificateAvailable from '~/components/certificate/certificate-available';
 import CertificateRequestView from '~/components/certificate/certificate-request';
 import { getErrorMessageFromStatusCode, useEffectiveUser } from '~/utils';
@@ -115,7 +115,7 @@ export default function CertificateIndexRoute() {
       <Loading
         img={pendingSvg}
         desc="We have received your request, and will notify you when your certificate is ready"
-        alt="two-people-processing"
+        alt="Two people processing a document together"
       />
     );
   }

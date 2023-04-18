@@ -1,12 +1,12 @@
 import { Center, Flex, Image, Heading } from '@chakra-ui/react';
 
-interface DisplayMessageProps {
+interface ImageWithMessageProps {
   img: string;
   desc: string;
   alt: string;
 }
 
-export default function DisplayMessage({ img, desc, alt }: DisplayMessageProps) {
+export default function ImageWithMessage({ img, desc, alt }: ImageWithMessageProps) {
   return (
     <Center paddingY="24" paddingX="2">
       <Flex
