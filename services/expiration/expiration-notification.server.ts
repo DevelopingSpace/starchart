@@ -103,7 +103,10 @@ export function init() {
 
   process.on('SIGINT', () => expirationNotificationWorker.close());
 
-  addExpirationNotifications().catch((err) =>
+  Promise.all([
+    addExpirationNotifications('certificate'),
+    addExpirationNotifications('dns-record'),
+  ]).catch((err) =>
     logger.error(`Unable to start expiration notification workers: ${err.message}`, err)
   );
 }
@@ -186,8 +189,9 @@ const getExpiringDnsRecords = () => {
   });
 };
 // function to add jobs
-async function addExpirationNotifications() {
-  let jobName = `${expirationNotificationQueueName}`;
+async function addExpirationNotifications(type: string) {
+  // we never want to add multiple jobs for the same user/email notification (unique jobId)
+  let jobName = `${expirationNotificationQueueName}-${type}-expiry`;
   return expirationNotificationQueue.add(jobName, {
     repeat: { every: 5 * 60 * 1000 },
   });
