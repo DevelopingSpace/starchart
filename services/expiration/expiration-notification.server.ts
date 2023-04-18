@@ -192,9 +192,8 @@ const getExpiringDnsRecords = () => {
 async function addExpirationNotifications(type: string) {
   // we never want to add multiple jobs for the same user/email notification (unique jobId)
   let jobId = `${expirationNotificationQueueName}-${type}-expiry`;
-  return expirationNotificationQueue.add(expirationNotificationQueueName, {
+  return expirationNotificationQueue.add(expirationNotificationQueueName, jobId, {
     repeat: { every: 5 * 60 * 1000 },
-    jobId,
   });
 }
 
