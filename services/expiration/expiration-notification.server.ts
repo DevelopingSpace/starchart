@@ -189,8 +189,8 @@ const getExpiringDnsRecords = () => {
 };
 // function to add jobs
 async function addExpirationNotifications(type: string) {
-  let jobName = `${expirationNotificationQueueName}-${type}-expiry`;
-  return expirationNotificationQueue.add(jobName, {
+  let jobId = `${expirationNotificationQueueName}-${type}-expiry`;
+  return expirationNotificationQueue.add(expirationNotificationQueueName, jobId, {
     repeat: { every: 5 * 60 * 1000 },
   });
 }
