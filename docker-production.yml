@@ -17,8 +17,8 @@ services:
         tag: redis
 
   mycustomdomain:
-    # Production runs the most recent release
-    image: ghcr.io/developingspace/starchart:release
+    # Production runs the most recent release built for production
+    image: ghcr.io/developingspace/starchart:production
     depends_on:
       - redis
     ports:

@@ -17,8 +17,8 @@ services:
         tag: redis
 
   mycustomdomain:
-    # Staging runs the most recent commit on the main branch
-    image: ghcr.io/developingspace/starchart:main
+    # Staging runs the most recent commit on the main branch built for staging
+    image: ghcr.io/developingspace/starchart:staging
     depends_on:
       - redis
     ports:
