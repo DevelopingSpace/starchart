@@ -48,13 +48,12 @@ export function init() {
   expirationNotificationWorker = new Worker(
     expirationNotificationQueueName,
     async (job) => {
-      const { type } = job.data;
       try {
         logger.debug(`Notifications: processing job ${job.name}`);
         let dnsRecords = await getExpiringDnsRecords();
         await Promise.all(
           dnsRecords.map(async ({ id, subdomain, expiresAt, user }) => {
-            await updateStatusAndNotify(type, id, {
+            await updateStatusAndNotify('dns-record', id, {
               emailAddress: user.email,
               subject: 'My.Custom.Domain DNS record approaching expiration',
               message: `${
@@ -68,7 +67,7 @@ export function init() {
         let certificates = await getExpiringCertificates();
         await Promise.all(
           certificates.map(async ({ id, domain, validTo, user }) => {
-            await updateStatusAndNotify(type, id, {
+            await updateStatusAndNotify('certificate', id, {
               emailAddress: user.email,
               subject: 'My.Custom.Domain certificate approaching expiration',
               message: `${
@@ -103,7 +102,10 @@ export function init() {
 
   process.on('SIGINT', () => expirationNotificationWorker.close());
 
-  addExpirationNotifications().catch((err) =>
+  Promise.all([
+    addExpirationNotifications('certificate'),
+    addExpirationNotifications('dns-record'),
+  ]).catch((err) =>
     logger.error(`Unable to start expiration notification workers: ${err.message}`, err)
   );
 }
@@ -186,8 +188,8 @@ const getExpiringDnsRecords = () => {
   });
 };
 // function to add jobs
-async function addExpirationNotifications() {
-  let jobName = `${expirationNotificationQueueName}`;
+async function addExpirationNotifications(type: string) {
+  let jobName = `${expirationNotificationQueueName}-${type}-expiry`;
   return expirationNotificationQueue.add(jobName, {
     repeat: { every: 5 * 60 * 1000 },
   });
