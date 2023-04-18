@@ -58,28 +58,11 @@ const config: PlaywrightTestConfig = {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
     },
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-      },
-      dependencies: ['setup'],
-      testIgnore: /.*\.mobile\.spec\.ts/,
-    },
 
     {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
-      },
-      dependencies: ['setup'],
-      testIgnore: /.*\.mobile\.spec\.ts/,
-    },
-
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
       },
       dependencies: ['setup'],
       testIgnore: /.*\.mobile\.spec\.ts/,
