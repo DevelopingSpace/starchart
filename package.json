@@ -1,6 +1,6 @@
 {
   "name": "@senecacdot/starchart",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0",
   "sideEffects": false,
   "scripts": {
     "build": "run-s build:*",
