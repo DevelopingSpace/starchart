@@ -57,6 +57,12 @@ export const initCertificateErrorHandler = () => {
 
       await certificateModel.updateCertificateById(certificateId, {
         status: CertificateStatus.failed,
+        /**
+         * Setting orderUrl to null, so if we get back the same cert request from the
+         * ACME provider next time (as it deduplicates orders) we are not violating the
+         * unique constraint of this field
+         */
+        orderUrl: null,
       });
 
       await challengeModel.deleteChallengesByCertificateId(certificateId);
