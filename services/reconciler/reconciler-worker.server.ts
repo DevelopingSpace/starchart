@@ -132,7 +132,14 @@ const reconcilerWorker = new Worker(
      */
     await setIsReconciliationNeeded(false);
 
-    const changeSet = await createChangeSet();
+    let changeSet: Change[] = [];
+    try {
+      changeSet = await createChangeSet();
+    } catch (error) {
+      logger.error('Reconciler - failed to generate changeSet', { error });
+
+      throw error;
+    }
 
     if (!changeSet.length) {
       logger.debug('Reconciler - found no changes to be pushed');
