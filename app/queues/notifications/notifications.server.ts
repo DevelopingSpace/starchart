@@ -6,6 +6,7 @@ import sendNotification from '~/lib/notifications.server';
 import { addExpirationRequest } from '../common/expiration-request.server';
 
 export type NotificationData = {
+  jobId?: string;
   emailAddress: string;
   subject: string;
   message: string;
@@ -39,7 +40,9 @@ if (process.env.NODE_ENV === 'production') {
  * queue. It takes care of creating a unique job name.
  */
 export const addNotification = (data: NotificationData) => {
-  const jobName = `${data.emailAddress}:${data.subject}`;
+  // we never want to add multiple jobs for the same user/email notification (unique jobId)
+  const jobName = 'notification';
+  data.jobId = `${data.emailAddress}:${data.subject}`;
   return notificationsQueue.add(jobName, data);
 };
 

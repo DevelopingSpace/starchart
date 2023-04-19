@@ -2,12 +2,12 @@ import { Flex, Heading } from '@chakra-ui/react';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
-import { useCatch, useRevalidator } from '@remix-run/react';
+import { isRouteErrorResponse, useRevalidator, useRouteError } from '@remix-run/react';
 import { useInterval } from 'react-use';
 
 import { requireUser, requireUsername } from '~/session.server';
 import pendingSvg from '~/assets/undraw_processing_re_tbdu.svg';
-import Loading from '~/components/display-page';
+import Loading from '~/components/image-with-message';
 import CertificateAvailable from '~/components/certificate/certificate-available';
 import CertificateRequestView from '~/components/certificate/certificate-request';
 import { getErrorMessageFromStatusCode, useEffectiveUser } from '~/utils';
@@ -86,13 +86,13 @@ function mapStatusToErrorText(statusCode: number): string {
   }
 }
 
-export function CatchBoundary() {
-  const caught = useCatch();
-
-  return <SeenErrorLayout result={caught} mapStatusToErrorText={mapStatusToErrorText} />;
-}
-
 export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return <SeenErrorLayout result={error} mapStatusToErrorText={mapStatusToErrorText} />;
+  }
+
   return (
     <UnseenErrorLayout errorText="We got an unexpected error working with your certificate, but don't worry our team is already on it's way to fix it" />
   );
@@ -115,6 +115,7 @@ export default function CertificateIndexRoute() {
       <Loading
         img={pendingSvg}
         desc="We have received your request, and will notify you when your certificate is ready"
+        alt="Two people processing a document together"
       />
     );
   }

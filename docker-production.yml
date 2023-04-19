@@ -17,8 +17,8 @@ services:
         tag: redis
 
   mycustomdomain:
-    # Production runs the most recent release
-    image: ghcr.io/developingspace/starchart:release
+    # Production runs the most recent release built for production
+    image: ghcr.io/developingspace/starchart:production
     depends_on:
       - redis
     ports:
@@ -34,6 +34,7 @@ services:
       - PORT=8080
       - REDIS_URL=redis://redis:6379
       - ROOT_DOMAIN=mystudentproject.ca
+      - USER_DNS_RECORD_LIMIT=10
     secrets:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -50,9 +51,12 @@ services:
         parallelism: 0
         failure_action: rollback
       update_config:
-        # Update both containers at once, rollback on failure
-        parallelism: 2
+        # Stop all existing containers, then update one container at a time,
+        # waiting 20s between each. If something fails, rollback to last-known-good.
+        parallelism: 1
+        delay: 20s
         failure_action: rollback
+        order: stop-first
     logging:
       # Use journald log driver, see:
       # https://docs.docker.com/config/containers/logging/journald/

@@ -16,26 +16,26 @@ test.describe('Landing Page', () => {
     await expect(certCard).toContainText('Certificate');
   });
 
-  test('Manage DNS Records Button', async ({ page }) => {
-    await page.getByRole('link', { name: 'Manage DNS Records' }).click();
+  test('Create DNS Records Button', async ({ page }) => {
+    await page.getByRole('link', { name: 'Create DNS Records' }).click();
 
     await expect(page).toHaveURL('/dns-records');
   });
 
   test('DNS Records Instructions Link', async ({ page }) => {
-    await page.getByRole('link', { name: 'our instruction page' }).click();
+    await page.getByRole('link', { name: 'instructions page' }).click();
 
     await expect(page).toHaveURL('/dns-records/instructions');
   });
 
-  test('Manage Certificate Button', async ({ page }) => {
-    await page.getByRole('link', { name: 'Manage Certificate' }).click();
+  test('Create Certificate Button', async ({ page }) => {
+    await page.getByRole('link', { name: 'Create Certificate' }).click();
 
     await expect(page).toHaveURL('/certificate');
   });
 
   test('Certificate Instructions Link', async ({ page }) => {
-    await page.getByRole('link', { name: 'our information page' }).click();
+    await page.getByRole('link', { name: 'information page' }).click();
 
     await expect(page).toHaveURL('/certificate/information');
   });

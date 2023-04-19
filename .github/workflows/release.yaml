@@ -54,13 +54,14 @@ jobs:
           build-args: |
             SAML_IDP_METADATA_PATH=./config/idp-metadata-production.xml
           push: true
-          tags: ${{ env.IMAGE }}:sha-${{ env.GITHUB_SHA_SHORT }}, ${{ env.IMAGE }}:release, ${{ env.IMAGE }}:latest
+          tags: ${{ env.IMAGE }}:production-sha-${{ env.GITHUB_SHA_SHORT }}, ${{ env.IMAGE }}:production
 
       - name: Deploy to Production via Webhook
         uses: navied/secure-actions-webhook@0.2.1
         env:
           HMAC_SECRET: ${{ secrets.WEBHOOK_PRODUCTION_SECRET }}
+          TAG: production-sha-${{ env.GITHUB_SHA_SHORT }}
         with:
           url: https://mycustomdomain.senecacollege.ca/hooks/deploy
           hmacSecret: ${{ env.HMAC_SECRET }}
-          data: '{"tag": "sha-${{ env.GITHUB_SHA_SHORT }}"}'
+          data: '{"tag": "${{ env.TAG }}"}'

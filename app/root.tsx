@@ -1,5 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { json, redirect } from '@remix-run/node';
+import { json } from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -10,18 +10,18 @@ import {
   useLoaderData,
 } from '@remix-run/react';
 
-import { getUser, getEffectiveUser, setEffectiveUsername } from './session.server';
+import { getUser, getEffectiveUser, stopImpersonation } from './session.server';
 
 import theme from './theme';
 
-import type { MetaFunction, LoaderArgs, LinksFunction, ActionArgs } from '@remix-run/node';
+import type { LoaderArgs, LinksFunction, ActionArgs, V2_MetaFunction } from '@remix-run/node';
 
-export const meta: MetaFunction = () => ({
-  charset: 'utf-8',
-  title: 'My.Custom.Domain',
-  description: 'Simple, Secure DNS Records and SSL Certificates for Seneca',
-  viewport: 'width=device-width,initial-scale=1',
-});
+export const meta: V2_MetaFunction = () => [
+  { charset: 'utf-8' },
+  { title: 'My.Custom.Domain' },
+  { name: 'description', content: 'Simple, Secure DNS Records and SSL Certificates for Seneca' },
+  { name: 'viewport', content: 'width=device-width,initial-scale=1' },
+];
 
 export const links: LinksFunction = () => [
   // We want html and body to occupy the full window height for vertical centering
@@ -47,13 +47,9 @@ export async function loader({ request, context }: LoaderArgs) {
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
-  const originalName = formData.get('originalName');
-  if (typeof originalName === 'string') {
-    return redirect('/', {
-      headers: {
-        'Set-Cookie': await setEffectiveUsername(originalName, null),
-      },
-    });
+  const intent = formData.get('intent');
+  if (intent === 'stop-impersonation') {
+    return stopImpersonation(request);
   }
 };
 

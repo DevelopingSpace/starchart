@@ -1,6 +1,18 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Button, Center, Flex, Heading, Stat, StatLabel, StatNumber, Text } from '@chakra-ui/react';
-import { Link, useCatch } from '@remix-run/react';
+import {
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Stat,
+  StatLabel,
+  StatNumber,
+  Text,
+  Link,
+  Hide,
+  Show,
+} from '@chakra-ui/react';
+import { Link as RemixLink, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { json } from '@remix-run/node';
 import { z } from 'zod';
@@ -91,13 +103,13 @@ function mapStatusToErrorText(statusCode: number): string {
   }
 }
 
-export function CatchBoundary() {
-  const caught = useCatch();
-
-  return <SeenErrorLayout result={caught} mapStatusToErrorText={mapStatusToErrorText} />;
-}
-
 export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return <SeenErrorLayout result={error} mapStatusToErrorText={mapStatusToErrorText} />;
+  }
+
   return (
     <UnseenErrorLayout errorText="We got an unexpected error working with your DNS Records, but don't worry our team is already on it's way to fix it" />
   );
@@ -117,10 +129,8 @@ export default function DnsRecordsIndexRoute() {
         into effect as your new domain needs to be spread in DNS servers around the globe. The
         expiration date is initially set to 6 months after the creation date and you can renew the
         DNS record using the renew button next to the expiry date. For more info refer to our{' '}
-        <Link to={{ pathname: '/dns-records/instructions' }}>
-          <Text as="span" textDecoration="underline">
-            instructions page.
-          </Text>
+        <Link as={RemixLink} to={{ pathname: '/dns-records/instructions' }}>
+          instructions page.
         </Link>
       </Text>
       {data.dnsRecords.length ? (
@@ -138,17 +148,22 @@ export default function DnsRecordsIndexRoute() {
                 {data.userDnsRecordCount} / {data.userDnsRecordLimit}
               </StatNumber>
             </Stat>
-            <Link to="/dns-records/new">
-              <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
-            </Link>
+            <RemixLink to="/dns-records/new">
+              <Show below="sm">
+                <Button rightIcon={<AddIcon boxSize={3} />}>New</Button>
+              </Show>
+              <Hide below="sm">
+                <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
+              </Hide>
+            </RemixLink>
           </Flex>
           <DnsRecordsTable dnsRecords={data.dnsRecords} />
         </>
       ) : (
         <Center mt="16">
-          <Link to="/dns-records/new">
+          <RemixLink to="/dns-records/new">
             <Button rightIcon={<AddIcon boxSize={3} />}>Create your first DNS Record!</Button>
-          </Link>
+          </RemixLink>
         </Center>
       )}
     </Flex>

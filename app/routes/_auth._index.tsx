@@ -1,14 +1,26 @@
 import { Flex, Text, VStack, Link, Heading } from '@chakra-ui/react';
+import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import type { LoaderArgs } from '@remix-run/node';
 
 import { requireUsername } from '~/session.server';
 import LandingPageCard from '~/components/landing-page/landing-page-card';
 import { useEffectiveUser } from '~/utils';
 
-export const loader = async ({ request }: LoaderArgs) => requireUsername(request);
+import { getDnsRecordCountByUsername } from '~/models/dns-record.server';
+import { getCertificateByUsername } from '~/models/certificate.server';
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const username = await requireUsername(request);
+
+  return typedjson({
+    dnsRecordCount: await getDnsRecordCountByUsername(username),
+    mostRecentCertificate: await getCertificateByUsername(username),
+  });
+};
 
 export default function IndexRoute() {
   const user = useEffectiveUser();
+  const { dnsRecordCount, mostRecentCertificate } = useTypedLoaderData<typeof loader>();
 
   return (
     <VStack alignSelf="center">
@@ -49,14 +61,14 @@ export default function IndexRoute() {
         )}
         <LandingPageCard
           path="/dns-records"
-          pathName="Manage DNS Records"
+          pathName={dnsRecordCount > 0 ? 'Manage DNS Records' : 'Create DNS Records'}
           cardName="DNS Records"
           cardDescription="DNS Records are stored in Domain Name System (DNS) servers, which map a value to a domain name.  You can create a unique custom domain for each of your projects."
           instructionsPath="/dns-records/instructions"
         />
         <LandingPageCard
           path="/certificate"
-          pathName="Manage Certificate"
+          pathName={mostRecentCertificate ? 'Manage Certificate' : 'Create Certificate'}
           cardName="Certificate"
           cardDescription="An HTTPS Certificate allows a browser to establish a secure connection with your website. Any data between the client and your website will be encrypted and cannot be intercepted."
           instructionsPath="/certificate/information"
@@ -66,6 +78,7 @@ export default function IndexRoute() {
         <Link
           href="https://www.senecacollege.ca/about/policies/information-technology-acceptable-use-policy.html"
           fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
+          target="_blank"
         >
           Seneca's IT Acceptable Use Policy
         </Link>

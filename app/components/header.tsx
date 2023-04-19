@@ -96,31 +96,32 @@ export default function Header() {
         </Heading>
       </Link>
 
-      <Flex justifyContent="flex-end" alignItems="center" color="white" gap="5" width="100%">
-        <Hide below="lg">
-          <Text id="header-user">
-            {user.username === originalUser.username
-              ? user?.username
-              : `Impersonating: ${user?.username}`}
-          </Text>
-        </Hide>
-
+      <Flex justifyContent="flex-end" alignItems="center" color="white" width="100%">
         <Menu>
           <MenuButton
             as={IconButton}
             icon={
-              user.username !== originalUser.username ? (
-                <FaTheaterMasks size="35" />
-              ) : (
-                <Avatar bg="brand.500" showBorder={true} borderColor="white" size="sm" />
-              )
+              <HStack gap="5">
+                <Hide below="lg">
+                  <Text id="header-user">
+                    {user.username === originalUser.username
+                      ? user?.username
+                      : `Impersonating: ${user?.username}`}
+                  </Text>
+                </Hide>
+                {user.username !== originalUser.username ? (
+                  <FaTheaterMasks size="35" />
+                ) : (
+                  <Avatar bg="brand.500" showBorder={true} borderColor="white" size="sm" />
+                )}
+              </HStack>
             }
             style={{ backgroundColor: 'transparent' }}
           />
           <MenuList color="black">
             {user.username !== originalUser.username && (
-              <Form method="post">
-                <input type="hidden" name="originalName" value={originalUser.username} />
+              <Form action="/" method="post">
+                <input type="hidden" name="intent" value="stop-impersonation" />
                 <MenuItem type="submit" aria-label="Revert to original user">
                   <Text fontSize="sm" color="brand.500">
                     Stop Impersonating

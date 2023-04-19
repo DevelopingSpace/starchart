@@ -38,11 +38,11 @@ export default function LandingPageCard({
           <Text>{cardDescription}</Text>
           {instructionsPath && (
             <Text>
-              To learn more, refer to{' '}
+              To learn more, refer to our{' '}
               <Link as={RemixLink} to={instructionsPath}>
                 {instructionsPath === '/certificate/information'
-                  ? 'our information page'
-                  : 'our instruction page'}
+                  ? 'information page'
+                  : 'instructions page'}
               </Link>
               .
             </Text>

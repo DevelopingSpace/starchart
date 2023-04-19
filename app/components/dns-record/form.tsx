@@ -30,7 +30,7 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
   const SubmitButtonIcon = useMemo(() => (mode === 'CREATE' ? AddIcon : EditIcon), [mode]);
 
   return (
-    <Form className="dns-record-form" method="post">
+    <Form method="post">
       <VStack maxW="xl" spacing="6">
         <FormField
           label="Name"

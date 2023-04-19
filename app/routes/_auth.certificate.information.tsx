@@ -45,10 +45,12 @@ export default function CertificateInstructionsRoute() {
           Unfortunately, there are malicious websites that do not provide any security and cannot
           prove their identity to your web browser. To ensure your safety while browsing the
           internet, modern browsers automatically block access to such sites that could harm your
-          computer, as illustrated&nbsp;
-          <Link color="brand.500" href="https://expired-rsa-dv.ssl.com">
-            here.
+          computer. For example, opening an HTTP URL with an expired or misconfigured certificate
+          will result in a warning, as illustrated&nbsp;
+          <Link href="https://expired-rsa-dv.ssl.com" target="_blank">
+            here
           </Link>
+          .
         </Text>
         <Text marginY={4}>
           When a website has an SSL certificate, you'll see a padlock icon and the web address
@@ -81,7 +83,7 @@ export default function CertificateInstructionsRoute() {
           </ListItem>
           <Text>
             You can check if your DNS Records have a valid certificate by using an&nbsp;
-            <Link color="brand.500" href="https://www.sslshopper.com/ssl-checker.html">
+            <Link href="https://www.sslshopper.com/ssl-checker.html" target="_blank">
               SSL Checker Tool
             </Link>
             .
@@ -113,8 +115,8 @@ export default function CertificateInstructionsRoute() {
                 and is issued by a trusted third party called a certification authority. For more
                 information&nbsp;
                 <Link
-                  color="brand.500"
                   href="https://www.cloudflare.com/learning/ssl/what-is-an-ssl-certificate/"
+                  target="_blank"
                 >
                   click here
                 </Link>
@@ -126,8 +128,8 @@ export default function CertificateInstructionsRoute() {
                 Used to decrypt data that has been encrypted with the corresponding public key, and
                 to digitally sign documents or messages. For more information&nbsp;
                 <Link
-                  color="brand.500"
                   href="https://www.cloudflare.com/learning/ssl/what-is-an-ssl-certificate/"
+                  target="_blank"
                 >
                   click here
                 </Link>
@@ -140,8 +142,8 @@ export default function CertificateInstructionsRoute() {
                 Certificate Authority (CA) to establish a chain of trust, ensuring that the SSL/TLS
                 certificate is valid and secure. For more information&nbsp;
                 <Link
-                  color="brand.500"
                   href="https://support.dnsimple.com/articles/what-is-ssl-certificate-chain/"
+                  target="_blank"
                 >
                   click here
                 </Link>
@@ -162,7 +164,10 @@ export default function CertificateInstructionsRoute() {
           <FaqAccordion title="How long is an SSL Certificate valid for?">
             <Text>
               Let's Encrypt certificates are valid for 90 days, as mentioned on their&nbsp;
-              <Link href="https://students.senecacollege.ca/spaces/190/support/wiki/view/1473/contact-its">
+              <Link
+                href="https://letsencrypt.org/docs/faq/#:~:text=Our%20certificates%20are%20valid%20for,your%20certificates%20every%2060%20days."
+                target="_blank"
+              >
                 website
               </Link>
             </Text>
@@ -186,7 +191,9 @@ export default function CertificateInstructionsRoute() {
               ownership prior to issuance. This essential role they play helps to foster trust and
               maintain secure connections between users and various online services. Your
               certificate will be monitored by&nbsp;
-              <Link href="https://letsencrypt.org">Let's Encrypt</Link>
+              <Link href="https://letsencrypt.org" target="_blank">
+                Let's Encrypt
+              </Link>
             </Text>
           </FaqAccordion>
           <FaqAccordion title="How do I know if my certificate is expiring?">

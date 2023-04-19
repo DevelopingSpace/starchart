@@ -1,4 +1,4 @@
-import { Container, Heading, Text } from '@chakra-ui/react';
+import { Container, Heading, Text, Link } from '@chakra-ui/react';
 import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { parseFormSafe } from 'zodix';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
@@ -6,7 +6,13 @@ import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById, updateDnsRecordById } from '~/models/dns-record.server';
 import { isNameValid, UpdateDnsRecordSchema } from '~/lib/dns.server';
-import { useActionData, useCatch, useParams, Link } from '@remix-run/react';
+import {
+  useActionData,
+  useParams,
+  Link as RemixLink,
+  useRouteError,
+  isRouteErrorResponse,
+} from '@remix-run/react';
 import { buildDomain, getErrorMessageFromStatusCode } from '~/utils';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
@@ -71,14 +77,13 @@ function mapStatusToErrorText(statusCode: number): string {
   }
 }
 
-export function CatchBoundary() {
-  const caught = useCatch();
-
-  return <SeenErrorLayout result={caught} mapStatusToErrorText={mapStatusToErrorText} />;
-}
-
 export function ErrorBoundary() {
+  const error = useRouteError();
   const { dnsRecordId } = useParams();
+
+  if (isRouteErrorResponse(error)) {
+    return <SeenErrorLayout result={error} mapStatusToErrorText={mapStatusToErrorText} />;
+  }
 
   return (
     <UnseenErrorLayout
@@ -100,10 +105,8 @@ export default function DnsRecordRoute() {
         Choose a subdomain Name. This will be used to build your domain.
         <br /> (i.e. [subdomain].[username].mystudentproject.ca). <br />
         Then enter a Type and Value that will be mapped with your domain. For more info refer to our{' '}
-        <Link to={{ pathname: '/dns-records/instructions' }}>
-          <Text as="span" textDecoration="underline">
-            instructions page.
-          </Text>
+        <Link as={RemixLink} to={{ pathname: '/dns-records/instructions' }}>
+          instructions page.
         </Link>
       </Text>
       <DnsRecordForm errors={actionData} dnsRecord={dnsRecord} mode="EDIT" />

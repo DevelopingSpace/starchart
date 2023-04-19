@@ -1,11 +1,12 @@
 import { Center, Flex, Image, Heading } from '@chakra-ui/react';
 
-interface DisplayPageProps {
+interface ImageWithMessageProps {
   img: string;
   desc: string;
+  alt: string;
 }
 
-export default function DisplayPage({ img, desc }: DisplayPageProps) {
+export default function ImageWithMessage({ img, desc, alt }: ImageWithMessageProps) {
   return (
     <Center paddingY="24" paddingX="2">
       <Flex
@@ -15,7 +16,7 @@ export default function DisplayPage({ img, desc }: DisplayPageProps) {
         gap="5"
       >
         <Flex justifyContent="center">
-          <Image src={img} />
+          <Image src={img} alt={alt} />
         </Flex>
 
         <Center>
