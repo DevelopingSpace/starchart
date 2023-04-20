@@ -1,4 +1,4 @@
-import { Flex, Container } from '@chakra-ui/react';
+import { chakra, Flex, Container } from '@chakra-ui/react';
 import { Outlet, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
@@ -9,11 +9,11 @@ export default function Index() {
   return (
     <Flex flexDir="column">
       <Header />
-      <main>
-        <Container flex="1" maxW="container.xl" px={{ base: 4, md: 45 }} minHeight="100vh">
+      <chakra.main flex="1" minHeight="100vh">
+        <Container maxW="container.xl" px={{ base: 4, md: 45 }}>
           <Outlet />
         </Container>
-      </main>
+      </chakra.main>
       <Footer />
     </Flex>
   );
