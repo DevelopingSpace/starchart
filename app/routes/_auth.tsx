@@ -7,9 +7,9 @@ import Footer from '~/components/footer';
 
 export default function Index() {
   return (
-    <Flex flexDir="column">
+    <Flex flexDir="column" h="100%">
       <Header />
-      <chakra.main flex="1" minHeight="100vh">
+      <chakra.main flex="1">
         <Container maxW="container.xl" px={{ base: 4, md: 45 }}>
           <Outlet />
         </Container>
