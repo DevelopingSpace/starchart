@@ -24,8 +24,6 @@ export const meta: V2_MetaFunction = () => [
 ];
 
 export const links: LinksFunction = () => [
-  // We want html and body to occupy the full window height for vertical centering
-  { rel: 'stylesheet', href: '/styles.css', type: 'text/css', as: 'style' },
   { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
   { rel: 'manifest', href: '/manifest.json' },
 ];
