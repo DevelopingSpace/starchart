@@ -20,7 +20,7 @@ import FaqAccordion from '~/components/instructions/faq-accordion';
 
 export default function CertificateInstructionsRoute() {
   return (
-    <Flex flexDirection="column" maxWidth={750}>
+    <Flex flexDirection="column" paddingBottom="20" maxWidth={750}>
       <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }} mb="4">
         DNS Records
       </Heading>
