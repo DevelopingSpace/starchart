@@ -50,6 +50,7 @@ export default function CertificateDisplay({
       gap="4"
       textAlign={{ base: 'center', md: 'left' }}
       fontSize={{ base: 'sm', md: 'md' }}
+      paddingBottom={6}
     >
       <HStack gap="4" alignSelf={{ base: 'center', md: 'flex-start' }}>
         <Heading as="h4" size="sm">
