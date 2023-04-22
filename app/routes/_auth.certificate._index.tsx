@@ -114,7 +114,7 @@ export default function CertificateIndexRoute() {
     return (
       <Loading
         img={pendingSvg}
-        desc="We have received your request, and will notify you when your certificate is ready"
+        desc="We have received your request, and will notify you by email when your certificate is ready. This process will take some time. You can move to another page while we finish processing your request."
         alt="Two people processing a document together"
       />
     );
