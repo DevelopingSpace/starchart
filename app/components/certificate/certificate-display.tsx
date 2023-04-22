@@ -97,7 +97,7 @@ export default function CertificateDisplay({
         </Tooltip>
       </HStack>
       <Text>{description}</Text>
-      <Accordion allowMultiple>
+      <Accordion allowMultiple paddingY="6">
         <AccordionItem>
           <AccordionButton>
             <Box as="span" flex="1">
