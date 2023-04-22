@@ -49,7 +49,7 @@ export default function NewDnsRecordRoute() {
   const actionData = useActionData();
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" paddingY="6">
       <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
         Create new DNS Record
       </Heading>
