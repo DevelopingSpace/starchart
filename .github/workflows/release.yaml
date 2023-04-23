@@ -16,12 +16,47 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: 'marvinpinto/action-automatic-releases@latest'
+      - name: 'Build Changelog'
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@v3
         with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          automatic_release_tag: 'latest'
-          title: 'Change Log'
-          prerelease: false
+          configurationJson: |
+            {
+              "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
+              "categories": [
+                {
+                  "title": "## 🚀 Features",
+                  "labels": ["feature"]
+                },
+                {
+                  "title": "## 🐛 Fixes",
+                  "labels": ["fix"]
+                },
+                {
+                  "title": "## 🧪 Tests",
+                  "labels": ["test"]
+                },
+                {
+                    "title": "## 💬 Other",
+                    "labels": ["other"]
+                },
+                {
+                    "title": "## 📦 Dependencies",
+                    "labels": ["dependencies"]
+                }
+              ]
+            }
+          commitMode: false
+          toTag: HEAD
+          token: ${{ github.token }}
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Change Log
+          tag_name: latest
+          token: ${{ github.token }}
+          body: ${{steps.build_changelog.outputs.changelog}}
+          append_body: false
 
   Docker-Build-Deploy:
     runs-on: ubuntu-latest
