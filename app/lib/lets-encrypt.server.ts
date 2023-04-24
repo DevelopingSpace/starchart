@@ -1,4 +1,5 @@
 import https from 'https';
+import { X509Certificate } from 'crypto';
 import dnsPromises from 'dns/promises';
 import acme from 'acme-client';
 
@@ -424,12 +425,16 @@ class LetsEncrypt {
     const [certificate, ...chainArray] = acme.crypto.splitPemChain(fullChain);
     const chain = chainArray.join('');
 
+    // Parse out the date info for the certificate, which are going to be strings:
+    // { validFrom: 'Apr 24 17:52:54 2023 GMT', validTo: 'Apr 24 17:52:54 2028 GMT' }
+    const { validFrom, validTo } = new X509Certificate(certificate);
+
     return {
       privateKey: key.toString(),
       certificate,
       chain,
-      validFrom: new Date(),
-      validTo: new Date(this.#order.expires!),
+      validFrom: new Date(validFrom),
+      validTo: new Date(validTo),
     };
   };
 
