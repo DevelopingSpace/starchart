@@ -19,12 +19,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Get major of current tag and previous tag
-        id: vars
-        run: |
-          git fetch -a
-          echo "current_version=$(git tag -l --sort -refname v* | cut -d$'\n' -f1 )" >> "$GITHUB_ENV"
-          echo "previous_version=$(git tag -l --sort -refname v* | cut -d$'\n' -f2)" >> "$GITHUB_ENV"
       - name: 'Build Changelog'
         id: build_changelog
         uses: mikepenz/release-changelog-builder-action@v3
@@ -56,17 +50,37 @@ jobs:
               ]
             }
           commitMode: false
-          fromTag: ${{env.previous_version}}
-          toTag: ${{env.current_version}}
+          fromTag: latest
+          toTag: HEAD
           token: ${{ github.token }}
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{steps.build_changelog.outputs.toTag}}
+          name: Latest Changes
           tag_name: latest
           token: ${{ github.token }}
           body: ${{steps.build_changelog.outputs.changelog}}
           append_body: false
+      - name: Advance latest tag
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{github.token}}
+          script: |
+            try {
+                await github.git.deleteRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: "tags/latest"
+                })
+            } catch (e) {
+              console.log("The latest tag doesn't exist yet: " + e)
+            }
+            await github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/latest",
+              sha: context.sha
+            })
 
   Docker-Build-Deploy:
     runs-on: ubuntu-latest
