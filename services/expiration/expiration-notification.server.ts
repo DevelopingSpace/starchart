@@ -15,9 +15,6 @@ declare global {
   var __expiration_init__: boolean;
 }
 
-// constant for notification frequency in days
-const NOTIFICATION_FREQUENCY = 7;
-
 // name for the queue
 const expirationNotificationQueueName = 'expiration-notification';
 
@@ -151,17 +148,7 @@ const getExpiringCertificates = () => {
         lte: dayjs().add(30, 'd').toDate(),
       },
       status: 'issued',
-
-      OR: [
-        {
-          lastNotified: null,
-        },
-        {
-          lastNotified: dayjs()
-            .subtract(NOTIFICATION_FREQUENCY * 4, 'd')
-            .toDate(),
-        },
-      ],
+      lastNotified: null,
     },
     include: { user: true },
   });
@@ -175,12 +162,12 @@ const getExpiringDnsRecords = () => {
       },
       OR: [
         {
+          // initial DNS record will have lastNotified set to null
           lastNotified: null,
         },
         {
-          lastNotified: dayjs()
-            .subtract(NOTIFICATION_FREQUENCY * 4, 'd')
-            .toDate(),
+          // renewed DNS record will have lastNotified set to a date
+          lastNotified: dayjs().subtract(30, 'd').toDate(),
         },
       ],
     },
