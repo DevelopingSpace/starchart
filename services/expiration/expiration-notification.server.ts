@@ -160,16 +160,7 @@ const getExpiringDnsRecords = () => {
       expiresAt: {
         lte: dayjs().add(30, 'd').toDate(),
       },
-      OR: [
-        {
-          // initial DNS record will have lastNotified set to null
-          lastNotified: null,
-        },
-        {
-          // renewed DNS record will have lastNotified set to a date
-          lastNotified: dayjs().subtract(30, 'd').toDate(),
-        },
-      ],
+      lastNotified: null,
     },
     include: { user: true },
   });
