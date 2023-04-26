@@ -110,6 +110,8 @@ export function renewDnsRecordById(id: DnsRecord['id']) {
     data: {
       // Set expiration date 6 months from now
       expiresAt: dayjs().add(6, 'month').toDate(),
+      // Set lastNotified to null to notify regarding expiration
+      lastNotified: null,
     },
   });
 }
