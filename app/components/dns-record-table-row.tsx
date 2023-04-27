@@ -76,30 +76,56 @@ export default function DnsRecordsTableRow({
               {dnsRecord.expiresAt.toLocaleDateString('en-US')}
             </Text>
           </Show>
-          <ButtonGroup spacing={{ base: 'auto', sm: '0.5' }} width="full">
-            <Link
-              href={`https://www.nslookup.io/domains/${dnsRecord.subdomain}.${baseDomain}/dns-propagation/${dnsRecord.type}/`}
-              isExternal
-              target="_blank"
-            >
-              <Tooltip label="Lookup DNS record">
+          <Hide below="sm">
+            <ButtonGroup>
+              <Link
+                href={`https://www.nslookup.io/domains/${dnsRecord.subdomain}.${baseDomain}/dns-propagation/${dnsRecord.type}/`}
+                isExternal
+                target="_blank"
+              >
+                <Tooltip label="Lookup DNS record">
+                  <IconButton
+                    icon={<InfoOutlineIcon color="black" boxSize="5" />}
+                    aria-label="Lookup DNS record"
+                    variant="ghost"
+                    ml={{ xs: '0', sm: '2' }}
+                  />
+                </Tooltip>
+              </Link>
+              <Tooltip label="Copy DNS record to clipboard">
                 <IconButton
-                  icon={<InfoOutlineIcon color="black" boxSize="5" />}
-                  aria-label="Lookup DNS record"
+                  icon={<CopyIcon color="black" boxSize="5" />}
+                  aria-label="Refresh DNS record"
                   variant="ghost"
-                  ml={{ xs: '0', sm: '2' }}
+                  onClick={handleOnCopy}
                 />
               </Tooltip>
-            </Link>
-            <Tooltip label="Copy DNS record to clipboard">
-              <IconButton
-                icon={<CopyIcon color="black" boxSize="5" />}
-                aria-label="Refresh DNS record"
-                variant="ghost"
-                onClick={handleOnCopy}
-              />
-            </Tooltip>
-            <Show below="sm">
+            </ButtonGroup>
+          </Hide>
+          <Show below="sm">
+            <ButtonGroup spacing={{ base: 'auto', sm: '0.5' }} width="full">
+              <Link
+                href={`https://www.nslookup.io/domains/${dnsRecord.subdomain}.${baseDomain}/dns-propagation/${dnsRecord.type}/`}
+                isExternal
+                target="_blank"
+              >
+                <Tooltip label="Lookup DNS record">
+                  <IconButton
+                    icon={<InfoOutlineIcon color="black" boxSize="5" />}
+                    aria-label="Lookup DNS record"
+                    variant="ghost"
+                    ml={{ xs: '0', sm: '2' }}
+                  />
+                </Tooltip>
+              </Link>
+              <Tooltip label="Copy DNS record to clipboard">
+                <IconButton
+                  icon={<CopyIcon color="black" boxSize="5" />}
+                  aria-label="Refresh DNS record"
+                  variant="ghost"
+                  onClick={handleOnCopy}
+                />
+              </Tooltip>
               <Form method="patch">
                 <input type="hidden" name="id" value={dnsRecord.id} />
                 <input type="hidden" name="intent" value="renew-dns-record" />
@@ -136,8 +162,8 @@ export default function DnsRecordsTableRow({
                   type="submit"
                 />
               </Tooltip>
-            </Show>
-          </ButtonGroup>
+            </ButtonGroup>
+          </Show>
         </Flex>
       </Td>
       <Hide below="sm">
