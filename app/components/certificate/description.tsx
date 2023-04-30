@@ -10,6 +10,7 @@ import {
   Wrap,
   WrapItem,
   Link,
+  useToast,
 } from '@chakra-ui/react';
 
 interface DescriptionSectionProps {
@@ -21,8 +22,6 @@ interface DescriptionSectionProps {
   link?: string;
 }
 
-const onDelete = () => {};
-
 export default function DescriptionSection({
   certRequested,
   validFromFormatted,
@@ -31,6 +30,7 @@ export default function DescriptionSection({
   isRenewable,
   link,
 }: DescriptionSectionProps) {
+  const toast = useToast();
   return (
     <Flex flexDirection="column" gap="3" fontSize="md">
       <Text maxW={600}>
@@ -64,7 +64,18 @@ export default function DescriptionSection({
               </Form>
               <Form method="post">
                 <input type="hidden" name="intent" value="delete-certificate" />
-                <Button type="submit" ml={1.5} rightIcon={<DeleteIcon />} onClick={onDelete}>
+                <Button
+                  type="submit"
+                  ml={1.5}
+                  rightIcon={<DeleteIcon />}
+                  onClick={() =>
+                    toast({
+                      title: `Certificate has been successfully deleted`,
+                      position: 'bottom-right',
+                      status: 'success',
+                    })
+                  }
+                >
                   Delete
                 </Button>
               </Form>
