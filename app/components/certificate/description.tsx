@@ -1,4 +1,4 @@
-import { RepeatIcon } from '@chakra-ui/icons';
+import { RepeatIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Form, Link as RemixLink } from '@remix-run/react';
 import {
   Flex,
@@ -20,6 +20,8 @@ interface DescriptionSectionProps {
   isRenewable?: boolean;
   link?: string;
 }
+
+const onDelete = () => {};
 
 export default function DescriptionSection({
   certRequested,
@@ -57,7 +59,13 @@ export default function DescriptionSection({
             <Flex justifyContent="flex-end">
               <Form method="post">
                 <Button type="submit" rightIcon={<RepeatIcon />} isDisabled={!isRenewable}>
-                  Renew Certificate
+                  Renew
+                </Button>
+              </Form>
+              <Form method="post">
+                <input type="hidden" name="intent" value="delete-certificate" />
+                <Button type="submit" ml={1.5} rightIcon={<DeleteIcon />} onClick={onDelete}>
+                  Delete
                 </Button>
               </Form>
             </Flex>
