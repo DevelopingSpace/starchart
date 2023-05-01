@@ -3,6 +3,7 @@ import { Form, Link as RemixLink } from '@remix-run/react';
 import {
   Flex,
   Text,
+  IconButton,
   Button,
   Stat,
   StatLabel,
@@ -68,9 +69,10 @@ export default function DescriptionSection({
                   type="submit"
                   ml={1.5}
                   rightIcon={<DeleteIcon />}
+                  variant="ghost"
                   onClick={() =>
                     toast({
-                      title: `Certificate has been successfully deleted`,
+                      title: 'Certificate has been successfully delete',
                       position: 'bottom-right',
                       status: 'success',
                     })
