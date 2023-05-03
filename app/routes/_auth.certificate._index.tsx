@@ -12,6 +12,7 @@ import CertificateAvailable from '~/components/certificate/certificate-available
 import CertificateRequestView from '~/components/certificate/certificate-request';
 import { getErrorMessageFromStatusCode, useEffectiveUser } from '~/utils';
 import { getCertificateByUsername } from '~/models/certificate.server';
+import { deleteCertificateById } from '~/models/certificate.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
@@ -28,17 +29,18 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
+  const form = await request.formData();
   if (request.method !== 'POST') {
     return json({
       result: 'error',
       message: 'Invalid Request Method',
     });
   }
-
+  let certificate;
   const user = await requireUser(request);
 
   try {
-    const certificate = await getCertificateByUsername(user.username);
+    certificate = await getCertificateByUsername(user.username);
 
     if (certificate && certificate.status === 'pending') {
       return json({
@@ -50,6 +52,17 @@ export const action = async ({ request }: ActionArgs) => {
     throw new Error('Error retrieving certificate: ' + error.message);
   }
 
+  if (form.get('intent') === 'delete-certificate') {
+    try {
+      await deleteCertificateById(certificate.id);
+    } catch (error: any) {
+      throw new Error('Error deleting certificate: ' + error.message);
+    }
+    return json({
+      result: 'ok',
+      message: 'Certificate Deleted',
+    });
+  }
   try {
     await addCertRequest({
       rootDomain: user.baseDomain,
