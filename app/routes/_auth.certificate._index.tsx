@@ -120,7 +120,7 @@ export default function CertificateIndexRoute() {
     () => {
       revalidator.revalidate();
     },
-    certificate?.status === 'pending' ? 15_000 : null
+    certificate?.status === 'pending' ? 5_000 : null
   );
 
   if (certificate?.status === 'pending') {
