@@ -79,7 +79,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.33.0",
-    "@remix-run/dev": "^1.16.0",
+    "@remix-run/dev": "^1.16.1",
     "@remix-run/eslint-config": "^1.16.0",
     "@types/bad-words": "^3.0.1",
     "@types/compression": "^1.7.2",
