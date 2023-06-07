@@ -107,7 +107,7 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4",
     "vite-tsconfig-paths": "^4.2.0",
-    "vitest": "^0.31.2"
+    "vitest": "^0.32.0"
   },
   "engines": {
     "node": ">=16"
