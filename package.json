@@ -75,7 +75,7 @@
     "validator": "^13.9.0",
     "winston": "^3.9.0",
     "zod": "^3.21.4",
-    "zodix": "^0.4.0"
+    "zodix": "^0.4.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.34.3",
