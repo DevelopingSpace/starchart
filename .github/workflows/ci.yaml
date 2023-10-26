@@ -364,6 +364,6 @@ jobs:
           HMAC_SECRET: ${{ secrets.WEBHOOK_STAGING_SECRET }}
           TAG: staging-sha-${{ env.GITHUB_SHA_SHORT }}
         with:
-          url: https://mycustomdomain-dev.senecacollege.ca/hooks/deploy
+          url: https://mycustomdomain-dev.senecapolytechnic.ca/hooks/deploy
           hmacSecret: ${{ env.HMAC_SECRET }}
           data: '{"tag": "${{ env.TAG }}"}'
