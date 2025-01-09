@@ -123,7 +123,7 @@ See [our wiki page for information about how to download and use this report](ht
 
 For maintainers: when a PR is ready to merge to main,
 
-- always Squash and Merge all PRs. This is so we do not loose the commit history in the PR it self. So if we ever need to debug a feature PR, we have a commit history to reference. This also servers to keep history on main clean.
+- always Squash and Merge all PRs. This is so we do not lose the commit history in the PR itself. So if we ever need to debug a feature PR, we have a commit history to reference. This also serves to keep the commit history on main clean.
 
 ![squash_and_merge](img/squash_and_merge.png)
 
