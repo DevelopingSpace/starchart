@@ -1,6 +1,6 @@
 # Deployment
 
-Startchart depends on a number of external services, including:
+Starchart depends on a number of external services, including:
 
 1. MySQL
 2. Amazon Route53
