@@ -78,7 +78,7 @@
     "zodix": "^0.4.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.35.0",
+    "@playwright/test": "^1.49.1",
     "@remix-run/dev": "^1.16.1",
     "@remix-run/eslint-config": "^1.16.1",
     "@types/bad-words": "^3.0.1",
