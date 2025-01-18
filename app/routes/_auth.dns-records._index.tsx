@@ -121,7 +121,7 @@ export default function DnsRecordsIndexRoute() {
   return (
     <Flex flexDirection="column">
       <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
-        DNS Record
+        DNS Records
       </Heading>
       <Text mb="4" mt="2" maxW={600}>
         This table shows all of the DNS records that you have created. Once you create a new record,
