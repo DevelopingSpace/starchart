@@ -11,8 +11,7 @@ import Loading from '~/components/image-with-message';
 import CertificateAvailable from '~/components/certificate/certificate-available';
 import CertificateRequestView from '~/components/certificate/certificate-request';
 import { getErrorMessageFromStatusCode, useEffectiveUser } from '~/utils';
-import { getCertificateByUsername } from '~/models/certificate.server';
-import { deleteCertificateById } from '~/models/certificate.server';
+import { getCertificateByUsername, deleteCertificateById } from '~/models/certificate.server';
 import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
@@ -79,7 +78,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 function formatDate(val: Date): string {
-  let date = val.toLocaleDateString('en-US', {
+  const date = val.toLocaleDateString('en-US', {
     month: 'short',
     day: '2-digit',
     year: 'numeric',

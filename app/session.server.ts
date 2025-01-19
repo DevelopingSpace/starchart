@@ -1,7 +1,6 @@
 import { createCookie, createCookieSessionStorage, redirect } from '@remix-run/node';
 
-import { isAdmin } from '~/models/user.server';
-import { getUserByUsername } from '~/models/user.server';
+import { isAdmin, getUserByUsername } from '~/models/user.server';
 import secrets from '~/lib/secrets.server';
 
 import type { User } from '~/models/user.server';
