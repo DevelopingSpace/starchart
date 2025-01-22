@@ -45,7 +45,7 @@
     "@emotion/react": "^11.11.0",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "@prisma/client": "^4.15.0",
+    "@prisma/client": "^4.16.2",
     "@remix-run/express": "^1.19.3",
     "@remix-run/node": "^1.19.3",
     "@remix-run/react": "^1.19.3",
