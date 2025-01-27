@@ -14,7 +14,7 @@
     "dev:server:delay": "run-s delay dev:server",
     "dev:server": "node --inspect --require ./node_modules/dotenv/config ./build/server.js",
     "docker": "docker-compose up -d",
-    "lint": "eslint \"**/*.{js,ts,jsx,tsx}\" --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint": "oxlint .",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
