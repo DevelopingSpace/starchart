@@ -14,7 +14,7 @@
     "dev:server:delay": "run-s delay dev:server",
     "dev:server": "node --inspect --require ./node_modules/dotenv/config ./build/server.js",
     "docker": "docker-compose up -d",
-    "lint": "eslint \"**/*.{js,ts,jsx,tsx}\" --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint": "oxlint .",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
@@ -80,11 +80,9 @@
   "devDependencies": {
     "@playwright/test": "^1.49.1",
     "@remix-run/dev": "^1.19.3",
-    "@remix-run/eslint-config": "^1.19.3",
     "@types/bad-words": "^3.0.1",
     "@types/compression": "^1.7.2",
     "@types/cors": "^2.8.13",
-    "@types/eslint": "^8.40.0",
     "@types/express": "^4.17.21",
     "@types/node": "^18.16.16",
     "@types/nodemailer": "^6.4.8",
@@ -95,12 +93,10 @@
     "@vitest/coverage-istanbul": "^0.32.2",
     "dotenv": "^16.3.1",
     "esbuild": "^0.18.2",
-    "eslint": "^8.41.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-playwright": "^0.12.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.3.0",
     "npm-run-all": "^4.1.5",
+    "oxlint": "^0.15.8",
     "prettier": "2.8.8",
     "start-server-and-test": "^2.0.0",
     "ts-node": "^10.9.1",
@@ -116,6 +112,9 @@
     "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
   },
   "lint-staged": {
-    "*.{md,json,html,css,js,yaml,yml,ts,tsx}": "prettier --write"
+    "*.{md,json,html,css,js,yaml,yml,ts,tsx}": [
+      "prettier --write",
+      "oxlint"
+    ]
   }
 }

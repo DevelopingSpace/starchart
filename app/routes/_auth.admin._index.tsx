@@ -185,7 +185,7 @@ export default function AdminRoute() {
 
       <FormControl>
         <InputGroup width={{ sm: '100%', md: 300 }}>
-          <InputLeftAddon children={<FaSearch />} />
+          <InputLeftAddon>{<FaSearch />}</InputLeftAddon>
           <Input
             placeholder="Search..."
             name="searchText"

@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    "node_modules/**",
+    "build/**",
+    "public/build/**",
+    "mysql-data/**",
+    "redis-data/**",
+    "img/**",
+    "dev-secrets/**",
+    "playwright-report/**"
+  ],
+  "rules": {
+    "no-console": ["warn"],
+    "no-else-return": ["error"],
+    "curly": ["error"],
+    "no-unused-vars": [
+      "error",
+      {
+        "caughtErrors": "none"
+      }
+    ]
+  },
+  "settings": {
+    "jest": {
+      "version": 28
+    }
+  }
+}

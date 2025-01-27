@@ -45,6 +45,7 @@ export const toRoute53RecordValue = (type: DnsRecordType, value: string): string
   }
 
   // Create an uninitialized array with the length to hold our split up strings (max 255 chars)
+  // eslint-disable-next-line no-new-array
   const segments = new Array(Math.ceil(value.length / 255))
     // Initialize with undefined
     .fill(undefined)

@@ -40,7 +40,7 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
         >
           <InputGroup>
             <Input name="subdomain" defaultValue={dnsRecord?.subdomain} />
-            <InputRightAddon children={`.${user.baseDomain}`} />
+            <InputRightAddon>{`.${user.baseDomain}`}</InputRightAddon>
           </InputGroup>
         </FormField>
 
