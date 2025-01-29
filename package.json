@@ -69,7 +69,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-icons": "^5.4.0",
-    "react-use": "^17.4.0",
+    "react-use": "^17.6.0",
     "remix-typedjson": "^0.1.7",
     "samlify": "^2.8.10",
     "validator": "^13.9.0",
