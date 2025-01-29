@@ -1,4 +1,4 @@
-FROM node:18-bullseye-slim@sha256:7d67f2765f8d1b13f3833001bebbc6513581ef3f300aa4b1019a0b6dff2c0b25 as base
+FROMnode:20-slim@sha256:626b719f38532dfe02d806bc64161d94d951ec4ade80494f5d0407bed08c3f5c as base
 
 ARG CURL_VERSION=7.74.* \
   OPENSSL_VERSION=1.1.* \
