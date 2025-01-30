@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "streetsidesoftware.code-spell-checker",
+    "ms-azuretools.vscode-docker",
+    "christian-kohler.npm-intellisense",
+    "esbenp.prettier-vscode",
+    "prisma.prisma",
+    "oxc.oxc-vscode",
+    "ms-playwright.playwright"
+  ]
+}
