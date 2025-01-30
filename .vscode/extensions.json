@@ -6,6 +6,8 @@
     "esbenp.prettier-vscode",
     "prisma.prisma",
     "oxc.oxc-vscode",
-    "ms-playwright.playwright"
+    "ms-playwright.playwright",
+    "yoavbls.pretty-ts-errors",
+    "waderyan.gitblame"
   ]
 }
