@@ -6,7 +6,6 @@
   },
   "files.eol": "\n",
   "files.insertFinalNewline": true,
-  "eslint.workingDirectories": [{ "mode": "auto" }],
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
