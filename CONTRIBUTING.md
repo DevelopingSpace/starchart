@@ -61,6 +61,9 @@ $ npm run db:studio
 
 # Visually see the test database in a GUI
 $ npm run db:studio:test
+
+# Stop and remove containers
+docker compose down
 ```
 
 > **Note** `npm run setup` creates a local `mysql-data/` directory, and is a one time setup. That directory can be safely deleted if the database needs to be reset, or if errors occur during database startup.
