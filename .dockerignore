@@ -1,6 +1,6 @@
 /.github
 /.vscode
-/img
+/docs
 /e2e/
 /docker/volumes
 /node_modules
