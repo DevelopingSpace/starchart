@@ -5,7 +5,7 @@
     "build/**",
     "public/build/**",
     "docker/volumes/**",
-    "img/**",
+    "docs/img/**",
     "dev-secrets/**",
     "playwright-report/**"
   ],
