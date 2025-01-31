@@ -1,11 +1,2 @@
-node_modules
-
-/build
-/public/build
-.env
-/redis-data
-/mysql-data
 /img
-/playwright-report/
 /dev-secrets
-
