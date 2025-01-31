@@ -2,7 +2,7 @@
 
 Starchart makes it easy for the Seneca developer community to create and manage their own custom subdomains and SSL certificates, without cost or having to provide personal information.
 
-For information about running Starchart, see our [deployment guide](docs/deployment.md). For development information, see our [contributing guide](docs/CONTRIBUTING.md). For further technical background, planning, and initial designs, please see the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
+For information about running Starchart, see our [deployment guide](docs/deployment.md). For development information, see our [contributing guide](CONTRIBUTING.md). For further technical background, planning, and initial designs, please see the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
 
 ## Introduction
 
