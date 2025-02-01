@@ -6,7 +6,7 @@
     "public/build/**",
     "mysql-data/**",
     "redis-data/**",
-    "img/**",
+    "docs/img/**",
     "dev-secrets/**",
     "playwright-report/**"
   ],
