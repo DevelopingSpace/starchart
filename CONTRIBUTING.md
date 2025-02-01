@@ -27,15 +27,19 @@ This project requires:
 - [nodejs LTS (20)](https://nodejs.org/en/download/)
 - [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
-Optional:
+We recommend using a Node.js version manager:
 
-- [Use a node version manager](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-version-manager-to-install-nodejs-and-npm)
+- [nvm](https://github.com/nvm-sh/nvm) (Linux, MacOS, WSL)
+- [fnm](https://github.com/Schniz/fnm) (Linux, MacOS, Windows)
 
 ### Dev environment set up
 
 ```bash
 # Create an .env based on the example
 $ cp .env.example .env
+
+# Install and use the project's supported Node.js version
+$ nvm install # or fnm install
 
 # Start MySQL in docker
 $ docker compose up -d
