@@ -4,8 +4,7 @@
     "node_modules/**",
     "build/**",
     "public/build/**",
-    "mysql-data/**",
-    "redis-data/**",
+    "docker/volumes/**",
     "img/**",
     "dev-secrets/**",
     "playwright-report/**"

@@ -4,8 +4,7 @@ node_modules
 /public/build
 .env
 
-/redis-data
-/mysql-data
+/docker/volumes/
 /test-results/
 /playwright-report/
 /playwright/.cache/
