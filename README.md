@@ -2,7 +2,7 @@
 
 Starchart makes it easy for the Seneca developer community to create and manage their own custom subdomains and SSL certificates, without cost or having to provide personal information.
 
-For information about running Starchart, see our [deployment guide](DEPLOY.md). For development information, see our [contributing guide](CONTRIBUTING.md). For further technical background, planning, and initial designs, please see the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
+For information about running Starchart, see our [deployment guide](docs/deployment.md). For development information, see our [contributing guide](CONTRIBUTING.md). For further technical background, planning, and initial designs, please see the [wiki](https://github.com/Seneca-CDOT/starchart/wiki).
 
 ## Introduction
 
@@ -33,4 +33,4 @@ Starchart is not meant to be, or replace commercial registrars; nor is it meant 
 ## Technologies and components
 
 Here is the planned architecture and [technologies used](https://github.com/Seneca-CDOT/starchart/wiki/Tech-Stack):
-![components](img/Starchart%20architecture.drawio.png)
+![components](docs/img/architecture-diagram.png)
