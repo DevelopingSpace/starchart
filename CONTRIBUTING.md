@@ -24,7 +24,7 @@
 This project requires:
 
 - [docker](https://docs.docker.com/get-docker/)
-- [nodejs LTS (20)](https://nodejs.org/en/download/)
+- [nodejs LTS (22)](https://nodejs.org/en/download/)
 - [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 We recommend using a Node.js version manager:
