@@ -1,155 +1,172 @@
-# Npm Scripts
+# NPM Scripts
 
-## build": "run-s build:\*"
+# Contents
 
-Runs all build: scripts (I.e build:remix and build:server)
+- [Build Scripts](#build-scripts)
+- [Development Scripts](#development-scripts)
+- [Database Scripts](#database-scripts)
+- [Setup Scripts](#setup-scripts)
+- [Startup Scripts](#start-scripts)
+- [Tester Scripts](#testing-scripts)
+- [Miscellaneous](#miscellaneous)
 
-## "build:remix": "remix build"
+## Build Scripts
 
-Builds the remix server into /build folder
+### `build`: `run-s build:*`
 
-## "build:server": "esbuild --platform=node --format=cjs ./server.ts --outdir=build --bundle"
+Runs all `build:` scripts (i.g., [build:remix](#buildremix-remix-build) and [build:server](#buildserver-esbuild---platformnode---formatcjs-serverts---outdirbuild---bundle)).
 
-Bundles and minifies the server with arguments
---platform=node: Specifies platform to be node as opposed to browser or neutral
---format=cjs: Specifies the output file(s) to be in cjs rather than esm or iife
-./server.ts: Specifies the entry point
---outdir=build: Specifies output directory to be /build
---bundle: Puts dependencies directly into output file
+### `build:remix`: `remix build`
 
-## "predev": "npm run build:server"
+Builds the Remix application into the `/build` folder.
 
-Runs the build:server
+### `build:server`: `esbuild --platform=node --format=cjs ./server.ts --outdir=build --bundle`
 
-## "dev": "cross-env NODE_ENV=development SECRETS_OVERRIDE=1 run-p dev:remix dev:server:delay"
+Bundles and minifies the server with the following arguments:
 
-Sets enviornment variables
-Runs dev:remix and server:delay
+- `--platform=node`: Specifies the platform as Node.js.
+- `--format=cjs`: Outputs CommonJS format.
+- `./server.ts`: [Entry point](../server.ts).
+- `--outdir=build`: Outputs to `/build` directory.
+- `--bundle`: Includes dependencies in the output file.
 
-## "dev:build": "npm run build:server -- --watch"
+## Development Scripts
 
-Runs build:server command but with --watch tagged onto actual command
---watch: Makes esbuild watch for changes and rebuild
+### `predev`: `npm run build:server`
 
-## "delay": "node -e \"setTimeout(() => process.exit(0), 3000)\""
+Runs the [build:server](#buildserver-esbuild---platformnode---formatcjs-serverts---outdirbuild---bundle) script before development starts.
 
-Uses node to delay for 3 seconds
+### `dev`: `cross-env NODE_ENV=development SECRETS_OVERRIDE=1 run-p dev:remix dev:server:delay`
 
-## "dev:remix": "remix watch"
+- Sets environment variables.
+- Runs [dev:remix](#devremix-remix-watch) and [dev:server:delay](#devserverdelay-run-s-delay-devserver) concurrently.
 
-Builds remix server into build folder but watches for changes and rebuilds
+### `dev:build`: `npm run build:server -- --watch`
 
-## "dev:server:delay": "run-s delay dev:server"
+Runs [build:server](#buildserver-esbuild---platformnode---formatcjs-serverts---outdirbuild---bundle) with `--watch` to rebuild on file changes.
 
-Runs delay(wait 3 seconds) and dev:server
+### `delay`: `node -e "setTimeout(() => process.exit(0), 3000)"`
 
-## "dev:server": "node --inspect --require ./node_modules/dotenv/config ./build/server.js",
+Waits 3 seconds before proceeding.
 
-Runs server.js from build folder and loads the dotenv config file.
---inspect: Allows dev tools to debug
---require: Preloads a module (dotenv config)
+### `dev:remix`: `remix watch`
 
-## "docker": "docker-compose up -d",
+Builds the Remix server into the `/build` folder and watches for changes.
 
-Runs the docker-compose.yml to run multiple containers
-Command ran in dev setup
+### `dev:server:delay`: `run-s delay dev:server`
 
-## "lint": "oxlint .",
+Runs `delay` (wait 3 seconds) before starting [dev:server](#devserver-node---inspect---require-node_modulesdotenvconfig-buildserverjs).
 
-Runs the linter
+### `dev:server`: `node --inspect --require ./node_modules/dotenv/config ./build/server.js`
 
-## "db:generate": "prisma generate",
+Runs `server.js` from the `/build` folder with debugging enabled.
 
-Generates a prisma client for project
+- `--inspect`: Enables debugging tools.
+- `--require`: Preloads the dotenv config.
 
-## "db:push": "prisma db push",
+## Database Scripts
 
-Pushes state of prisma schema to database
+### `db:generate`: `prisma generate`
 
-## "db:seed": "prisma db seed",
+Generates the Prisma client.
 
-Seeds database/Recreates database with sample data
+### `db:push`: `prisma db push`
 
-## "db:reset": "prisma migrate reset",
+Pushes the Prisma schema state to the database.
 
-Resets the database i.e
+### `db:seed`: `prisma db seed`
 
-1. Drops or soft reset schema
-2. Create new schema if dropped
-3. Applies migration
-4. Runs seed script (i.e db:seed)
+Seeds the database with sample data.
 
-## "db:migration": "cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart' prisma migrate dev --create-only --skip-seed",
+### `db:reset`: `prisma migrate reset`
 
-Creates migration without seeding and without applying migration
+Resets the database by:
 
-1. Reruns migration history in shadow database to check for schema drift
-2. Applies pending migration to shadow database
-3. Generates migration from any new changes
+1. Dropping/resetting the schema.
+2. Creating a new schema (if dropped).
+3. Applying migrations.
+4. Running the seed script ([db:seed](#dbseed-prisma-db-seed)).
 
-## "db:format": "prisma format",
+### `db:migration`: `cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart' prisma migrate dev --create-only --skip-seed`
 
-Formats schema file
+Creates a migration without applying it or seeding the database.
 
-## "db:studio": "prisma studio",
+### `db:format`: `prisma format`
 
-Allows for interacting with database interactively
+Formats the Prisma schema file.
 
-## "db:studio:test": "cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' prisma studio",
+### `db:studio`: `prisma studio`
 
-Creates interactive database
+Provides an interactive UI for database management.
 
-## "setup": "run-s db:generate db:push db:seed",
+### `db:studio:test`: `cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' prisma studio`
 
-Runs db:generate, db:push, and db:seed
-I.e Generates prisma client for project, pushes schema to client, seeds/generate data for client
+Runs Prisma Studio with the test database.
 
-## "setup:test": "cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' run-s db:generate db:push",
+## Setup Scripts
 
-Sets enviornment variables and runs db:generate and db:push
-I.e generates prisma client and pushes schema
+### `setup`: `run-s db:generate db:push db:seed`
 
-## "start": "cross-env NODE_ENV=production node ./build/server.js",
+Runs database setup scripts ([db:generate](#dbgenerate-prisma-generate), [db:push](#dbpush-prisma-db-push), [db:seed](#dbseed-prisma-db-seed)).
 
-Starts up server.js in /build folder with enviornment variable
+### `setup:test`: `cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' run-s db:generate db:push`
 
-## "start:e2e": "cross-env NODE_ENV=test node --require dotenv/config ./build/server.js",
+Sets environment variables and runs [db:generate](#dbgenerate-prisma-generate) and [db:push](#dbpush-prisma-db-push) for testing.
 
-Starts up server in build folder
---require: Preloads dotenv config file
+## Start Scripts
 
-## "test": "cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest",
+### `start`: `cross-env NODE_ENV=production node ./build/server.js`
 
-Runs vitest/tests application
+Starts the server in production mode.
 
-## "test:coverage": "cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest run --coverage",
+### `start:e2e`: `cross-env NODE_ENV=test node --require dotenv/config ./build/server.js`
 
-Runs vitest but with coverage tag
+Starts the server in test mode with dotenv configuration preloaded.
 
-## "e2e": "cross-env NODE_ENV=test PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test dev http://localhost:8080 \"playwright test --ui\"",
+## Testing Scripts
 
-Runs playwright test with enviornment in interactive mod mode
+### `test`: `cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest`
 
-## "test:e2e:dev": "cross-env PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test dev http://localhost:8080 \"playwright test\""
+Runs Vitest for application testing.
 
-Runs playwright test with enviornment variables
+### `test:coverage`: `cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest run --coverage`
 
-## "pretest:e2e:run": "cross-env NODE_ENV=test SECRETS_OVERRIDE=1 run-s build",
+Runs Vitest with code coverage enabled.
 
-Sets enviornment variables and runs build command
+### `e2e`: `cross-env NODE_ENV=test PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test dev http://localhost:8080 "playwright test --ui"`
 
-## "test:e2e:run": "cross-env NODE_ENV=test SECRETS_OVERRIDE=1 PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test start:e2e http://localhost:8080 \"playwright test\"",
+Runs Playwright tests in interactive mode.
 
-Runs start:e2e which starts up the server then runs palywright tests
+### `test:e2e:dev`: `cross-env PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test dev http://localhost:8080 "playwright test"`
 
-## "typecheck": "tsc",
+Runs Playwright tests with environment variables.
 
-Checks types in project to make sure they match
+### `pretest:e2e:run`: `cross-env NODE_ENV=test SECRETS_OVERRIDE=1 run-s build`
 
-## "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
+Sets environment variables and runs [build](#build-run-s-build) before e2e tests.
 
-Runs test with --run put into it, typecheck, and test:e2e:run/playwright's end to end tests
+### `test:e2e:run`: `cross-env NODE_ENV=test SECRETS_OVERRIDE=1 PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test start:e2e http://localhost:8080 "playwright test"`
 
-## "prepare": "husky install"
+Starts the test server and runs Playwright tests.
 
-Sets up husky/githooks
+### `validate`: `run-p "test -- --run" lint typecheck test:e2e:run`
+
+Runs tests, linting, type checking, and e2e tests.
+
+## Miscellaneous
+
+### `typecheck`: `tsc`
+
+Runs TypeScript type checking.
+
+### `prepare`: `husky install`
+
+Installs Husky for managing Git hooks.
+
+### `docker`: `docker-compose up -d`
+
+Starts containers defined in [docker-compose.yml](../docker-compose.yml).
+
+### `lint`: `oxlint .`
+
+Runs the linter on the entire project.
