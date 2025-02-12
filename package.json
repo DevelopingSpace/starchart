@@ -70,7 +70,7 @@
     "react-dom": "^18.3.1",
     "react-icons": "^4.10.1",
     "react-use": "^17.4.0",
-    "remix-typedjson": "^0.1.7",
+    "remix-typedjson": "^0.4.1",
     "samlify": "^2.8.10",
     "validator": "^13.9.0",
     "winston": "^3.17.0",
