@@ -3,6 +3,7 @@ import {
   CreateHostedZoneCommand,
   ChangeResourceRecordSetsCommand,
   ListResourceRecordSetsCommand,
+  RRType,
 } from '@aws-sdk/client-route-53';
 
 import logger from '~/lib/logger.server';
@@ -126,7 +127,7 @@ export const getDnsRecordSetPage = async (
     const command = new ListResourceRecordSetsCommand({
       HostedZoneId: await getHostedZoneId(),
       StartRecordName: fqdn,
-      StartRecordType: type,
+      StartRecordType: type as RRType,
     });
 
     return route53Client.send(command);

@@ -3,6 +3,7 @@ import {
   executeChangeSet,
   getDnsRecordSetPage,
 } from 'services/reconciler/route53-client.server';
+import { ChangeAction, RRType } from '@aws-sdk/client-route-53';
 
 describe('Route53 Client functions test', () => {
   let hostedZoneId: string;
@@ -151,39 +152,39 @@ describe('Route53 Client functions test', () => {
   test('getDnsRecordSetPage multiple records', async () => {
     const changes = [
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
           ResourceRecords: [{ Value: '192.168.2.1' }],
           TTL: 300,
-          Type: 'A',
+          Type: RRType.A,
         },
       },
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
           ResourceRecords: [{ Value: '2001:0db8:85a3:0000:0000:8a2e:0370:7334' }],
           TTL: 300,
-          Type: 'AAAA',
+          Type: RRType.AAAA,
         },
       },
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
           ResourceRecords: [{ Value: 'google.com' }],
           TTL: 300,
-          Type: 'CNAME',
+          Type: RRType.CNAME,
         },
       },
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
           ResourceRecords: [{ Value: '"hello world"' }],
           TTL: 300,
-          Type: 'TXT',
+          Type: RRType.TXT,
         },
       },
     ];
