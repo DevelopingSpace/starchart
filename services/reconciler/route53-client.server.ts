@@ -127,7 +127,7 @@ export const getDnsRecordSetPage = async (
     const command = new ListResourceRecordSetsCommand({
       HostedZoneId: await getHostedZoneId(),
       StartRecordName: fqdn,
-      StartRecordType: toRoute53RRType(type),
+      StartRecordType: type ? toRoute53RRType(type) : undefined,
     });
 
     return route53Client.send(command);

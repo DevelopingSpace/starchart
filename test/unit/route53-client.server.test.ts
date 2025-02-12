@@ -37,12 +37,12 @@ describe('Route53 Client functions test', () => {
   test('executeChangeSet single change', async () => {
     const changeId = await executeChangeSet([
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
           ResourceRecords: [{ Value: '192.168.2.1' }],
           TTL: 300,
-          Type: 'A',
+          Type: RRType.A,
         },
       },
     ]);
@@ -52,39 +52,39 @@ describe('Route53 Client functions test', () => {
   test('executeChangeSet multiple changes', async () => {
     const changeId = await executeChangeSet([
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
           ResourceRecords: [{ Value: '192.168.2.1' }],
           TTL: 300,
-          Type: 'A',
+          Type: RRType.A,
         },
       },
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
           ResourceRecords: [{ Value: '2001:0db8:85a3:0000:0000:8a2e:0370:7334' }],
           TTL: 300,
-          Type: 'AAAA',
+          Type: RRType.AAAA,
         },
       },
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
           ResourceRecords: [{ Value: 'google.com' }],
           TTL: 300,
-          Type: 'CNAME',
+          Type: RRType.CNAME,
         },
       },
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
           ResourceRecords: [{ Value: '"hello world"' }],
           TTL: 300,
-          Type: 'TXT',
+          Type: RRType.TXT,
         },
       },
     ]);
@@ -96,21 +96,21 @@ describe('Route53 Client functions test', () => {
 
     const changeId = await executeChangeSet([
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: domain,
           ResourceRecords: [{ Value: '"value1"' }],
           TTL: 300,
-          Type: 'TXT',
+          Type: RRType.TXT,
         },
       },
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: domain,
           ResourceRecords: [{ Value: '"value2"' }],
           TTL: 300,
-          Type: 'TXT',
+          Type: RRType.TXT,
         },
       },
     ]);
@@ -123,12 +123,12 @@ describe('Route53 Client functions test', () => {
     // Create record
     const changeId1 = await executeChangeSet([
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: domain,
           ResourceRecords: [{ Value: '192.168.2.1' }],
           TTL: 300,
-          Type: 'A',
+          Type: RRType.A,
         },
       },
     ]);
@@ -137,12 +137,12 @@ describe('Route53 Client functions test', () => {
     // Delete it
     const changeId2 = await executeChangeSet([
       {
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: domain,
           ResourceRecords: [{ Value: '192.168.2.1' }],
           TTL: 300,
-          Type: 'A',
+          Type: RRType.A,
         },
       },
     ]);

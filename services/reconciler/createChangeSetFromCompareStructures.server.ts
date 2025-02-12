@@ -3,7 +3,7 @@ import logger from '~/lib/logger.server';
 
 import { DnsRecordType } from '@prisma/client';
 
-import type { Change } from '@aws-sdk/client-route-53';
+import { Change, ChangeAction } from '@aws-sdk/client-route-53';
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
 import { toRoute53RecordValue, toRoute53RRType } from './route53Utils.server';
 
@@ -33,7 +33,7 @@ export const createRemovedChangeSetFromCompareStructures = ({
       }
 
       toChange.push({
-        Action: 'DELETE',
+        Action: ChangeAction.DELETE,
         ResourceRecordSet: {
           Name: fqdn,
           Type: toRoute53RRType(type),
@@ -90,7 +90,7 @@ export const createUpsertedChangeSetFromCompareStructures = ({
       }
 
       toChange.push({
-        Action: 'UPSERT',
+        Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn,
           Type: toRoute53RRType(type),
