@@ -42,7 +42,7 @@ $ cp .env.example .env
 $ nvm install # or fnm install
 
 # Start MySQL in docker
-$ docker compose up -d
+$ npm run docker
 # Wait for the db to finish starting, it takes a few seconds before it's ready...
 
 # Install all dependencies
