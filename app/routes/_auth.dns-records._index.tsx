@@ -28,14 +28,14 @@ import {
 import { requireUsername } from '~/session.server';
 import logger from '~/lib/logger.server';
 
-import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
 import { getErrorMessageFromStatusCode } from '~/utils';
 
 export type DnsRecordActionIntent = 'renew-dns-record' | 'delete-dns-record';
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const username = await requireUsername(request);
 
   return typedjson({
@@ -45,7 +45,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   });
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   await requireUsername(request);
 
   const dnsRecordActionParams = await parseFormSafe(
