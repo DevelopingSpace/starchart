@@ -11,7 +11,5 @@
   "editor.detectIndentation": false,
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.words": ["Starchart"],
-  "eslint.options": {
-    "overrideConfigFile": "./eslint.config.cjs"
-  }
+  "eslint.useFlatConfig": true
 }
