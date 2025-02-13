@@ -114,5 +114,5 @@ module.exports = [
       },
     },
   },
-  oxlint.configs['flat/recommended'],
+  ...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json'),
 ];
