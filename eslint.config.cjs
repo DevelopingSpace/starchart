@@ -38,6 +38,9 @@ module.exports = [
         process: 'readonly',
       },
     },
+    linterOptions: {
+      reportUnusedDisableDirectives: 'off',
+    },
     plugins: {
       'react': reactPlugin,
       'jsx-a11y': jsxA11yPlugin,
