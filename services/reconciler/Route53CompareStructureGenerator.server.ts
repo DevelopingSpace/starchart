@@ -5,7 +5,11 @@ import { fromRoute53RecordValue } from './route53Utils.server';
 
 // Using this in JS code later, cannot `import type`
 import { DnsRecordType } from '@prisma/client';
-import type { ResourceRecordSet, ListResourceRecordSetsResponse } from '@aws-sdk/client-route-53';
+import type {
+  ResourceRecordSet,
+  ListResourceRecordSetsResponse,
+  RRType,
+} from '@aws-sdk/client-route-53';
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
 
 // Validate `[subdomain].[username].starchart.com.`
@@ -50,7 +54,7 @@ class Route53CompareStructureGenerator {
   generate = async (): Promise<ReconcilerCompareStructure> => {
     let morePages: boolean = true;
     let nextFqdn: string | undefined = undefined;
-    let nextType: string | undefined = undefined;
+    let nextType: RRType | undefined = undefined;
 
     while (morePages) {
       const response: ListResourceRecordSetsResponse = await getDnsRecordSetPage(

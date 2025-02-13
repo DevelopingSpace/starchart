@@ -14,6 +14,7 @@ import type {
   ListResourceRecordSetsResponse,
   Change,
 } from '@aws-sdk/client-route-53';
+import { toRoute53RRType } from './route53Utils.server';
 
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
 const { NODE_ENV } = process.env;
@@ -126,7 +127,7 @@ export const getDnsRecordSetPage = async (
     const command = new ListResourceRecordSetsCommand({
       HostedZoneId: await getHostedZoneId(),
       StartRecordName: fqdn,
-      StartRecordType: type,
+      StartRecordType: type ? toRoute53RRType(type) : undefined,
     });
 
     return route53Client.send(command);
