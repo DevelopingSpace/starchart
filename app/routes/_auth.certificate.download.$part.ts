@@ -44,7 +44,7 @@ export async function loader({ request, params }: LoaderArgs) {
       default:
         throw new Response(`Unknown certificate part: ${params.part}`, { status: 400 });
     }
-  } catch (e) {
+  } catch {
     throw new Response('Certificate Not Found', { status: 404 });
   }
 }
