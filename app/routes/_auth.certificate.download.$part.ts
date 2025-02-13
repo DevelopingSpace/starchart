@@ -1,21 +1,17 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
-import { createReadableStreamFromReadable } from '@remix-run/node';
 
 import { requireUsername } from '~/session.server';
 import { getCertificateByUsername } from '~/models/certificate.server';
 import { CertificateStatus } from '@prisma/client';
-import { PassThrough } from 'stream';
 
 function createResponse(body: string | null, filename: string) {
   if (!body) {
     throw new Response('Unable to get certificate part', { status: 400 });
   }
 
-  const readable = new PassThrough();
-  readable.push(body);
-  const stream = createReadableStreamFromReadable(readable);
+  const blob = new Blob([body], { type: 'application/x-pem-file' });
 
-  return new Response(stream, {
+  return new Response(blob.stream(), {
     status: 200,
     headers: {
       'Content-Type': 'application/x-pem-file',
