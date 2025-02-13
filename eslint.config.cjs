@@ -7,6 +7,7 @@ const importPlugin = require('eslint-plugin-import');
 const reactPlugin = require('eslint-plugin-react');
 const jsxA11yPlugin = require('eslint-plugin-jsx-a11y');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
+const oxlint = require('eslint-plugin-oxlint');
 
 module.exports = [
   js.configs.recommended,
@@ -110,4 +111,5 @@ module.exports = [
       },
     },
   },
+  oxlint.configs['flat/recommended'],
 ];
