@@ -10,5 +10,8 @@
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["Starchart"]
+  "cSpell.words": ["Starchart"],
+  "eslint.options": {
+    "overrideConfigFile": "./eslint.config.cjs"
+  }
 }

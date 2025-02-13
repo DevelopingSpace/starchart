@@ -32,7 +32,7 @@ const getHostedZoneForDomain = async (incomingDomain: string): Promise<string> =
     try {
       await dnsPromises.resolveSoa(domainName);
       found = true;
-    } catch (e) {
+    } catch {
       // remove one level, i.e., c.b.a.com => b.a.com
       domainName = domainName.replace(/^.*?\./, '');
     }
@@ -153,7 +153,7 @@ class LetsEncrypt {
         .flat();
 
       return txtRecords.includes(key);
-    } catch (e) {
+    } catch {
       /**
        * Noop, this is expected
        * example: {
