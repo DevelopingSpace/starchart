@@ -4,6 +4,7 @@
 module.exports = {
   cacheDirectory: './node_modules/.cache/remix',
   ignoredRouteFiles: ['**/.*', '**/*.css', '**/*.test.{js,jsx,ts,tsx}'],
+  serverModuleFormat: 'cjs',
   future: {
     v2_dev: true,
     v2_errorBoundary: true,
