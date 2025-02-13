@@ -3,9 +3,9 @@ import { json } from '@remix-run/server-runtime';
 import { redis } from '~/lib/redis.server';
 import { prisma } from '~/db.server';
 
-import type { LoaderArgs } from '@remix-run/server-runtime';
+import type { LoaderFunctionArgs } from '@remix-run/server-runtime';
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const host = request.headers.get('X-Forwarded-Host') ?? request.headers.get('host');
 
   try {

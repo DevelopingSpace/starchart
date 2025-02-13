@@ -1,4 +1,4 @@
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs } from '@remix-run/node';
 import { createUserSession } from '~/session.server';
 import { parseLoginResponse } from '~/lib/saml.server';
 import { redirect } from '@remix-run/node';
@@ -37,7 +37,7 @@ The response from SimpleSAMLPhp
   }
 }
 */
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method !== 'POST') {
     // Request method is not post, why are you here?
     return redirect('/');

@@ -1,5 +1,5 @@
 import { Flex, Heading } from '@chakra-ui/react';
-import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { isRouteErrorResponse, useRevalidator, useRouteError } from '@remix-run/react';
@@ -16,7 +16,7 @@ import { addCertRequest } from '~/queues/certificate/certificate-flow.server';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const username = await requireUsername(request);
 
   try {
@@ -27,7 +27,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   if (request.method !== 'POST') {
     return json({

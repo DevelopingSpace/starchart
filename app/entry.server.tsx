@@ -1,6 +1,6 @@
 import { PassThrough } from 'stream';
 import type { EntryContext } from '@remix-run/node';
-import { Response } from '@remix-run/node';
+import { createReadableStreamFromReadable } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
 import logger from '~/lib/logger.server';
@@ -30,6 +30,8 @@ export default function handleRequest(
       {
         [callbackName]: () => {
           const body = new PassThrough();
+          const stream = createReadableStreamFromReadable(body);
+
           const emotionServer = createEmotionServer(emotionCache);
 
           const bodyWithStyles = emotionServer.renderStylesToNodeStream();
@@ -38,7 +40,7 @@ export default function handleRequest(
           responseHeaders.set('Content-Type', 'text/html');
 
           resolve(
-            new Response(body, {
+            new Response(stream, {
               headers: responseHeaders,
               status: didError ? 500 : responseStatusCode,
             })

@@ -1,10 +1,10 @@
 import { Box, Button, Heading, Text } from '@chakra-ui/react';
-import type { ThrownResponse } from '@remix-run/react';
+import type { ErrorResponse } from '@remix-run/react';
 import { useNavigate } from '@remix-run/react';
 import { getErrorMessageFromStatusCode } from '~/utils';
 
 interface SeenErrorLayoutProps {
-  result: ThrownResponse<number, any>;
+  result: ErrorResponse;
   mapStatusToErrorText?: (statusCode: number) => string;
 }
 

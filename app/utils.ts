@@ -40,7 +40,9 @@ export function useMatchesData(id: string): Record<string, unknown> | undefined 
   const route = useMemo(
     () => matchingRoutes.find((route) => route.id === id),
     [matchingRoutes, id]
-  );
+  ) as {
+    data: Record<string, unknown> | undefined;
+  };
   return route?.data;
 }
 
