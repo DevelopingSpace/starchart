@@ -10,14 +10,14 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { LockIcon } from '@chakra-ui/icons';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 
 import { getUsername } from '~/session.server';
 import { createLoginRequest } from '~/lib/saml.server';
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   // Check if a session with a username exists
   const user = await getUsername(request);
 
