@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Only for development
   database:
