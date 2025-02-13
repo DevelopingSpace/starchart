@@ -100,7 +100,7 @@ The first time the app is run, or whenever the database schema is altered, the d
 
 To do this, run the `starchart` container as a service, with the additional environment variable `DANGER_DATABASE_WIPE_REINITIALIZE=1` (NOTE: this will **wipe** all data in MySQL and Redis, so be careful!).
 
-Modify the `docker-compose.yml` you are using (e.g., `docker-staging.yml` or `docker-production.yml`) and add `DANGER_DATABASE_WIPE_REINITIALIZE=1` in the `environment` section of the `mycustomdomain` service. You can (and should!) remove this after you get the database set up, especially on production, so that re-deploying doesn't wipe the database.
+Modify the `compose.yaml` you are using (e.g., `compose.staging.yaml` or `compose.production.yaml`) and add `DANGER_DATABASE_WIPE_REINITIALIZE=1` in the `environment` section of the `mycustomdomain` service. You can (and should!) remove this after you get the database set up, especially on production, so that re-deploying doesn't wipe the database.
 
 ### New Changes to the Database Schema
 
@@ -119,7 +119,7 @@ To deploy or update the app:
 
 ```sh
 # Use the correct YAML file for your deployment, and name the service `starchart`
-docker stack deploy -c docker-staging.yml starchart
+docker stack deploy -c compose.staging.yal starchart
 ```
 
 To stop and remove the serivce:
