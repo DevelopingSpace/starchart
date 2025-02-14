@@ -11,18 +11,6 @@
   ],
   "rules": {
     "no-console": ["warn"],
-    "no-else-return": ["error"],
-    "curly": ["error"],
-    "no-unused-vars": [
-      "error",
-      {
-        "caughtErrors": "none"
-      }
-    ]
-  },
-  "settings": {
-    "jest": {
-      "version": 28
-    }
+    "no-else-return": ["error"]
   }
 }
