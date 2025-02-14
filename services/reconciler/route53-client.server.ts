@@ -3,17 +3,15 @@ import {
   CreateHostedZoneCommand,
   ChangeResourceRecordSetsCommand,
   ListResourceRecordSetsCommand,
-} from '@aws-sdk/client-route-53';
-
-import logger from '~/lib/logger.server';
-import secrets from '~/lib/secrets.server';
-
-import type {
   CreateHostedZoneResponse,
   ChangeResourceRecordSetsResponse,
   ListResourceRecordSetsResponse,
   Change,
+  RRType,
 } from '@aws-sdk/client-route-53';
+
+import logger from '~/lib/logger.server';
+import secrets from '~/lib/secrets.server';
 
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
 const { NODE_ENV } = process.env;
