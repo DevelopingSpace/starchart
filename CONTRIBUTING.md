@@ -177,11 +177,13 @@ Your `.env` file should define any environment variables you want to use via `pr
 
 For secrets, we use [docker-secret](https://github.com/hwkd/docker-secret) to load and expose secrets via Docker Swarm's [secrets](https://docs.docker.com/engine/swarm/secrets/), which are files that get mounted into the container at `/run/secrets/`.
 
-### Using custom secrets
+### Overriding Docker Swarm secrets with `dev-secrets/`
 
-In development, you can override the Docker secrets used by the app with your own by adding `SECRETS_OVERRIDE=1` to your `.env` file. This will load secrets from the `dev-secrets/` directory instead of using Docker Swarm secrets. The `dev-secrets/` folder contains files exposed as secrets to the running app.
+In development, you can override the Docker Swarm secrets used by the app with secrets from `dev-secrets/` by adding `SECRETS_OVERRIDE=1` to your `.env` file. The `dev-secrets/` folder contains files exposed as secrets to the running app.
 
-To add a secret, for example, a secret named `MY_SECRET` with a value of `this-is-secret`:
+#### Adding secrets to `dev-secrets/`
+
+To add a secret, for example, one named `MY_SECRET` with a value of `this-is-secret`:
 
 1. Create a new file at `dev-secrets/MY_SECRET` with the contents `this-is-secret`.
 2. In your code, import secrets with `import secrets from '~/lib/secrets.server'`.
