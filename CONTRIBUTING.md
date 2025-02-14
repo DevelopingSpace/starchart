@@ -32,13 +32,13 @@ We recommend using a Node.js version manager:
    fnm install
    ```
 
-3. Start backing services with Docker - MySQL, Redis, Route53, a Let's Encrypt server, Mailhog, and a SAML IDP.
+3. Start backing services with Docker
 
    ```bash
    npm run docker
    ```
 
-   Wait for the services to finish starting, it takes a while before they're ready.
+   This starts MySQL, Redis, Route53, a Let's Encrypt server, Mailhog, and a SAML IDP. Wait for the services to finish starting, it takes a while before they're ready.
 
 4. Install dependencies.
 
