@@ -77,6 +77,18 @@ We recommend using a Node.js version manager:
    docker compose down
    ```
 
+## Testing
+
+### End-to-end testing
+
+We use [Playwright](https://playwright.dev/) for end-to-end testing. For a brief overview of how to use Playwright, you can also go to our [wiki page](https://github.com/DevelopingSpace/starchart/wiki/Playwright).
+
+#### Debugging failures in CI
+
+Playwright is configured to generate a report for test failures. This report is available to download from the GitHub Actions Summary page for the failed test run, and contains video(s) and trace(s) of the failed test(s).
+
+See [our wiki page for information about how to download and use this report](https://github.com/DevelopingSpace/starchart/wiki/Playwright#debugging-ci-failures).
+
 ## View the database
 
 You can use Prisma Studio, a visual editor for the data in the database, with:
@@ -127,18 +139,6 @@ To add a secret, for example, a secret named `MY_SECRET` with a value of `this-i
 1. Create a new file at `dev-secrets/MY_SECRET` with the contents `this-is-secret`.
 2. In your code, import secrets with `import secrets from '~/lib/secrets.server'`.
 3. In your code, use your secret with `secrets.MY_SECRET`.
-
-## Testing
-
-### End-to-end testing
-
-We use [Playwright](https://playwright.dev/) for end-to-end testing. For a brief overview of how to use Playwright, you can also go to our [wiki page](https://github.com/DevelopingSpace/starchart/wiki/Playwright).
-
-#### Debugging failures in CI
-
-Playwright is configured to generate a report for test failures. This report is available to download from the GitHub Actions Summary page for the failed test run, and contains video(s) and trace(s) of the failed test(s).
-
-See [our wiki page for information about how to download and use this report](https://github.com/DevelopingSpace/starchart/wiki/Playwright#debugging-ci-failures).
 
 ## Workflow
 
