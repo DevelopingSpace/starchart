@@ -4,7 +4,6 @@
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Node.js v22 LTS](https://nodejs.org/en/download/)
-- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (Comes with Node.js)
 
 We recommend using a Node.js version manager:
 
