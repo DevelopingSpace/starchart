@@ -149,7 +149,7 @@ The development SAML IDP is configured with a few default accounts for developme
 
 These can be configured in `./config/simplesamlphp-users`.
 
-## View and edit the database
+## View and edit the data in the database
 
 You can use Prisma Studio as a visual editor for the data in the database:
 
