@@ -20,13 +20,13 @@ We recommend using a Node.js version manager:
 
 2. Install and use the project's supported Node.js version.
 
-   nvm:
+   With nvm:
 
    ```bash
    nvm install
    ```
 
-   fnm:
+   With fnm:
 
    ```bash
    fnm install
@@ -93,13 +93,13 @@ Assuming previous development setup, to run unit tests:
 3. Run the unit tests.
 
    ```bash
-       npm run test
+   npm run test
    ```
 
 4. When done, stop and remove containers.
 
    ```bash
-       docker compose down
+   docker compose down
    ```
 
 ### End-to-end testing
@@ -131,15 +131,15 @@ You can use Prisma Studio, a visual editor for the data in the database, with:
 
 Development database:
 
-```bash
-npm run db:studio
-```
+    ```bash
+    npm run db:studio
+    ```
 
 Test database:
 
-```bash
-npm run db:studio:test
-```
+    ```bash
+    npm run db:studio:test
+    ```
 
 ## Reset the database
 
