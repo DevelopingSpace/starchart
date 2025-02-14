@@ -32,7 +32,7 @@ We recommend using a Node.js version manager:
    fnm install
    ```
 
-3. Start backing services with Docker
+3. Start backing services with Docker.
 
    ```bash
    npm run docker
@@ -76,9 +76,9 @@ We recommend using a Node.js version manager:
 
 We use [Vitest](https://vitest.dev/) for unit testing.
 
-Assuming previous development setup, to run unit tests:
+Assuming your development environment has been set up, follow these steps to run unit tests:
 
-1. Start backing services with Docker
+1. Start backing services with Docker, if not already running.
 
    ```bash
    npm run docker
@@ -147,11 +147,11 @@ The development SAML IDP is configured with a few default accounts for developme
 | user3    | user3pass |
 | han.solo | starchart |
 
-These can be configured in `./config/simplesamlphp-users`.1
+These can be configured in `./config/simplesamlphp-users`.
 
 ## View the database
 
-You can use Prisma Studio, a visual editor for the data in the database, with:
+You can use Prisma Studio as a visual editor for the data in the database:
 
 Development database:
 
