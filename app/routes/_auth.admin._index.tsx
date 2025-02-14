@@ -73,7 +73,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   const { intent } = actionParams.data;
   switch (intent) {
-    case 'search-users':
+    case 'search-users': {
       const { searchText } = actionParams.data;
 
       const users = await searchUsers(searchText ?? '');
@@ -93,19 +93,23 @@ export const action = async ({ request }: ActionArgs) => {
       });
 
       return typedjson({ users: usersWithStats });
-    case 'impersonate-user':
+    }
+    case 'impersonate-user': {
       const { newEffectiveUsername } = actionParams.data;
       if (!newEffectiveUsername) {
         throw new Response('Missing username for impersonation', { status: 400 });
       }
       return startImpersonation(request, newEffectiveUsername);
-    case 'delete-user':
+    }
+    case 'delete-user': {
       const { username } = actionParams.data;
       await deleteUser(username ?? '');
 
       return typedjson({ isUserDeleted: true });
-    default:
+    }
+    default: {
       return typedjson({ result: 'error', message: 'Unknown intent' });
+    }
   }
 };
 

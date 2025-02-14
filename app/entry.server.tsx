@@ -2,6 +2,7 @@ import { PassThrough } from 'stream';
 import type { EntryContext } from '@remix-run/node';
 import { Response } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
+// eslint-disable-next-line import/no-named-as-default
 import isbot from 'isbot';
 import logger from '~/lib/logger.server';
 import { renderToPipeableStream } from 'react-dom/server';
