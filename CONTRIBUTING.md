@@ -10,7 +10,7 @@ We recommend using a Node.js version manager:
 - [nvm](https://github.com/nvm-sh/nvm) (Linux, MacOS, WSL)
 - [fnm](https://github.com/Schniz/fnm) (Linux, MacOS, Windows)
 
-## Development setup
+## Setup
 
 1. Create a .env based on the example.
 
@@ -149,7 +149,7 @@ The development SAML IDP is configured with a few default accounts for developme
 
 These can be configured in `./config/simplesamlphp-users`.
 
-## View the database
+## View and edit the database
 
 You can use Prisma Studio as a visual editor for the data in the database:
 
@@ -169,7 +169,7 @@ npm run db:studio:test
 
 To reset the database or in case of errors during database startup, delete the `docker/volumes/mysql-data/` directory and re-run `npm run setup`.
 
-## Configuring environment variables and secrets
+## Configure environment variables and secrets
 
 Some application configuration is managed via environment variables, and some via secrets (i.e., files).
 
