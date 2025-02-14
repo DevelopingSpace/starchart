@@ -12,13 +12,13 @@ We recommend using a Node.js version manager:
 
 ## Development setup
 
-1. Create an .env based on the example
+1. Create a .env based on the example.
 
    ```bash
    cp .env.example .env
    ```
 
-2. Install and use the project's supported Node.js version
+2. Install and use the project's supported Node.js version.
 
    nvm:
 
@@ -32,21 +32,21 @@ We recommend using a Node.js version manager:
    fnm install
    ```
 
-3. Start backing services with Docker - MySQL, Redis, Route53, a Let's Encrypt server, Mailhog, and a SAML IDP
+3. Start backing services with Docker - MySQL, Redis, Route53, a Let's Encrypt server, Mailhog, and a SAML IDP.
 
    ```bash
    npm run docker
    ```
 
-   Wait for the services to finish starting, it takes a few seconds before they're ready.
+   Wait for the services to finish starting, it takes a while before they're ready.
 
-4. Install all dependencies
+4. Install dependencies.
 
    ```bash
    npm install
    ```
 
-5. Setup the database
+5. Setup the database.
 
    ```bash
    npm run setup
@@ -64,13 +64,13 @@ We recommend using a Node.js version manager:
    npm run build
    ```
 
-8. Start the app, which will be running on localhost:8080
+8. Start the app on localhost:8080.
 
    ```bash
    npm run dev
    ```
 
-9. When done, stop and remove containers
+9. When done, stop and remove containers.
 
    ```bash
    docker compose down
@@ -106,11 +106,11 @@ npm run db:studio:test
 
 ## Reset the database
 
-`npm run setup` creates a local `docker/volumes/mysql-data/` directory, and is a one time setup. That directory can be safely deleted if the database needs to be reset, or if errors occur during database startup.
+To reset the database or in case of errors during database startup, delete the `docker/volumes/mysql-data/` directory and re-run `npm run setup`.
 
-## SAML authentication in development
+## Authentication
 
-The development SAML IDP is configured with a few default accounts for testing. The usernames and passwords are:
+The development SAML IDP is configured with a few default accounts for development and testing. The usernames and passwords are:
 
 | user     | pass      |
 | -------- | --------- |
