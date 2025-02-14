@@ -256,6 +256,10 @@ Please follow the [GitHub flow][] for contributions:
 
    Squash and merge pull requests to keep a clean commit history on the main branch.
 
+## Wiki
+
+You can visit our [wiki](https://github.com/DevelopingSpace/starchart/wiki/) for more useful documentation.
+
 ## Resources
 
 - [How to Contribute to Open Source][]
