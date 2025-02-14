@@ -76,3 +76,7 @@ export const fromRoute53RecordValue = (type: DnsRecordType, value: string): stri
 
   return segments.join('');
 };
+
+export function isSupportedDnsRecordType(type: string): type is DnsRecordType {
+  return Object.keys(DnsRecordType).includes(type);
+}
