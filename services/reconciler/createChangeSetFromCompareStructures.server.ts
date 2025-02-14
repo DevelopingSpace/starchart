@@ -36,7 +36,7 @@ export const createRemovedChangeSetFromCompareStructures = ({
         Action: ChangeAction.DELETE,
         ResourceRecordSet: {
           Name: fqdn,
-          Type: type,
+          Type: type as DnsRecordType,
           ResourceRecords: route53Value.map((value) => ({
             // Convert to special Route53 TXT record format. Details in route53Utils.server.ts
             Value: toRoute53RecordValue(type as DnsRecordType, value),
@@ -93,7 +93,7 @@ export const createUpsertedChangeSetFromCompareStructures = ({
         Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn,
-          Type: toRoute53RRType(type),
+          Type: type as DnsRecordType,
           ResourceRecords: dbValue.map((value) => ({
             // Convert to special Route53 TXT record format. Details in route53Utils.server.ts
             Value: toRoute53RecordValue(type as DnsRecordType, value),
