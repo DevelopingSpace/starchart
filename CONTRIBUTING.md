@@ -228,7 +228,7 @@ Please follow the [GitHub flow][] for contributions:
 
    ![ready-for-review-button](https://docs.github.com/assets/cb-62675/mw-1440/images/help/pull_requests/ready-for-review-button.webp)
 
-5. **For maintainers: Remember to squash and merge**
+5. **For maintainers: remember to squash and merge**
 
    Squash and merge pull requests to keep a clean commit history on the main branch.
 
