@@ -52,31 +52,55 @@ We recommend using a Node.js version manager:
    npm run setup
    ```
 
-6. Setup the test database. This is required for running tests locally.
-
-   ```bash
-   npm run setup:test
-   ```
-
-7. When running the app for the first time, generate a build folder. This generates a `build/server.js` script that `npm run dev` depends on.
+6. When running the app for the first time, generate a build folder. This generates a `build/server.js` script that `npm run dev` depends on.
 
    ```bash
    npm run build
    ```
 
-8. Start the app on localhost:8080.
+7. Start the app on localhost:8080.
 
    ```bash
    npm run dev
    ```
 
-9. When done, stop and remove containers.
+8. When done, stop and remove containers.
 
    ```bash
    docker compose down
    ```
 
 ## Testing
+
+### Unit testing
+
+We use [Vitest](https://vitest.dev/) for unit testing.
+
+Assuming previous development setup, to run unit tests:
+
+1. Start backing services with Docker
+
+   ```bash
+   npm run docker
+   ```
+
+2. Setup the test database.
+
+   ```bash
+   npm run setup:test
+   ```
+
+3. Run the unit tests.
+
+   ```bash
+       npm run test
+   ```
+
+4. When done, stop and remove containers.
+
+   ```bash
+       docker compose down
+   ```
 
 ### End-to-end testing
 
