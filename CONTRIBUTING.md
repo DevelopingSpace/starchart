@@ -151,15 +151,15 @@ These can be configured in `./config/simplesamlphp-users`.
 
 ## View and edit the data in the database
 
-You can use Prisma Studio as a visual editor for the data in the database:
+You can use Prisma Studio as a visual editor for the data in the database.
 
-Development database:
+For the development database:
 
 ```bash
 npm run db:studio
 ```
 
-Test database:
+For the test database:
 
 ```bash
 npm run db:studio:test
