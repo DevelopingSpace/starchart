@@ -119,8 +119,7 @@ export async function createHostedZone(domain: string) {
  */
 export const getDnsRecordSetPage = async (
   fqdn?: string,
-  // Using string as it cam be any record type not just the ones we use, also AWS sdk refers to it as string
-  type?: string
+  type?: RRType
 ): Promise<ListResourceRecordSetsResponse> => {
   try {
     const command = new ListResourceRecordSetsCommand({
