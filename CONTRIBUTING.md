@@ -112,6 +112,19 @@ Playwright is configured to generate a report for test failures. This report is 
 
 See [our wiki page for information about how to download and use this report](https://github.com/DevelopingSpace/starchart/wiki/Playwright#debugging-ci-failures).
 
+## Authentication
+
+The development SAML IDP is configured with a few default accounts for development and testing. The usernames and passwords are:
+
+| user     | pass      |
+| -------- | --------- |
+| user1    | user1pass |
+| user2    | user2pass |
+| user3    | user3pass |
+| han.solo | starchart |
+
+These can be configured in `./config/simplesamlphp-users`.1
+
 ## View the database
 
 You can use Prisma Studio, a visual editor for the data in the database, with:
@@ -131,19 +144,6 @@ npm run db:studio:test
 ## Reset the database
 
 To reset the database or in case of errors during database startup, delete the `docker/volumes/mysql-data/` directory and re-run `npm run setup`.
-
-## Authentication
-
-The development SAML IDP is configured with a few default accounts for development and testing. The usernames and passwords are:
-
-| user     | pass      |
-| -------- | --------- |
-| user1    | user1pass |
-| user2    | user2pass |
-| user3    | user3pass |
-| han.solo | starchart |
-
-These can be configured in `./config/simplesamlphp-users`.
 
 ## Configuring environment variables and secrets (`.env` and `dev-secrets/`)
 
