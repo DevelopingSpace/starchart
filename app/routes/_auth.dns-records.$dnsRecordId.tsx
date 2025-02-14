@@ -1,7 +1,7 @@
 import { Container, Heading, Text, Link } from '@chakra-ui/react';
 import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson';
 import { parseFormSafe } from 'zodix';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { getDnsRecordById, updateDnsRecordById } from '~/models/dns-record.server';
@@ -17,7 +17,7 @@ import { buildDomain, getErrorMessageFromStatusCode } from '~/utils';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   await requireUser(request);
 
   const { dnsRecordId } = params;
@@ -38,7 +38,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return typedjson(dnsRecord);
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUser(request);
 
   const UpdateDnsRecordSchemaWithNameValidation = UpdateDnsRecordSchema.refine(
@@ -94,7 +94,7 @@ export function ErrorBoundary() {
 
 export default function DnsRecordRoute() {
   const dnsRecord = useTypedLoaderData<typeof loader>();
-  const actionData = useActionData();
+  const actionData = useActionData<typeof action>();
 
   return (
     <Container maxW="container.xl">
