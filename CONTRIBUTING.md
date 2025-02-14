@@ -109,7 +109,7 @@ npm run db:studio:test
 
 `npm run setup` creates a local `docker/volumes/mysql-data/` directory, and is a one time setup. That directory can be safely deleted if the database needs to be reset, or if errors occur during database startup.
 
-## SAML authentication
+## SAML authentication in development
 
 The development SAML IDP is configured with a few default accounts for testing. The usernames and passwords are:
 
@@ -122,7 +122,7 @@ The development SAML IDP is configured with a few default accounts for testing. 
 
 These can be configured in `./config/simplesamlphp-users`.
 
-## Environment variables and secrets (`.env` and `dev-secrets/`)
+## Configuring environment variables and secrets (`.env` and `dev-secrets/`)
 
 Some application configuration is managed via environment variables, and some via secrets (i.e., files).
 
