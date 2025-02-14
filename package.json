@@ -14,7 +14,7 @@
     "dev:server:delay": "run-s delay dev:server",
     "dev:server": "node --inspect --require ./node_modules/dotenv/config ./build/server.js",
     "docker": "docker compose up -d",
-    "lint": "oxlint .",
+    "lint": "oxlint && eslint",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
@@ -127,7 +127,8 @@
   "lint-staged": {
     "*.{md,json,html,css,js,yaml,yml,ts,tsx}": [
       "prettier --write",
-      "oxlint"
+      "oxlint",
+      "eslint"
     ]
   }
 }
