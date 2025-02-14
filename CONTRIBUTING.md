@@ -104,7 +104,31 @@ Assuming previous development setup, to run unit tests:
 
 ### End-to-end testing
 
-We use [Playwright](https://playwright.dev/) for end-to-end testing. For a brief overview of how to use Playwright, you can also go to our [wiki page](https://github.com/DevelopingSpace/starchart/wiki/Playwright).
+We use [Playwright](https://playwright.dev/) for end-to-end testing.
+
+Assuming your development environment has been set up, follow these steps to run end-to-end tests:
+
+1. Start backing services with Docker, if not already running.
+
+   ```bash
+   npm run docker
+   ```
+
+2. Run the end-to-end tests. There are two ways to do this:
+
+   i. Build the app, start it, and run the tests. This is the same script that is used by our CI E2E tests.
+
+   ```bash
+   npm run test:e2e:run
+   ```
+
+   ii. Run Playwright in UI mode to explore, run, and debug end-to-end tests with a time travel experience complete with a watch mode. This runs the app using the dev server (without building).
+
+   ```bash
+   npm run e2e
+   ```
+
+   If prompted to run `npx playwright install`, do so. This will install browsers used by Playwright for testing.
 
 #### Debugging failures in CI
 
