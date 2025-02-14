@@ -1,13 +1,19 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "ignorePatterns": [
-    "node_modules/**",
+    ".github/**",
+    ".husky/**",
     "build/**",
-    "public/build/**",
-    "docker/volumes/**",
-    "docs/img/**",
+    "config/**",
     "dev-secrets/**",
-    "playwright-report/**"
+    "docker/volumes/**",
+    "docs/**",
+    "node_modules/**",
+    "playwright-report/**",
+    "public/build/**",
+    "test/e2e/**",
+    "test-results/**",
+    "playwright.config.ts"
   ],
   "rules": {
     "no-console": ["warn"],
