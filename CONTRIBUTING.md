@@ -145,7 +145,7 @@ npm run db:studio:test
 
 To reset the database or in case of errors during database startup, delete the `docker/volumes/mysql-data/` directory and re-run `npm run setup`.
 
-## Configuring environment variables and secrets (`.env` and `dev-secrets/`)
+## Configuring environment variables and secrets
 
 Some application configuration is managed via environment variables, and some via secrets (i.e., files).
 
