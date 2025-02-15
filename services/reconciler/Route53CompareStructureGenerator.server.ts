@@ -1,7 +1,7 @@
 import { set } from 'lodash';
 
 import { getDnsRecordSetPage } from './route53-client.server';
-import { fromRoute53RecordValue } from './route53Utils.server';
+import { fromRoute53RecordValue, isSupportedDnsRecordType } from './route53Utils.server';
 
 // Using this in JS code later, cannot `import type`
 import { DnsRecordType } from '@prisma/client';
@@ -31,7 +31,7 @@ class Route53CompareStructureGenerator {
 
       // We only care about record types that we handle. NS, SOA, etc. should be ignored
       // RecordSet.Type is given as `string`, so we have to do this for TS to compare them
-      if (!Object.values(DnsRecordType).includes(recordSet.Type as DnsRecordType)) {
+      if (isSupportedDnsRecordType(recordSet.Type)) {
         return;
       }
 
