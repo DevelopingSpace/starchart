@@ -71,19 +71,14 @@ export const createUpsertedChangeSetFromCompareStructures = ({
       }
 
       /**
-       * https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-values-multivalue.html
+       * https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-values-multivalue.html#rrsets-values-multivalue-type
        *
-       * According to the above, only A, AAAA, CAA, MX, NAPTR, PTR, SPF, SRV and TXT records can be multi-value
+       * According to the above, NS and CNAME records cant be multi-value
        */
 
-      if (
-        dbValue.length > 1 &&
-        !([DnsRecordType.A, DnsRecordType.AAAA, DnsRecordType.TXT] as DnsRecordType[]).includes(
-          type as DnsRecordType
-        )
-      ) {
+      if (dbValue.length > 1 && (type == 'NS' || type == 'CNAME')) {
         logger.error(
-          'Error creating DNS changeset Only A, AAAA and TXT records can be multivalue. Ignoring records',
+          'Error creating DNS changeset NS and CNAME records cannot be multi-value. Ignoring records',
           { fqdn, type }
         );
         return;
