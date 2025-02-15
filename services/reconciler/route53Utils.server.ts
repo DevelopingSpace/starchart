@@ -1,4 +1,5 @@
 import { DnsRecordType } from '@prisma/client';
+import { RRType } from '@aws-sdk/client-route-53';
 
 /**
  * We need to use some special structures when sending / receiving recordSets
@@ -75,4 +76,29 @@ export const fromRoute53RecordValue = (type: DnsRecordType, value: string): stri
     .map((segment) => segment.replace(/\\(\d{3}|\\|")/g, unescapeFn));
 
   return segments.join('');
+};
+
+export const toRoute53RRType = (type: string): RRType => {
+  switch (type) {
+    case 'A':
+    case 'AAAA':
+    case 'CAA':
+    case 'CNAME':
+    case 'DS':
+    case 'HTTPS':
+    case 'MX':
+    case 'NAPTR':
+    case 'NS':
+    case 'PTR':
+    case 'SOA':
+    case 'SPF':
+    case 'SRV':
+    case 'SSHFP':
+    case 'SVCB':
+    case 'TLSA':
+    case 'TXT':
+      return type;
+    default:
+      throw new Error(`Invalid RRType: ${type}`);
+  }
 };
