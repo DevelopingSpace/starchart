@@ -1,4 +1,7 @@
+const path = require('node:path');
+
 const js = require('@eslint/js');
+const { includeIgnoreFile } = require('@eslint/compat');
 
 const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const typescriptParser = require('@typescript-eslint/parser');
@@ -11,24 +14,21 @@ const oxlint = require('eslint-plugin-oxlint');
 
 const globals = require('globals');
 
+const gitignorePath = path.resolve(__dirname, '.gitignore');
+
 /** @type {import('eslint').Linter.Config[]} */
 module.exports = [
   js.configs.recommended,
   importPlugin.flatConfigs.recommended,
+  includeIgnoreFile(gitignorePath),
   {
     ignores: [
       '.github/**',
       '.husky/**',
-      'build/**',
       'config/**',
       'dev-secrets/**',
-      'docker/volumes/**',
       'docs/**',
-      'node_modules/**',
-      'playwright-report/**',
-      'public/build/**',
       'test/e2e/**',
-      'test-results/**',
       'playwright.config.ts',
     ],
   },
