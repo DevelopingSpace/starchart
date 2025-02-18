@@ -14,7 +14,7 @@
     "dev:server:delay": "run-s delay dev:server",
     "dev:server": "node --inspect --require ./node_modules/dotenv/config ./build/server.js",
     "docker": "docker compose up -d",
-    "lint": "oxlint .",
+    "lint": "oxlint && eslint",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
@@ -77,6 +77,9 @@
     "zodix": "^0.4.4"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.2.6",
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.20.0",
     "@playwright/test": "^1.49.1",
     "@remix-run/dev": "^1.19.3",
     "@types/bad-words": "^3.0.1",
@@ -88,14 +91,24 @@
     "@types/react": "^18.2.8",
     "@types/react-dom": "^18.2.4",
     "@types/validator": "^13.7.17",
+    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/parser": "^8.24.0",
     "@vitejs/plugin-react": "^4.0.0",
     "@vitest/coverage-istanbul": "^0.34.6",
     "dotenv": "^16.4.7",
     "esbuild": "^0.25.0",
+    "eslint": "^9.20.1",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-oxlint": "^0.15.10",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.15.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.3.0",
     "npm-run-all": "^4.1.5",
-    "oxlint": "^0.15.8",
+    "oxlint": "^0.15.10",
     "prettier": "2.8.8",
     "prisma": "^4.16.2",
     "start-server-and-test": "^2.0.0",
@@ -114,7 +127,8 @@
   "lint-staged": {
     "*.{md,json,html,css,js,yaml,yml,ts,tsx}": [
       "prettier --write",
-      "oxlint"
+      "oxlint",
+      "eslint"
     ]
   }
 }

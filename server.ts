@@ -100,7 +100,6 @@ function purgeRequireCache() {
   // Store values you need to cache on the global to survive this.
   for (const key in require.cache) {
     if (key.startsWith(BUILD_DIR)) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete require.cache[key];
     }
   }
