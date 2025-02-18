@@ -1,2 +1,4 @@
-/docs/img
-/dev-secrets
+.husky/
+config/
+dev-secrets/
+docs/img/
