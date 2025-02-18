@@ -1,13 +1,15 @@
 const js = require('@eslint/js');
+
 const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const typescriptParser = require('@typescript-eslint/parser');
-const globals = require('globals');
-const importPlugin = require('eslint-plugin-import');
 
+const importPlugin = require('eslint-plugin-import');
 const reactPlugin = require('eslint-plugin-react');
 const jsxA11yPlugin = require('eslint-plugin-jsx-a11y');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const oxlint = require('eslint-plugin-oxlint');
+
+const globals = require('globals');
 
 /** @type {import('eslint').Linter.Config[]} */
 module.exports = [
