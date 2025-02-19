@@ -14,9 +14,14 @@ import { getUser, getEffectiveUser, stopImpersonation } from './session.server';
 
 import theme from './theme';
 
-import type { LoaderArgs, LinksFunction, ActionArgs, V2_MetaFunction } from '@remix-run/node';
+import type {
+  LoaderFunctionArgs,
+  LinksFunction,
+  ActionFunctionArgs,
+  MetaFunction,
+} from '@remix-run/node';
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   { charset: 'utf-8' },
   { title: 'My.Custom.Domain' },
   { name: 'description', content: 'Simple, Secure DNS Records and SSL Certificates for Seneca' },
@@ -28,7 +33,7 @@ export const links: LinksFunction = () => [
   { rel: 'manifest', href: '/manifest.json' },
 ];
 
-export async function loader({ request, context }: LoaderArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   return json({
     user: await getUser(request),
     /**
@@ -43,7 +48,7 @@ export async function loader({ request, context }: LoaderArgs) {
   });
 }
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const intent = formData.get('intent');
   if (intent === 'stop-impersonation') {

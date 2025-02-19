@@ -1,6 +1,6 @@
 import { Flex, Text, VStack, Heading } from '@chakra-ui/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
-import type { LoaderArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 
 import { requireUsername } from '~/session.server';
 import LandingPageCard from '~/components/landing-page/landing-page-card';
@@ -9,7 +9,7 @@ import { useEffectiveUser } from '~/utils';
 import { getDnsRecordCountByUsername } from '~/models/dns-record.server';
 import { getCertificateByUsername } from '~/models/certificate.server';
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const username = await requireUsername(request);
 
   return typedjson({

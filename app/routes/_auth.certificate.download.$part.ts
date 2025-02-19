@@ -1,5 +1,4 @@
-import type { LoaderArgs } from '@remix-run/node';
-import { Response } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 
 import { requireUsername } from '~/session.server';
 import { getCertificateByUsername } from '~/models/certificate.server';
@@ -10,7 +9,9 @@ function createResponse(body: string | null, filename: string) {
     throw new Response('Unable to get certificate part', { status: 400 });
   }
 
-  return new Response(body, {
+  const blob = new Blob([body], { type: 'application/x-pem-file' });
+
+  return new Response(blob.stream(), {
     status: 200,
     headers: {
       'Content-Type': 'application/x-pem-file',
@@ -19,7 +20,7 @@ function createResponse(body: string | null, filename: string) {
   });
 }
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const username = await requireUsername(request);
 
   try {

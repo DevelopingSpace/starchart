@@ -23,7 +23,7 @@ import { getDnsRecordCountByUsername, getTotalDnsRecordCount } from '~/models/dn
 import { getTotalUserCount, searchUsers } from '~/models/user.server';
 import { requireAdmin, startImpersonation } from '~/session.server';
 
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { deleteUser } from '~/lib/user.server';
 
 export type AdminActionIntent = 'search-users' | 'impersonate-user' | 'delete-user';
@@ -35,7 +35,7 @@ export interface UserWithMetrics extends User {
 
 export const MIN_USERS_SEARCH_TEXT = 3;
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   await requireAdmin(request);
 
   const actionParams = await parseFormSafe(
@@ -113,7 +113,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   await requireAdmin(request);
   return {
     userCount: await getTotalUserCount(),

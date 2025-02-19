@@ -13,13 +13,13 @@ import {
 import { createLogoutRequest } from '~/lib/saml.server';
 import { getUsername, sloUsernameCookie, logout } from '~/session.server';
 
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 
 /* Initially start here, check if there is a session with getUsername if there
    is a session then logout to destroy the session cookie and add sloUsername cookie
    in session.ts file and then redirect back here to go through the loader with
    the new sloUsername cookie. */
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await getUsername(request);
   if (user) {
     // Invalidate the Starchart session but do not log out from Seneca IDP.
@@ -42,7 +42,7 @@ export const action = async ({ request }: ActionArgs) => {
    action of this file and reach the create SLO request method and use the
    value we post through the button press. If there is no sloUsername we
    should not be loading this page so redirect to root. */
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const cookies = request.headers.get('Cookie');
 
   const sloUsername = await sloUsernameCookie.parse(cookies);
