@@ -3,18 +3,15 @@ import {
   CreateHostedZoneCommand,
   ChangeResourceRecordSetsCommand,
   ListResourceRecordSetsCommand,
-} from '@aws-sdk/client-route-53';
-
-import logger from '~/lib/logger.server';
-import secrets from '~/lib/secrets.server';
-
-import type {
   CreateHostedZoneResponse,
   ChangeResourceRecordSetsResponse,
   ListResourceRecordSetsResponse,
   Change,
+  RRType,
 } from '@aws-sdk/client-route-53';
-import { toRoute53RRType } from './route53Utils.server';
+
+import logger from '~/lib/logger.server';
+import secrets from '~/lib/secrets.server';
 
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = secrets;
 const { NODE_ENV } = process.env;
@@ -120,14 +117,13 @@ export async function createHostedZone(domain: string) {
  */
 export const getDnsRecordSetPage = async (
   fqdn?: string,
-  // Using string as it cam be any record type not just the ones we use, also AWS sdk refers to it as string
-  type?: string
+  type?: RRType
 ): Promise<ListResourceRecordSetsResponse> => {
   try {
     const command = new ListResourceRecordSetsCommand({
       HostedZoneId: await getHostedZoneId(),
       StartRecordName: fqdn,
-      StartRecordType: type ? toRoute53RRType(type) : undefined,
+      StartRecordType: type,
     });
 
     return route53Client.send(command);
