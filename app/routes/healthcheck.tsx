@@ -22,7 +22,7 @@ export async function loader({ request }: LoaderArgs) {
       }),
     ]);
     return json({ status: 'ok ' });
-  } catch (error: unknown) {
+  } catch {
     return json({ status: 'error' }, { status: 500 });
   }
 }
