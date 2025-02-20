@@ -109,6 +109,7 @@
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
+    "vite": "^6.1.1",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^0.34.6"
   },
