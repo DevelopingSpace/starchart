@@ -54,9 +54,6 @@ $ npm run setup
 # (Optional) Setup test database
 $ npm run setup:test
 
-# Generate a build folder the first time running the app
-$ npm run build
-
 # Start the app, which will be running on localhost:8080
 $ npm run dev
 
