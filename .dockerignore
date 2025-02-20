@@ -10,6 +10,5 @@ docker/volumes/
 docs/
 node_modules/
 playwright-report/
-public/build/
 test-results/
 test/

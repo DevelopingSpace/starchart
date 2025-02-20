@@ -10,7 +10,6 @@
     "docs/**",
     "node_modules/**",
     "playwright-report/**",
-    "public/build/**",
     "test/e2e/**",
     "test-results/**",
     "playwright.config.ts"
