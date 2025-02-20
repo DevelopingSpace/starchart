@@ -65,20 +65,7 @@ const build = require(BUILD_DIR);
 // Pass the nonce we're setting in the CSP headers down to the Remix Loader/Action functions
 const getLoadContext = (_req: Request, res: Response) => ({ nonce: res.locals.nonce });
 
-app.all(
-  '*',
-  MODE === 'production'
-    ? createRequestHandler({ build, getLoadContext })
-    : (...args) => {
-        purgeRequireCache();
-        const requestHandler = createRequestHandler({
-          build: require(BUILD_DIR),
-          getLoadContext,
-          mode: MODE,
-        });
-        return requestHandler(...args);
-      }
-);
+app.all('*', createRequestHandler({ build, getLoadContext }));
 
 const port = process.env.PORT || 8080;
 
@@ -96,15 +83,3 @@ const server = app.listen(port, () => {
 gracefulShutdown(server, {
   development: process.env.NODE_ENV !== 'production',
 });
-
-function purgeRequireCache() {
-  // purge require cache on requests for "server side HMR." NOTE: doing
-  // this means that any modules that have global values will lose them
-  // and get re-initialized whenever the server reloads in development.
-  // Store values you need to cache on the global to survive this.
-  for (const key in require.cache) {
-    if (key.startsWith(BUILD_DIR)) {
-      delete require.cache[key];
-    }
-  }
-}
