@@ -1,14 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { json } from '@remix-run/node';
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData,
-} from '@remix-run/react';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react';
 
 import { getUser, getEffectiveUser, stopImpersonation } from './session.server';
 
@@ -70,7 +62,6 @@ function Document({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
-        <LiveReload nonce={nonce} />
       </body>
     </html>
   );
