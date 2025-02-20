@@ -3,6 +3,7 @@ import path from 'path';
 import express from 'express';
 import compression from 'compression';
 import { createRequestHandler } from '@remix-run/express';
+import { broadcastDevReady } from '@remix-run/node';
 import gracefulShutdown from 'http-graceful-shutdown';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -59,13 +60,15 @@ app.use('/build', express.static('public/build', { immutable: true, maxAge: '1y'
 app.use(express.static('public', { maxAge: '1h' }));
 
 const BUILD_DIR = path.join(process.cwd(), 'build');
+const build = require(BUILD_DIR);
+
 // Pass the nonce we're setting in the CSP headers down to the Remix Loader/Action functions
 const getLoadContext = (_req: Request, res: Response) => ({ nonce: res.locals.nonce });
 
 app.all(
   '*',
   MODE === 'production'
-    ? createRequestHandler({ build: require(BUILD_DIR), getLoadContext })
+    ? createRequestHandler({ build, getLoadContext })
     : (...args) => {
         purgeRequireCache();
         const requestHandler = createRequestHandler({
@@ -80,13 +83,14 @@ app.all(
 const port = process.env.PORT || 8080;
 
 const server = app.listen(port, () => {
-  // require the built app so we're ready when the first request comes in
-  require(BUILD_DIR);
-
   // start the various background jobs we run (reconciler, expire records, etc)
   services.init().then(() => {
     logger.info(`✅ app ready: http://localhost:${port}`);
   });
+
+  if (process.env.NODE_ENV === 'development') {
+    broadcastDevReady(build);
+  }
 });
 
 gracefulShutdown(server, {
