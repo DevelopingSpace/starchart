@@ -56,8 +56,8 @@ USER node
 COPY --chown=node:node --from=production-deps /app/.npmrc ./.npmrc
 COPY --chown=node:node --from=production-deps /app/node_modules ./node_modules
 COPY --chown=node:node --from=build /app/node_modules/.prisma ./node_modules/.prisma
-COPY --chown=node:node --from=build /app/build ./build
-COPY --chown=node:node --from=build /app/public ./public
+COPY --chown=node:node --from=build /app/build/server ./build/server
+COPY --chown=node:node --from=build /app/build/client ./build/client
 COPY --chown=node:node --from=build /app/prisma ./prisma
 
 # Include the SAML IDP metadata in the image. Specify the file to use in the build arg
@@ -67,7 +67,7 @@ ENV SAML_IDP_METADATA_PATH=/app/config/idp-metadata.xml
 
 COPY docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["/usr/bin/tini", "--", "docker-entrypoint.sh"]
-CMD ["node", "./build/server.js"]
+CMD ["node", "./build/server/index.js"]
 
 HEALTHCHECK CMD curl --fail http://localhost:${PORT}/healthcheck || exit 1
 EXPOSE ${PORT}
