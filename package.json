@@ -6,7 +6,7 @@
     "build": "run-s build:*",
     "build:remix": "remix build",
     "build:server": "esbuild --platform=node --format=cjs ./server.ts --outdir=build --bundle",
-    "dev": "cross-env SECRETS_OVERRIDE=1 remix dev -c \"tsx watch --inspect --require ./node_modules/dotenv/config ./server.ts\"",
+    "dev": "cross-env SECRETS_OVERRIDE=1 remix dev -c \"tsx --inspect --require ./node_modules/dotenv/config ./server.ts\"",
     "docker": "docker compose up -d",
     "lint": "oxlint && eslint",
     "db:generate": "prisma generate",
