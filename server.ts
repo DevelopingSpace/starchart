@@ -1,5 +1,4 @@
 import * as crypto from 'crypto';
-import path from 'path';
 import express from 'express';
 import compression from 'compression';
 import { createRequestHandler } from '@remix-run/express';
