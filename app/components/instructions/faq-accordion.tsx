@@ -7,6 +7,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import type { JSX } from 'react';
+
 interface FaqAccordionProps {
   title: string;
   children: string | JSX.Element | JSX.Element[];
