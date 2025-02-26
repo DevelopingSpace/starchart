@@ -77,7 +77,7 @@
     "zodix": "^0.4.4"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.2.6",
+    "@eslint/compat": "^1.2.7",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.20.0",
     "@playwright/test": "^1.50.1",
