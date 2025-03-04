@@ -65,6 +65,11 @@ describe('DNS server lib function test', () => {
     expect(isValueValid(DnsRecordType.CNAME, '2001:db8:3333:4444:5555:6666:7777:8888')).toBe(false);
     expect(isValueValid(DnsRecordType.CNAME, 'improper-domain')).toBe(false);
     expect(isValueValid(DnsRecordType.CNAME, 'improper_domain.com')).toBe(false);
+    expect(isValueValid(DnsRecordType.MX, '')).toBe(false);
+    expect(isValueValid(DnsRecordType.MX, '192.168.0.0')).toBe(false);
+    expect(isValueValid(DnsRecordType.MX, '2001:db8:3333:4444:5555:6666:7777:8888')).toBe(false);
+    expect(isValueValid(DnsRecordType.MX, 'improper-domain')).toBe(false);
+    expect(isValueValid(DnsRecordType.MX, 'improper_domain.com')).toBe(false);
     expect(isValueValid(DnsRecordType.TXT, '')).toBe(false);
   });
 });
