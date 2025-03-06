@@ -82,6 +82,15 @@ describe('Route53 Client functions test', () => {
         Action: ChangeAction.UPSERT,
         ResourceRecordSet: {
           Name: fqdn(),
+          ResourceRecords: [{ Value: '10 mail.example.com' }],
+          TTL: 300,
+          Type: RRType.MX,
+        },
+      },
+      {
+        Action: ChangeAction.UPSERT,
+        ResourceRecordSet: {
+          Name: fqdn(),
           ResourceRecords: [{ Value: '"hello world"' }],
           TTL: 300,
           Type: RRType.TXT,
