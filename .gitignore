@@ -5,6 +5,5 @@ docker/volumes/
 node_modules/
 playwright-report/
 playwright/.cache/
-public/build/
 test-results/
 test/e2e/.auth
