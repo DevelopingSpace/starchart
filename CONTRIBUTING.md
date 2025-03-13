@@ -191,7 +191,13 @@ To add a secret, for example, a secret named `MY_SECRET` with a value of `this-i
 
 Please follow the [GitHub flow][] for contributions:
 
-1. **Update your local main branch**
+1. **Fork and clone the repository**
+
+   i. If you are an external contributor, fork the repository. See [Fork a repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo).
+
+   ii. Clone the repository using `git clone`.
+
+2. **Update your local main branch**
 
    ```bash
    git switch main
@@ -200,7 +206,7 @@ Please follow the [GitHub flow][] for contributions:
 
    Switch to your main branch and pull the latest changes from the remote repository. The `--prune` option removes any references to branches that no longer exist on the remote.
 
-2. **Create a new branch from main**
+3. **Create a new branch from main**
 
    ```bash
    git switch -c <issue-number> main
@@ -208,7 +214,7 @@ Please follow the [GitHub flow][] for contributions:
 
    Name your branch following the convention `issue-number` (e.g., `issue-1`). If no issue exists for the change you are making, you should [create one][Create an issue], unless the change is really quick or small.
 
-3. **Make your changes, commit, and push**
+4. **Make your changes, commit, and push**
 
    You should commit your changes as you're making them. Commit often - smaller commits are generally better. Ideally, each commit contains an isolated, complete change. This makes it easy to revert your changes if you decide to take a different approach. Avoid cosmetic changes to unrelated files in the same commit. If introducing new code, add tests for your changes.
 
@@ -246,13 +252,13 @@ Please follow the [GitHub flow][] for contributions:
 
    vi. Continue making changes, committing them, and pushing them until your changes are ready for review.
 
-4. **Mark your pull request ready for review**
+5. **Mark your pull request ready for review**
 
    Once your changes are ready for review, in the merge box, click Ready for review.
 
    ![ready-for-review-button](https://docs.github.com/assets/cb-62675/mw-1440/images/help/pull_requests/ready-for-review-button.webp)
 
-5. **For maintainers: remember to squash and merge**
+6. **For maintainers: remember to squash and merge**
 
    Squash and merge pull requests to keep a clean commit history on the main branch.
 
