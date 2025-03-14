@@ -40,6 +40,13 @@ const unescapeFn = (_: string, selection: string): string => {
 };
 
 export const toRoute53RecordValue = (type: DnsRecordType, value: string): string => {
+  /* Route 53 expects priority in the value of each MX record
+   * Using 10 as a default since we don't handle priority in this project
+   */
+  if (type === DnsRecordType.MX) {
+    return '10 ' + value;
+  }
+
   if (type !== DnsRecordType.TXT) {
     return value;
   }
@@ -60,6 +67,11 @@ export const toRoute53RecordValue = (type: DnsRecordType, value: string): string
 };
 
 export const fromRoute53RecordValue = (type: DnsRecordType, value: string): string => {
+  // Route 53 contains priority in the value of each MX record
+  if (type === DnsRecordType.MX) {
+    return value.split(' ')[1];
+  }
+
   if (type !== DnsRecordType.TXT) {
     return value;
   }
