@@ -96,7 +96,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-istanbul": "^0.34.6",
     "dotenv": "^16.4.7",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.25.1",
     "eslint": "^9.21.0",
     "eslint-import-resolver-typescript": "^3.8.3",
     "eslint-plugin-import": "^2.31.0",
