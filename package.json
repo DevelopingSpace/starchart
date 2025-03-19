@@ -47,7 +47,7 @@
     "@emotion/styled": "^11.14.0",
     "@prisma/client": "^6.4.1",
     "@remix-run/express": "2.16.0",
-    "@remix-run/node": "2.16.0",
+    "@remix-run/node": "2.16.2",
     "@remix-run/react": "2.16.0",
     "@remix-run/server-runtime": "2.16.0",
     "acme-client": "^5.4.0",
