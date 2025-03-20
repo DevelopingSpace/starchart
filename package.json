@@ -6,7 +6,13 @@
     "build": "run-s build:*",
     "build:remix": "remix build",
     "build:server": "esbuild --platform=node --format=cjs ./server.ts --outdir=build --bundle",
-    "dev": "cross-env SECRETS_OVERRIDE=1 remix dev -c \"tsx --inspect ./server.ts\"",
+    "predev": "npm run build:server",
+    "dev": "cross-env NODE_ENV=development SECRETS_OVERRIDE=1 run-p dev:remix dev:server:delay",
+    "dev:build": "npm run build:server -- --watch",
+    "delay": "node -e \"setTimeout(() => process.exit(0), 3000)\"",
+    "dev:remix": "remix watch",
+    "dev:server:delay": "run-s delay dev:server",
+    "dev:server": "node --inspect --require ./node_modules/dotenv/config ./build/server.js",
     "docker": "docker compose up -d",
     "lint": "oxlint && eslint",
     "db:generate": "prisma generate",
@@ -27,7 +33,7 @@
     "test:e2e:dev": "cross-env PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test dev http://localhost:8080 \"playwright test\"",
     "pretest:e2e:run": "cross-env NODE_ENV=test SECRETS_OVERRIDE=1 run-s build",
     "test:e2e:run": "cross-env NODE_ENV=test SECRETS_OVERRIDE=1 PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test start:e2e http://localhost:8080 \"playwright test\"",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc",
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
     "prepare": "husky"
   },
@@ -106,8 +112,8 @@
     "prettier": "3.5.3",
     "prisma": "^6.5.0",
     "start-server-and-test": "^2.0.11",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^0.34.6"
@@ -116,7 +122,7 @@
     "node": ">=20"
   },
   "prisma": {
-    "seed": "tsx --require tsconfig-paths/register prisma/seed.ts"
+    "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
   },
   "lint-staged": {
     "*.{md,json,html,css,js,yaml,yml,ts,tsx}": [
