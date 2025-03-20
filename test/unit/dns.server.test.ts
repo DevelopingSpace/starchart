@@ -51,6 +51,7 @@ describe('DNS server lib function test', () => {
     expect(isValueValid(DnsRecordType.AAAA, '2001:db8:3333:4444:5555:6666:7777:8888')).toBe(true);
     expect(isValueValid(DnsRecordType.AAAA, 'a:b:c:d:e:f:0:1')).toBe(true);
     expect(isValueValid(DnsRecordType.CNAME, 'proper-domain.com')).toBe(true);
+    expect(isValueValid(DnsRecordType.MX, 'mail.example.com')).toBe(true);
     expect(isValueValid(DnsRecordType.TXT, 'any text')).toBe(true);
 
     expect(isValueValid(DnsRecordType.A, '192.168.0')).toBe(false);
