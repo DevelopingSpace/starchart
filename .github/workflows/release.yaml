@@ -62,6 +62,6 @@ jobs:
           HMAC_SECRET: ${{ secrets.WEBHOOK_PRODUCTION_SECRET }}
           TAG: production-sha-${{ env.GITHUB_SHA_SHORT }}
         with:
-          url: https://mycustomdomain.senecacollege.ca/hooks/deploy
+          url: https://mycustomdomain.senecapolytechnic.ca/hooks/deploy
           hmacSecret: ${{ env.HMAC_SECRET }}
           data: '{"tag": "${{ env.TAG }}"}'
