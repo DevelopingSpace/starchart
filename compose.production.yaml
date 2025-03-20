@@ -24,13 +24,13 @@ services:
     ports:
       - 8080:8080
     environment:
-      - APP_URL=https://mycustomdomain.senecacollege.ca
+      - APP_URL=https://mycustomdomain.senecapolytechnic.ca
       - AWS_ROUTE53_HOSTED_ZONE_ID=Z06191131OO53SNFL465G
-      - LETS_ENCRYPT_ACCOUNT_EMAIL=mycustomdomain@senecacollege.ca
+      - LETS_ENCRYPT_ACCOUNT_EMAIL=mycustomdomain@senecapolytechnic.ca
       - LETS_ENCRYPT_DIRECTORY_URL=https://acme-v02.api.letsencrypt.org/directory
       - LOG_LEVEL=info
       - NODE_ENV=production
-      - NOTIFICATIONS_EMAIL_USER=mycustomdomain@senecacollege.ca
+      - NOTIFICATIONS_EMAIL_USER=mycustomdomain@senecapolytechnic.ca
       - PORT=8080
       - REDIS_URL=redis://redis:6379
       - ROOT_DOMAIN=mystudentproject.ca
