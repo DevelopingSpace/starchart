@@ -11,6 +11,12 @@ describe('Route53 functionality test raw => Route53 format', () => {
     expect(result).toEqual('1.2.3.4');
   });
 
+  test('Handles an MX record', () => {
+    const result = toRoute53RecordValue(DnsRecordType.MX, 'mail.example.com');
+
+    expect(result).toEqual('10 mail.example.com');
+  });
+
   test('Handles input with no special chars, and < 255 length', () => {
     // Adding characters from the edge of range
     const result = toRoute53RecordValue(DnsRecordType.TXT, '!Hello~');
@@ -58,6 +64,12 @@ describe('Route53 functionality test Route53 => raw format', () => {
     const result = fromRoute53RecordValue(DnsRecordType.A, '1.2.3.4');
 
     expect(result).toEqual('1.2.3.4');
+  });
+
+  test('Handles an MX record', () => {
+    const result = fromRoute53RecordValue(DnsRecordType.MX, '10 mail.example.com');
+
+    expect(result).toEqual('mail.example.com');
   });
 
   test('Handles input with no special chars, and < 255 length', () => {
