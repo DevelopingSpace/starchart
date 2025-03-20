@@ -52,13 +52,19 @@ We recommend using a Node.js version manager:
    npm run setup
    ```
 
-6. Start the app on localhost:8080.
+6. When running the app for the first time, generate a build folder. This generates a `build/server.js` script that `npm run dev` depends on.
+
+   ```bash
+   npm run build
+   ```
+
+7. Start the app on localhost:8080.
 
    ```bash
    npm run dev
    ```
 
-7. When done, stop and remove containers.
+8. When done, stop and remove containers.
 
    ```bash
    docker compose down
