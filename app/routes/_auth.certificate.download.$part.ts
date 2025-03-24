@@ -39,9 +39,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       case 'privateKey':
         return createResponse(certificate.privateKey, `${certificate.domain}.privkey.pem`);
       case 'chain':
-        return createResponse(certificate.certificate, `${certificate.domain}.chain.pem`);
+        return createResponse(certificate.chain, `${certificate.domain}.chain.pem`);
       case 'fullChain':
-        return createResponse(certificate.certificate, `${certificate.domain}.bundle.pem`);
+        return createResponse(certificate.fullChain!, `${certificate.domain}.bundle.pem`);
       default:
         throw new Response(`Unknown certificate part: ${params.part}`, { status: 400 });
     }
