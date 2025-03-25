@@ -53,7 +53,7 @@ export default function CertificateDisplay({
       paddingBottom={6}
     >
       <HStack gap="4" alignSelf={{ base: 'center', md: 'flex-start' }}>
-        <Heading as="h4" size="sm">
+        <Heading as="h3" size="sm">
           {title}
         </Heading>
         <Tooltip label={`Copy ${title}`}>
