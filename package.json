@@ -92,7 +92,7 @@
     "dotenv": "^16.4.7",
     "esbuild": "^0.25.1",
     "eslint": "^9.22.0",
-    "eslint-import-resolver-typescript": "^4.2.2",
+    "eslint-import-resolver-typescript": "^4.2.3",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-oxlint": "^0.16.0",
