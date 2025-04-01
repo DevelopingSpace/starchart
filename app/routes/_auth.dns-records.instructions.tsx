@@ -26,7 +26,7 @@ export default function CertificateInstructionsRoute() {
       </Heading>
       <Grid templateColumns="repeat(1, 1fr)" gap="4">
         <VStack alignItems="flex-start">
-          <Heading as="h3" size="md">
+          <Heading as="h2" size="md">
             What is a DNS Record?
           </Heading>
           <Text>
