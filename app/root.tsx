@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { Provider } from '~/components/ui/provider';
 import { json } from '@remix-run/node';
 import {
   Links,
@@ -79,9 +79,9 @@ function Document({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Document>
-      <ChakraProvider theme={theme}>
+      <Provider value={theme}>
         <Outlet />
-      </ChakraProvider>
+      </Provider>
     </Document>
   );
 }
