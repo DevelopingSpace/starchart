@@ -1,5 +1,6 @@
 import { InfoIcon } from '@chakra-ui/icons';
-import { CardBody, Card, Text, Flex, Tooltip } from '@chakra-ui/react';
+import { Card, Text, Flex } from '@chakra-ui/react';
+import { Tooltip } from '~/components/ui/tooltip';
 import type { IconType } from 'react-icons';
 
 interface AdminMetricCardProps {
@@ -16,8 +17,8 @@ export default function AdminMetricCard({
   tooltipText,
 }: AdminMetricCardProps) {
   return (
-    <Card w={{ sm: '100%', md: 300 }} minW={270} maxW={400} mr={{ sm: '0', md: '4' }} mt="4">
-      <CardBody flexDirection="row" display="flex" justifyContent="space-between">
+    <Card.Root w={{ sm: '100%', md: 300 }} minW={270} maxW={400} mr={{ sm: '0', md: '4' }} mt="4">
+      <Card.Body flexDirection="row" display="flex" justifyContent="space-between">
         <Flex alignItems="center">
           <Flex
             background="#d9d9d9"
@@ -39,10 +40,10 @@ export default function AdminMetricCard({
             </Text>
           </Flex>
         </Flex>
-        <Tooltip label={tooltipText}>
+        <Tooltip content={tooltipText}>
           <InfoIcon color="#d9d9d9" fontSize="xl" />
         </Tooltip>
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 }

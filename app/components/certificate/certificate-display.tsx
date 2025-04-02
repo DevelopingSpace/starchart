@@ -5,17 +5,13 @@ import {
   HStack,
   Text,
   Heading,
-  Tooltip,
   IconButton,
   Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionIcon,
-  AccordionPanel,
-  useToast,
   useClipboard,
 } from '@chakra-ui/react';
 import { DownloadIcon, CopyIcon } from '@chakra-ui/icons';
+import { Tooltip } from '~/components/ui/tooltip';
+import { toaster } from '~/components/ui/toaster';
 import { Link } from '@remix-run/react';
 
 interface CertificateDisplayProps {
@@ -31,18 +27,17 @@ export default function CertificateDisplay({
   value,
   downloadPart,
 }: CertificateDisplayProps) {
-  const toast = useToast();
-  const { onCopy, hasCopied } = useClipboard(value);
+  const clipboard = useClipboard({ value });
 
   useEffect(() => {
-    if (hasCopied) {
-      toast({
+    if (clipboard.copied) {
+      toaster.create({
         title: `${title} was copied to the clipboard`,
-        position: 'bottom-right',
-        status: 'success',
+        // Todo!
+        // status: 'success',
       });
     }
-  }, [title, toast, hasCopied]);
+  }, [title, clipboard.copied]);
 
   return (
     <Flex
@@ -56,7 +51,7 @@ export default function CertificateDisplay({
         <Heading as="h3" size="sm">
           {title}
         </Heading>
-        <Tooltip label={`Copy ${title}`}>
+        <Tooltip content={`Copy ${title}`}>
           <IconButton
             backgroundColor="transparent"
             color="black"
@@ -66,11 +61,12 @@ export default function CertificateDisplay({
               color: 'teal.500',
             }}
             aria-label={`Copy ${title}`}
-            icon={<CopyIcon fontSize="md" />}
-            onClick={onCopy}
-          />
+            onClick={clipboard.copy}
+          >
+            <CopyIcon fontSize="md" />
+          </IconButton>
         </Tooltip>
-        <Tooltip label={`Download ${title}`}>
+        <Tooltip content={`Download ${title}`}>
           <Link to={`/certificate/download/${downloadPart}`} reloadDocument>
             <IconButton
               backgroundColor="transparent"
@@ -81,32 +77,31 @@ export default function CertificateDisplay({
                 color: 'white',
               }}
               aria-label={`Download ${title}`}
-              icon={
-                <DownloadIcon
-                  fontSize="md"
-                  onClick={() =>
-                    toast({
-                      title: `${title} is Downloaded`,
-                      position: 'bottom-right',
-                      status: 'success',
-                    })
-                  }
-                />
-              }
-            />
+            >
+              <DownloadIcon
+                fontSize="md"
+                onClick={() =>
+                  toaster.create({
+                    title: `${title} is Downloaded`,
+                    // Todo!
+                    // status: 'success',
+                  })
+                }
+              />
+            </IconButton>
           </Link>
         </Tooltip>
       </HStack>
       <Text>{description}</Text>
-      <Accordion allowMultiple>
-        <AccordionItem>
-          <AccordionButton>
+      <Accordion.Root multiple={true}>
+        <Accordion.Item value="certificate">
+          <Accordion.ItemTrigger>
             <Box as="span" flex="1">
               Show/Hide
             </Box>
-            <AccordionIcon />
-          </AccordionButton>
-          <AccordionPanel>
+            <Accordion.ItemIndicator />
+          </Accordion.ItemTrigger>
+          <Accordion.ItemContent>
             <Flex justifyContent="center">
               <Text
                 fontFamily="mono"
@@ -118,9 +113,9 @@ export default function CertificateDisplay({
                 {value}
               </Text>
             </Flex>
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
+          </Accordion.ItemContent>
+        </Accordion.Item>
+      </Accordion.Root>
     </Flex>
   );
 }

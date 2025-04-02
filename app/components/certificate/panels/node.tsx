@@ -1,4 +1,4 @@
-import { Divider, TabPanel, Text, Link } from '@chakra-ui/react';
+import { Tabs, Text, Link, Box } from '@chakra-ui/react';
 import CertificateDisplay from '../certificate-display';
 
 interface NodePanelProps {
@@ -9,38 +9,41 @@ interface NodePanelProps {
 
 export default function NodePanel({ certificate, privateKey, chain }: NodePanelProps) {
   return (
-    <TabPanel>
+    <Tabs.Content value="node">
       <Text marginBottom={4}>
         You can use your certificate with{' '}
         <Link
           href="https://nodejs.org/api/https.html#httpscreateserveroptions-requestlistener"
-          isExternal
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Node.js to create a secure HTTPS server
         </Link>
         .
       </Text>
 
-      <CertificateDisplay
-        title="Cert"
-        value={certificate}
-        description="Public certificate."
-        downloadPart="certificate"
-      />
-      <Divider />
-      <CertificateDisplay
-        title="Key"
-        value={privateKey}
-        description="Private certificate key, do not share it."
-        downloadPart="privateKey"
-      />
-      <Divider />
-      <CertificateDisplay
-        title="CA - optional"
-        value={chain}
-        description="The CA Bundle."
-        downloadPart="chain"
-      />
-    </TabPanel>
+      <Box divideX="2px">
+        <CertificateDisplay
+          title="Cert"
+          value={certificate}
+          description="Public certificate."
+          downloadPart="certificate"
+        />
+
+        <CertificateDisplay
+          title="Key"
+          value={privateKey}
+          description="Private certificate key, do not share it."
+          downloadPart="privateKey"
+        />
+
+        <CertificateDisplay
+          title="CA - optional"
+          value={chain}
+          description="The CA Bundle."
+          downloadPart="chain"
+        />
+      </Box>
+    </Tabs.Content>
   );
 }

@@ -1,4 +1,5 @@
-import { Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
+import { Tooltip } from '~/components/ui/tooltip';
 
 import type { DnsRecord } from '@prisma/client';
 
@@ -42,7 +43,7 @@ const DnsRecordName = ({ dnsRecord, baseDomain }: DnsRecordNameProps) => {
     </Flex>
   );
 
-  return tooltip ? <Tooltip label={tooltip}>{children}</Tooltip> : <>{children}</>;
+  return tooltip ? <Tooltip content={tooltip}>{children}</Tooltip> : <>{children}</>;
 };
 
 export default DnsRecordName;

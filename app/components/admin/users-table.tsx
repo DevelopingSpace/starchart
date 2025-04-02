@@ -1,22 +1,8 @@
-import {
-  Table,
-  Tr,
-  Th,
-  Thead,
-  Tbody,
-  TableContainer,
-  Td,
-  Card,
-  IconButton,
-  Tooltip,
-  Flex,
-  HStack,
-  Spinner,
-  Text,
-} from '@chakra-ui/react';
+import { Table, Card, IconButton, Flex, HStack, Spinner, Text } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { FaTheaterMasks } from 'react-icons/fa';
 import { Form, useNavigation } from '@remix-run/react';
+import { Tooltip } from '~/components/ui/tooltip';
 
 import type { UserWithMetrics } from '~/routes/_auth.admin._index';
 import { MIN_USERS_SEARCH_TEXT } from '~/routes/_auth.admin._index';
@@ -41,83 +27,79 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
   const shouldShowUsers = !(isLoading || shouldShowInstruction || shouldShowNoUsersMessage);
 
   return (
-    <Card p="2" mt="4">
-      <TableContainer>
-        <Table variant="striped" colorScheme="gray">
-          <Thead>
-            <Tr>
-              <Th>Email</Th>
-              <Th>Name</Th>
-              <Th>DNS Records</Th>
-              <Th>Certificate status</Th>
-              <Th />
-            </Tr>
-          </Thead>
-          <Tbody>
-            {!shouldShowUsers && (
-              <Tr>
-                <Td py="8" colSpan={7}>
-                  <Flex justifyContent="center">
-                    {isLoading && <Spinner />}
-                    {shouldShowInstruction && !isLoading && (
-                      <Text>Please enter at least 3 characters to search</Text>
-                    )}
-                    {shouldShowNoUsersMessage && !isLoading && <Text>No users found</Text>}
-                  </Flex>
-                </Td>
-              </Tr>
-            )}
+    <Card.Root p="2" mt="4">
+      <Table.Root colorScheme="gray">
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader>Email</Table.ColumnHeader>
+            <Table.ColumnHeader>Name</Table.ColumnHeader>
+            <Table.ColumnHeader>DNS Records</Table.ColumnHeader>
+            <Table.ColumnHeader>Certificate status</Table.ColumnHeader>
+            <Table.ColumnHeader />
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {!shouldShowUsers && (
+            <Table.Row>
+              <Table.Cell py="8" colSpan={7}>
+                <Flex justifyContent="center">
+                  {isLoading && <Spinner />}
+                  {shouldShowInstruction && !isLoading && (
+                    <Text>Please enter at least 3 characters to search</Text>
+                  )}
+                  {shouldShowNoUsersMessage && !isLoading && <Text>No users found</Text>}
+                </Flex>
+              </Table.Cell>
+            </Table.Row>
+          )}
 
-            {shouldShowUsers &&
-              users.map((user) => {
-                return (
-                  <Tr key={user.email}>
-                    <Td>{user.email}</Td>
-                    <Td>{user.displayName}</Td>
-                    <Td>{user.dnsRecordCount}</Td>
-                    <Td>
-                      <CertificateStatusIcon status={user.certificate?.status} />
-                    </Td>
-                    <Td>
-                      <HStack>
-                        <Tooltip label="Impersonate user">
-                          <Form method="post">
-                            <input
-                              type="hidden"
-                              name="newEffectiveUsername"
-                              value={user.username}
-                            />
-                            <input type="hidden" name="intent" value="impersonate-user" />
-                            <IconButton
-                              type="submit"
-                              aria-label="Impersonate user"
-                              icon={<FaTheaterMasks color="black" size={24} />}
-                              variant="ghost"
-                              isDisabled={user.username === username}
-                            />
-                          </Form>
-                        </Tooltip>
+          {shouldShowUsers &&
+            users.map((user) => {
+              return (
+                <Table.Row key={user.email}>
+                  <Table.Cell>{user.email}</Table.Cell>
+                  <Table.Cell>{user.displayName}</Table.Cell>
+                  <Table.Cell>{user.dnsRecordCount}</Table.Cell>
+                  <Table.Cell>
+                    <CertificateStatusIcon status={user.certificate?.status} />
+                  </Table.Cell>
+                  <Table.Cell>
+                    <HStack>
+                      <Tooltip content="Impersonate user">
                         <Form method="post">
-                          <Tooltip label="Delete user">
-                            <IconButton
-                              aria-label="Delete user"
-                              icon={<DeleteIcon color="black" boxSize={5} />}
-                              variant="ghost"
-                              isDisabled={user.username === username}
-                              type="submit"
-                            />
-                          </Tooltip>
-                          <input type="hidden" name="username" value={user.username} />
-                          <input type="hidden" name="intent" value="delete-user" />
+                          <input type="hidden" name="newEffectiveUsername" value={user.username} />
+                          <input type="hidden" name="intent" value="impersonate-user" />
+                          <IconButton
+                            type="submit"
+                            aria-label="Impersonate user"
+                            variant="ghost"
+                            disabled={user.username === username}
+                          >
+                            <FaTheaterMasks color="black" size={24} />
+                          </IconButton>
                         </Form>
-                      </HStack>
-                    </Td>
-                  </Tr>
-                );
-              })}
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </Card>
+                      </Tooltip>
+                      <Form method="post">
+                        <Tooltip content="Delete user">
+                          <IconButton
+                            aria-label="Delete user"
+                            variant="ghost"
+                            disabled={user.username === username}
+                            type="submit"
+                          >
+                            <DeleteIcon color="black" boxSize={5} />
+                          </IconButton>
+                        </Tooltip>
+                        <input type="hidden" name="username" value={user.username} />
+                        <input type="hidden" name="intent" value="delete-user" />
+                      </Form>
+                    </HStack>
+                  </Table.Cell>
+                </Table.Row>
+              );
+            })}
+        </Table.Body>
+      </Table.Root>
+    </Card.Root>
   );
 }

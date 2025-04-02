@@ -1,4 +1,4 @@
-import { FormControl, FormErrorMessage, FormHelperText, FormLabel, HStack } from '@chakra-ui/react';
+import { HStack, Field } from '@chakra-ui/react';
 
 interface FormFieldProps {
   label: string;
@@ -16,11 +16,11 @@ export default function FormField({
   children,
 }: FormFieldProps) {
   return (
-    <FormControl isRequired={isRequired} isInvalid={!!error}>
-      <FormLabel>{label}</FormLabel>
+    <Field.Root required={isRequired} invalid={!!error}>
+      <Field.Label>{label}</Field.Label>
       <HStack w="full">{children}</HStack>
-      {helpText && <FormHelperText fontSize="xs">{helpText}</FormHelperText>}
-      <FormErrorMessage>{error}</FormErrorMessage>
-    </FormControl>
+      {helpText && <Field.HelperText fontSize="xs">{helpText}</Field.HelperText>}
+      <Field.ErrorText>{error}</Field.ErrorText>
+    </Field.Root>
   );
 }

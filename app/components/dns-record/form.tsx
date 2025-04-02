@@ -1,13 +1,5 @@
-import { AddIcon, EditIcon } from '@chakra-ui/icons';
-import {
-  Button,
-  Input,
-  InputGroup,
-  InputRightAddon,
-  Select,
-  Textarea,
-  VStack,
-} from '@chakra-ui/react';
+import { AddIcon, createListCollection, EditIcon } from '@chakra-ui/icons';
+import { Button, Input, InputGroup, Portal, Select, Textarea, VStack } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import type { DnsRecord } from '@prisma/client';
 import { useEffectiveUser } from '~/utils';
@@ -29,18 +21,27 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
   const submitButtonText = useMemo(() => (mode === 'CREATE' ? 'Create' : 'Update'), [mode]);
   const SubmitButtonIcon = useMemo(() => (mode === 'CREATE' ? AddIcon : EditIcon), [mode]);
 
+  const recordTypes = createListCollection({
+    items: [
+      { label: 'A Record (IPv4 Address)', value: 'A' },
+      { label: 'AAAA Record (IPv6 Address)', value: 'AAAA' },
+      { label: 'CNAME Record (Domain Name)', value: 'CNAME' },
+      { label: 'MX Record (Mail Server)', value: 'MX' },
+      { label: 'TXT Record (Text Value)', value: 'TXT' },
+    ],
+  });
+
   return (
     <Form method="post">
-      <VStack maxW="xl" spacing="6">
+      <VStack maxW="xl" gap="6">
         <FormField
           label="Name"
           isRequired={true}
           error={errors?.fieldErrors.subdomain?.join(' ')}
           helpText="DNS Record Names can contain lowercase letters (a-z), numbers (0-9), and - or _"
         >
-          <InputGroup>
+          <InputGroup endElement={`.${user.baseDomain}`}>
             <Input name="subdomain" defaultValue={dnsRecord?.subdomain} />
-            <InputRightAddon>{`.${user.baseDomain}`}</InputRightAddon>
           </InputGroup>
         </FormField>
 
@@ -50,13 +51,32 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
           helpText="DNS Record Type (IPv4, IPv6, Domain Name, Mail Server, Text) indicates what Value will be"
           error={errors?.fieldErrors.type?.join(' ')}
         >
-          <Select placeholder="Select a type" name="type" defaultValue={dnsRecord?.type}>
-            <option value="A">A Record (IPv4 Address)</option>
-            <option value="AAAA">AAAA Record (IPv6 Address)</option>
-            <option value="CNAME">CNAME Record (Domain Name)</option>
-            <option value="MX">MX Record (Mail Server)</option>
-            <option value="TXT">TXT Record (Text Value)</option>
-          </Select>
+          <Select.Root collection={recordTypes} name="type">
+            <Select.HiddenSelect />
+            <Select.Label>Choose DNS Record Type</Select.Label>
+
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText placeholder="Select a type" />
+              </Select.Trigger>
+              <Select.IndicatorGroup>
+                <Select.Indicator />
+              </Select.IndicatorGroup>
+            </Select.Control>
+
+            <Portal>
+              <Select.Positioner>
+                <Select.Content>
+                  {recordTypes.items.map((type) => (
+                    <Select.Item item={type} key={type.value}>
+                      {type.label}
+                      <Select.ItemIndicator />
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Portal>
+          </Select.Root>
         </FormField>
 
         <FormField
@@ -89,8 +109,8 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
         </FormField>
       </VStack>
       {dnsRecord && <input type="hidden" name="id" value={dnsRecord.id} />}
-      <Button type="submit" mt="6" rightIcon={<SubmitButtonIcon boxSize={3.5} mt="0.15rem" />}>
-        {submitButtonText}
+      <Button type="submit" mt="6">
+        {submitButtonText} <SubmitButtonIcon boxSize={3.5} mt="0.15rem" />
       </Button>
     </Form>
   );

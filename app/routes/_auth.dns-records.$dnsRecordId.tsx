@@ -105,8 +105,8 @@ export default function DnsRecordRoute() {
         Choose a subdomain Name. This will be used to build your domain.
         <br /> (i.e. [subdomain].[username].mystudentproject.ca). <br />
         Then enter a Type and Value that will be mapped with your domain. For more info refer to our{' '}
-        <Link as={RemixLink} to={{ pathname: '/dns-records/instructions' }}>
-          instructions page.
+        <Link asChild>
+          <RemixLink to={{ pathname: '/dns-records/instructions' }}>instructions page.</RemixLink>
         </Link>
       </Text>
       <DnsRecordForm errors={actionData} dnsRecord={dnsRecord} mode="EDIT" />

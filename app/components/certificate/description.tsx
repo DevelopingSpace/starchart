@@ -1,17 +1,7 @@
 import { RepeatIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Form, Link as RemixLink } from '@remix-run/react';
-import {
-  Flex,
-  Text,
-  Button,
-  Stat,
-  StatLabel,
-  StatNumber,
-  Wrap,
-  WrapItem,
-  Link,
-  useToast,
-} from '@chakra-ui/react';
+import { Flex, Text, Button, Stat, Wrap, WrapItem, Link } from '@chakra-ui/react';
+import { toaster } from '~/components/ui/toaster';
 
 interface DescriptionSectionProps {
   certRequested: boolean;
@@ -30,7 +20,6 @@ export default function DescriptionSection({
   isRenewable,
   link,
 }: DescriptionSectionProps) {
-  const toast = useToast();
   return (
     <Flex flexDirection="column" gap="3" fontSize="md">
       <Text maxW={600}>
@@ -38,8 +27,8 @@ export default function DescriptionSection({
         {link && (
           <>
             &nbsp;To learn more, refer to our&nbsp;
-            <Link as={RemixLink} to={link}>
-              information page
+            <Link asChild>
+              <RemixLink to={link}>information page</RemixLink>
             </Link>
             .
           </>
@@ -47,19 +36,19 @@ export default function DescriptionSection({
       </Text>
       {certRequested && !!validFromFormatted && !!validToFormatted && (
         <Wrap align="center">
-          <Stat backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>
-            <StatLabel>Created On</StatLabel>
-            <StatNumber>{validFromFormatted}</StatNumber>
-          </Stat>
-          <Stat backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>
-            <StatLabel>Expires On</StatLabel>
-            <StatNumber>{validToFormatted}</StatNumber>
-          </Stat>
+          <Stat.Root backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>
+            <Stat.Label>Created On</Stat.Label>
+            <Stat.ValueText>{validFromFormatted}</Stat.ValueText>
+          </Stat.Root>
+          <Stat.Root backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>
+            <Stat.Label>Expires On</Stat.Label>
+            <Stat.ValueText>{validToFormatted}</Stat.ValueText>
+          </Stat.Root>
           <WrapItem>
             <Flex justifyContent="flex-end">
               <Form method="post">
-                <Button type="submit" rightIcon={<RepeatIcon />} isDisabled={!isRenewable}>
-                  Renew
+                <Button type="submit" disabled={!isRenewable}>
+                  Renew <RepeatIcon />
                 </Button>
               </Form>
               <Form method="post">
@@ -67,17 +56,16 @@ export default function DescriptionSection({
                 <Button
                   type="submit"
                   ml={1.5}
-                  rightIcon={<DeleteIcon />}
                   variant="ghost"
                   onClick={() =>
-                    toast({
+                    toaster.create({
                       title: 'Certificate has been successfully delete',
-                      position: 'bottom-right',
-                      status: 'success',
+                      // Todo!
+                      // status: 'success',
                     })
                   }
                 >
-                  Delete
+                  Delete <DeleteIcon />
                 </Button>
               </Form>
             </Flex>

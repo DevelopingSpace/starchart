@@ -7,24 +7,33 @@ export default function Footer() {
         as={Stack}
         maxW={'6xl'}
         py={4}
-        spacing={4}
-        justify={{ base: 'center', md: 'space-between' }}
-        align={{ base: 'center', md: 'center' }}
+        // Todo!
+        // justify={{ base: 'center', md: 'space-between' }}
+        // align={{ base: 'center', md: 'center' }}
         direction={{ base: 'column', md: 'row' }}
         fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
       >
-        <HStack spacing={6}>
-          <Link href="https://github.com/DevelopingSpace/starchart" target="_blank" isExternal>
-            GitHub
-          </Link>
-          <Link
-            href="https://www.senecapolytechnic.ca/about/policies/information-technology-acceptable-use-policy.html"
-            target="_blank"
-            isExternal
-          >
-            Acceptable Use Policy
-          </Link>
-        </HStack>
+        <Box padding="4">
+          <HStack>
+            <Box padding="6">
+              <Link
+                href="https://github.com/DevelopingSpace/starchart"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </Link>
+              <Link
+                href="https://www.senecapolytechnic.ca/about/policies/information-technology-acceptable-use-policy.html"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Acceptable Use Policy
+              </Link>
+            </Box>
+          </HStack>
+        </Box>
+
         <Text>&copy; {new Date().getFullYear()} Seneca Polytechnic. All rights reserved.</Text>
       </Container>
     </Box>
