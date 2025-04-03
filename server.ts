@@ -92,8 +92,7 @@ installGlobals();
         : async () => {
             // Need to disable these rules here
             // because the imported file needs to be generated first
-            // eslint-disable-next-line import/no-unresolved
-            // @ts-ignore
+            // @ts-ignore  eslint-disable-next-line import/no-unresolved
             const mod = await import('./build/server/index.js');
             return mod as unknown as ServerBuild;
           },
