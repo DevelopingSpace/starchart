@@ -12,10 +12,10 @@ export default defineConfig({
     tsconfigPaths(),
     // https://remix.run/docs/en/main/guides/vite#esm--cjs
     cjsInterop({
-      dependencies: ['@emotion/cache', 'react-use'],
+      dependencies: ['@emotion/cache'],
     }),
   ],
   optimizeDeps: {
-    include: ['@emotion/cache', 'react-use'],
+    include: ['@emotion/cache'],
   },
 });
