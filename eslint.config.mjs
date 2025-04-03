@@ -1,23 +1,22 @@
-const path = require('node:path');
+import path from 'node:path';
+import js from '@eslint/js';
+import { includeIgnoreFile } from '@eslint/compat';
 
-const js = require('@eslint/js');
-const { includeIgnoreFile } = require('@eslint/compat');
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import typescriptParser from '@typescript-eslint/parser';
 
-const typescriptEslint = require('@typescript-eslint/eslint-plugin');
-const typescriptParser = require('@typescript-eslint/parser');
+import importPlugin from 'eslint-plugin-import';
+import reactPlugin from 'eslint-plugin-react';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import oxlint from 'eslint-plugin-oxlint';
 
-const importPlugin = require('eslint-plugin-import');
-const reactPlugin = require('eslint-plugin-react');
-const jsxA11yPlugin = require('eslint-plugin-jsx-a11y');
-const reactHooksPlugin = require('eslint-plugin-react-hooks');
-const oxlint = require('eslint-plugin-oxlint');
+import globals from 'globals';
 
-const globals = require('globals');
-
-const gitignorePath = path.resolve(__dirname, '.gitignore');
+const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
 
 /** @type {import('eslint').Linter.Config[]} */
-module.exports = [
+export default [
   js.configs.recommended,
   importPlugin.flatConfigs.recommended,
   includeIgnoreFile(gitignorePath),
@@ -91,7 +90,7 @@ module.exports = [
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: import.meta.dirname,
         project: ['./tsconfig.json'],
       },
       globals: {

@@ -1,8 +1,10 @@
-import { get, set } from 'lodash';
+import _ from 'lodash';
 import { getReconciliationData } from '~/models/dns-record.server';
 import { buildDomain } from '~/utils';
 
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
+
+const { get, set } = _;
 
 class DnsDbCompareStructureGenerator {
   #MUTATEDcompareStructure: ReconcilerCompareStructure = {};

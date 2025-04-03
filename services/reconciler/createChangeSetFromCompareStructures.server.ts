@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import _ from 'lodash';
 import logger from '~/lib/logger.server';
 
 import { DnsRecordType } from '@prisma/client';
@@ -6,6 +6,8 @@ import { DnsRecordType } from '@prisma/client';
 import { Change, ChangeAction } from '@aws-sdk/client-route-53';
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
 import { toRoute53RecordValue } from './route53Utils.server';
+
+const { isEqual } = _;
 
 interface CompareStructures {
   dbStructure: ReconcilerCompareStructure;
