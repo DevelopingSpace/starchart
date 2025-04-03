@@ -8,7 +8,6 @@ export default defineConfig({
     !process.env.VITEST &&
       remix({
         ignoredRouteFiles: ['**/.*', '**/*.css', '**/*.test.{js,jsx,ts,tsx}'],
-        serverModuleFormat: 'cjs',
       }),
     tsconfigPaths(),
     // https://remix.run/docs/en/main/guides/vite#esm--cjs
