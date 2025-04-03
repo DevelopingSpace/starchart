@@ -16,6 +16,6 @@ export default defineConfig({
     }),
   ],
   optimizeDeps: {
-    include: ['@emotion/cache'],
+    include: ['@emotion/cache', 'react-use'],
   },
 });
