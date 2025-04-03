@@ -8,8 +8,9 @@ import {
   IconButton,
   Accordion,
   useClipboard,
+  Icon,
 } from '@chakra-ui/react';
-import { DownloadIcon, CopyIcon } from '@chakra-ui/icons';
+import { FaDownload, FaCopy } from 'react-icons/fa6';
 import { Tooltip } from '~/components/ui/tooltip';
 import { toaster } from '~/components/ui/toaster';
 import { Link } from '@remix-run/react';
@@ -63,7 +64,9 @@ export default function CertificateDisplay({
             aria-label={`Copy ${title}`}
             onClick={clipboard.copy}
           >
-            <CopyIcon fontSize="md" />
+            <Icon fontSize="md">
+              <FaCopy />
+            </Icon>
           </IconButton>
         </Tooltip>
         <Tooltip content={`Download ${title}`}>
@@ -78,7 +81,7 @@ export default function CertificateDisplay({
               }}
               aria-label={`Download ${title}`}
             >
-              <DownloadIcon
+              <Icon
                 fontSize="md"
                 onClick={() =>
                   toaster.create({
@@ -87,7 +90,9 @@ export default function CertificateDisplay({
                     // status: 'success',
                   })
                 }
-              />
+              >
+                <FaDownload />
+              </Icon>
             </IconButton>
           </Link>
         </Tooltip>

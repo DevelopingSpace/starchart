@@ -1,6 +1,6 @@
-import { InfoIcon } from '@chakra-ui/icons';
-import { Card, Text, Flex } from '@chakra-ui/react';
+import { Card, Text, Flex, Icon } from '@chakra-ui/react';
 import { Tooltip } from '~/components/ui/tooltip';
+import { FaCircleInfo } from 'react-icons/fa6';
 import type { IconType } from 'react-icons';
 
 interface AdminMetricCardProps {
@@ -41,7 +41,9 @@ export default function AdminMetricCard({
           </Flex>
         </Flex>
         <Tooltip content={tooltipText}>
-          <InfoIcon color="#d9d9d9" fontSize="xl" />
+          <Icon color="#d9d9d9" fontSize="xl">
+            <FaCircleInfo />
+          </Icon>
         </Tooltip>
       </Card.Body>
     </Card.Root>

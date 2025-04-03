@@ -10,8 +10,9 @@ import {
   Portal,
   useBreakpointValue,
   Show,
+  Icon,
 } from '@chakra-ui/react';
-import { TriangleUpIcon, LockIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { FaCaretUp, FaLock, FaBars } from 'react-icons/fa6';
 import { Form, Link, useFetcher } from '@remix-run/react';
 
 import { useEffectiveUser, useUser } from '~/utils';
@@ -42,15 +43,15 @@ export default function Header() {
         <HStack color="white" justifyContent="flex-start" gap="10" width="100%">
           <Flex gap="5">
             <Link to={{ pathname: '/dns-records' }}>
-              <Flex alignItems="center">
-                <TriangleUpIcon marginRight="2" />
+              <Flex alignItems="center" gap="2">
+                <FaCaretUp />
                 <Text>DNS Records</Text>
               </Flex>
             </Link>
 
             <Link to={{ pathname: '/certificate' }}>
-              <Flex alignItems="center" marginLeft="5">
-                <LockIcon marginRight="2" />
+              <Flex alignItems="center" marginLeft="5" gap="2">
+                <FaLock />
                 <Text>Certificate</Text>
               </Flex>
             </Link>
@@ -66,7 +67,7 @@ export default function Header() {
                 aria-label="Account Menu"
                 style={{ backgroundColor: 'transparent' }}
               >
-                <HamburgerIcon />
+                <FaBars />
               </Button>
             </Menu.Trigger>
 
@@ -75,16 +76,16 @@ export default function Header() {
                 <Menu.Content>
                   <Menu.Item value="dns-records">
                     <Link to={{ pathname: '/dns-records' }}>
-                      <Flex alignItems="center">
-                        <TriangleUpIcon marginRight="2" />
+                      <Flex alignItems="center" gap="2">
+                        <FaCaretUp />
                         <Text>DNS Records</Text>
                       </Flex>
                     </Link>
                   </Menu.Item>
                   <Menu.Item value={'certificate'}>
                     <Link to={{ pathname: '/certificate' }}>
-                      <Flex alignItems="center">
-                        <LockIcon marginRight="2" />
+                      <Flex alignItems="center" gap="2">
+                        <FaLock />
                         <Text>Certificate</Text>
                       </Flex>
                     </Link>

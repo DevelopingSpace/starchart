@@ -1,5 +1,15 @@
-import { AddIcon, createListCollection, EditIcon } from '@chakra-ui/icons';
-import { Button, Input, InputGroup, Portal, Select, Textarea, VStack } from '@chakra-ui/react';
+import { FaPlus, FaPenToSquare } from 'react-icons/fa6';
+import {
+  Button,
+  Input,
+  InputGroup,
+  Portal,
+  Select,
+  Textarea,
+  VStack,
+  createListCollection,
+  Icon,
+} from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import type { DnsRecord } from '@prisma/client';
 import { useEffectiveUser } from '~/utils';
@@ -19,7 +29,7 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
   const user = useEffectiveUser();
 
   const submitButtonText = useMemo(() => (mode === 'CREATE' ? 'Create' : 'Update'), [mode]);
-  const SubmitButtonIcon = useMemo(() => (mode === 'CREATE' ? AddIcon : EditIcon), [mode]);
+  const SubmitButtonIcon = useMemo(() => (mode === 'CREATE' ? FaPlus : FaPenToSquare), [mode]);
 
   const recordTypes = createListCollection({
     items: [
@@ -110,7 +120,10 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
       </VStack>
       {dnsRecord && <input type="hidden" name="id" value={dnsRecord.id} />}
       <Button type="submit" mt="6">
-        {submitButtonText} <SubmitButtonIcon boxSize={3.5} mt="0.15rem" />
+        {submitButtonText}{' '}
+        <Icon boxSize={3.5} mt="0.15rem">
+          <SubmitButtonIcon />
+        </Icon>
       </Button>
     </Form>
   );

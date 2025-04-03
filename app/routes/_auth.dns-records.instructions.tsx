@@ -1,4 +1,4 @@
-import { InfoOutlineIcon } from '@chakra-ui/icons';
+import { IoIosInformationCircleOutline } from 'react-icons/io';
 import {
   Heading,
   Text,
@@ -10,6 +10,7 @@ import {
   Flex,
   List,
   Box,
+  Icon,
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import FaqAccordion from '~/components/instructions/faq-accordion';
@@ -215,11 +216,15 @@ export default function CertificateInstructionsRoute() {
               </Text>
               <Text mt="4">
                 To help you monitor the propagation status of your DNS records, we provide an
-                information icon <InfoOutlineIcon color="black" boxSize="4" /> next to each record.
-                Clicking on this icon will take you to a DNS record propagation map, where you can
-                track the progress of your DNS changes in real-time. This map shows you which DNS
-                servers around the world have updated their cache with your new record information,
-                allowing you to gauge when your changes will become accessible globally.
+                information icon{' '}
+                <Icon color="black" boxSize="4">
+                  <IoIosInformationCircleOutline />
+                </Icon>{' '}
+                next to each record. Clicking on this icon will take you to a DNS record propagation
+                map, where you can track the progress of your DNS changes in real-time. This map
+                shows you which DNS servers around the world have updated their cache with your new
+                record information, allowing you to gauge when your changes will become accessible
+                globally.
               </Text>
             </FaqAccordion>
             <FaqAccordion title="Are there any limitations or restrictions on the number of DNS records I can create?">

@@ -1,4 +1,4 @@
-import { AddIcon } from '@chakra-ui/icons';
+import { FaPlus } from 'react-icons/fa6';
 import {
   Button,
   Center,
@@ -9,6 +9,7 @@ import {
   Link,
   useBreakpointValue,
   Show,
+  Icon,
 } from '@chakra-ui/react';
 import { Link as RemixLink, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
@@ -151,12 +152,18 @@ export default function DnsRecordsIndexRoute() {
             <RemixLink to="/dns-records/new">
               <Show when={isBelowSm}>
                 <Button>
-                  New <AddIcon boxSize={3} />
+                  New{' '}
+                  <Icon boxSize={3}>
+                    <FaPlus />
+                  </Icon>
                 </Button>
               </Show>
               <Show when={!isBelowSm}>
                 <Button>
-                  Create new DNS Record <AddIcon boxSize={3} />
+                  Create new DNS Record{' '}
+                  <Icon boxSize={3}>
+                    <FaPlus />
+                  </Icon>
                 </Button>
               </Show>
             </RemixLink>
@@ -167,7 +174,10 @@ export default function DnsRecordsIndexRoute() {
         <Center mt="16">
           <RemixLink to="/dns-records/new">
             <Button>
-              Create your first DNS Record! <AddIcon boxSize={3} />
+              Create your first DNS Record!{' '}
+              <Icon boxSize={3}>
+                <FaPlus />
+              </Icon>
             </Button>
           </RemixLink>
         </Center>

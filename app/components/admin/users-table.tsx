@@ -1,6 +1,5 @@
 import { Table, Card, IconButton, Flex, HStack, Spinner, Text } from '@chakra-ui/react';
-import { DeleteIcon } from '@chakra-ui/icons';
-import { FaTheaterMasks } from 'react-icons/fa';
+import { FaRegTrashCan, FaMasksTheater } from 'react-icons/fa6';
 import { Form, useNavigation } from '@remix-run/react';
 import { Tooltip } from '~/components/ui/tooltip';
 
@@ -75,7 +74,7 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                             variant="ghost"
                             disabled={user.username === username}
                           >
-                            <FaTheaterMasks color="black" size={24} />
+                            <FaMasksTheater color="black" size={24} />
                           </IconButton>
                         </Form>
                       </Tooltip>
@@ -87,7 +86,7 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
                             disabled={user.username === username}
                             type="submit"
                           >
-                            <DeleteIcon color="black" boxSize={5} />
+                            <FaRegTrashCan color="black" size={24} />
                           </IconButton>
                         </Tooltip>
                         <input type="hidden" name="username" value={user.username} />

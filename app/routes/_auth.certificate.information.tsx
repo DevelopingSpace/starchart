@@ -1,6 +1,6 @@
-import { Heading, Text, Link, Box, Tabs, Accordion, Flex, List } from '@chakra-ui/react';
+import { Heading, Text, Link, Box, Tabs, Accordion, Flex, List, Icon } from '@chakra-ui/react';
 import { Link as RemixLink } from '@remix-run/react';
-import { LockIcon } from '@chakra-ui/icons';
+import { FaLock } from 'react-icons/fa6';
 
 import FaqAccordion from '~/components/instructions/faq-accordion';
 
@@ -16,10 +16,12 @@ export default function CertificateInstructionsRoute() {
         </Heading>
         <Text marginY={4}>
           When browsing the internet, you may have noticed a padlock (
-          <LockIcon boxSize="3" marginBottom="1" />) symbol next to the website's URL. This padlock
-          indicates whether the website has a valid SSL/TLS certificate or not. These certificates
-          are used to secure websites, encrypting and decrypting data exchanged between clients and
-          servers.
+          <Icon boxSize="3" marginBottom="1">
+            <FaLock />
+          </Icon>
+          ) symbol next to the website's URL. This padlock indicates whether the website has a valid
+          SSL/TLS certificate or not. These certificates are used to secure websites, encrypting and
+          decrypting data exchanged between clients and servers.
         </Text>
         <Text marginY={4}>
           An SSL/TLS Certificate is like a digital lock that keeps information exchanged between

@@ -1,4 +1,4 @@
-import { RepeatIcon, DeleteIcon } from '@chakra-ui/icons';
+import { FaRepeat, FaRegTrashCan } from 'react-icons/fa6';
 import { Form, Link as RemixLink } from '@remix-run/react';
 import { Flex, Text, Button, Stat, Wrap, WrapItem, Link } from '@chakra-ui/react';
 import { toaster } from '~/components/ui/toaster';
@@ -48,7 +48,7 @@ export default function DescriptionSection({
             <Flex justifyContent="flex-end">
               <Form method="post">
                 <Button type="submit" disabled={!isRenewable}>
-                  Renew <RepeatIcon />
+                  Renew <FaRepeat />
                 </Button>
               </Form>
               <Form method="post">
@@ -65,7 +65,7 @@ export default function DescriptionSection({
                     })
                   }
                 >
-                  Delete <DeleteIcon />
+                  Delete <FaRegTrashCan />
                 </Button>
               </Form>
             </Flex>

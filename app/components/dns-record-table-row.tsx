@@ -10,8 +10,11 @@ import {
   VStack,
   Show,
   useBreakpointValue,
+  Icon,
 } from '@chakra-ui/react';
-import { EditIcon, DeleteIcon, RepeatIcon, CopyIcon, InfoOutlineIcon } from '@chakra-ui/icons';
+import { FaPenToSquare, FaRegTrashCan, FaRepeat, FaCopy } from 'react-icons/fa6';
+import { IoIosInformationCircleOutline } from 'react-icons/io';
+
 import { Tooltip } from '~/components/ui/tooltip';
 import { toaster } from '~/components/ui/toaster';
 
@@ -88,13 +91,17 @@ export default function DnsRecordsTableRow({
                   variant="ghost"
                   ml={{ xs: '0', sm: '2' }}
                 >
-                  <InfoOutlineIcon color="black" boxSize="5" />
+                  <Icon color="black" boxSize="5">
+                    <IoIosInformationCircleOutline />
+                  </Icon>
                 </IconButton>
               </Tooltip>
             </Link>
             <Tooltip content="Copy DNS record to clipboard">
               <IconButton aria-label="Refresh DNS record" variant="ghost" onClick={handleOnCopy}>
-                <CopyIcon color="black" boxSize="5" />
+                <Icon color="black" boxSize="5">
+                  <FaCopy />
+                </Icon>
               </IconButton>
             </Tooltip>
             <Show when={isBelowSm}>
@@ -114,7 +121,9 @@ export default function DnsRecordsTableRow({
                       })
                     }
                   >
-                    <RepeatIcon color="black" boxSize="5" />
+                    <Icon color="black" boxSize="5">
+                      <FaRepeat />
+                    </Icon>
                   </IconButton>
                 </Tooltip>
               </Form>
@@ -124,7 +133,9 @@ export default function DnsRecordsTableRow({
                   aria-label="Edit DNS record"
                   variant="ghost"
                 >
-                  <EditIcon color="black" boxSize={5} />
+                  <Icon color="black" boxSize={5}>
+                    <FaPenToSquare />
+                  </Icon>
                 </IconButton>
               </Tooltip>
               <Tooltip content="Delete DNS record">
@@ -134,7 +145,9 @@ export default function DnsRecordsTableRow({
                   variant="ghost"
                   type="submit"
                 >
-                  <DeleteIcon color="black" boxSize={5} />
+                  <Icon color="black" boxSize={5}>
+                    <FaRegTrashCan />
+                  </Icon>
                 </IconButton>
               </Tooltip>
             </Show>
@@ -169,7 +182,9 @@ export default function DnsRecordsTableRow({
                     })
                   }
                 >
-                  <RepeatIcon color="black" boxSize="5" />
+                  <Icon color="black" boxSize="5">
+                    <FaRepeat />
+                  </Icon>
                 </IconButton>
               </Tooltip>
             </Form>
@@ -181,11 +196,14 @@ export default function DnsRecordsTableRow({
               <Tooltip content="Edit DNS record">
                 <IconButton
                   onClick={() => navigate(dnsRecord.id.toString())}
-                  icon={<EditIcon color="black" boxSize={5} />}
                   aria-label="Edit DNS record"
                   variant="ghost"
                   mr="1"
-                />
+                >
+                  <Icon color="black" boxSize={5}>
+                    <FaPenToSquare />
+                  </Icon>
+                </IconButton>
               </Tooltip>
               <Tooltip content="Delete DNS record">
                 <IconButton
@@ -194,7 +212,9 @@ export default function DnsRecordsTableRow({
                   variant="ghost"
                   type="submit"
                 >
-                  <DeleteIcon color="black" boxSize={5} />
+                  <Icon color="black" boxSize={5}>
+                    <FaRegTrashCan />
+                  </Icon>
                 </IconButton>
               </Tooltip>
             </HStack>
