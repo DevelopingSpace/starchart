@@ -1,13 +1,5 @@
-import {
-  Flex,
-  FormControl,
-  FormHelperText,
-  Heading,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  useToast,
-} from '@chakra-ui/react';
+import { Flex, Field, Heading, Input, InputGroup } from '@chakra-ui/react';
+import { Toaster, toaster } from '~/components/ui/toaster';
 import type { Certificate, User } from '@prisma/client';
 import { useSubmit } from '@remix-run/react';
 import { useCallback, useEffect, useState } from 'react';
@@ -128,8 +120,6 @@ export default function AdminRoute() {
   const { userCount, dnsRecordCount, certificateCount } = useTypedLoaderData<typeof loader>();
   const actionResult = useTypedActionData<{ users?: UserWithMetrics[]; isUserDeleted?: boolean }>();
 
-  const toast = useToast();
-
   const [searchText, setSearchText] = useState('');
 
   const reloadUsers = useCallback(() => {
@@ -144,10 +134,9 @@ export default function AdminRoute() {
 
   useEffect(() => {
     if (actionResult?.isUserDeleted) {
-      toast({
+      toaster.create({
         title: 'User was deleted',
-        position: 'bottom-right',
-        status: 'success',
+        type: 'success',
       });
       reloadUsers();
     }
@@ -160,6 +149,7 @@ export default function AdminRoute() {
 
   return (
     <>
+      <Toaster />
       <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
         Admin Dashboard
       </Heading>
@@ -187,9 +177,8 @@ export default function AdminRoute() {
         Users
       </Heading>
 
-      <FormControl>
-        <InputGroup width={{ sm: '100%', md: 300 }}>
-          <InputLeftAddon>{<FaSearch />}</InputLeftAddon>
+      <Field.Root>
+        <InputGroup startElement={<FaSearch />} width={{ sm: '100%', md: 300 }}>
           <Input
             placeholder="Search..."
             name="searchText"
@@ -197,8 +186,8 @@ export default function AdminRoute() {
             onChange={(event) => setSearchText(event.currentTarget.value)}
           />
         </InputGroup>
-        <FormHelperText>Please enter at least 3 characters to search.</FormHelperText>
-      </FormControl>
+        <Field.HelperText>Please enter at least 3 characters to search.</Field.HelperText>
+      </Field.Root>
 
       <UsersTable users={actionResult?.users ?? []} searchText={searchText} />
     </>

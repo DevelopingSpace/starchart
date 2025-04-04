@@ -1,16 +1,15 @@
-import { AddIcon } from '@chakra-ui/icons';
+import { FaPlus } from 'react-icons/fa6';
 import {
   Button,
   Center,
   Flex,
   Heading,
   Stat,
-  StatLabel,
-  StatNumber,
   Text,
   Link,
-  Hide,
+  useBreakpointValue,
   Show,
+  Icon,
 } from '@chakra-ui/react';
 import { Link as RemixLink, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
@@ -118,6 +117,8 @@ export function ErrorBoundary() {
 export default function DnsRecordsIndexRoute() {
   const data = useTypedLoaderData<typeof loader>();
 
+  const isBelowSm = useBreakpointValue({ base: true, sm: false });
+
   return (
     <Flex flexDirection="column">
       <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
@@ -129,8 +130,8 @@ export default function DnsRecordsIndexRoute() {
         into effect as your new domain needs to be spread in DNS servers around the globe. The
         expiration date is initially set to 6 months after the creation date and you can renew the
         DNS record using the renew button next to the expiry date. For more info refer to our{' '}
-        <Link as={RemixLink} to={{ pathname: '/dns-records/instructions' }}>
-          instructions page.
+        <Link asChild>
+          <RemixLink to={{ pathname: '/dns-records/instructions' }}>instructions page.</RemixLink>
         </Link>
       </Text>
       {data.dnsRecords.length ? (
@@ -142,19 +143,29 @@ export default function DnsRecordsIndexRoute() {
             px={4}
             py={2}
           >
-            <Stat>
-              <StatLabel>Total User DNS Records</StatLabel>
-              <StatNumber>
+            <Stat.Root>
+              <Stat.Label>Total User DNS Records</Stat.Label>
+              <Stat.ValueText>
                 {data.userDnsRecordCount} / {data.userDnsRecordLimit}
-              </StatNumber>
-            </Stat>
+              </Stat.ValueText>
+            </Stat.Root>
             <RemixLink to="/dns-records/new">
-              <Show below="sm">
-                <Button rightIcon={<AddIcon boxSize={3} />}>New</Button>
+              <Show when={isBelowSm}>
+                <Button>
+                  New{' '}
+                  <Icon boxSize={3}>
+                    <FaPlus />
+                  </Icon>
+                </Button>
               </Show>
-              <Hide below="sm">
-                <Button rightIcon={<AddIcon boxSize={3} />}>Create new DNS Record</Button>
-              </Hide>
+              <Show when={!isBelowSm}>
+                <Button>
+                  Create new DNS Record{' '}
+                  <Icon boxSize={3}>
+                    <FaPlus />
+                  </Icon>
+                </Button>
+              </Show>
             </RemixLink>
           </Flex>
           <DnsRecordsTable dnsRecords={data.dnsRecords} />
@@ -162,7 +173,12 @@ export default function DnsRecordsIndexRoute() {
       ) : (
         <Center mt="16">
           <RemixLink to="/dns-records/new">
-            <Button rightIcon={<AddIcon boxSize={3} />}>Create your first DNS Record!</Button>
+            <Button>
+              Create your first DNS Record!{' '}
+              <Icon boxSize={3}>
+                <FaPlus />
+              </Icon>
+            </Button>
           </RemixLink>
         </Center>
       )}

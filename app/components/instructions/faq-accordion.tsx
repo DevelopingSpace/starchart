@@ -1,11 +1,4 @@
-import {
-  AccordionItem,
-  AccordionButton,
-  Box,
-  AccordionPanel,
-  AccordionIcon,
-  Text,
-} from '@chakra-ui/react';
+import { Accordion, Box, Text } from '@chakra-ui/react';
 
 interface FaqAccordionProps {
   title: string;
@@ -14,14 +7,16 @@ interface FaqAccordionProps {
 
 export default function FaqAccordion({ title, children }: FaqAccordionProps) {
   return (
-    <AccordionItem>
-      <AccordionButton>
+    <Accordion.Item value={title}>
+      <Accordion.ItemTrigger>
         <Box flex="1" textAlign="left">
           <Text fontWeight="medium">{title}</Text>
         </Box>
-        <AccordionIcon />
-      </AccordionButton>
-      <AccordionPanel pb={4}>{children}</AccordionPanel>
-    </AccordionItem>
+        <Accordion.ItemIndicator />
+      </Accordion.ItemTrigger>
+      <Accordion.ItemContent pb={4}>
+        <Accordion.ItemBody>{children}</Accordion.ItemBody>
+      </Accordion.ItemContent>
+    </Accordion.Item>
   );
 }

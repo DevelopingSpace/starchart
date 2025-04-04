@@ -1,20 +1,6 @@
-import {
-  Heading,
-  Text,
-  Link,
-  Box,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Accordion,
-  Flex,
-  ListItem,
-  OrderedList,
-} from '@chakra-ui/react';
+import { Heading, Text, Link, Box, Tabs, Accordion, Flex, List, Icon } from '@chakra-ui/react';
 import { Link as RemixLink } from '@remix-run/react';
-import { LockIcon } from '@chakra-ui/icons';
+import { FaLock } from 'react-icons/fa6';
 
 import FaqAccordion from '~/components/instructions/faq-accordion';
 
@@ -30,10 +16,12 @@ export default function CertificateInstructionsRoute() {
         </Heading>
         <Text marginY={4}>
           When browsing the internet, you may have noticed a padlock (
-          <LockIcon boxSize="3" marginBottom="1" />) symbol next to the website's URL. This padlock
-          indicates whether the website has a valid SSL/TLS certificate or not. These certificates
-          are used to secure websites, encrypting and decrypting data exchanged between clients and
-          servers.
+          <Icon boxSize="3" marginBottom="1">
+            <FaLock />
+          </Icon>
+          ) symbol next to the website's URL. This padlock indicates whether the website has a valid
+          SSL/TLS certificate or not. These certificates are used to secure websites, encrypting and
+          decrypting data exchanged between clients and servers.
         </Text>
         <Text marginY={4}>
           An SSL/TLS Certificate is like a digital lock that keeps information exchanged between
@@ -67,20 +55,23 @@ export default function CertificateInstructionsRoute() {
         <Heading as="h3" size="md" marginTop="5">
           How to Request a Certificate
         </Heading>
-        <OrderedList listStylePos="inside" spacing="2" marginTop="3">
-          <ListItem>
-            Go to the&nbsp;
-            <Link as={RemixLink} to="/certificate">
-              Certificate Page
-            </Link>
-          </ListItem>
-          <ListItem>
-            Click the <strong>Request a Certificate</strong> button
-          </ListItem>
-          <ListItem>
-            You will be greeted with a loading page, and will receive an email once your certificate
-            has been issued or fails to be issued.
-          </ListItem>
+        <List.Root as="ol" listStylePos="inside" marginTop="3">
+          <Box pt="2" pb="2">
+            <List.Item>
+              Go to the&nbsp;
+              <Link asChild>
+                <RemixLink to="/certificate">Certificate Page</RemixLink>
+              </Link>
+            </List.Item>
+            <List.Item>
+              Click the <strong>Request a Certificate</strong> button
+            </List.Item>
+            <List.Item>
+              You will be greeted with a loading page, and will receive an email once your
+              certificate has been issued or fails to be issued.
+            </List.Item>
+          </Box>
+
           <Text>
             You can check if your DNS Records have a valid certificate by using an&nbsp;
             <Link href="https://www.sslshopper.com/ssl-checker.html" target="_blank">
@@ -88,7 +79,7 @@ export default function CertificateInstructionsRoute() {
             </Link>
             .
           </Text>
-        </OrderedList>
+        </List.Root>
 
         <Heading as="h3" size="md" marginTop="5">
           Types of Certificates
@@ -99,65 +90,63 @@ export default function CertificateInstructionsRoute() {
           requires the same ones:
         </Text>
 
-        <Tabs marginY="3" isFitted>
-          <TabList>
-            <Tab>Public Certificate</Tab>
-            <Tab>Private Key</Tab>
-            <Tab>Intermediate Chain</Tab>
-            <Tab>Full Chain</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <Text>
-                A digital document that proves the identity of an entity, such as a user or
-                organization, and establishes a secure connection between their web browser and a
-                website or server. It uses a pair of encryption keys, one public and one private,
-                and is issued by a trusted third party called a certification authority. For more
-                information&nbsp;
-                <Link
-                  href="https://www.cloudflare.com/learning/ssl/what-is-an-ssl-certificate/"
-                  target="_blank"
-                >
-                  click here
-                </Link>
-                .
-              </Text>
-            </TabPanel>
-            <TabPanel>
-              <Text>
-                Used to decrypt data that has been encrypted with the corresponding public key, and
-                to digitally sign documents or messages. For more information&nbsp;
-                <Link
-                  href="https://www.cloudflare.com/learning/ssl/what-is-an-ssl-certificate/"
-                  target="_blank"
-                >
-                  click here
-                </Link>
-              </Text>
-            </TabPanel>
-            <TabPanel>
-              <Text>
-                A set of certificates that are used to verify the authenticity of an SSL/TLS
-                certificate. They serve as a bridge between the SSL/TLS certificate and the root
-                Certificate Authority (CA) to establish a chain of trust, ensuring that the SSL/TLS
-                certificate is valid and secure. For more information&nbsp;
-                <Link
-                  href="https://support.dnsimple.com/articles/what-is-ssl-certificate-chain/"
-                  target="_blank"
-                >
-                  click here
-                </Link>
-              </Text>
-            </TabPanel>
-            <TabPanel>
-              A file that combines an SSL certificate (Public Certificate) with its intermediate
-              certificates, creating a trust connection between a server and a client. In simpler
-              terms, it makes sure online communication is secure and trustworthy.
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        <Tabs.Root marginY="3" defaultValue="public-certificate" fitted>
+          <Tabs.List>
+            <Tabs.Trigger value="public-certificate">Public Certificate</Tabs.Trigger>
+            <Tabs.Trigger value="private-key">Private Key</Tabs.Trigger>
+            <Tabs.Trigger value="intermediate-chain">Intermediate Chain</Tabs.Trigger>
+            <Tabs.Trigger value="full-chain">Full Chain</Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="public-certificate">
+            <Text>
+              A digital document that proves the identity of an entity, such as a user or
+              organization, and establishes a secure connection between their web browser and a
+              website or server. It uses a pair of encryption keys, one public and one private, and
+              is issued by a trusted third party called a certification authority. For more
+              information&nbsp;
+              <Link
+                href="https://www.cloudflare.com/learning/ssl/what-is-an-ssl-certificate/"
+                target="_blank"
+              >
+                click here
+              </Link>
+              .
+            </Text>
+          </Tabs.Content>
+          <Tabs.Content value="private-key">
+            <Text>
+              Used to decrypt data that has been encrypted with the corresponding public key, and to
+              digitally sign documents or messages. For more information&nbsp;
+              <Link
+                href="https://www.cloudflare.com/learning/ssl/what-is-an-ssl-certificate/"
+                target="_blank"
+              >
+                click here
+              </Link>
+            </Text>
+          </Tabs.Content>
+          <Tabs.Content value="intermediate-chain">
+            <Text>
+              A set of certificates that are used to verify the authenticity of an SSL/TLS
+              certificate. They serve as a bridge between the SSL/TLS certificate and the root
+              Certificate Authority (CA) to establish a chain of trust, ensuring that the SSL/TLS
+              certificate is valid and secure. For more information&nbsp;
+              <Link
+                href="https://support.dnsimple.com/articles/what-is-ssl-certificate-chain/"
+                target="_blank"
+              >
+                click here
+              </Link>
+            </Text>
+          </Tabs.Content>
+          <Tabs.Content value="full-chain">
+            A file that combines an SSL certificate (Public Certificate) with its intermediate
+            certificates, creating a trust connection between a server and a client. In simpler
+            terms, it makes sure online communication is secure and trustworthy.
+          </Tabs.Content>
+        </Tabs.Root>
 
-        <Accordion allowMultiple>
+        <Accordion.Root multiple>
           <Heading as="h3" size="md" marginBottom="2">
             FAQ
           </Heading>
@@ -175,12 +164,12 @@ export default function CertificateInstructionsRoute() {
           <FaqAccordion title="Can I use a single SSL Certificate for multiple DNS Records?">
             <Text>
               The certificate that has been issued covers all&nbsp;
-              <Link as={RemixLink} to="/dns-records/instructions">
-                DNS Records
+              <Link asChild>
+                <RemixLink to="/dns-records/instructions">DNS Records</RemixLink>
               </Link>
               &nbsp;that you have in the&nbsp;
-              <Link as={RemixLink} to="/dns-records">
-                DNS records table
+              <Link asChild>
+                <RemixLink to="/dns-records">DNS records table</RemixLink>
               </Link>
             </Text>
           </FaqAccordion>
@@ -202,7 +191,7 @@ export default function CertificateInstructionsRoute() {
             will be activated, allowing you to request a new certificate to maintain your online
             security.
           </FaqAccordion>
-        </Accordion>
+        </Accordion.Root>
       </Box>
     </Flex>
   );

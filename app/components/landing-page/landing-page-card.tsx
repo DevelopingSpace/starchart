@@ -1,14 +1,4 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Flex,
-  Heading,
-  Link,
-  Text,
-} from '@chakra-ui/react';
+import { Button, Card, Flex, Heading, Link, Text } from '@chakra-ui/react';
 import { Link as RemixLink } from '@remix-run/react';
 
 interface LandingPageCardProps {
@@ -27,33 +17,35 @@ export default function LandingPageCard({
   instructionsPath,
 }: LandingPageCardProps) {
   return (
-    <Card variant="filled" backgroundColor="whitesmoke" maxWidth="sm" align="center">
-      <CardHeader>
+    <Card.Root variant="subtle" backgroundColor="whitesmoke" maxWidth="sm">
+      <Card.Header>
         <Heading as="h2" size="lg" color="brand.500" height="100%">
           {cardName}
         </Heading>
-      </CardHeader>
-      <CardBody>
+      </Card.Header>
+      <Card.Body>
         <Flex direction="column" gap={4}>
           <Text>{cardDescription}</Text>
           {instructionsPath && (
             <Text>
               To learn more, refer to our{' '}
-              <Link as={RemixLink} to={instructionsPath}>
-                {instructionsPath === '/certificate/information'
-                  ? 'information page'
-                  : 'instructions page'}
+              <Link asChild>
+                <RemixLink to={instructionsPath}>
+                  {instructionsPath === '/certificate/information'
+                    ? 'information page'
+                    : 'instructions page'}
+                </RemixLink>
               </Link>
               .
             </Text>
           )}
         </Flex>
-      </CardBody>
-      <CardFooter>
-        <Button as={RemixLink} to={{ pathname: path }} size={{ base: 'xs', xs: 'sm', md: 'md' }}>
-          {pathName}
+      </Card.Body>
+      <Card.Footer>
+        <Button asChild size={{ base: 'xs', sm: 'sm', md: 'md' }}>
+          <RemixLink to={{ pathname: path }}>{pathName}</RemixLink>
         </Button>
-      </CardFooter>
-    </Card>
+      </Card.Footer>
+    </Card.Root>
   );
 }

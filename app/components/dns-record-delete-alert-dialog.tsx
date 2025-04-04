@@ -1,13 +1,5 @@
 import { useRef } from 'react';
-import {
-  AlertDialog,
-  Button,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogBody,
-} from '@chakra-ui/react';
+import { Dialog, Button } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import type { DnsRecord } from '@prisma/client';
 
@@ -27,14 +19,19 @@ export default function DnsRecordDeleteAlertDialog({
   const cancelRef = useRef(null);
 
   return (
-    <AlertDialog isCentered isOpen={isOpen} onClose={onCancel} leastDestructiveRef={cancelRef}>
-      <AlertDialogOverlay>
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+    <Dialog.Root
+      role="alertdialog"
+      open={isOpen}
+      onExitComplete={onCancel}
+      initialFocusEl={() => cancelRef.current}
+    >
+      <Dialog.Positioner>
+        <Dialog.Content>
+          <Dialog.Header fontSize="lg" fontWeight="bold">
             Delete DNS Record
-          </AlertDialogHeader>
-          <AlertDialogBody>Are you sure? You can't undo this action afterwards.</AlertDialogBody>
-          <AlertDialogFooter>
+          </Dialog.Header>
+          <Dialog.Body>Are you sure? You can't undo this action afterwards.</Dialog.Body>
+          <Dialog.Footer>
             <Button colorScheme="gray" onClick={onCancel} ref={cancelRef}>
               Cancel
             </Button>
@@ -45,9 +42,9 @@ export default function DnsRecordDeleteAlertDialog({
                 Delete
               </Button>
             </Form>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Positioner>
+    </Dialog.Root>
   );
 }

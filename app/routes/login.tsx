@@ -8,8 +8,9 @@ import {
   GridItem,
   VStack,
   Flex,
+  Icon,
 } from '@chakra-ui/react';
-import { LockIcon } from '@chakra-ui/icons';
+import { FaLock } from 'react-icons/fa6';
 import type { ActionFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form } from '@remix-run/react';
@@ -50,7 +51,9 @@ export default function Login() {
           <GridItem border="solid" borderRadius="2xl" borderColor="brand.500">
             <VStack height="2xs">
               <Flex width="100px" height="100px" marginTop="10">
-                <LockIcon color="gray.600" boxSize="100%" />
+                <Icon color="gray.600" boxSize="100%">
+                  <FaLock />
+                </Icon>
               </Flex>
               <Flex flex={1} alignItems="center" justifyContent="center">
                 <Form method="post">

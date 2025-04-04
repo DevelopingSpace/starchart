@@ -1,13 +1,4 @@
-import {
-  Heading,
-  Tab,
-  TabList,
-  Tabs,
-  TabPanels,
-  Text,
-  OrderedList,
-  ListItem,
-} from '@chakra-ui/react';
+import { Heading, Tabs, Text, List } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 
@@ -57,57 +48,55 @@ export default function CertificateAvailable({
         will require you to use them in various combinations. These parts include:
       </Text>
 
-      <OrderedList maxW={750}>
-        <ListItem>
+      <List.Root maxW={750} as="ol">
+        <List.Item>
           <strong>Public Certificate</strong>: public (not secret) certificate that verifies domain
           ownership
-        </ListItem>
-        <ListItem>
+        </List.Item>
+        <List.Item>
           <strong>Private Key</strong>: private code (do not share!) used to encrypt/decrypt data
-        </ListItem>
-        <ListItem>
+        </List.Item>
+        <List.Item>
           <strong>Intermediate Certificate Chain</strong>: set of one or more certificates that link
           your certificate back to a Certificate Authority, establishing a trust relationship
-        </ListItem>
-        <ListItem>
+        </List.Item>
+        <List.Item>
           <strong>Full Chain</strong>: your Public Certificate combined with the Intermediate
           Certificate Chain
-        </ListItem>
-      </OrderedList>
+        </List.Item>
+      </List.Root>
 
       <Text maxW={750}>
         You can select from the list of pre-defined services below to help guide you, or see a
         General view for all of the certificate's parts.
       </Text>
 
-      <Tabs maxW={750}>
-        <TabList>
-          <Tab>General</Tab>
-          <Tab>Node.js</Tab>
-          <Tab>AWS</Tab>
-          <Tab>NGINX</Tab>
-        </TabList>
+      <Tabs.Root maxW={750} defaultValue="general">
+        <Tabs.List>
+          <Tabs.Trigger value="general">General</Tabs.Trigger>
+          <Tabs.Trigger value="node">Node.js</Tabs.Trigger>
+          <Tabs.Trigger value="aws">AWS</Tabs.Trigger>
+          <Tabs.Trigger value="nginx">NGINX</Tabs.Trigger>
+        </Tabs.List>
 
-        <TabPanels>
-          <GeneralPanel
-            certificate={certificate.certificate!}
-            privateKey={certificate.privateKey!}
-            chain={certificate.chain!}
-            fullChain={certificate.fullChain!}
-          />
-          <NodePanel
-            certificate={certificate.certificate!}
-            privateKey={certificate.privateKey!}
-            chain={certificate.chain!}
-          />
-          <AwsPanel
-            certificate={certificate.certificate!}
-            privateKey={certificate.privateKey!}
-            chain={certificate.chain!}
-          />
-          <NginxPanel privateKey={certificate.privateKey!} fullChain={certificate.fullChain!} />
-        </TabPanels>
-      </Tabs>
+        <GeneralPanel
+          certificate={certificate.certificate!}
+          privateKey={certificate.privateKey!}
+          chain={certificate.chain!}
+          fullChain={certificate.fullChain!}
+        />
+        <NodePanel
+          certificate={certificate.certificate!}
+          privateKey={certificate.privateKey!}
+          chain={certificate.chain!}
+        />
+        <AwsPanel
+          certificate={certificate.certificate!}
+          privateKey={certificate.privateKey!}
+          chain={certificate.chain!}
+        />
+        <NginxPanel privateKey={certificate.privateKey!} fullChain={certificate.fullChain!} />
+      </Tabs.Root>
     </>
   );
 }

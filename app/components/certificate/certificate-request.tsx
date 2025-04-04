@@ -1,13 +1,4 @@
-import {
-  Flex,
-  Heading,
-  Text,
-  Button,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-} from '@chakra-ui/react';
+import { Flex, Heading, Text, Button, Alert } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import { useState } from 'react';
 
@@ -53,23 +44,18 @@ export default function CertificateRequestView({ domain, isFailed }: Certificate
         </Flex>
       </Flex>
       <Form method="post" onSubmit={() => setIsDisabled(true)}>
-        <Button
-          type="submit"
-          width={{ base: 'full', md: '3xs' }}
-          shadow="xl"
-          isDisabled={isDisabled}
-        >
+        <Button type="submit" width={{ base: 'full', md: '3xs' }} shadow="xl" disabled={isDisabled}>
           Request a Certificate
         </Button>
       </Form>
       {isFailed && (
-        <Alert status="error">
-          <AlertIcon />
-          <AlertTitle mr={2}>Request Unsuccessful: </AlertTitle>
-          <AlertDescription>
+        <Alert.Root status="error">
+          <Alert.Indicator />
+          <Alert.Title mr={2}>Request Unsuccessful: </Alert.Title>
+          <Alert.Description>
             Unfortunately, your previous request was not successful.
-          </AlertDescription>
-        </Alert>
+          </Alert.Description>
+        </Alert.Root>
       )}
     </Flex>
   );
