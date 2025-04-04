@@ -8,7 +8,7 @@ import {
   Show,
   useBreakpointValue,
 } from '@chakra-ui/react';
-import { toaster } from '~/components/ui/toaster';
+import { Toaster, toaster } from '~/components/ui/toaster';
 import { useNavigation } from '@remix-run/react';
 
 import DnsRecordDeleteAlertDialog from './dns-record-delete-alert-dialog';
@@ -34,8 +34,7 @@ export default function DnsRecordsTable({ dnsRecords }: DnsRecordsTableProps) {
   function onCopied() {
     toaster.create({
       title: 'DNS Record was copied to clipboard',
-      // Todo!
-      // status: 'success',
+      type: 'success',
     });
   }
 
@@ -56,7 +55,8 @@ export default function DnsRecordsTable({ dnsRecords }: DnsRecordsTableProps) {
 
   return (
     <>
-      <Card.Root p="2" mt="4">
+      <Toaster />
+      <Card.Root variant="elevated" p="2" mt="4">
         <Table.Root colorScheme="gray">
           <Table.Header>
             <Table.Row>

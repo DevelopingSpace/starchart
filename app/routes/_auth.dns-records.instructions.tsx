@@ -217,7 +217,7 @@ export default function CertificateInstructionsRoute() {
               <Text mt="4">
                 To help you monitor the propagation status of your DNS records, we provide an
                 information icon{' '}
-                <Icon color="black" boxSize="4">
+                <Icon color="black" boxSize="5">
                   <IoIosInformationCircleOutline />
                 </Icon>{' '}
                 next to each record. Clicking on this icon will take you to a DNS record propagation

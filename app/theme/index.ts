@@ -6,9 +6,8 @@ import styles from './styles';
 const theme = createSystem(defaultConfig, {
   theme: {
     recipes: {
-      Link: defineRecipe({
+      link: defineRecipe({
         base: {
-          color: 'brand.500',
           textDecor: 'underline',
         },
       }),
@@ -21,12 +20,21 @@ const theme = createSystem(defaultConfig, {
       colors: {
         brand: {
           solid: { value: '{colors.brand.500}' },
-          contrast: { value: '{colors.brand.100}' },
+          contrast: { value: 'white' },
           fg: { value: '{colors.brand.700}' },
           muted: { value: '{colors.brand.100}' },
           subtle: { value: '{colors.brand.200}' },
           emphasized: { value: '{colors.brand.300}' },
           focusRing: { value: '{colors.brand.500}' },
+        },
+        brand_gray: {
+          solid: { value: '{colors.brand_gray.500}' },
+          contrast: { value: 'colors.brand_gray.100' },
+          fg: { value: '{colors.brand_gray.700}' },
+          muted: { value: '{colors.brand_gray.100}' },
+          subtle: { value: '{colors.brand_gray.200}' },
+          emphasized: { value: '{colors.brand_gray.300}' },
+          focusRing: { value: '{colors.brand_gray.500}' },
         },
       },
     },

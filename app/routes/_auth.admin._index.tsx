@@ -1,5 +1,5 @@
 import { Flex, Field, Heading, Input, InputGroup } from '@chakra-ui/react';
-import { toaster } from '~/components/ui/toaster';
+import { Toaster, toaster } from '~/components/ui/toaster';
 import type { Certificate, User } from '@prisma/client';
 import { useSubmit } from '@remix-run/react';
 import { useCallback, useEffect, useState } from 'react';
@@ -136,8 +136,7 @@ export default function AdminRoute() {
     if (actionResult?.isUserDeleted) {
       toaster.create({
         title: 'User was deleted',
-        // Todo!
-        // status: 'success'
+        type: 'success',
       });
       reloadUsers();
     }
@@ -150,6 +149,7 @@ export default function AdminRoute() {
 
   return (
     <>
+      <Toaster />
       <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
         Admin Dashboard
       </Heading>

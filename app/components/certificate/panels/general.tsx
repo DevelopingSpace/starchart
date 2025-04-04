@@ -16,7 +16,7 @@ export default function GeneralPanel({
 }: GeneralPanelProps) {
   return (
     <Tabs.Content value="general">
-      <Box divideX="2px">
+      <Box>
         <CertificateDisplay
           title="Public Certificate"
           value={certificate}

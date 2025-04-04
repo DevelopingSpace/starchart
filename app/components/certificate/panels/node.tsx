@@ -22,7 +22,7 @@ export default function NodePanel({ certificate, privateKey, chain }: NodePanelP
         .
       </Text>
 
-      <Box divideX="2px">
+      <Box>
         <CertificateDisplay
           title="Cert"
           value={certificate}

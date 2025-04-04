@@ -38,7 +38,7 @@ export default function AwsPanel({ certificate, privateKey, chain }: AwsPanelPro
         .
       </Text>
 
-      <Box divideX="2px">
+      <Box>
         <CertificateDisplay
           title="Certificate body"
           value={certificate}

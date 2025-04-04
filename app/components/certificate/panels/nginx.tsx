@@ -21,7 +21,7 @@ export default function NginxPanel({ fullChain, privateKey }: NginxPanelProps) {
         .
       </Text>
 
-      <Box divideX="2px">
+      <Box>
         <CertificateDisplay
           title="Full Chain"
           value={fullChain}

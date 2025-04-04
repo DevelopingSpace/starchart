@@ -2,6 +2,7 @@
 const styles = {
   html: {
     height: '100%',
+    colorPalette: 'brand',
   },
   body: {
     height: '100%',

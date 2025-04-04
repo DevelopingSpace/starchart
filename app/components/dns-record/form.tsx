@@ -61,7 +61,7 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
           helpText="DNS Record Type (IPv4, IPv6, Domain Name, Mail Server, Text) indicates what Value will be"
           error={errors?.fieldErrors.type?.join(' ')}
         >
-          <Select.Root collection={recordTypes} name="type">
+          <Select.Root collection={recordTypes} name="type" defaultValue={[dnsRecord?.type!]}>
             <Select.HiddenSelect />
             <Select.Label>Choose DNS Record Type</Select.Label>
 
