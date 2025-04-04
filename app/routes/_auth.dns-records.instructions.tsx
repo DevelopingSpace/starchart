@@ -164,11 +164,9 @@ export default function CertificateInstructionsRoute() {
             <Box pt="2" pb="2">
               <List.Item>
                 Go to the{' '}
-                <Link to={{ pathname: '/dns-records' }}>
-                  <Text as="span" textDecoration="underline">
-                    DNS records page.
-                  </Text>
-                </Link>
+                <ChakraLink asChild>
+                  <Link to={{ pathname: '/dns-records' }}>DNS records page.</Link>
+                </ChakraLink>
               </List.Item>
               <List.Item>
                 Hit the "Create your first DNS Record!" button: On the DNS records page, click the
@@ -232,11 +230,9 @@ export default function CertificateInstructionsRoute() {
                 Yes, there is a limitation on the number of DNS records you can create. Each user is
                 allowed to create up to certain number DNS records for their projects. You could see
                 your current limit at{' '}
-                <Link to={{ pathname: '/dns-records' }}>
-                  <Text as="span" textDecoration="underline">
-                    DNS records page.
-                  </Text>
-                </Link>
+                <ChakraLink asChild>
+                  <Link to={{ pathname: '/dns-records' }}>DNS records page.</Link>
+                </ChakraLink>
                 This limit helps manage resources efficiently and ensures fair usage of the platform
                 for all students
               </Text>

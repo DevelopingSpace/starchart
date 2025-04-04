@@ -56,7 +56,7 @@ export default function DnsRecordsTable({ dnsRecords }: DnsRecordsTableProps) {
   return (
     <>
       <Toaster />
-      <Card.Root variant="elevated" p="2" mt="4">
+      <Card.Root variant="elevated" p="2" mt="4" style={{ overflowY: 'auto' }}>
         <Table.Root colorScheme="gray">
           <Table.Header>
             <Table.Row>

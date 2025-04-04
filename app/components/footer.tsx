@@ -12,24 +12,22 @@ export default function Footer() {
           direction={{ base: 'column', md: 'row' }}
           fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
         >
-          <Box padding="4px">
+          <Box padding="3">
             <HStack>
-              <Box padding="6px">
-                <Link
-                  href="https://github.com/DevelopingSpace/starchart"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub
-                </Link>
-                <Link
-                  href="https://www.senecapolytechnic.ca/about/policies/information-technology-acceptable-use-policy.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Acceptable Use Policy
-                </Link>
-              </Box>
+              <Link
+                href="https://github.com/DevelopingSpace/starchart"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </Link>
+              <Link
+                href="https://www.senecapolytechnic.ca/about/policies/information-technology-acceptable-use-policy.html"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Acceptable Use Policy
+              </Link>
             </HStack>
           </Box>
 
