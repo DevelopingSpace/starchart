@@ -4,9 +4,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development SECRETS_OVERRIDE=1 node --inspect ./build/server/index.js",
+    "dev": "cross-env NODE_ENV=development SECRETS_OVERRIDE=1 remix dev -c \"node --inspect ./build/server/index.js\"",
     "build": "remix vite:build",
-    "start": "cross-env NODE_ENV=production node ./build/server/index.js",
     "docker": "docker compose up -d",
     "lint": "oxlint && eslint",
     "db:generate": "prisma generate",
@@ -19,6 +18,7 @@
     "db:studio:test": "cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' prisma studio",
     "setup": "run-s db:generate db:push db:seed",
     "setup:test": "cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' run-s db:generate db:push",
+    "start": "cross-env NODE_ENV=production node --require dotenv/config ./build/server/index.js",
     "start:e2e": "cross-env NODE_ENV=test node --require dotenv/config ./build/server/index.js",
     "test": "cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest",
     "test:coverage": "cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest run --coverage",
