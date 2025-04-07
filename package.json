@@ -4,8 +4,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development SECRETS_OVERRIDE=1 remix dev -c \"node --inspect ./build/server/index.js\"",
     "build": "remix vite:build",
+    "dev": "cross-env NODE_ENV=development SECRETS_OVERRIDE=1 remix dev -c \"node --inspect ./build/server/index.js\"",
     "docker": "docker compose up -d",
     "lint": "oxlint && eslint",
     "db:generate": "prisma generate",
