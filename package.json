@@ -4,9 +4,9 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "cross-env SECRETS_OVERRIDE=1 node --inspect ./build/server/index.js",
+    "dev": "cross-env NODE_ENV=development SECRETS_OVERRIDE=1 node --inspect ./build/server/index.js",
     "build": "remix vite:build",
-    "start": "cross-env SECRETS_OVERRIDE=1 NODE_ENV=production node ./build/server/index.js",
+    "start": "cross-env NODE_ENV=production node ./build/server/index.js",
     "docker": "docker compose up -d",
     "lint": "oxlint && eslint",
     "db:generate": "prisma generate",
