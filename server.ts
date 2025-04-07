@@ -89,7 +89,7 @@ app.all(
           return mod as unknown as ServerBuild;
         }
       : async () => {
-          // @ts-expect-error this file is generated at build time and relative to build directory
+          // @ts-ignore this file is generated at build time and relative to build directory
           // eslint-disable-next-line import/no-unresolved
           const mod = await import('./build/server/index.js');
           return mod as unknown as ServerBuild;
