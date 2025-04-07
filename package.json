@@ -2,6 +2,7 @@
   "name": "@senecacdot/starchart",
   "version": "1.0.0",
   "sideEffects": false,
+  "type": "module",
   "scripts": {
     "dev": "cross-env SECRETS_OVERRIDE=1 node --inspect ./build/server/index.js",
     "build": "remix vite:build",
