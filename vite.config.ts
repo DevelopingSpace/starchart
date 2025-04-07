@@ -24,6 +24,7 @@ export default defineConfig({
               logLevel: 'info',
             })
             .catch((error: unknown) => {
+              // eslint-disable-next-line no-console
               console.error('Error building server:', error);
               process.exit(1);
             });
