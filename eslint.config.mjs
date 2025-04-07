@@ -32,7 +32,7 @@ export default [
     ],
   },
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
+    files: ['**/*.{js,jsx,ts,tsx,mjs}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -111,10 +111,11 @@ export default [
       'no-undef': 'off',
     },
   },
-  // Node environment for eslint.config.cjs
+  // Node environment for eslint.config.mjs
   {
-    files: ['eslint.config.cjs'],
+    files: ['eslint.config.mjs'],
     languageOptions: {
+      sourceType: 'module',
       globals: {
         ...globals.node,
       },
