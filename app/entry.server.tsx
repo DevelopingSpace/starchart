@@ -122,18 +122,4 @@ export const app = createExpressApp({
   },
   // Pass the nonce we're setting in the CSP headers down to the Remix Loader/Action functions
   getLoadContext: (_req: ExpressRequest, res: ExpressResponse) => ({ nonce: res.locals.nonce }),
-  createServer: (app: Application) => {
-    logger.debug('🔥 createServer called');
-    const port = process.env.PORT || 8080;
-    logger.debug('Starting services.init');
-    // start the various background jobs we run (reconciler, expire records, etc)
-    services.init().then(() => {
-      logger.info(`✅ app ready: http://localhost:${port}`);
-    });
-
-    const server = app.listen(port);
-
-    logger.info(`Server listening on port ${port}`);
-    return server;
-  },
 });
