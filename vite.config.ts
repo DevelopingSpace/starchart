@@ -2,34 +2,20 @@ import { vitePlugin as remix } from '@remix-run/dev';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { cjsInterop } from 'vite-plugin-cjs-interop';
-import esbuild from 'esbuild';
+import { expressDevServer } from 'remix-express-dev-server';
 
 export default defineConfig({
+  build: {
+    target: 'esnext',
+  },
+  server: {
+    port: process.env.PORT ? parseInt(process.env.PORT) : 8080,
+  },
   plugins: [
-    !process.env.VITEST &&
-      remix({
-        ignoredRouteFiles: ['**/.*', '**/*.css', '**/*.test.{js,jsx,ts,tsx}'],
-        serverBuildFile: 'remix.js',
-        buildEnd: async () => {
-          await esbuild
-            .build({
-              alias: { '~': './app' },
-              outfile: './build/server/index.js',
-              entryPoints: ['./server.ts'],
-              external: ['./build/server/*'],
-              platform: 'node',
-              format: 'esm',
-              packages: 'external',
-              bundle: true,
-              logLevel: 'info',
-            })
-            .catch((error: unknown) => {
-              // eslint-disable-next-line no-console
-              console.error('Error building server:', error);
-              process.exit(1);
-            });
-        },
-      }),
+    !process.env.VITEST && expressDevServer(),
+    remix({
+      ignoredRouteFiles: ['**/.*', '**/*.css', '**/*.test.{js,jsx,ts,tsx}'],
+    }),
     tsconfigPaths(),
     // https://remix.run/docs/en/main/guides/vite#esm--cjs
     cjsInterop({
