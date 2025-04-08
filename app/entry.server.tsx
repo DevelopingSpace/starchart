@@ -125,10 +125,11 @@ export const app = createExpressApp({
   createServer: (app: Application) => {
     const port = process.env.PORT || 8080;
 
-    return app.listen(port, async () => {
+    return app.listen(port, () => {
       // start the various background jobs we run (reconciler, expire records, etc)
-      await services.init();
-      logger.info(`✅ app ready: http://localhost:${port}`);
+      services.init().then(() => {
+        logger.info(`✅ app ready: http://localhost:${port}`);
+      });
     });
   },
 });
