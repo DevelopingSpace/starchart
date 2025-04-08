@@ -72,7 +72,7 @@ export default function handleRequest(
   });
 }
 
-export const app = createExpressApp({
+export const app = await createExpressApp({
   configure: (app: Application) => {
     // setup additional express middleware here
     const MODE = process.env.NODE_ENV;
@@ -122,4 +122,16 @@ export const app = createExpressApp({
   },
   // Pass the nonce we're setting in the CSP headers down to the Remix Loader/Action functions
   getLoadContext: (_req: ExpressRequest, res: ExpressResponse) => ({ nonce: res.locals.nonce }),
+  createServer: (app) => {
+    const PORT = process.env.PORT || 8080;
+
+    const server = app.listen(PORT, () => {
+      // start the various background jobs we run (reconciler, expire records, etc)
+      services.init().then(() => {
+        logger.info(`✅ app ready: http://localhost:${PORT}`);
+      });
+    });
+
+    return server;
+  },
 });
