@@ -1,4 +1,4 @@
-import { set } from 'lodash';
+import _ from 'lodash';
 
 import { getDnsRecordSetPage } from './route53-client.server';
 import { fromRoute53RecordValue, isSupportedDnsRecordType } from './route53Utils.server';
@@ -11,6 +11,8 @@ import type {
   RRType,
 } from '@aws-sdk/client-route-53';
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
+
+const { set } = _;
 
 // Validate `[subdomain].[username].starchart.com.`
 // escape `.` characters in ROOT_DOMAIN also
