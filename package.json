@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env SECRETS_OVERRIDE=1 node --inspect ./build/server/server.js",
     "build": "remix vite:build && npm run build:server",
-    "build:server": "esbuild ./server.ts --platform=node --format=cjs --outdir=build/server --bundle --external:lightningcss --external:esbuild  --external:node:*",
+    "build:server": "esbuild ./server.ts --platform=node --format=cjs --outdir=build/server --bundle --external:lightningcss --external:esbuild",
     "start": "cross-env SECRETS_OVERRIDE=1 NODE_ENV=production node ./build/server/server.js",
     "docker": "docker compose up -d",
     "lint": "oxlint && eslint",
