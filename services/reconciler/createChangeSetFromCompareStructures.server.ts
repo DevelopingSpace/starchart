@@ -73,7 +73,7 @@ export const createUpsertedChangeSetFromCompareStructures = ({
       /**
        * https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-values-multivalue.html#rrsets-values-multivalue-type
        *
-       * According to the above, NS and CNAME records cant be multi-value
+       * According to the above, NS and CNAME records can't be multi-value
        */
 
       if (dbValue.length > 1 && (type == 'NS' || type == 'CNAME')) {
