@@ -19,7 +19,7 @@
     "db:studio:test": "cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' prisma studio",
     "setup": "run-s db:generate db:push db:seed",
     "setup:test": "cross-env DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' run-s db:generate db:push",
-    "start:e2e": "cross-env NODE_ENV=test node --require dotenv/config ./build/server/index.js",
+    "start:e2e": "cross-env NODE_ENV=test node --require dotenv/config ./build/server/server.js",
     "test": "cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest",
     "test:coverage": "cross-env SECRETS_OVERRIDE=1 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' NODE_OPTIONS=--require=dotenv/config vitest run --coverage",
     "e2e": "cross-env NODE_ENV=test PORT=8080 DATABASE_URL='mysql://root:root_password@127.0.0.1:3306/starchart_test' start-server-and-test dev http://localhost:8080 \"playwright test --ui\"",
