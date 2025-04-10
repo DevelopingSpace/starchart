@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env SECRETS_OVERRIDE=1 node --inspect ./build/server/server.js",
     "build": "remix vite:build && npm run build:server",
-    "build:server": "esbuild ./server.ts --platform=node --format=cjs --outdir=build/server --bundle --external:lightningcss --external:esbuild",
+    "build:server": "esbuild ./server.ts --platform=node --format=cjs --outdir=build/server --bundle --packages=external",
     "start": "cross-env SECRETS_OVERRIDE=1 NODE_ENV=production node ./build/server/server.js",
     "docker": "docker compose up -d",
     "lint": "oxlint && eslint",
@@ -108,7 +108,7 @@
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
-    "vite": "^6.1.1",
+    "vite": "^6.2.6",
     "vite-plugin-cjs-interop": "^2.1.6",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^3.0.6"
