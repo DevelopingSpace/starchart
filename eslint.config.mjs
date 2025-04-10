@@ -111,12 +111,20 @@ export default [
       'no-undef': 'off',
     },
   },
-  // Node environment for eslint.config.cjs
+  // Node environment for eslint.config.mjs
   {
-    files: ['eslint.config.cjs'],
+    files: ['eslint.config.mjs'],
     languageOptions: {
-      globals: {
-        ...globals.node,
+      ecmaVersion: 'latest',
+    },
+    linterOptions: {
+      reportUnusedDisableDirectives: 'off',
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+        },
       },
     },
   },
