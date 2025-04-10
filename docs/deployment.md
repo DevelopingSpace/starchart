@@ -119,7 +119,7 @@ To deploy or update the app:
 
 ```sh
 # Use the correct YAML file for your deployment, and name the service `starchart`
-docker stack deploy -c compose.staging.yal starchart
+docker stack deploy -c compose.staging.yaml starchart
 ```
 
 To stop and remove the serivce:

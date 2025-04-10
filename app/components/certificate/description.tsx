@@ -71,7 +71,7 @@ export default function DescriptionSection({
                   variant="ghost"
                   onClick={() =>
                     toast({
-                      title: 'Certificate has been successfully delete',
+                      title: 'Certificate has been successfully deleted.',
                       position: 'bottom-right',
                       status: 'success',
                     })
