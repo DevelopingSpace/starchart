@@ -1,5 +1,5 @@
-**Reference to Related Issue**
+### Reference to Related Issue
 
 Fixes #
 
-**Description of Proposed Changes**
+### Description of Proposed Changes
