@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    ".github/**",
+    ".husky/**",
+    "build/**",
+    "config/**",
+    "dev-secrets/**",
+    "docker/volumes/**",
+    "docs/**",
+    "node_modules/**",
+    "playwright-report/**",
+    "public/build/**",
+    "test/e2e/**",
+    "test-results/**",
+    "playwright.config.ts"
+  ],
+  "plugins": ["react", "unicorn", "typescript", "oxc", "react-hooks", "import", "jsx-a11y"],
+  "rules": {
+    "no-console": ["warn"],
+    "no-else-return": ["error"]
+  }
+}

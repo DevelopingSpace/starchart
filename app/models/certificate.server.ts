@@ -7,7 +7,7 @@ export type CertificateWithFullChain = Certificate & { fullChain?: string };
 // If we have the certificate and chain, use them to add the fullChain
 function computeFullChain(certificate: Certificate): CertificateWithFullChain {
   return certificate?.certificate && certificate?.chain
-    ? { ...certificate, fullChain: `${certificate.certificate}${certificate.chain}` }
+    ? { ...certificate, fullChain: `${certificate.certificate}\n${certificate.chain}` }
     : certificate;
 }
 

@@ -1,11 +1,15 @@
 import { set } from 'lodash';
 
 import { getDnsRecordSetPage } from './route53-client.server';
-import { fromRoute53RecordValue } from './route53Utils.server';
+import { fromRoute53RecordValue, isSupportedDnsRecordType } from './route53Utils.server';
 
 // Using this in JS code later, cannot `import type`
 import { DnsRecordType } from '@prisma/client';
-import type { ResourceRecordSet, ListResourceRecordSetsResponse } from '@aws-sdk/client-route-53';
+import type {
+  ResourceRecordSet,
+  ListResourceRecordSetsResponse,
+  RRType,
+} from '@aws-sdk/client-route-53';
 import type { ReconcilerCompareStructure } from './ReconcilerTypes';
 
 // Validate `[subdomain].[username].starchart.com.`
@@ -27,7 +31,7 @@ class Route53CompareStructureGenerator {
 
       // We only care about record types that we handle. NS, SOA, etc. should be ignored
       // RecordSet.Type is given as `string`, so we have to do this for TS to compare them
-      if (!Object.values(DnsRecordType).includes(recordSet.Type as DnsRecordType)) {
+      if (isSupportedDnsRecordType(recordSet.Type)) {
         return;
       }
 
@@ -50,7 +54,7 @@ class Route53CompareStructureGenerator {
   generate = async (): Promise<ReconcilerCompareStructure> => {
     let morePages: boolean = true;
     let nextFqdn: string | undefined = undefined;
-    let nextType: string | undefined = undefined;
+    let nextType: RRType | undefined = undefined;
 
     while (morePages) {
       const response: ListResourceRecordSetsResponse = await getDnsRecordSetPage(

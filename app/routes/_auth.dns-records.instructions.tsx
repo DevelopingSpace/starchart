@@ -26,7 +26,7 @@ export default function CertificateInstructionsRoute() {
       </Heading>
       <Grid templateColumns="repeat(1, 1fr)" gap="4">
         <VStack alignItems="flex-start">
-          <Heading as="h3" size="md">
+          <Heading as="h2" size="md">
             What is a DNS Record?
           </Heading>
           <Text>
@@ -51,6 +51,9 @@ export default function CertificateInstructionsRoute() {
               </Tab>
               <Tab>
                 <Text fontWeight="medium">CNAME Record</Text>
+              </Tab>
+              <Tab>
+                <Text fontWeight="medium">MX Record</Text>
               </Tab>
               <Tab>
                 <Text fontWeight="medium">TXT Record</Text>
@@ -111,6 +114,31 @@ export default function CertificateInstructionsRoute() {
                   When creating a CNAME record, remember to only include the domain name in the
                   value field. Including other parts of a URL, such as "https://" or a trailing "/",
                   can cause the CNAME record to fail to resolve correctly.
+                </Text>
+              </TabPanel>
+              <TabPanel>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Purpose:{' '}
+                  </Text>
+                  Directs email to a mail server.
+                </Text>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Example:{' '}
+                  </Text>
+                  Your project's domain name is "my-project.user.mystudentproject.ca", and you have
+                  a mail server running at "mail.my-mail-server.com". You wish people to contact you
+                  at "@my-project.user.mystudentproject.ca". Create an MX record that maps
+                  "my-project.user.mystudentproject.ca" to "mail.my-mail-server.com".
+                </Text>
+                <Text>
+                  <Text as="span" fontWeight="bold">
+                    Note:{' '}
+                  </Text>
+                  An MX record has to point to an A or AAAA record, while pointing to a CNAME is
+                  forbidden. In the example above, "mail.my-mail-server.com" has to be an A or AAAA
+                  record.
                 </Text>
               </TabPanel>
               <TabPanel>

@@ -40,20 +40,21 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
         >
           <InputGroup>
             <Input name="subdomain" defaultValue={dnsRecord?.subdomain} />
-            <InputRightAddon children={`.${user.baseDomain}`} />
+            <InputRightAddon>{`.${user.baseDomain}`}</InputRightAddon>
           </InputGroup>
         </FormField>
 
         <FormField
           label="Type"
           isRequired={true}
-          helpText="DNS Record Type (IPv4, IPv6, Domain Name, Text) indicates what Value will be"
+          helpText="DNS Record Type (IPv4, IPv6, Domain Name, Mail Server, Text) indicates what Value will be"
           error={errors?.fieldErrors.type?.join(' ')}
         >
           <Select placeholder="Select a type" name="type" defaultValue={dnsRecord?.type}>
             <option value="A">A Record (IPv4 Address)</option>
             <option value="AAAA">AAAA Record (IPv6 Address)</option>
             <option value="CNAME">CNAME Record (Domain Name)</option>
+            <option value="MX">MX Record (Mail Server)</option>
             <option value="TXT">TXT Record (Text Value)</option>
           </Select>
         </FormField>
@@ -61,7 +62,7 @@ export default function DnsRecordForm({ dnsRecord, mode, errors }: dnsRecordForm
         <FormField
           label="Value"
           isRequired={true}
-          helpText="Value must match Type: A=IPv4, AAAA=IPv6, CNAME=domain.com, TXT=any text..."
+          helpText="Value must match Type: A=IPv4, AAAA=IPv6, CNAME=domain.com, MX=domain.com, TXT=any text..."
           error={errors?.fieldErrors.value?.join(' ')}
         >
           <Input name="value" defaultValue={dnsRecord?.value} />

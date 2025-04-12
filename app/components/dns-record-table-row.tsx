@@ -76,7 +76,7 @@ export default function DnsRecordsTableRow({
               {dnsRecord.expiresAt.toLocaleDateString('en-US')}
             </Text>
           </Show>
-          <ButtonGroup spacing={{ base: 'auto', sm: '0.5' }} width="full">
+          <ButtonGroup spacing={{ base: 'auto', sm: '0.5' }} width={{ base: 'full', sm: 'auto' }}>
             <Link
               href={`https://www.nslookup.io/domains/${dnsRecord.subdomain}.${baseDomain}/dns-propagation/${dnsRecord.type}/`}
               isExternal

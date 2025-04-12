@@ -78,7 +78,7 @@ export default function DnsRecordsTable({ dnsRecords }: DnsRecordsTableProps) {
               {dnsRecords.map((dnsRecord) => {
                 const isLoading =
                   navigation.state === 'submitting' &&
-                  Number(navigation.formData.get('id')) === dnsRecord.id;
+                  Number(navigation.formData?.get('id')) === dnsRecord.id;
 
                 return isLoading ? (
                   <Tr key={dnsRecord.id}>

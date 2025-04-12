@@ -62,6 +62,7 @@ export default function Header() {
           <Menu>
             <MenuButton
               className="header-hamburger"
+              aria-label="Account Menu"
               as={Button}
               rightIcon={<HamburgerIcon />}
               size="auto"
@@ -99,6 +100,7 @@ export default function Header() {
       <Flex justifyContent="flex-end" alignItems="center" color="white" width="100%">
         <Menu>
           <MenuButton
+            aria-label="Open menu"
             as={IconButton}
             icon={
               <HStack gap="5">

@@ -6,12 +6,12 @@ import DnsRecordForm from '~/components/dns-record/form';
 import { requireUser } from '~/session.server';
 import { createDnsRecord } from '~/models/dns-record.server';
 
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs } from '@remix-run/node';
 import { DnsRecordSchema, isNameValid } from '~/lib/dns.server';
 import { useActionData, Link as RemixLink } from '@remix-run/react';
 import { buildDomain } from '~/utils';
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUser(request);
   const DnsRecordSchemaWithNameValidation = DnsRecordSchema.refine(
     (data) => {
@@ -46,7 +46,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export default function NewDnsRecordRoute() {
-  const actionData = useActionData();
+  const actionData = useActionData<typeof action>();
 
   return (
     <Container maxW="container.xl" paddingBottom="6">

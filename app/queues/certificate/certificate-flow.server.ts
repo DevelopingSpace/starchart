@@ -74,7 +74,7 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
       attempts: 5,
       backoff: {
         type: 'exponential',
-        delay: 60_000, // start with 1 minute, double each time
+        delay: process.env.NODE_ENV === 'test' ? 15_000 : 60_000, // start with 1 minute in production, double each time
       },
       removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
       removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
@@ -92,7 +92,7 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
       attempts: 10,
       backoff: {
         type: 'exponential',
-        delay: 10_000, // start with 10 seconds, double each time
+        delay: process.env.NODE_ENV === 'test' ? 5_000 : 10_000, // start with 10 seconds in production, double each time
       },
       removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
       removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
@@ -110,7 +110,7 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
       attempts: 5,
       backoff: {
         type: 'exponential',
-        delay: 60_000, // start with 1 minute, double each time
+        delay: process.env.NODE_ENV === 'test' ? 15_000 : 60_000, // start with 1 minute in production, double each time
       },
       removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
       removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
@@ -128,7 +128,7 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
       attempts: 5,
       backoff: {
         type: 'exponential',
-        delay: 60_000, // start with 1 minute, double each time
+        delay: process.env.NODE_ENV === 'test' ? 15_000 : 60_000, // start with 1 minute in production, double each time
       },
       removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
       removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
@@ -146,7 +146,7 @@ export const addCertRequest = async ({ rootDomain, username }: AddCertRequest) =
       attempts: 3,
       backoff: {
         type: 'exponential',
-        delay: 60_000, // start with 1 minute, double each time
+        delay: process.env.NODE_ENV === 'test' ? 15_000 : 60_000, // start with 1 minute in production, double each time
       },
       removeOnComplete: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },
       removeOnFail: { age: Number(JOB_REMOVAL_FREQUENCY_S) || JOB_REMOVAL_INTERVAL_S },

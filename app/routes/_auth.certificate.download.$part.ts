@@ -1,5 +1,4 @@
-import type { LoaderArgs } from '@remix-run/node';
-import { Response } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 
 import { requireUsername } from '~/session.server';
 import { getCertificateByUsername } from '~/models/certificate.server';
@@ -10,7 +9,9 @@ function createResponse(body: string | null, filename: string) {
     throw new Response('Unable to get certificate part', { status: 400 });
   }
 
-  return new Response(body, {
+  const blob = new Blob([body], { type: 'application/x-pem-file' });
+
+  return new Response(blob.stream(), {
     status: 200,
     headers: {
       'Content-Type': 'application/x-pem-file',
@@ -19,7 +20,7 @@ function createResponse(body: string | null, filename: string) {
   });
 }
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const username = await requireUsername(request);
 
   try {
@@ -38,13 +39,13 @@ export async function loader({ request, params }: LoaderArgs) {
       case 'privateKey':
         return createResponse(certificate.privateKey, `${certificate.domain}.privkey.pem`);
       case 'chain':
-        return createResponse(certificate.certificate, `${certificate.domain}.chain.pem`);
+        return createResponse(certificate.chain, `${certificate.domain}.chain.pem`);
       case 'fullChain':
-        return createResponse(certificate.certificate, `${certificate.domain}.bundle.pem`);
+        return createResponse(certificate.fullChain!, `${certificate.domain}.bundle.pem`);
       default:
         throw new Response(`Unknown certificate part: ${params.part}`, { status: 400 });
     }
-  } catch (e) {
+  } catch {
     throw new Response('Certificate Not Found', { status: 404 });
   }
 }

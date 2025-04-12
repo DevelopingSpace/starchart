@@ -17,10 +17,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up node 18
+      - name: Set up node 22
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
           cache: npm
 
       - name: Restore node_modules cache
@@ -88,10 +88,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up node 18
+      - name: Set up node 22
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
           cache: npm
 
       - name: Restore node_modules cache
@@ -145,14 +145,21 @@ jobs:
         image: motoserver/moto:4.1.1
         ports:
           - 5053:5000
+      lets_encrypt:
+        image: letsencrypt/pebble:latest
+        ports:
+          - 14000:14000 # HTTPS ACME API
+          - 15000:15000 # HTTPS Management API
+        env:
+          PEBBLE_VA_ALWAYS_VALID: 1
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up node 18
+      - name: Set up node 22
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
           cache: npm
 
       - name: Restore node_modules cache
@@ -205,7 +212,7 @@ jobs:
         run: npm run test:e2e:run
 
       - name: Create HTML Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
@@ -237,16 +244,16 @@ jobs:
         with:
           dockerfile: Dockerfile
 
-  ESLint:
+  Lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up node 18
+      - name: Set up node 22
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
           cache: npm
 
       - name: Restore node_modules cache
@@ -263,7 +270,7 @@ jobs:
         if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: eslint check
+      - name: Lint
         run: npm run lint
 
       - name: Cache node_modules
@@ -280,10 +287,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up node 18
+      - name: Set up node 22
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
           cache: npm
 
       - name: Restore node_modules cache
@@ -319,7 +326,7 @@ jobs:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     # Don't bother unless everything else passes
-    needs: [Build, Prettier, Unit-Tests, E2E-Tests, Dockerfile-Lint, ESLint, Type-Check]
+    needs: [Build, Prettier, Unit-Tests, E2E-Tests, Dockerfile-Lint, Lint, Type-Check]
     env:
       IMAGE: ghcr.io/developingspace/starchart
     permissions:
@@ -357,6 +364,6 @@ jobs:
           HMAC_SECRET: ${{ secrets.WEBHOOK_STAGING_SECRET }}
           TAG: staging-sha-${{ env.GITHUB_SHA_SHORT }}
         with:
-          url: https://mycustomdomain-dev.senecacollege.ca/hooks/deploy
+          url: https://mycustomdomain-dev.senecapolytechnic.ca/hooks/deploy
           hmacSecret: ${{ env.HMAC_SECRET }}
           data: '{"tag": "${{ env.TAG }}"}'

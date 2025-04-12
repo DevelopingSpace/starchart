@@ -77,6 +77,7 @@ enum DnsRecordType {
   A
   AAAA
   CNAME
+  MX
   TXT
 }
 
