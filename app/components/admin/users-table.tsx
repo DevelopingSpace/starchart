@@ -26,7 +26,7 @@ export default function UsersTable({ users, searchText }: UsersTableProps) {
   const shouldShowUsers = !(isLoading || shouldShowInstruction || shouldShowNoUsersMessage);
 
   return (
-    <Card.Root p="2" mt="4">
+    <Card.Root variant="elevated" p="2" mt="4" style={{ overflowY: 'auto' }}>
       <Table.Root colorScheme="gray">
         <Table.Header>
           <Table.Row>
