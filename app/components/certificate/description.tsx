@@ -21,22 +21,22 @@ export default function DescriptionSection({
   link,
 }: DescriptionSectionProps) {
   return (
-    <>
-      <Toaster />
-      <Flex flexDirection="column" gap="3" fontSize="md">
-        <Text maxW={600}>
-          {description}
-          {link && (
-            <>
-              &nbsp;To learn more, refer to our&nbsp;
-              <Link asChild>
-                <RemixLink to={link}>information page</RemixLink>
-              </Link>
-              .
-            </>
-          )}
-        </Text>
-        {certRequested && !!validFromFormatted && !!validToFormatted && (
+    <Flex flexDirection="column" gap="3" fontSize="md">
+      <Text maxW={600}>
+        {description}
+        {link && (
+          <>
+            &nbsp;To learn more, refer to our&nbsp;
+            <Link asChild>
+              <RemixLink to={link}>information page</RemixLink>
+            </Link>
+            .
+          </>
+        )}
+      </Text>
+      {certRequested && !!validFromFormatted && !!validToFormatted && (
+        <>
+          <Toaster />
           <Wrap align="center">
             <Stat.Root backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>
               <Stat.Label>Created On</Stat.Label>
@@ -72,8 +72,8 @@ export default function DescriptionSection({
               </Flex>
             </WrapItem>
           </Wrap>
-        )}
-      </Flex>
-    </>
+        </>
+      )}
+    </Flex>
   );
 }

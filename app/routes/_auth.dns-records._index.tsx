@@ -31,6 +31,7 @@ import type { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 import SeenErrorLayout from '~/components/errors/seen-error-layout';
 import UnseenErrorLayout from '~/components/errors/unseen-error-layout';
 import { getErrorMessageFromStatusCode } from '~/utils';
+import { Toaster } from '~/components/ui/toaster';
 
 export type DnsRecordActionIntent = 'renew-dns-record' | 'delete-dns-record';
 
@@ -120,68 +121,72 @@ export default function DnsRecordsIndexRoute() {
   const isBelowSm = useBreakpointValue({ base: true, sm: false });
 
   return (
-    <Flex flexDirection="column">
-      <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
-        DNS Records
-      </Heading>
-      <Text mb="4" mt="2" maxW={600}>
-        This table shows all of the DNS records that you have created. Once you create a new record,
-        you will immediately see that new record in the table. However, it will take some time to go
-        into effect as your new domain needs to be spread in DNS servers around the globe. The
-        expiration date is initially set to 6 months after the creation date and you can renew the
-        DNS record using the renew button next to the expiry date. For more info refer to our{' '}
-        <Link asChild>
-          <RemixLink to={{ pathname: '/dns-records/instructions' }}>instructions page.</RemixLink>
-        </Link>
-      </Text>
-      {data.dnsRecords.length ? (
-        <>
-          <Flex
-            justifyContent="space-between"
-            maxW="container.xl"
-            alignItems="center"
-            px={4}
-            py={2}
-          >
-            <Stat.Root>
-              <Stat.Label>Total User DNS Records</Stat.Label>
-              <Stat.ValueText>
-                {data.userDnsRecordCount} / {data.userDnsRecordLimit}
-              </Stat.ValueText>
-            </Stat.Root>
+    <>
+      <Toaster />
+      <Flex flexDirection="column">
+        <Heading as="h1" size={{ base: 'lg', md: 'xl' }} mt={{ base: 6, md: 12 }}>
+          DNS Records
+        </Heading>
+        <Text mb="4" mt="2" maxW={600}>
+          This table shows all of the DNS records that you have created. Once you create a new
+          record, you will immediately see that new record in the table. However, it will take some
+          time to go into effect as your new domain needs to be spread in DNS servers around the
+          globe. The expiration date is initially set to 6 months after the creation date and you
+          can renew the DNS record using the renew button next to the expiry date. For more info
+          refer to our{' '}
+          <Link asChild>
+            <RemixLink to={{ pathname: '/dns-records/instructions' }}>instructions page.</RemixLink>
+          </Link>
+        </Text>
+        {data.dnsRecords.length ? (
+          <>
+            <Flex
+              justifyContent="space-between"
+              maxW="container.xl"
+              alignItems="center"
+              px={4}
+              py={2}
+            >
+              <Stat.Root>
+                <Stat.Label>Total User DNS Records</Stat.Label>
+                <Stat.ValueText>
+                  {data.userDnsRecordCount} / {data.userDnsRecordLimit}
+                </Stat.ValueText>
+              </Stat.Root>
+              <RemixLink to="/dns-records/new">
+                <Show when={isBelowSm}>
+                  <Button>
+                    New{' '}
+                    <Icon boxSize={3}>
+                      <FaPlus />
+                    </Icon>
+                  </Button>
+                </Show>
+                <Show when={!isBelowSm}>
+                  <Button>
+                    Create new DNS Record{' '}
+                    <Icon boxSize={3}>
+                      <FaPlus />
+                    </Icon>
+                  </Button>
+                </Show>
+              </RemixLink>
+            </Flex>
+            <DnsRecordsTable dnsRecords={data.dnsRecords} />
+          </>
+        ) : (
+          <Center mt="16">
             <RemixLink to="/dns-records/new">
-              <Show when={isBelowSm}>
-                <Button>
-                  New{' '}
-                  <Icon boxSize={3}>
-                    <FaPlus />
-                  </Icon>
-                </Button>
-              </Show>
-              <Show when={!isBelowSm}>
-                <Button>
-                  Create new DNS Record{' '}
-                  <Icon boxSize={3}>
-                    <FaPlus />
-                  </Icon>
-                </Button>
-              </Show>
+              <Button>
+                Create your first DNS Record!{' '}
+                <Icon boxSize={3}>
+                  <FaPlus />
+                </Icon>
+              </Button>
             </RemixLink>
-          </Flex>
-          <DnsRecordsTable dnsRecords={data.dnsRecords} />
-        </>
-      ) : (
-        <Center mt="16">
-          <RemixLink to="/dns-records/new">
-            <Button>
-              Create your first DNS Record!{' '}
-              <Icon boxSize={3}>
-                <FaPlus />
-              </Icon>
-            </Button>
-          </RemixLink>
-        </Center>
-      )}
-    </Flex>
+          </Center>
+        )}
+      </Flex>
+    </>
   );
 }

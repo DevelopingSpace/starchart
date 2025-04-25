@@ -8,7 +8,7 @@ import {
   Show,
   useBreakpointValue,
 } from '@chakra-ui/react';
-import { Toaster, toaster } from '~/components/ui/toaster';
+import { toaster } from '~/components/ui/toaster';
 import { useNavigation } from '@remix-run/react';
 
 import DnsRecordDeleteAlertDialog from './dns-record-delete-alert-dialog';
@@ -55,7 +55,6 @@ export default function DnsRecordsTable({ dnsRecords }: DnsRecordsTableProps) {
 
   return (
     <>
-      <Toaster />
       <Card.Root variant="elevated" p="2" mt="4" style={{ overflowY: 'auto' }}>
         <Table.Root colorScheme="gray">
           <Table.Header>
