@@ -141,7 +141,7 @@ export default function Header() {
                       value="revert-to-original-user"
                     >
                       <Button type="submit">
-                        <Text fontSize="sm" color="brand.500">
+                        <Text fontSize="sm" color="brand.contrast">
                           Stop Impersonating
                         </Text>
                       </Button>
@@ -152,7 +152,7 @@ export default function Header() {
                   value="sign-out"
                   onClick={() => fetcher.submit({}, { method: 'post', action: '/logout' })}
                 >
-                  <Text fontSize="sm" color="brand.500">
+                  <Text fontSize="sm" color="brand.solid">
                     Sign Out
                   </Text>
                 </Menu.Item>
