@@ -10,7 +10,6 @@ import {
   Portal,
   useBreakpointValue,
   Show,
-  Icon,
 } from '@chakra-ui/react';
 import { FaCaretUp, FaLock, FaBars } from 'react-icons/fa6';
 import { Form, Link, useFetcher } from '@remix-run/react';
