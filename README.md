@@ -20,7 +20,7 @@ Starchart aims to support our educational developer community while they build a
 
 Starchart is not meant to be, or replace commercial registrars; nor is it meant for use outside of our educational/developer context.
 
-## 1.0 Features
+## Features
 
 - An authoritative DNS server manages a single domain (e.g., `example.com`)
 - A Web app and API server allow users to create subdomains for their own use. The server supports [A Records](https://www.cloudflare.com/learning/dns/dns-records/dns-a-record/) (to map a domain name to an IPv4 address), [AAAA Records](https://www.cloudflare.com/learning/dns/dns-records/dns-aaaa-record/) (to map a domain name to an IPv6 address), [CNAME Records](https://www.cloudflare.com/learning/dns/dns-records/dns-cname-record/) (to provide an alias for an existing domain), [MX Records](https://www.cloudflare.com/learning/dns/dns-records/dns-mx-record/) (to direct emails to a mail server), and/or [TXT Records](https://www.cloudflare.com/learning/dns/dns-records/dns-txt-record/) (to return text to DNS clients).
