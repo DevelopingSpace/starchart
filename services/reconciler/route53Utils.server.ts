@@ -40,12 +40,19 @@ const unescapeFn = (_: string, selection: string): string => {
 };
 
 export const toRoute53RecordValue = (type: DnsRecordType, value: string): string => {
+  /* Route 53 expects priority in the value of each MX record
+   * Using 10 as a default since we don't handle priority in this project
+   */
+  if (type === DnsRecordType.MX) {
+    return '10 ' + value;
+  }
+
   if (type !== DnsRecordType.TXT) {
     return value;
   }
 
   // Create an uninitialized array with the length to hold our split up strings (max 255 chars)
-  const segments = new Array(Math.ceil(value.length / 255))
+  const segments = Array.from({ length: Math.ceil(value.length / 255) })
     // Initialize with undefined
     .fill(undefined)
     // Loop through, using the index split out the appropriate parts from the original string
@@ -60,6 +67,11 @@ export const toRoute53RecordValue = (type: DnsRecordType, value: string): string
 };
 
 export const fromRoute53RecordValue = (type: DnsRecordType, value: string): string => {
+  // Route 53 contains priority in the value of each MX record
+  if (type === DnsRecordType.MX) {
+    return value.split(' ')[1];
+  }
+
   if (type !== DnsRecordType.TXT) {
     return value;
   }
@@ -75,3 +87,7 @@ export const fromRoute53RecordValue = (type: DnsRecordType, value: string): stri
 
   return segments.join('');
 };
+
+export function isSupportedDnsRecordType(type: string): type is DnsRecordType {
+  return Object.keys(DnsRecordType).includes(type);
+}

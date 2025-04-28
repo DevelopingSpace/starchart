@@ -1,4 +1,4 @@
-import { RepeatIcon } from '@chakra-ui/icons';
+import { RepeatIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Form, Link as RemixLink } from '@remix-run/react';
 import {
   Flex,
@@ -10,6 +10,7 @@ import {
   Wrap,
   WrapItem,
   Link,
+  useToast,
 } from '@chakra-ui/react';
 
 interface DescriptionSectionProps {
@@ -29,6 +30,7 @@ export default function DescriptionSection({
   isRenewable,
   link,
 }: DescriptionSectionProps) {
+  const toast = useToast();
   return (
     <Flex flexDirection="column" gap="3" fontSize="md">
       <Text maxW={600}>
@@ -57,7 +59,25 @@ export default function DescriptionSection({
             <Flex justifyContent="flex-end">
               <Form method="post">
                 <Button type="submit" rightIcon={<RepeatIcon />} isDisabled={!isRenewable}>
-                  Renew Certificate
+                  Renew
+                </Button>
+              </Form>
+              <Form method="post">
+                <input type="hidden" name="intent" value="delete-certificate" />
+                <Button
+                  type="submit"
+                  ml={1.5}
+                  rightIcon={<DeleteIcon />}
+                  variant="ghost"
+                  onClick={() =>
+                    toast({
+                      title: 'Certificate has been successfully deleted.',
+                      position: 'bottom-right',
+                      status: 'success',
+                    })
+                  }
+                >
+                  Delete
                 </Button>
               </Form>
             </Flex>

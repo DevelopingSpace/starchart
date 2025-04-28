@@ -1,7 +1,6 @@
 import { createCookie, createCookieSessionStorage, redirect } from '@remix-run/node';
 
-import { isAdmin } from '~/models/user.server';
-import { getUserByUsername } from '~/models/user.server';
+import { isAdmin, getUserByUsername } from '~/models/user.server';
 import secrets from '~/lib/secrets.server';
 
 import type { User } from '~/models/user.server';
@@ -95,19 +94,21 @@ export async function setEffectiveUsername(
   // This is an admin user, figure out what to do based on effectiveUsername.
   switch (effectiveUsername) {
     /* Existing session, so we're ending impersonation */
-    case null:
+    case null: {
       logger.info(`Admin (${username}) ending impersonation`);
-    // falls through
+      // falls through
+    }
 
     /* New or Lost Session  */
-    case undefined:
+    case undefined: {
       // (re)set the effectiveUsername to null
       return await effectiveUsernameCookie.serialize(null);
-
+    }
     /* Starting impersonation of specified user */
-    default:
+    default: {
       logger.info(`Admin (${username}) started impersonating user: ${effectiveUsername}`);
       return await effectiveUsernameCookie.serialize(effectiveUsername);
+    }
   }
 }
 

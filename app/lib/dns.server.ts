@@ -60,6 +60,11 @@ export const isValueValid = (type: DnsRecordType, value: string) => {
     return !isIPRange(value) && isFQDN(value);
   }
 
+  // Same rule as CNAME
+  if (type === 'MX') {
+    return !isIPRange(value) && isFQDN(value);
+  }
+
   if (type === 'TXT') {
     // TXT records must be less than 4000, and we won't bother with empty
     return value.length > 0 && value.length <= 4000;

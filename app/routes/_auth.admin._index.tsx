@@ -23,7 +23,7 @@ import { getDnsRecordCountByUsername, getTotalDnsRecordCount } from '~/models/dn
 import { getTotalUserCount, searchUsers } from '~/models/user.server';
 import { requireAdmin, startImpersonation } from '~/session.server';
 
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { deleteUser } from '~/lib/user.server';
 
 export type AdminActionIntent = 'search-users' | 'impersonate-user' | 'delete-user';
@@ -35,7 +35,7 @@ export interface UserWithMetrics extends User {
 
 export const MIN_USERS_SEARCH_TEXT = 3;
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   await requireAdmin(request);
 
   const actionParams = await parseFormSafe(
@@ -73,7 +73,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   const { intent } = actionParams.data;
   switch (intent) {
-    case 'search-users':
+    case 'search-users': {
       const { searchText } = actionParams.data;
 
       const users = await searchUsers(searchText ?? '');
@@ -93,23 +93,27 @@ export const action = async ({ request }: ActionArgs) => {
       });
 
       return typedjson({ users: usersWithStats });
-    case 'impersonate-user':
+    }
+    case 'impersonate-user': {
       const { newEffectiveUsername } = actionParams.data;
       if (!newEffectiveUsername) {
         throw new Response('Missing username for impersonation', { status: 400 });
       }
       return startImpersonation(request, newEffectiveUsername);
-    case 'delete-user':
+    }
+    case 'delete-user': {
       const { username } = actionParams.data;
       await deleteUser(username ?? '');
 
       return typedjson({ isUserDeleted: true });
-    default:
+    }
+    default: {
       return typedjson({ result: 'error', message: 'Unknown intent' });
+    }
   }
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   await requireAdmin(request);
   return {
     userCount: await getTotalUserCount(),
@@ -185,7 +189,7 @@ export default function AdminRoute() {
 
       <FormControl>
         <InputGroup width={{ sm: '100%', md: 300 }}>
-          <InputLeftAddon children={<FaSearch />} />
+          <InputLeftAddon>{<FaSearch />}</InputLeftAddon>
           <Input
             placeholder="Search..."
             name="searchText"

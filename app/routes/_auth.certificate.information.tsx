@@ -180,7 +180,7 @@ export default function CertificateInstructionsRoute() {
               </Link>
               &nbsp;that you have in the&nbsp;
               <Link as={RemixLink} to="/dns-records">
-                DNS record table
+                DNS records table
               </Link>
             </Text>
           </FaqAccordion>

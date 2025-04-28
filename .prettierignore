@@ -1,11 +1,4 @@
-node_modules
-
-/build
-/public/build
-.env
-/redis-data
-/mysql-data
-/img
-/playwright-report/
-/dev-secrets
-
+.husky/
+config/
+dev-secrets/
+docs/img/

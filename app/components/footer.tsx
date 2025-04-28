@@ -18,14 +18,14 @@ export default function Footer() {
             GitHub
           </Link>
           <Link
-            href="https://www.senecacollege.ca/about/policies/information-technology-acceptable-use-policy.html"
+            href="https://www.senecapolytechnic.ca/about/policies/information-technology-acceptable-use-policy.html"
             target="_blank"
             isExternal
           >
             Acceptable Use Policy
           </Link>
         </HStack>
-        <Text>&copy; {new Date().getFullYear()} Seneca College. All rights reserved.</Text>
+        <Text>&copy; {new Date().getFullYear()} Seneca Polytechnic. All rights reserved.</Text>
       </Container>
     </Box>
   );
