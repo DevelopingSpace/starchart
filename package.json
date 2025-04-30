@@ -46,7 +46,7 @@
     "@remix-run/server-runtime": "2.16.4",
     "acme-client": "^5.4.0",
     "bad-words": "^3.0.4",
-    "bullmq": "^5.46.0",
+    "bullmq": "^5.51.1",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
