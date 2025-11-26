@@ -17,7 +17,11 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["./app/*"],
+      // For types and front-end code
+      "@prisma/client": ["./generated/client/browser"],
+      // For the backend, server code
+      "@prisma/client-and-server": ["./generated/client/client"]
     },
     "skipLibCheck": true,
 

@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client-and-server';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
 import logger from '~/lib/logger.server';
 import secrets from './lib/secrets.server';
@@ -36,19 +37,27 @@ function getClient() {
   const databaseUrl = new URL(DATABASE_URL);
 
   logger.info(`🔌 setting up prisma client to ${databaseUrl.host}`);
+
+  const adapter = new PrismaMariaDb({
+    host: databaseUrl.hostname,
+    port: parseInt(databaseUrl.port || '3306'),
+    user: databaseUrl.username,
+    password: databaseUrl.password,
+    database: databaseUrl.pathname.slice(1), // Remove leading '/'
+    connectionLimit: 5,
+  });
+
   // NOTE: during development if you change anything in this function, remember
   // that this only runs once per server restart and won't automatically be
   // re-run per request like everything else is. So if you need to change
   // something in this file, you'll need to manually restart the server.
-  const client = new PrismaClient({
-    datasources: {
-      db: {
-        url: databaseUrl.toString(),
-      },
-    },
-  });
+  const client = new PrismaClient({ adapter });
+
   // connect eagerly
-  client.$connect();
+  client
+    .$connect()
+    .then(() => console.debug('✅ Prisma connected successfully'))
+    .catch((err) => console.error('❌ Prisma connection failed:', err));
 
   return client;
 }
