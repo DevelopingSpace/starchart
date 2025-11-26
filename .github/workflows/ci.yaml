@@ -104,8 +104,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install node_modules
-        # install node modules manually only if cache was not restored
-        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Seed database
@@ -172,8 +170,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install node_modules
-        # install node modules manually only if cache was not restored
-        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Run Login container
@@ -266,8 +262,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install node_modules
-        # install node modules manually only if cache was not restored
-        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Lint
@@ -303,8 +297,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install node_modules
-        # install node modules manually only if cache was not restored
-        if: steps.node_modules-cache-restore.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Generate prisma client types
