@@ -5,22 +5,11 @@ import { PrismaClient } from '@prisma/client-and-server';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
 const DATABASE_URL = process.env.DATABASE_URL;
-
 if (!DATABASE_URL) {
   throw new Error('DATABASE_URL environment variable is not set');
 }
 
-// Parse connection details
-const url = new URL(DATABASE_URL);
-const adapter = new PrismaMariaDb({
-  host: url.hostname,
-  port: parseInt(url.port || '3306'),
-  user: url.username,
-  password: url.password,
-  database: url.pathname.slice(1),
-  connectionLimit: 5,
-});
-
+const adapter = new PrismaMariaDb(DATABASE_URL);
 const prisma = new PrismaClient({ adapter });
 
 async function seed() {

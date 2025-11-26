@@ -34,18 +34,9 @@ function getClient() {
     throw new Error('DATABASE_URL secret not set');
   }
 
-  const databaseUrl = new URL(DATABASE_URL);
+  logger.info(`🔌 setting up prisma client to ${new URL(DATABASE_URL).host}`);
 
-  logger.info(`🔌 setting up prisma client to ${databaseUrl.host}`);
-
-  const adapter = new PrismaMariaDb({
-    host: databaseUrl.hostname,
-    port: parseInt(databaseUrl.port || '3306'),
-    user: databaseUrl.username,
-    password: databaseUrl.password,
-    database: databaseUrl.pathname.slice(1), // Remove leading '/'
-    connectionLimit: 5,
-  });
+  const adapter = new PrismaMariaDb(DATABASE_URL);
 
   // NOTE: during development if you change anything in this function, remember
   // that this only runs once per server restart and won't automatically be
@@ -54,10 +45,7 @@ function getClient() {
   const client = new PrismaClient({ adapter });
 
   // connect eagerly
-  client
-    .$connect()
-    .then(() => console.debug('✅ Prisma connected successfully'))
-    .catch((err) => console.error('❌ Prisma connection failed:', err));
+  client.$connect();
 
   return client;
 }
