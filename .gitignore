@@ -8,3 +8,4 @@ playwright/.cache/
 public/build/
 test-results/
 test/e2e/.auth
+generated/
