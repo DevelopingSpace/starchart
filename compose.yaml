@@ -42,7 +42,7 @@ services:
 
   # Let's Encrypt test server - https://github.com/letsencrypt/pebble
   lets_encrypt:
-    image: letsencrypt/pebble:latest
+    image: ghcr.io/letsencrypt/pebble:2.6.0
     container_name: lets_encrypt
     # Use the challenge test server for our DNS challenges (we'll mock the TXT records)
     command: pebble -config /test/config/pebble-config.json -strict

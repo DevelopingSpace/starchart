@@ -1,7 +1,16 @@
 import logger from '~/lib/logger.server';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client-and-server';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is not set');
+}
+
+const adapter = new PrismaMariaDb(DATABASE_URL);
+const prisma = new PrismaClient({ adapter });
 
 async function seed() {
   const username = 'starchartdev';

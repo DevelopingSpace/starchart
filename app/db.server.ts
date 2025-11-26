@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client-and-server';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
 import logger from '~/lib/logger.server';
 import secrets from './lib/secrets.server';
@@ -33,20 +34,16 @@ function getClient() {
     throw new Error('DATABASE_URL secret not set');
   }
 
-  const databaseUrl = new URL(DATABASE_URL);
+  logger.info(`🔌 setting up prisma client to ${new URL(DATABASE_URL).host}`);
 
-  logger.info(`🔌 setting up prisma client to ${databaseUrl.host}`);
+  const adapter = new PrismaMariaDb(DATABASE_URL);
+
   // NOTE: during development if you change anything in this function, remember
   // that this only runs once per server restart and won't automatically be
   // re-run per request like everything else is. So if you need to change
   // something in this file, you'll need to manually restart the server.
-  const client = new PrismaClient({
-    datasources: {
-      db: {
-        url: databaseUrl.toString(),
-      },
-    },
-  });
+  const client = new PrismaClient({ adapter });
+
   // connect eagerly
   client.$connect();
 

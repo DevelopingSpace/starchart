@@ -1,4 +1,4 @@
-FROM node:22-bullseye-slim@sha256:78d58cb33cd6508d24dc07b6b9825d4669275b094ea2aafc9ae10610991d8945 as base
+FROM node:22-bullseye-slim@sha256:204476c3121ff0222e53b2cdf6f90d5c2997bfbb7f8285ad278ba4555de3a087 AS base
 
 ARG CURL_VERSION=7.74.* \
   OPENSSL_VERSION=1.1.* \
@@ -17,16 +17,31 @@ RUN apt-get update && \
 ###############################################################################
 
 # Install all node_modules, including dev dependencies
-FROM base as deps
+FROM base AS deps
 
 WORKDIR /app
 COPY package*.json .npmrc ./
-RUN npm ci --include=dev --ignore-scripts
+RUN npm ci --include=dev
+
+###############################################################################
+
+# Build the app and generate the prisma client
+FROM base AS build
+
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Set a dummy DATABASE_URL for prisma generate (not used, just required by config)
+ENV DATABASE_URL="mysql://user:password@localhost:3306/starchart"
+
+RUN npx prisma generate \
+  && npm run build
 
 ###############################################################################
 
 # Remove any non-production dependencies
-FROM base as production-deps
+FROM base AS production-deps
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -35,17 +50,8 @@ RUN npm prune --omit=dev
 
 ###############################################################################
 
-# Build the app and generate the prisma client
-FROM base as build
-
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN npx prisma generate \
-  && npm run build
-
 # Deploy the built app on top of the production deps, run as non-root
-FROM base as deploy
+FROM base AS deploy
 
 WORKDIR /app
 ENV NODE_ENV=production \
@@ -55,10 +61,11 @@ ENV NODE_ENV=production \
 USER node
 COPY --chown=node:node --from=production-deps /app/.npmrc ./.npmrc
 COPY --chown=node:node --from=production-deps /app/node_modules ./node_modules
-COPY --chown=node:node --from=build /app/node_modules/.prisma ./node_modules/.prisma
+COPY --chown=node:node --from=build /app/generated ./generated
 COPY --chown=node:node --from=build /app/build ./build
 COPY --chown=node:node --from=build /app/public ./public
 COPY --chown=node:node --from=build /app/prisma ./prisma
+COPY --chown=node:node --from=build /app/prisma.config.ts ./prisma.config.ts
 
 # Include the SAML IDP metadata in the image. Specify the file to use in the build arg
 # and override the SAML_IDP_METADATA_PATH to use when loading this file at startup
