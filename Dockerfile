@@ -21,17 +21,7 @@ FROM base AS deps
 
 WORKDIR /app
 COPY package*.json .npmrc ./
-RUN npm ci --include=dev --ignore-scripts
-
-###############################################################################
-
-# Remove any non-production dependencies
-FROM base AS production-deps
-
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY package*.json .npmrc ./
-RUN npm prune --omit=dev
+RUN npm ci --include=dev
 
 ###############################################################################
 
@@ -47,6 +37,18 @@ ENV DATABASE_URL="mysql://user:password@localhost:3306/starchart"
 
 RUN npx prisma generate \
   && npm run build
+
+###############################################################################
+
+# Remove any non-production dependencies
+FROM base AS production-deps
+
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY package*.json .npmrc ./
+RUN npm prune --omit=dev
+
+###############################################################################
 
 # Deploy the built app on top of the production deps, run as non-root
 FROM base AS deploy
