@@ -8,6 +8,6 @@ export default defineConfig({
     seed: 'tsx --require tsconfig-paths/register prisma/seed.ts',
   },
   datasource: {
-    url: env('DATABASE_URL'),
+    url: env('DATABASE_URL') || 'mysql://starchart:starchart_password@127.0.0.1:3306/starchart',
   },
 });
