@@ -65,6 +65,7 @@ COPY --chown=node:node --from=build /app/generated ./generated
 COPY --chown=node:node --from=build /app/build ./build
 COPY --chown=node:node --from=build /app/public ./public
 COPY --chown=node:node --from=build /app/prisma ./prisma
+COPY --chown=node:node --from=build /app/prisma.config.ts ./prisma.config.ts
 
 # Include the SAML IDP metadata in the image. Specify the file to use in the build arg
 # and override the SAML_IDP_METADATA_PATH to use when loading this file at startup
