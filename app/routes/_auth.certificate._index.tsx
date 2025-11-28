@@ -77,16 +77,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   });
 };
 
-function formatDate(val: Date): string {
-  const date = val.toLocaleDateString('en-US', {
-    month: 'short',
-    day: '2-digit',
-    year: 'numeric',
-  });
-
-  return date;
-}
-
 function mapStatusToErrorText(statusCode: number): string {
   switch (statusCode) {
     case 404:
@@ -140,8 +130,8 @@ export default function CertificateIndexRoute() {
       {certificate?.status === 'issued' ? (
         <CertificateAvailable
           certificate={certificate}
-          validFromFormatted={formatDate(certificate.validFrom!)}
-          validToFormatted={formatDate(certificate.validTo!)}
+          validFromISO={certificate.validFrom!.toISOString()}
+          validToISO={certificate.validTo!.toISOString()}
         />
       ) : (
         <CertificateRequestView

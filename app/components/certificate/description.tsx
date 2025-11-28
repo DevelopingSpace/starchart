@@ -1,5 +1,6 @@
 import { RepeatIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Form, Link as RemixLink } from '@remix-run/react';
+import { useEffect, useState } from 'react';
 import {
   Flex,
   Text,
@@ -15,8 +16,8 @@ import {
 
 interface DescriptionSectionProps {
   certRequested: boolean;
-  validFromFormatted?: string;
-  validToFormatted?: string;
+  validFromISO?: string;
+  validToISO?: string;
   description: string;
   isRenewable?: boolean;
   link?: string;
@@ -24,8 +25,8 @@ interface DescriptionSectionProps {
 
 export default function DescriptionSection({
   certRequested,
-  validFromFormatted,
-  validToFormatted,
+  validFromISO,
+  validToISO,
   description,
   isRenewable,
   link,
@@ -45,15 +46,19 @@ export default function DescriptionSection({
           </>
         )}
       </Text>
-      {certRequested && !!validFromFormatted && !!validToFormatted && (
+      {certRequested && !!validFromISO && !!validToISO && (
         <Wrap align="center">
           <Stat backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>
             <StatLabel>Created On</StatLabel>
-            <StatNumber>{validFromFormatted}</StatNumber>
+            <StatNumber>
+              <LocalDate iso={validFromISO} />
+            </StatNumber>
           </Stat>
           <Stat backgroundColor="whitesmoke" maxW={200} px={5} py={3} borderRadius={8}>
             <StatLabel>Expires On</StatLabel>
-            <StatNumber>{validToFormatted}</StatNumber>
+            <StatNumber>
+              <LocalDate iso={validToISO} />
+            </StatNumber>
           </Stat>
           <WrapItem>
             <Flex justifyContent="flex-end">
@@ -86,4 +91,21 @@ export default function DescriptionSection({
       )}
     </Flex>
   );
+}
+
+function LocalDate({ iso }: { iso: string }) {
+  const [formatted, setFormatted] = useState('');
+
+  useEffect(() => {
+    const date = new Date(iso);
+    setFormatted(
+      date.toLocaleDateString('en-CA', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric',
+      })
+    );
+  }, [iso]);
+
+  return <time>{formatted}</time>;
 }
