@@ -21,14 +21,14 @@ import type { CertificateWithFullChain } from '~/models/certificate.server';
 
 interface CertificateAvailableProps {
   certificate: CertificateWithFullChain;
-  validFromFormatted: string;
-  validToFormatted: string;
+  validFromISO: string;
+  validToISO: string;
 }
 
 export default function CertificateAvailable({
   certificate,
-  validFromFormatted,
-  validToFormatted,
+  validFromISO,
+  validToISO,
 }: CertificateAvailableProps) {
   const isRenewable = useMemo((): boolean => {
     if (certificate.validTo) {
@@ -44,8 +44,8 @@ export default function CertificateAvailable({
       <Description
         description="With this certificate, you will have an HTTPS certificate for all of your projects connected to your DNS records."
         certRequested={true}
-        validFromFormatted={validFromFormatted}
-        validToFormatted={validToFormatted}
+        validFromISO={validFromISO}
+        validToISO={validToISO}
         isRenewable={isRenewable}
       />
 
