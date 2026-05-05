@@ -26,7 +26,7 @@ The following configuration values must be set via environment variables.
 | `ROOT_DOMAIN`                       | The DNS root domain for the hosted zone (e.g., `starchart.com`)                                                                                                                                                                                          |
 | `AWS_ROUTE53_HOSTED_ZONE_ID`        | The existing Amazon Route53 Hosted Zone ID to use (e.g., `Z23ABC4XYZL05B`)                                                                                                                                                                               |
 | `NOTIFICATIONS_EMAIL_USER`          | The email address from which notifications are sent                                                                                                                                                                                                      |
-| `SMTP_PORT`                         | The port to use for the SMTP server. Defaults to `587` in production (using `smtp.office365.com`) and `1025` in development (using ([MailHog](https://github.com/mailhog/MailHog))                                                                       |
+| `SMTP_PORT`                         | The port to use for the SMTP server. Defaults to `587` in production (using `smtp.office365.com`) and `2025` in development (using ([MailHog](https://github.com/mailhog/MailHog))                                                                       |
 | `LETS_ENCRYPT_ACCOUNT_EMAIL`        | The email address to use for the app's [single Let's Encrypt account](https://letsencrypt.org/docs/integration-guide/#one-account-or-many)                                                                                                               |
 | `REDIS_URL`                         | The Redis server to use for the worker queues. Defaults to `redis://redis:6379` in production and `localhost:6379` in development.                                                                                                                       |
 | `SAML_IDP_METADATA_PATH`            | The file path of the SAML Identify Provider (IdP)'s metadata XML. We store various XML files in `config/` and use `config/idp-metadata-dev.xml` by default.                                                                                              |
@@ -208,28 +208,28 @@ We deploy to production from the `release` branch. When `main` is in the desired
 
 ![Create Pull Request](img/prod-deploy-01.png)
 
-2. Merge all changes in the `main` branch _into_ the `release` branch by selecting the `release` branch as the **base ref**:
+1. Merge all changes in the `main` branch _into_ the `release` branch by selecting the `release` branch as the **base ref**:
 
 ![Select release base ref](img/prod-deploy-02.png)
 
-3. Confirm that you are merging `main` _into_ `release` and click **Create pull request**:
+1. Confirm that you are merging `main` _into_ `release` and click **Create pull request**:
 
 ![Confirm and create pull request](img/prod-deploy-03.png)
 
-4. Update the title and description if desired, or leave as is. Read through all changes that are about to get added to `release`, making sure there's nothing in it that will cause data loss (e.g., database changes), require changes on the production infrastructure (e.g., changes to Docker setup), etc. and click **Create pull request**:
+1. Update the title and description if desired, or leave as is. Read through all changes that are about to get added to `release`, making sure there's nothing in it that will cause data loss (e.g., database changes), require changes on the production infrastructure (e.g., changes to Docker setup), etc. and click **Create pull request**:
 
 ![Update info and create pull request](img/prod-deploy-04.png)
 
-5. Get a review. NOTE: all changes have already been fully reviewed and tested before being merged in `main`, so this process is about making sure that we can ship these changes to production as-is. For example: does this need any special database or system updates outside the scope of the code changes?
+1. Get a review. NOTE: all changes have already been fully reviewed and tested before being merged in `main`, so this process is about making sure that we can ship these changes to production as-is. For example: does this need any special database or system updates outside the scope of the code changes?
 
-6. Merge the pull request with a **merge commit** (i.e., _not_ a **squash** or `**rebase**). We use a **merge commit** in order to keep the commits the same in both branches, making it easier to revert a single commit later on:
+2. Merge the pull request with a **merge commit** (i.e., _not_ a **squash** or `**rebase**). We use a **merge commit** in order to keep the commits the same in both branches, making it easier to revert a single commit later on:
 
 ![Merge pull request](img/prod-deploy-05.png)
 
-7. Confirm that the pull request has triggered a GitHub Actions run on `release`, and that it succeeds:
+1. Confirm that the pull request has triggered a GitHub Actions run on `release`, and that it succeeds:
 
 ![Release GitHub Action](img/prod-deploy-06.png)
 
-8. Confirm that a new **Release** has been created:
+1. Confirm that a new **Release** has been created:
 
 ![New Release](img/prod-deploy-07.png)
