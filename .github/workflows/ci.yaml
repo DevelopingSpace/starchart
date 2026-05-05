@@ -67,7 +67,7 @@ jobs:
         image: jcalonso/mailhog:latest
         ports:
           - 8025:8025
-          - 1025:1025
+          - 2025:1025
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -270,7 +270,8 @@ jobs:
           build-args: |
             SAML_IDP_METADATA_PATH=./config/idp-metadata-staging.xml
           push: true
-          tags: ${{ env.IMAGE }}:staging-sha-${{ env.GITHUB_SHA_SHORT }}, ${{ env.IMAGE }}:staging
+          tags: ${{ env.IMAGE }}:staging-sha-${{ env.GITHUB_SHA_SHORT }}, ${{ env.IMAGE
+            }}:staging
 
       - name: Deploy to Staging via Webhook
         uses: navied/secure-actions-webhook@0.2.1

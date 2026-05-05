@@ -56,16 +56,20 @@ services:
       PEBBLE_VA_ALWAYS_VALID: 1
 
   mailhog:
-    image: jcalonso/mailhog:latest
+    image: jcalonso/mailhog:v1.0.1
+    # NOTE: no ARM version available, force amd64
+    platform: linux/amd64
     container_name: mailhog
     ports:
       - 8025:8025 # MailHog interface
-      - 1025:1025 # SMTP server
+      - 2025:1025 # SMTP server (NOTE: 1025 conflicts with Synology Drive)
 
   # SSO Identity Provider test service, https://simplesamlphp.org
   # Access to the login page available at http://localhost:8081
   login:
     image: kristophjunge/test-saml-idp
+    # NOTE: no ARM version available, force amd64
+    platform: linux/amd64
     container_name: 'login'
     ports:
       # If this port ever gets changed, make sure to update config/dev-idp-metadata.xml
