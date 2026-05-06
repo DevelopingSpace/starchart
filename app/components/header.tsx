@@ -14,7 +14,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { TriangleUpIcon, LockIcon, HamburgerIcon } from '@chakra-ui/icons';
-import { Form, Link, useFetcher } from '@remix-run/react';
+import { Form, Link } from '@remix-run/react';
 
 import { useEffectiveUser, useUser } from '~/utils';
 import { FaTheaterMasks } from 'react-icons/fa';
@@ -25,7 +25,6 @@ export default function Header() {
   const user = useEffectiveUser();
   const originalUser = useUser();
 
-  const fetcher = useFetcher();
   return (
     <Flex
       as="header"
@@ -131,11 +130,14 @@ export default function Header() {
                 </MenuItem>
               </Form>
             )}
-            <MenuItem onClick={() => fetcher.submit({}, { method: 'post', action: '/logout' })}>
-              <Text fontSize="sm" color="brand.500">
-                Sign Out
-              </Text>
-            </MenuItem>
+            {/* Use a regular HTML form vs. Remix <Form> so that cookies are passed correctly */}
+            <form method="post" action="/logout">
+              <MenuItem as="button" type="submit">
+                <Text fontSize="sm" color="brand.500">
+                  Sign Out
+                </Text>
+              </MenuItem>
+            </form>
           </MenuList>
         </Menu>
       </Flex>

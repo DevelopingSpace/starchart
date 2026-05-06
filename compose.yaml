@@ -1,8 +1,9 @@
 services:
   # Only for development
   database:
-    image: mysql:8
+    image: mysql:8.0
     container_name: database
+    command: --authentication-policy=mysql_native_password
     ports:
       # Only for dev
       - 3306:3306
