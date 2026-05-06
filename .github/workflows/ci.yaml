@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22
-          #cache: npm
+          cache: npm
 
       - name: Install node_modules
         run: npm ci
@@ -137,8 +137,16 @@ jobs:
       - name: Install node_modules
         run: npm ci
 
-      - name: Run Login container
-        run: docker compose up -d login
+      - name: Run Login container with volume mounts (can't use GH Service Container)
+        run: |
+          docker compose up -d login
+          timeout 60 bash -c '
+            until curl -sf http://localhost:8081/simplesaml/ > /dev/null 2>&1; do
+              echo "Waiting for login container..."
+              sleep 2
+            done
+          '
+          echo "Login container is ready"
 
       - name: Get installed Playwright version
         id: playwright-version
