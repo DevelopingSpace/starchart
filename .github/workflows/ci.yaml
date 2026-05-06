@@ -26,6 +26,11 @@ jobs:
       - name: Install node_modules
         run: npm ci
 
+      - name: Clean old Prisma artifacts
+        run: |
+          rm -rf node_modules/.prisma
+          rm -rf generated/client
+
       - name: Generate prisma client types
         run: npm run db:generate
 
