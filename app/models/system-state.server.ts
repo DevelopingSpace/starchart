@@ -11,18 +11,28 @@ import type { SystemState } from '@prisma/client';
  * to our Records table
  */
 
-export function initialize() {
-  // Using an upsert here to make sure we only initialize if the unique row is missing
-  return prisma.systemState.upsert({
-    where: {
-      unique: StateEnumType.unique,
-    },
-    update: {},
-    create: {
-      unique: StateEnumType.unique,
-      reconciliationNeeded: true,
-    },
-  });
+export async function initialize() {
+  try {
+    // Using an upsert here to make sure we only initialize if the unique row is missing
+    const result = await prisma.systemState.upsert({
+      where: { unique: StateEnumType.unique },
+      update: {},
+      create: {
+        unique: StateEnumType.unique,
+        reconciliationNeeded: true,
+      },
+    });
+    return result;
+  } catch (error: unknown) {
+    if (error instanceof Error && 'code' in error && error.code === 'P2002') {
+      // Row already exists, nothing to do
+      const existing = await prisma.systemState.findUniqueOrThrow({
+        where: { unique: StateEnumType.unique },
+      });
+      return existing;
+    }
+    throw error;
+  }
 }
 
 export function getIsReconciliationNeeded(): Promise<SystemState['reconciliationNeeded']> {
@@ -34,21 +44,33 @@ export function getIsReconciliationNeeded(): Promise<SystemState['reconciliation
     .then((data) => data?.reconciliationNeeded ?? true);
 }
 
-export function setIsReconciliationNeeded(
+export async function setIsReconciliationNeeded(
   reconciliationNeeded: SystemState['reconciliationNeeded']
 ) {
-  return prisma.systemState
-    .update({
+  try {
+    await prisma.systemState.update({
       data: { reconciliationNeeded },
       where: { unique: StateEnumType.unique },
-    })
-    .catch(() => {
-      /**
-       * This should never happen, as the table should always be seeded.
-       * In case it isn't, let's seed it here Next queue run will set the
-       * correct reconciliationNeeded
-       */
-
-      return initialize();
     });
+  } catch {
+    /**
+     * This shouldn't happen, as the table should always be seeded.
+     * In case it isn't, try to initialize it here.
+     * If that also fails due to a concurrent insert (P2002),
+     * just update, since the row now definitely exists.
+     */
+    try {
+      await initialize();
+    } catch (initError: unknown) {
+      if (initError instanceof Error && 'code' in initError && initError.code === 'P2002') {
+        // Another process created the row concurrently, just update it now
+        await prisma.systemState.update({
+          data: { reconciliationNeeded },
+          where: { unique: StateEnumType.unique },
+        });
+      } else {
+        throw initError;
+      }
+    }
+  }
 }

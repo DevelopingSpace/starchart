@@ -1,5 +1,5 @@
 import { PassThrough } from 'stream';
-import type { EntryContext } from '@remix-run/node';
+import type { AppLoadContext, EntryContext } from '@remix-run/node';
 import { createReadableStreamFromReadable } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
@@ -15,9 +15,11 @@ export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext
+  remixContext: EntryContext,
+  loadContext: AppLoadContext
 ) {
   const callbackName = isbot(request.headers.get('user-agent')) ? 'onAllReady' : 'onShellReady';
+  const nonce = loadContext.nonce as string;
 
   return new Promise((resolve, reject) => {
     let didError = false;
@@ -25,17 +27,20 @@ export default function handleRequest(
 
     const { pipe, abort } = renderToPipeableStream(
       <CacheProvider value={emotionCache}>
-        <RemixServer context={remixContext} url={request.url} />
+        <RemixServer context={remixContext} url={request.url} nonce={nonce} />
       </CacheProvider>,
       {
+        nonce,
         [callbackName]: () => {
           const body = new PassThrough();
-          const stream = createReadableStreamFromReadable(body);
-
           const emotionServer = createEmotionServer(emotionCache);
-
           const bodyWithStyles = emotionServer.renderStylesToNodeStream();
-          body.pipe(bodyWithStyles);
+
+          // Pipe: React output → emotion styles → response
+          const output = new PassThrough();
+          body.pipe(bodyWithStyles).pipe(output);
+
+          const stream = createReadableStreamFromReadable(output);
 
           responseHeaders.set('Content-Type', 'text/html');
 

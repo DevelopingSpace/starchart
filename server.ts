@@ -28,8 +28,12 @@ app.use(
       directives: {
         // Expect a nonce on scripts
         scriptSrc: ["'self'", (_req, res) => `'nonce-${(res as Response).locals.nonce}'`],
+        // Allow Emotion/Chakra inline styles
+        styleSrc: ["'self'", "'unsafe-inline'"],
         // Allow live reload to work over a web socket in development
         connectSrc: MODE === 'production' ? ["'self'"] : ["'self'", 'ws:'],
+        // Allow form submissions to self and localhost in development
+        formAction: MODE === 'production' ? ["'self'"] : ["'self'", 'http://localhost:8080'],
         // Don't force https unless in production
         upgradeInsecureRequests: MODE === 'production' ? [] : null,
       },

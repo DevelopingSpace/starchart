@@ -11,9 +11,9 @@ describe('Route53 Client functions test', () => {
   const username = 'jdo12';
   const fqdn = (subdomain: string = String(Date.now())) => `${subdomain}.${username}.${rootDomain}`;
 
-  const resetHostedZone = () => {
+  const resetHostedZone = async () => {
     try {
-      fetch('http://localhost:5053/moto-api/reset', {
+      await fetch('http://localhost:5053/moto-api/reset', {
         method: 'POST',
       });
     } catch (error) {
@@ -22,12 +22,13 @@ describe('Route53 Client functions test', () => {
   };
 
   beforeAll(async () => {
+    await resetHostedZone();
     hostedZoneId = await createHostedZone(rootDomain);
     process.env.AWS_ROUTE53_HOSTED_ZONE_ID = hostedZoneId;
     process.env.ROOT_DOMAIN = rootDomain;
   });
 
-  afterAll(() => resetHostedZone());
+  afterAll(async () => await resetHostedZone());
 
   test('Hosted zone is created and hosted zone is returned', () => {
     expect(hostedZoneId.length).toBeGreaterThan(0);
