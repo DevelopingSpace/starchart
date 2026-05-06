@@ -19,9 +19,9 @@
     "paths": {
       "~/*": ["./app/*"],
       // For types and front-end code
-      "@prisma/client": ["./generated/client/browser"],
+      "@prisma/client": ["./generated/client"],
       // For the backend, server code
-      "@prisma/client-and-server": ["./generated/client/client"]
+      "@prisma/client-and-server": ["./generated/client"]
     },
     "skipLibCheck": true,
 
