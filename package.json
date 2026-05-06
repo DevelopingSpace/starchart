@@ -120,8 +120,8 @@
   "lint-staged": {
     "*.{md,json,html,css,js,yaml,yml,ts,tsx}": [
       "prettier --write",
-      "oxlint",
-      "eslint"
+      "oxlint --no-error-on-unmatched-pattern",
+      "eslint --no-error-on-unmatched-pattern"
     ]
   }
 }
