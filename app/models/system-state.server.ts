@@ -14,7 +14,7 @@ import type { SystemState } from '@prisma/client';
 export async function initialize() {
   try {
     // Using an upsert here to make sure we only initialize if the unique row is missing
-    await prisma.systemState.upsert({
+    const result = await prisma.systemState.upsert({
       where: { unique: StateEnumType.unique },
       update: {},
       create: {
@@ -22,10 +22,14 @@ export async function initialize() {
         reconciliationNeeded: true,
       },
     });
+    return result;
   } catch (error: unknown) {
     if (error instanceof Error && 'code' in error && error.code === 'P2002') {
       // Row already exists, nothing to do
-      return;
+      const existing = await prisma.systemState.findUniqueOrThrow({
+        where: { unique: StateEnumType.unique },
+      });
+      return existing;
     }
     throw error;
   }
