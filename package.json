@@ -54,7 +54,7 @@
     "dayjs": "^1.11.20",
     "docker-secret": "^2.0.6",
     "dotenv": "^17.4.2",
-    "express": "^4.22.1",
+    "express": "^4.22.2",
     "framer-motion": "^12.38.0",
     "helmet": "^8.1.0",
     "http-graceful-shutdown": "^3.1.16",
