@@ -43,7 +43,7 @@
     "@prisma/client": "^7.8.0",
     "@remix-run/express": "2.17.4",
     "@remix-run/node": "2.17.4",
-    "@remix-run/react": "2.17.4",
+    "@remix-run/react": "2.17.5",
     "@remix-run/server-runtime": "2.17.4",
     "acme-client": "^5.4.0",
     "bad-words": "^3.0.4",
